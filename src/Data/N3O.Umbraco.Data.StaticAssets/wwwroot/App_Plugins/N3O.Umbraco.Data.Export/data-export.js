@@ -1,284 +1,477 @@
-import { customElement as re } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as ce } from "@umbraco-cms/backoffice/element-api";
-import { UMB_DOCUMENT_WORKSPACE_CONTEXT as le } from "@umbraco-cms/backoffice/document";
-import { useState as p, useEffect as ie, createElement as de } from "react";
-import { createRoot as pe } from "react-dom/client";
-import { jsxs as d, jsx as a } from "react/jsx-runtime";
-function ue({ contentKey: t }) {
-  const [s, n] = p([]), [u, f] = p(null), [h, y] = p("excel"), [U, I] = p(!1), [D, w] = p([]), [R, g] = p([]), [x, A] = p(!1), [q, _] = p(""), [B, W] = p(null);
-  ie(() => {
-    if (!t)
+import { customElement as ue } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as he } from "@umbraco-cms/backoffice/element-api";
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT as be } from "@umbraco-cms/backoffice/document";
+import { UmbAuthFetchMixin as me } from "@n3o/auth-fetch";
+import { useState as h, useEffect as ve, createElement as xe } from "react";
+import { createRoot as fe } from "react-dom/client";
+import { jsxs as s, jsx as a, Fragment as J } from "react/jsx-runtime";
+function ge({ contentKey: t, authFetch: o }) {
+  const [i, f] = h([]), [p, g] = h(null), [v, G] = h("excel"), [R, X] = h(!1), [N, z] = h([]), [S, y] = h([]), [d, M] = h(!1), [K, _] = h(""), [W, $] = h(null);
+  ve(() => {
+    if (!t || !o)
       return;
     let e = !0;
     return (async () => {
-      const c = await H(t), r = await fetch("/umbraco/backoffice/api/Exports/lookups/contentMetadata", {
+      const c = await Q(t), n = await o("/umbraco/backoffice/api/Exports/lookups/contentMetadata", {
         headers: { Accept: "application/json" }
-      }).then((i) => i.json());
-      for (const i of r)
-        i.selected = i.autoSelected;
-      r.sort((i, l) => i.displayOrder - l.displayOrder), e && (n(c), w(r));
+      }).then((u) => u.json());
+      for (const u of n)
+        u.selected = u.autoSelected;
+      n.sort((u, l) => u.displayOrder - l.displayOrder), e && (f(c), z(n));
     })(), () => {
       e = !1;
     };
-  }, [t]);
-  const H = async (e) => await (await fetch(`/umbraco/api/ContentTypes/${e}/relations?type=descendant`, {
+  }, [t, o]);
+  const Q = async (e) => await (await o(`/umbraco/api/ContentTypes/${e}/relations?type=descendant`, {
     headers: { Accept: "application/json" }
-  })).json(), J = async (e) => {
+  })).json(), Y = async (e) => {
     if (!e) {
-      g([]);
+      y([]);
       return;
     }
-    const o = await fetch(`/umbraco/backoffice/api/Exports/exportableProperties/${e.alias}`, {
+    const r = await o(`/umbraco/backoffice/api/Exports/exportableProperties/${e.alias}`, {
       headers: { Accept: "application/json" }
     }).then((c) => c.json());
-    for (const c of o)
+    for (const c of r)
       c.selected = !1;
-    g(o);
-  }, V = (e) => {
-    const o = e.target.value, c = s.find((r) => r.alias === o) ?? null;
-    f(c), J(c);
-  }, C = (e) => {
-    A(!1), _(""), W(e);
-  }, X = (e) => {
-    const o = async (c, r) => {
-      const i = await fetch(`/umbraco/backoffice/api/Exports/export/${e}/progress`, {
+    y(r);
+  }, Z = (e) => {
+    const r = e.target.value, c = i.find((n) => n.alias === r) ?? null;
+    g(c), Y(c);
+  }, k = (e) => {
+    M(!1), _(""), $(e);
+  }, ee = (e) => {
+    const r = async (c, n) => {
+      const u = await o(`/umbraco/backoffice/api/Exports/export/${e}/progress`, {
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         method: "GET"
-      }), l = await i.json();
-      if (i.status !== 200) {
-        C(String(l)), r(l);
+      }), l = await u.json();
+      if (u.status !== 200) {
+        k(String(l)), n(l);
         return;
       }
-      l.isComplete === !0 ? c(l) : (_(l.text), setTimeout(() => void o(c, r), 2500));
+      l.isComplete === !0 ? c(l) : (_(l.text), setTimeout(() => void r(c, n), 2500));
     };
-    return new Promise(o);
-  }, K = async () => {
-    if (A(!0), _(""), W(null), !u) {
-      C("Please select a content type");
+    return new Promise(r);
+  }, te = async () => {
+    if (M(!0), _(""), $(null), !p) {
+      k("Please select a content type");
       return;
     }
-    const e = D.filter((l) => l.selected).map((l) => l.id), o = R.filter((l) => l.selected).map((l) => l.alias);
-    if (!o.length && !e.length) {
-      C("At least one property or metadata field must be selected");
+    const e = N.filter((l) => l.selected).map((l) => l.id), r = S.filter((l) => l.selected).map((l) => l.alias);
+    if (!r.length && !e.length) {
+      k("At least one property or metadata field must be selected");
       return;
     }
     const c = {
-      format: h,
-      includeUnpublished: U,
+      format: v,
+      includeUnpublished: R,
       metadata: e,
-      properties: o
-    }, r = await fetch(
-      `/umbraco/backoffice/api/Exports/export/${t}/${u.alias}`,
+      properties: r
+    }, n = await o(
+      `/umbraco/backoffice/api/Exports/export/${t}/${p.alias}`,
       {
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify(c)
       }
-    ), i = await r.json();
-    if (r.status !== 200) {
-      C(String(i));
+    ), u = await n.json();
+    if (n.status !== 200) {
+      k(String(u));
       return;
     }
-    X(i.id).then(async (l) => {
-      var L, z;
-      const T = await fetch(`/umbraco/backoffice/api/Exports/export/${l.id}/file`, {
+    ee(u.id).then(async (l) => {
+      var q, H;
+      const O = await o(`/umbraco/backoffice/api/Exports/export/${l.id}/file`, {
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         method: "GET"
       });
-      if (T.status !== 200) {
-        C(String(await T.json()));
+      if (O.status !== 200) {
+        k(String(await O.json()));
         return;
       }
-      const oe = await T.blob(), se = ((L = ((T.headers.get("Content-Disposition") ?? "").split(";")[1] ?? "").split("=")[1]) == null ? void 0 : L.replaceAll('"', "")) ?? "export", ne = new Blob([oe]), $ = window.URL.createObjectURL(ne), v = document.createElement("a");
-      v.href = $, v.setAttribute("download", se), document.body.appendChild(v), v.click(), (z = v.parentNode) == null || z.removeChild(v), window.URL.revokeObjectURL($), A(!1), _("");
+      const le = await O.blob(), de = ((q = ((O.headers.get("Content-Disposition") ?? "").split(";")[1] ?? "").split("=")[1]) == null ? void 0 : q.replaceAll('"', "")) ?? "export", pe = new Blob([le]), F = window.URL.createObjectURL(pe), x = document.createElement("a");
+      x.href = F, x.setAttribute("download", de), document.body.appendChild(x), x.click(), (H = x.parentNode) == null || H.removeChild(x), window.URL.revokeObjectURL(F), M(!1), _("");
     }).catch(() => {
     });
-  }, Q = () => w((e) => e.map((o) => ({ ...o, selected: !0 }))), Y = () => w((e) => e.map((o) => ({ ...o, selected: !1 }))), Z = () => g((e) => e.map((o) => ({ ...o, selected: !0 }))), ee = () => g((e) => e.map((o) => ({ ...o, selected: !1 }))), te = (e, o) => w((c) => c.map((r) => r === e ? { ...r, selected: o } : r)), ae = (e, o) => g((c) => c.map((r) => r === e ? { ...r, selected: o } : r));
-  return /* @__PURE__ */ d("div", { className: "n3o-data-export", children: [
-    /* @__PURE__ */ d("uui-box", { headline: "Options", children: [
-      /* @__PURE__ */ a("umb-property-layout", { label: "Content Type", mandatory: !0, children: /* @__PURE__ */ a("div", { slot: "editor", children: /* @__PURE__ */ d("select", { disabled: x, onChange: V, children: [
-        /* @__PURE__ */ a("option", { value: "", selected: !u }),
-        s.map((e) => /* @__PURE__ */ a("option", { value: e.alias, children: e.name }, e.alias))
-      ] }) }) }),
-      /* @__PURE__ */ a("umb-property-layout", { label: "Format", mandatory: !0, children: /* @__PURE__ */ d("div", { slot: "editor", children: [
-        /* @__PURE__ */ d("label", { children: [
-          /* @__PURE__ */ a(
-            "input",
-            {
-              type: "radio",
-              name: "format",
-              value: "excel",
-              checked: h === "excel",
-              disabled: x,
-              onChange: () => y("excel")
-            }
-          ),
-          "Excel"
-        ] }),
-        /* @__PURE__ */ a("br", {}),
-        /* @__PURE__ */ d("label", { children: [
-          /* @__PURE__ */ a(
-            "input",
-            {
-              type: "radio",
-              name: "format",
-              value: "csv",
-              checked: h === "csv",
-              disabled: x,
-              onChange: () => y("csv")
-            }
-          ),
-          "CSV"
-        ] })
-      ] }) }),
-      /* @__PURE__ */ a("umb-property-layout", { label: "Include Unpublished", mandatory: !0, children: /* @__PURE__ */ a("div", { slot: "editor", children: /* @__PURE__ */ a(
-        "input",
+  }, ae = () => z((e) => e.map((r) => ({ ...r, selected: !0 }))), oe = () => z((e) => e.map((r) => ({ ...r, selected: !1 }))), re = () => y((e) => e.map((r) => ({ ...r, selected: !0 }))), ie = () => y((e) => e.map((r) => ({ ...r, selected: !1 }))), ne = (e, r) => z((c) => c.map((n) => n === e ? { ...n, selected: r } : n)), se = (e, r) => y((c) => c.map((n) => n === e ? { ...n, selected: r } : n)), B = N.filter((e) => e.selected).length, L = S.filter((e) => e.selected).length, I = B > 0 || L > 0, ce = !!p && I && !d;
+  return /* @__PURE__ */ s("div", { className: "n3o-data-export", children: [
+    /* @__PURE__ */ s("uui-box", { headline: "Export options", children: [
+      /* @__PURE__ */ a(
+        "umb-property-layout",
         {
-          type: "checkbox",
-          checked: U,
-          disabled: x,
-          onChange: (e) => I(e.target.checked)
+          label: "Content type",
+          description: "The descendant type to export. Properties available for export depend on this.",
+          mandatory: !0,
+          children: /* @__PURE__ */ a("div", { slot: "editor", children: /* @__PURE__ */ s(
+            "select",
+            {
+              className: "nativeSelect",
+              value: (p == null ? void 0 : p.alias) ?? "",
+              onChange: Z,
+              disabled: d || i.length === 0,
+              children: [
+                /* @__PURE__ */ a("option", { value: "", disabled: !0, children: "Select a content type…" }),
+                i.map((e) => /* @__PURE__ */ a("option", { value: e.alias, children: e.name }, e.alias))
+              ]
+            }
+          ) })
         }
-      ) }) })
+      ),
+      /* @__PURE__ */ a(
+        "umb-property-layout",
+        {
+          label: "File format",
+          description: "Choose the file format for the exported data.",
+          mandatory: !0,
+          children: /* @__PURE__ */ a("div", { slot: "editor", children: /* @__PURE__ */ s("div", { className: "radioGroup", children: [
+            /* @__PURE__ */ s("label", { className: "radioOption", children: [
+              /* @__PURE__ */ a(
+                "input",
+                {
+                  type: "radio",
+                  name: "format",
+                  value: "excel",
+                  checked: v === "excel",
+                  onChange: (e) => G(e.target.value),
+                  disabled: d
+                }
+              ),
+              /* @__PURE__ */ a("span", { children: "Excel (.xlsx)" })
+            ] }),
+            /* @__PURE__ */ s("label", { className: "radioOption", children: [
+              /* @__PURE__ */ a(
+                "input",
+                {
+                  type: "radio",
+                  name: "format",
+                  value: "csv",
+                  checked: v === "csv",
+                  onChange: (e) => G(e.target.value),
+                  disabled: d
+                }
+              ),
+              /* @__PURE__ */ a("span", { children: "CSV (.csv)" })
+            ] })
+          ] }) })
+        }
+      ),
+      /* @__PURE__ */ a(
+        "umb-property-layout",
+        {
+          label: "Include unpublished",
+          description: "When enabled, unpublished content is included in the export.",
+          children: /* @__PURE__ */ a("div", { slot: "editor", children: /* @__PURE__ */ s("label", { className: "toggleOption", children: [
+            /* @__PURE__ */ a(
+              "input",
+              {
+                type: "checkbox",
+                checked: R,
+                onChange: (e) => X(e.target.checked),
+                disabled: d
+              }
+            ),
+            /* @__PURE__ */ a("span", { children: "Include unpublished content" })
+          ] }) })
+        }
+      )
     ] }),
-    /* @__PURE__ */ a("uui-box", { headline: "Metadata", children: /* @__PURE__ */ d("div", { className: "listTable", children: [
-      /* @__PURE__ */ a("a", { className: "umb-outline", onClick: Q, children: "Select All" }),
-      " ",
-      "|",
-      " ",
-      /* @__PURE__ */ a("a", { className: "umb-outline", onClick: Y, children: "Clear Selection" }),
-      /* @__PURE__ */ a("br", {}),
-      /* @__PURE__ */ a("br", {}),
-      /* @__PURE__ */ a("ul", { className: "selectionCheckBoxes", children: D.map((e) => /* @__PURE__ */ a("li", { children: /* @__PURE__ */ d("label", { children: [
-        /* @__PURE__ */ a(
-          "input",
-          {
-            type: "checkbox",
-            checked: !!e.selected,
-            onChange: (o) => te(e, o.target.checked)
-          }
-        ),
-        " ",
-        e.name
-      ] }) }, e.id)) })
-    ] }) }),
-    /* @__PURE__ */ d("uui-box", { headline: "Properties", children: [
-      /* @__PURE__ */ d("div", { className: "listTable", children: [
-        /* @__PURE__ */ a("a", { className: "umb-outline", onClick: Z, children: "Select All" }),
-        " ",
-        "|",
-        " ",
-        /* @__PURE__ */ a("a", { className: "umb-outline", onClick: ee, children: "Clear Selection" }),
-        /* @__PURE__ */ a("br", {}),
-        /* @__PURE__ */ a("br", {}),
-        /* @__PURE__ */ a("ul", { className: "selectionCheckBoxes", children: R.map((e) => /* @__PURE__ */ a("li", { children: /* @__PURE__ */ d("label", { children: [
+    /* @__PURE__ */ s("uui-box", { headline: "Metadata fields", children: [
+      /* @__PURE__ */ s("div", { slot: "header-actions", className: "selectionCount", children: [
+        B,
+        " selected"
+      ] }),
+      N.length === 0 ? /* @__PURE__ */ a("p", { className: "emptyState", children: "No metadata fields are available." }) : /* @__PURE__ */ s(J, { children: [
+        /* @__PURE__ */ s("div", { className: "selectionActions", children: [
+          /* @__PURE__ */ a(
+            "button",
+            {
+              type: "button",
+              className: "btn btn--secondary btn--compact",
+              disabled: d,
+              onClick: ae,
+              children: "Select all"
+            }
+          ),
+          /* @__PURE__ */ a(
+            "button",
+            {
+              type: "button",
+              className: "btn btn--secondary btn--compact",
+              disabled: d,
+              onClick: oe,
+              children: "Clear"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ a("div", { className: "checkboxGrid", children: N.map((e) => /* @__PURE__ */ s("label", { className: "checkOption", children: [
           /* @__PURE__ */ a(
             "input",
             {
               type: "checkbox",
               checked: !!e.selected,
-              onChange: (o) => ae(e, o.target.checked)
+              onChange: (r) => ne(e, r.target.checked),
+              disabled: d
             }
           ),
-          " ",
-          e.columnTitle
-        ] }) }, e.alias)) })
-      ] }),
-      B ? /* @__PURE__ */ a("em", { className: "text-error", children: B }) : null
+          /* @__PURE__ */ a("span", { children: e.name })
+        ] }, e.id)) })
+      ] })
     ] }),
+    /* @__PURE__ */ s("uui-box", { headline: "Properties", children: [
+      /* @__PURE__ */ s("div", { slot: "header-actions", className: "selectionCount", children: [
+        L,
+        " selected"
+      ] }),
+      p ? S.length === 0 ? /* @__PURE__ */ a("p", { className: "emptyState", children: "This content type has no exportable properties." }) : /* @__PURE__ */ s(J, { children: [
+        /* @__PURE__ */ s("div", { className: "selectionActions", children: [
+          /* @__PURE__ */ a(
+            "button",
+            {
+              type: "button",
+              className: "btn btn--secondary btn--compact",
+              disabled: d,
+              onClick: re,
+              children: "Select all"
+            }
+          ),
+          /* @__PURE__ */ a(
+            "button",
+            {
+              type: "button",
+              className: "btn btn--secondary btn--compact",
+              disabled: d,
+              onClick: ie,
+              children: "Clear"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ a("div", { className: "checkboxGrid", children: S.map((e) => /* @__PURE__ */ s("label", { className: "checkOption", children: [
+          /* @__PURE__ */ a(
+            "input",
+            {
+              type: "checkbox",
+              checked: !!e.selected,
+              onChange: (r) => se(e, r.target.checked),
+              disabled: d
+            }
+          ),
+          /* @__PURE__ */ a("span", { children: e.columnTitle })
+        ] }, e.alias)) })
+      ] }) : /* @__PURE__ */ a("p", { className: "emptyState", children: "Select a content type to see its exportable properties." })
+    ] }),
+    !d && p && !I ? /* @__PURE__ */ a("p", { className: "hint", children: "Select at least one metadata field or property to export." }) : null,
+    W ? /* @__PURE__ */ s("div", { className: "errorBox", children: [
+      /* @__PURE__ */ a("uui-icon", { name: "icon-alert" }),
+      /* @__PURE__ */ a("span", { children: W })
+    ] }) : null,
+    d ? /* @__PURE__ */ s("div", { className: "progress", children: [
+      /* @__PURE__ */ a("uui-loader-bar", {}),
+      /* @__PURE__ */ a("span", { children: K || "Preparing export…" })
+    ] }) : null,
     /* @__PURE__ */ a("div", { className: "actions", children: /* @__PURE__ */ a(
-      "uui-button",
+      "button",
       {
-        look: "primary",
-        disabled: x,
-        onClick: () => void K(),
-        label: x && q || "Export"
+        type: "button",
+        className: "btn btn--primary btn--positive",
+        disabled: !ce,
+        onClick: () => void te(),
+        children: d ? "Exporting…" : "Export"
       }
     ) }),
-    /* @__PURE__ */ a("style", { children: he })
+    /* @__PURE__ */ a("style", { children: ye })
   ] });
 }
-const he = `
+const ye = `
     .n3o-data-export {
         display: block;
-        padding: var(--uui-size-layout-1);
+        padding: var(--uui-size-space-4);
     }
     .n3o-data-export uui-box {
-        margin-bottom: var(--uui-size-layout-1);
+        --uui-box-default-padding: var(--uui-size-space-4);
+        margin-bottom: var(--uui-size-space-3);
     }
-    .n3o-data-export .listTable {
-        overflow: hidden;
+    .n3o-data-export .nativeSelect {
+        width: 100%;
+        max-width: 420px;
+        box-sizing: border-box;
+        height: var(--uui-size-11, 36px);
+        padding: 0 var(--uui-size-space-3);
+        font: inherit;
+        color: var(--uui-color-text);
+        background: var(--uui-color-surface);
+        border: 1px solid var(--uui-color-border);
+        border-radius: var(--uui-border-radius);
     }
-    .n3o-data-export ul.selectionCheckBoxes {
-        list-style: none;
-        column-count: 4;
-        column-gap: 0.5em;
-        display: block;
-        padding: 0;
-        margin: 0;
+    .n3o-data-export .nativeSelect:focus {
+        outline: none;
+        border-color: var(--uui-color-focus);
+        box-shadow: 0 0 0 1px var(--uui-color-focus);
     }
-    .n3o-data-export .umb-outline {
+    .n3o-data-export .nativeSelect:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .n3o-data-export .radioGroup {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: var(--uui-size-space-2) var(--uui-size-space-5);
+    }
+    .n3o-data-export .radioOption,
+    .n3o-data-export .toggleOption,
+    .n3o-data-export .checkOption {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-2);
         cursor: pointer;
-        color: var(--uui-color-interactive);
     }
-    .n3o-data-export .text-error {
-        color: var(--uui-color-danger);
-        display: block;
-        margin-top: var(--uui-size-space-3);
+    .n3o-data-export .radioOption input,
+    .n3o-data-export .toggleOption input,
+    .n3o-data-export .checkOption input {
+        cursor: pointer;
+    }
+    .n3o-data-export .selectionCount {
+        font-size: var(--uui-type-small-size);
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-export .selectionActions {
+        display: flex;
+        gap: var(--uui-size-space-2);
+        margin-bottom: var(--uui-size-space-3);
+    }
+    .n3o-data-export .checkboxGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--uui-size-space-1) var(--uui-size-space-5);
+    }
+    .n3o-data-export .emptyState {
+        margin: 0;
+        color: var(--uui-color-text-alt);
+        font-style: italic;
+    }
+    .n3o-data-export .hint {
+        margin: 0 0 var(--uui-size-space-4);
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-export .errorBox {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-3);
+        margin-bottom: var(--uui-size-space-4);
+        padding: var(--uui-size-space-4) var(--uui-size-space-5);
+        border-radius: var(--uui-border-radius);
+        background: var(--uui-color-danger);
+        color: var(--uui-color-danger-contrast);
+    }
+    .n3o-data-export .progress {
+        display: flex;
+        flex-direction: column;
+        gap: var(--uui-size-space-2);
+        margin-bottom: var(--uui-size-space-4);
+        color: var(--uui-color-text-alt);
     }
     .n3o-data-export .actions {
-        margin-top: var(--uui-size-layout-1);
+        margin-top: var(--uui-size-space-4);
+    }
+    .n3o-data-export .btn {
+        font: inherit;
+        font-weight: 700;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--uui-size-space-2);
+        padding: 0 var(--uui-size-space-4);
+        height: var(--uui-size-11, 36px);
+        border: 1px solid transparent;
+        border-radius: var(--uui-border-radius);
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+    .n3o-data-export .btn--compact {
+        height: var(--uui-size-9, 30px);
+        padding: 0 var(--uui-size-space-3);
+        font-size: var(--uui-type-small-size);
+    }
+    .n3o-data-export .btn--secondary {
+        background: var(--uui-color-surface);
+        color: var(--uui-color-text);
+        border-color: var(--uui-color-border);
+    }
+    .n3o-data-export .btn--secondary:hover:not(:disabled) {
+        background: var(--uui-color-surface-emphasis);
+        border-color: var(--uui-color-border-emphasis);
+    }
+    .n3o-data-export .btn--primary {
+        background: var(--uui-color-default);
+        color: var(--uui-color-default-contrast);
+    }
+    .n3o-data-export .btn--primary.btn--positive {
+        background: var(--uui-color-positive);
+        color: var(--uui-color-positive-contrast);
+    }
+    .n3o-data-export .btn--primary:hover:not(:disabled) {
+        background: var(--uui-color-positive-emphasis, var(--uui-color-positive));
+    }
+    .n3o-data-export .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 `;
-var me = Object.getOwnPropertyDescriptor, G = (t) => {
+var ke = Object.getOwnPropertyDescriptor, V = (t) => {
   throw TypeError(t);
-}, be = (t, s, n, u) => {
-  for (var f = u > 1 ? void 0 : u ? me(s, n) : s, h = t.length - 1, y; h >= 0; h--)
-    (y = t[h]) && (f = y(f) || f);
-  return f;
-}, O = (t, s, n) => s.has(t) || G("Cannot " + n), m = (t, s, n) => (O(t, s, "read from private field"), n ? n.call(t) : s.get(t)), N = (t, s, n) => s.has(t) ? G("Cannot add the same private member more than once") : s instanceof WeakSet ? s.add(t) : s.set(t, n), P = (t, s, n, u) => (O(t, s, "write to private field"), s.set(t, n), n), F = (t, s, n) => (O(t, s, "access private method"), n), b, k, E, S, M;
-const fe = "n3o-data-export";
-let j = class extends ce(HTMLElement) {
+}, Ce = (t, o, i, f) => {
+  for (var p = f > 1 ? void 0 : f ? ke(o, i) : o, g = t.length - 1, v; g >= 0; g--)
+    (v = t[g]) && (p = v(p) || p);
+  return p;
+}, D = (t, o, i) => o.has(t) || V("Cannot " + i), b = (t, o, i) => (D(t, o, "read from private field"), i ? i.call(t) : o.get(t)), P = (t, o, i) => o.has(t) ? V("Cannot add the same private member more than once") : o instanceof WeakSet ? o.add(t) : o.set(t, i), T = (t, o, i, f) => (D(t, o, "write to private field"), o.set(t, i), i), j = (t, o, i) => (D(t, o, "access private method"), i), m, C, E, w, A;
+const we = "n3o-data-export";
+let U = class extends me(he(HTMLElement)) {
   constructor() {
-    super(), N(this, S), N(this, b), N(this, k), N(this, E, null);
+    super(), P(this, w), P(this, m), P(this, C), P(this, E, null);
     const t = this.attachShadow({ mode: "open" });
-    P(this, k, document.createElement("div")), t.appendChild(m(this, k)), this.consumeContext(le, (s) => {
-      s && this.observe(
-        s.unique,
-        (n) => {
-          n && n !== m(this, E) && (P(this, E, n), F(this, S, M).call(this));
+    T(this, C, document.createElement("div")), t.appendChild(b(this, C)), this.consumeContext(be, (o) => {
+      o && this.observe(
+        o.unique,
+        (i) => {
+          i && i !== b(this, E) && (T(this, E, i), j(this, w, A).call(this));
         },
         "_observeUnique"
       );
     });
   }
+  // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+  authFetchChanged(t) {
+    j(this, w, A).call(this);
+  }
   connectedCallback() {
     var t;
-    (t = super.connectedCallback) == null || t.call(this), m(this, b) ?? P(this, b, pe(m(this, k))), F(this, S, M).call(this);
+    (t = super.connectedCallback) == null || t.call(this), b(this, m) ?? T(this, m, fe(b(this, C))), j(this, w, A).call(this);
   }
   disconnectedCallback() {
-    var t, s;
-    (t = super.disconnectedCallback) == null || t.call(this), (s = m(this, b)) == null || s.unmount(), P(this, b, void 0);
+    var t, o;
+    (t = super.disconnectedCallback) == null || t.call(this), (o = b(this, m)) == null || o.unmount(), T(this, m, void 0);
   }
 };
-b = /* @__PURE__ */ new WeakMap();
-k = /* @__PURE__ */ new WeakMap();
+m = /* @__PURE__ */ new WeakMap();
+C = /* @__PURE__ */ new WeakMap();
 E = /* @__PURE__ */ new WeakMap();
-S = /* @__PURE__ */ new WeakSet();
-M = function() {
+w = /* @__PURE__ */ new WeakSet();
+A = function() {
   var t;
-  (t = m(this, b)) == null || t.render(
-    de(ue, {
-      contentKey: m(this, E)
+  (t = b(this, m)) == null || t.render(
+    xe(ge, {
+      contentKey: b(this, E),
+      authFetch: this.authFetch
     })
   );
 };
-j = be([
-  re(fe)
-], j);
-const _e = j;
+U = Ce([
+  ue(we)
+], U);
+const Me = U;
 export {
-  j as N3oDataExportElement,
-  _e as default
+  U as N3oDataExportElement,
+  Me as default
 };
 //# sourceMappingURL=data-export.js.map

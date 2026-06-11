@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 
 // Builds all four Data plugin web-component shells (each mounts a React app) into their respective
-// App_Plugins folders. @umbraco-cms/* AND react/react-dom are kept external — resolved at runtime by
-// Umbraco's import map (react/react-dom are the self-hosted shared runtime from
-// N3O.Umbraco.Cms App_Plugins/N3O.Umbraco.ReactRuntime). Only each plugin's own code is bundled.
+// App_Plugins folders. @umbraco-cms/*, react/react-dom AND @n3o/auth-fetch are kept external — resolved
+// at runtime by Umbraco's import map (react/react-dom and @n3o/auth-fetch are the self-hosted shared
+// runtime from N3O.Umbraco.Cms App_Plugins/N3O.Umbraco.ReactRuntime). Only each plugin's own code is
+// bundled.
 export default defineConfig({
     esbuild: { jsx: 'automatic' },
     build: {
@@ -20,7 +21,7 @@ export default defineConfig({
         emptyOutDir: false,
         sourcemap: true,
         rollupOptions: {
-            external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
+            external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', '@n3o/auth-fetch'],
             output: { entryFileNames: '[name].js' },
         },
     },

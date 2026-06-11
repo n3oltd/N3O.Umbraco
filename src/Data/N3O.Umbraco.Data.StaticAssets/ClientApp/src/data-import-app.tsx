@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { AuthFetch } from './auth-fetch';
 
 interface ContentType {
     alias: string;
@@ -18,6 +19,7 @@ interface ImportableProperty {
 
 interface DataImportAppProps {
     contentKey: string | null;
+    authFetch: AuthFetch | null;
 }
 
 // React UI for the multi-step CSV/ZIP import workspace view. Ported from the Lit component (originally
@@ -25,7 +27,7 @@ interface DataImportAppProps {
 // download a template, upload CSV (+ optional ZIP assets) and queue the import. The current document key
 // is supplied by the host shell (from the document workspace context) as a prop. Reuses the same backend
 // endpoints verbatim.
-export function DataImportApp({ contentKey }: DataImportAppProps) {
+export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
     const [show, setShow] = useState<string>('form');
     const [processing, setProcessing] = useState<boolean>(false);
     const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
@@ -40,7 +42,7 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
     const zipFileRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (!contentKey) {
+        if (!contentKey || !authFetch) {
             return;
         }
 
@@ -49,7 +51,7 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
         const init = async (): Promise<void> => {
             const types = await getContentTypes(contentKey);
 
-            const res = await fetch('/umbraco/backoffice/api/Imports/lookups/datePatterns', {
+            const res = await authFetch('/umbraco/backoffice/api/Imports/lookups/datePatterns', {
                 headers: { Accept: 'application/json' },
             });
             const patterns = (await res.json()) as DatePattern[];
@@ -66,10 +68,10 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
         return () => {
             active = false;
         };
-    }, [contentKey]);
+    }, [contentKey, authFetch]);
 
     const getContentTypes = async (contentId: string): Promise<ContentType[]> => {
-        const res = await fetch(`/umbraco/api/ContentTypes/${contentId}/relations?type=child`, {
+        const res = await authFetch!(`/umbraco/api/ContentTypes/${contentId}/relations?type=child`, {
             headers: { Accept: 'application/json' },
         });
 
@@ -82,7 +84,7 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
             return;
         }
 
-        const res = await fetch(`/umbraco/backoffice/api/Imports/importableProperties/${selected.alias}`, {
+        const res = await authFetch!(`/umbraco/backoffice/api/Imports/importableProperties/${selected.alias}`, {
             headers: { Accept: 'application/json' },
         });
         const properties = (await res.json()) as ImportableProperty[];
@@ -141,7 +143,7 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
 
         const req = { properties: selectedPropertyAliases };
 
-        const getTemplateRes = await fetch(`/umbraco/backoffice/api/Imports/template/${contentType!.alias}`, {
+        const getTemplateRes = await authFetch!(`/umbraco/backoffice/api/Imports/template/${contentType!.alias}`, {
             method: 'POST',
             headers: {
                 Accept: '*/*',
@@ -192,7 +194,7 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
             zipFile: zipStorageToken,
         };
 
-        const result = await fetch(
+        const result = await authFetch!(
             `/umbraco/backoffice/api/Imports/queue/${contentKey}/${contentType!.alias}`,
             {
                 method: 'POST',
@@ -220,7 +222,7 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
         const data = new FormData();
         data.append('file', input.files[0]);
 
-        const res = await fetch('/umbraco/api/Storage/tempUpload', {
+        const res = await authFetch!('/umbraco/api/Storage/tempUpload', {
             method: 'POST',
             body: data,
         });
@@ -228,107 +230,164 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
         return await res.json();
     };
 
+    const selectedPropertyCount = importableProperties.filter((p) => p.selected).length;
+
     const renderForm = () => (
         <>
-            <div className="umb-group-panel">
-                <div className="umb-group-panel__header">Options</div>
-
-                <div className="umb-group-panel__content">
-                    <div className="control-group">
-                        <label>
-                            Content Type <strong className="required">*</strong>
-                        </label>
-                        <select onChange={onContentTypeChange} disabled={processing}>
-                            <option value="" selected={!contentType}></option>
+            <uui-box headline="1. Choose what to import">
+                <umb-property-layout
+                    label="Content type"
+                    description="The child type that rows in your CSV will be imported as."
+                    mandatory>
+                    <div slot="editor">
+                        <select
+                            className="nativeSelect"
+                            value={contentType?.alias ?? ''}
+                            onChange={onContentTypeChange}
+                            disabled={processing || contentTypes.length === 0}>
+                            <option value="" disabled>
+                                Select a content type…
+                            </option>
                             {contentTypes.map((item) => (
-                                <option value={item.alias} key={item.alias}>
+                                <option key={item.alias} value={item.alias}>
                                     {item.name}
                                 </option>
                             ))}
                         </select>
                     </div>
+                </umb-property-layout>
 
-                    <div className="control-group">
-                        <label>
-                            Date Pattern <strong className="required">*</strong>
-                        </label>
-                        <select onChange={onDatePatternChange} disabled={processing}>
+                <umb-property-layout
+                    label="Date pattern"
+                    description="How dates in your CSV are formatted, so they can be parsed correctly."
+                    mandatory>
+                    <div slot="editor">
+                        <select
+                            className="nativeSelect"
+                            value={datePattern?.id ?? ''}
+                            onChange={onDatePatternChange}
+                            disabled={processing || datePatterns.length === 0}>
                             {datePatterns.map((item) => (
-                                <option value={item.id} key={item.id}>
+                                <option key={item.id} value={item.id}>
                                     {item.name}
                                 </option>
                             ))}
                         </select>
                     </div>
+                </umb-property-layout>
 
-                    <div className="control-group">
-                        <label>Move Updated Content to Current Location</label>
-                        <input
-                            type="checkbox"
-                            checked={moveUpdatedContentToCurrentLocation}
-                            onChange={(e) => setMoveUpdatedContentToCurrentLocation(e.target.checked)}
-                            disabled={processing}
-                        />
-                    </div>
-
-                    <div className="control-group">
-                        <label>
-                            CSV File <strong className="required">*</strong>
+                <umb-property-layout
+                    label="Move updated content"
+                    description="When enabled, existing content that is updated will be moved beneath the current item.">
+                    <div slot="editor">
+                        <label className="toggleOption">
+                            <input
+                                type="checkbox"
+                                checked={moveUpdatedContentToCurrentLocation}
+                                onChange={(e) => setMoveUpdatedContentToCurrentLocation(e.target.checked)}
+                                disabled={processing}
+                            />
+                            <span>Move updated content to the current location</span>
                         </label>
-                        <input type="file" id="csvFile" ref={csvFileRef} disabled={processing} />
                     </div>
+                </umb-property-layout>
+            </uui-box>
 
-                    <div className="control-group">
-                        <label>ZIP Assets File (optional)</label>
-                        <input type="file" id="zipFile" ref={zipFileRef} disabled={processing} />
-                    </div>
+            <uui-box headline="2. Select properties">
+                <div slot="header-actions" className="selectionCount">
+                    {selectedPropertyCount} selected
                 </div>
-            </div>
 
-            {contentType ? (
-                <div className="umb-group-panel">
-                    <div className="umb-group-panel__header">Properties</div>
-
-                    <div className="umb-group-panel__content">
-                        <div className="listTable">
-                            <a className="link" onClick={selectAllProperties}>
-                                Select All
-                            </a>{' '}
-                            |{' '}
-                            <a className="link" onClick={clearSelectedProperties}>
-                                Clear Selection
-                            </a>
-
-                            <ul className="selectionCheckBoxes">
-                                {importableProperties.map((property) => (
-                                    <li key={property.alias}>
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                value={property.alias}
-                                                checked={!!property.selected}
-                                                onChange={(e) => onPropertyToggle(property, e.target.checked)}
-                                            />
-                                            &nbsp;{property.columnTitle}
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
+                {!contentType ? (
+                    <p className="emptyState">Select a content type above to choose which properties to import.</p>
+                ) : importableProperties.length === 0 ? (
+                    <p className="emptyState">This content type has no importable properties.</p>
+                ) : (
+                    <>
+                        <div className="selectionActions">
+                            <button
+                                type="button"
+                                className="btn btn--secondary btn--compact"
+                                disabled={processing}
+                                onClick={selectAllProperties}>
+                                Select all
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn--secondary btn--compact"
+                                disabled={processing}
+                                onClick={clearSelectedProperties}>
+                                Clear
+                            </button>
                         </div>
-                    </div>
-                </div>
-            ) : null}
 
-            <div className="actions">
-                {contentType ? (
-                    <uui-button look="secondary" label="Download Template" onClick={() => void getTemplate()}>
-                        Download Template
-                    </uui-button>
+                        <div className="checkboxGrid">
+                            {importableProperties.map((property) => (
+                                <label key={property.alias} className="checkOption">
+                                    <input
+                                        type="checkbox"
+                                        checked={!!property.selected}
+                                        onChange={(e) => onPropertyToggle(property, e.target.checked)}
+                                        disabled={processing}
+                                    />
+                                    <span>{property.columnTitle}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </uui-box>
+
+            <uui-box headline="3. Download template">
+                <p className="boxHint">
+                    Download a CSV template containing a column for each selected property, then fill it in
+                    with your data.
+                </p>
+                <button
+                    type="button"
+                    className="btn btn--secondary"
+                    disabled={!contentType || selectedPropertyCount === 0 || processing}
+                    onClick={() => void getTemplate()}>
+                    <uui-icon name="icon-download-alt"></uui-icon>
+                    Download template
+                </button>
+            </uui-box>
+
+            <uui-box headline="4. Upload &amp; queue">
+                <umb-property-layout
+                    label="CSV file"
+                    description="The completed CSV file containing the rows to import."
+                    mandatory>
+                    <div slot="editor">
+                        <input type="file" id="csvFile" accept=".csv" ref={csvFileRef} disabled={processing} />
+                    </div>
+                </umb-property-layout>
+
+                <umb-property-layout
+                    label="ZIP assets file"
+                    description="Optional. A ZIP archive of media/assets referenced by the CSV.">
+                    <div slot="editor">
+                        <input type="file" id="zipFile" accept=".zip" ref={zipFileRef} disabled={processing} />
+                    </div>
+                </umb-property-layout>
+
+                {processing ? (
+                    <div className="progress">
+                        <uui-loader-bar></uui-loader-bar>
+                        <span>Queueing import…</span>
+                    </div>
                 ) : null}
-                <uui-button look="primary" label="Import" disabled={processing} onClick={() => void doImport()}>
-                    {processing ? 'Please wait...' : 'Import'}
-                </uui-button>
-            </div>
+
+                <div className="actions">
+                    <button
+                        type="button"
+                        className="btn btn--primary btn--positive"
+                        disabled={!contentType || processing}
+                        onClick={() => void doImport()}>
+                        {processing ? 'Importing…' : 'Import'}
+                    </button>
+                </div>
+            </uui-box>
         </>
     );
 
@@ -336,44 +395,44 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
     // This route does not exist in Umbraco 17 Bellissima; the link will not navigate correctly.
     // A new Bellissima route path for the imports dashboard will be needed when it is available.
     const renderSuccess = () => (
-        <div className="umb-group-panel">
-            <div className="umb-group-panel__header">Processing</div>
-
-            <div className="umb-group-panel__content">
-                <p>CSV file is processing and will appear shortly.</p>
-                <p className="actions">
-                    <uui-button look="primary" href="/umbraco#/content?dashboard=imports">
-                        View Import Queue
-                    </uui-button>
-                    <uui-button look="secondary" label="Import Another File" onClick={startOver}>
-                        Import Another File
-                    </uui-button>
-                </p>
+        <uui-box headline="Import queued">
+            <div className="statusBox statusBox--positive">
+                <uui-icon name="icon-check"></uui-icon>
+                <span>Your CSV file has been queued and will be processed shortly.</span>
             </div>
-        </div>
+            <div className="actions">
+                <a className="btn btn--primary" href="/umbraco#/content?dashboard=imports">
+                    View import queue
+                </a>
+                <button type="button" className="btn btn--secondary" onClick={startOver}>
+                    Import another file
+                </button>
+            </div>
+        </uui-box>
     );
 
     const renderError = () => (
-        <div className="umb-group-panel">
-            <div className="umb-group-panel__header">Error</div>
-
-            <div className="umb-group-panel__content">
-                {errorMessages ? (
-                    <ul>
-                        {errorMessages.map((message, index) => (
-                            <li className="text-error" key={index}>
-                                {message}
-                            </li>
-                        ))}
-                    </ul>
-                ) : null}
-                <p>
-                    <uui-button look="secondary" label="Start Over" onClick={startOver}>
-                        Start Over
-                    </uui-button>
-                </p>
+        <uui-box headline="Import failed">
+            <div className="statusBox statusBox--danger">
+                <uui-icon name="icon-alert"></uui-icon>
+                <div>
+                    {errorMessages && errorMessages.length > 0 ? (
+                        <ul className="errorList">
+                            {errorMessages.map((message, index) => (
+                                <li key={index}>{message}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <span>Something went wrong while queueing the import.</span>
+                    )}
+                </div>
             </div>
-        </div>
+            <div className="actions">
+                <button type="button" className="btn btn--secondary" onClick={startOver}>
+                    Start over
+                </button>
+            </div>
+        </uui-box>
     );
 
     return (
@@ -387,55 +446,145 @@ export function DataImportApp({ contentKey }: DataImportAppProps) {
 const styles = `
     .n3o-data-import {
         display: block;
-        padding: var(--uui-size-layout-1);
+        padding: var(--uui-size-space-4);
     }
-    .n3o-data-import .umb-group-panel {
+    .n3o-data-import uui-box {
+        --uui-box-default-padding: var(--uui-size-space-4);
+        margin-bottom: var(--uui-size-space-3);
+    }
+    .n3o-data-import .nativeSelect {
+        width: 100%;
+        max-width: 420px;
+        box-sizing: border-box;
+        height: var(--uui-size-11, 36px);
+        padding: 0 var(--uui-size-space-3);
+        font: inherit;
+        color: var(--uui-color-text);
         background: var(--uui-color-surface);
         border: 1px solid var(--uui-color-border);
         border-radius: var(--uui-border-radius);
-        margin-bottom: var(--uui-size-space-5);
     }
-    .n3o-data-import .umb-group-panel__header {
+    .n3o-data-import .nativeSelect:focus {
+        outline: none;
+        border-color: var(--uui-color-focus);
+        box-shadow: 0 0 0 1px var(--uui-color-focus);
+    }
+    .n3o-data-import .nativeSelect:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .n3o-data-import input[type='file'] {
+        font: inherit;
+    }
+    .n3o-data-import .toggleOption,
+    .n3o-data-import .checkOption {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-2);
+        cursor: pointer;
+    }
+    .n3o-data-import .toggleOption input,
+    .n3o-data-import .checkOption input {
+        cursor: pointer;
+    }
+    .n3o-data-import .selectionCount {
+        font-size: var(--uui-type-small-size);
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-import .selectionActions {
+        display: flex;
+        gap: var(--uui-size-space-2);
+        margin-bottom: var(--uui-size-space-3);
+    }
+    .n3o-data-import .checkboxGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--uui-size-space-1) var(--uui-size-space-5);
+    }
+    .n3o-data-import .emptyState {
+        margin: 0;
+        color: var(--uui-color-text-alt);
+        font-style: italic;
+    }
+    .n3o-data-import .boxHint {
+        margin: 0 0 var(--uui-size-space-4);
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-import .progress {
+        display: flex;
+        flex-direction: column;
+        gap: var(--uui-size-space-2);
+        margin: var(--uui-size-space-4) 0;
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-import .statusBox {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--uui-size-space-3);
         padding: var(--uui-size-space-4) var(--uui-size-space-5);
-        border-bottom: 1px solid var(--uui-color-border);
-        font-weight: bold;
-    }
-    .n3o-data-import .umb-group-panel__content {
-        padding: var(--uui-size-space-5);
-    }
-    .n3o-data-import .control-group {
+        border-radius: var(--uui-border-radius);
         margin-bottom: var(--uui-size-space-4);
     }
-    .n3o-data-import .control-group label {
-        display: block;
-        margin-bottom: var(--uui-size-space-2);
-        font-weight: bold;
+    .n3o-data-import .statusBox--positive {
+        background: var(--uui-color-positive);
+        color: var(--uui-color-positive-contrast);
     }
-    .n3o-data-import .required {
-        color: var(--uui-color-danger);
+    .n3o-data-import .statusBox--danger {
+        background: var(--uui-color-danger);
+        color: var(--uui-color-danger-contrast);
     }
-    .n3o-data-import select {
-        min-width: 250px;
-        padding: var(--uui-size-space-2);
-    }
-    .n3o-data-import .listTable .link {
-        cursor: pointer;
-        color: var(--uui-color-interactive);
-    }
-    .n3o-data-import .selectionCheckBoxes {
-        list-style: none;
-        padding: 0;
-        margin-top: var(--uui-size-space-4);
-    }
-    .n3o-data-import .selectionCheckBoxes li {
-        margin-bottom: var(--uui-size-space-2);
+    .n3o-data-import .errorList {
+        margin: 0;
+        padding-left: var(--uui-size-space-4);
     }
     .n3o-data-import .actions {
         display: flex;
         gap: var(--uui-size-space-3);
         align-items: center;
+        margin-top: var(--uui-size-space-4);
     }
-    .n3o-data-import .text-error {
-        color: var(--uui-color-danger);
+    .n3o-data-import .btn {
+        font: inherit;
+        font-weight: 700;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--uui-size-space-2);
+        padding: 0 var(--uui-size-space-4);
+        height: var(--uui-size-11, 36px);
+        border: 1px solid transparent;
+        border-radius: var(--uui-border-radius);
+        cursor: pointer;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+    .n3o-data-import .btn--compact {
+        height: var(--uui-size-9, 30px);
+        padding: 0 var(--uui-size-space-3);
+        font-size: var(--uui-type-small-size);
+    }
+    .n3o-data-import .btn--secondary {
+        background: var(--uui-color-surface);
+        color: var(--uui-color-text);
+        border-color: var(--uui-color-border);
+    }
+    .n3o-data-import .btn--secondary:hover:not(:disabled) {
+        background: var(--uui-color-surface-emphasis);
+        border-color: var(--uui-color-border-emphasis);
+    }
+    .n3o-data-import .btn--primary {
+        background: var(--uui-color-default);
+        color: var(--uui-color-default-contrast);
+    }
+    .n3o-data-import .btn--primary.btn--positive {
+        background: var(--uui-color-positive);
+        color: var(--uui-color-positive-contrast);
+    }
+    .n3o-data-import .btn--primary:hover:not(:disabled) {
+        background: var(--uui-color-positive-emphasis, var(--uui-color-positive));
+    }
+    .n3o-data-import .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 `;

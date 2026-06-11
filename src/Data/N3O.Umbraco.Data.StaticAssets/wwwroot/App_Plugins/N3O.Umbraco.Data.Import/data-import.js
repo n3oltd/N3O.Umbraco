@@ -1,301 +1,476 @@
-import { customElement as le } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as ce } from "@umbraco-cms/backoffice/element-api";
-import { UMB_DOCUMENT_WORKSPACE_CONTEXT as de } from "@umbraco-cms/backoffice/document";
-import { useState as p, useRef as G, useEffect as pe, createElement as ue } from "react";
-import { createRoot as me } from "react-dom/client";
-import { jsxs as n, jsx as a, Fragment as he } from "react/jsx-runtime";
-function ve({ contentKey: t }) {
-  const [r, s] = p("form"), [c, d] = p(!1), [h, k] = p([]), [f, F] = p(null), [D, X] = p([]), [A, U] = p(null), [M, K] = p(!1), [j, v] = p([]), [L, R] = p(null), q = G(null), B = G(null);
-  pe(() => {
-    if (!t)
+import { customElement as pe } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as ue } from "@umbraco-cms/backoffice/element-api";
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT as me } from "@umbraco-cms/backoffice/document";
+import { UmbAuthFetchMixin as he } from "@n3o/auth-fetch";
+import { useState as d, useRef as Q, useEffect as be, createElement as ve } from "react";
+import { createRoot as fe } from "react-dom/client";
+import { jsxs as n, jsx as t, Fragment as X } from "react/jsx-runtime";
+function ge({ contentKey: o, authFetch: a }) {
+  const [r, m] = d("form"), [s, p] = d(!1), [v, K] = d([]), [u, j] = d(null), [A, ee] = d([]), [f, B] = d(null), [F, te] = d(!1), [S, g] = d([]), [E, R] = d(null), V = Q(null), q = Q(null);
+  be(() => {
+    if (!o || !a)
       return;
     let e = !0;
     return (async () => {
-      const i = await Y(t), g = await (await fetch("/umbraco/backoffice/api/Imports/lookups/datePatterns", {
+      const c = await oe(o), w = await (await a("/umbraco/backoffice/api/Imports/lookups/datePatterns", {
         headers: { Accept: "application/json" }
       })).json();
-      e && (k(i), X(g), U(g[0] ?? null));
+      e && (K(c), ee(w), B(w[0] ?? null));
     })(), () => {
       e = !1;
     };
-  }, [t]);
-  const Y = async (e) => await (await fetch(`/umbraco/api/ContentTypes/${e}/relations?type=child`, {
+  }, [o, a]);
+  const oe = async (e) => await (await a(`/umbraco/api/ContentTypes/${e}/relations?type=child`, {
     headers: { Accept: "application/json" }
-  })).json(), ee = async (e) => {
+  })).json(), ae = async (e) => {
     if (!e) {
-      v([]);
+      g([]);
       return;
     }
-    const i = await (await fetch(`/umbraco/backoffice/api/Imports/importableProperties/${e.alias}`, {
+    const c = await (await a(`/umbraco/backoffice/api/Imports/importableProperties/${e.alias}`, {
       headers: { Accept: "application/json" }
     })).json();
-    for (const l of i)
+    for (const l of c)
       l.selected = !1;
-    v(i);
+    g(c);
   }, W = () => {
-    d(!1), F(null), R(null), v([]), s("form");
-  }, te = (e) => {
-    const o = e.target.value, i = h.find((l) => l.alias === o) ?? null;
-    F(i), ee(i);
-  }, ae = (e) => {
-    const o = e.target.value;
-    U(D.find((i) => i.id === o) ?? null);
-  }, oe = (e, o) => {
-    v((i) => i.map((l) => l === e ? { ...l, selected: o } : l));
-  }, re = () => v((e) => e.map((o) => ({ ...o, selected: !0 }))), ne = () => v((e) => e.map((o) => ({ ...o, selected: !1 }))), w = (e) => {
-    const o = Array.isArray(e) ? e : [e];
-    d(!1), R(o), s("error");
-  }, se = async () => {
-    var J, Z;
-    const e = j.filter((z) => z.selected).map((z) => z.alias);
+    p(!1), j(null), R(null), g([]), m("form");
+  }, ie = (e) => {
+    const i = e.target.value, c = v.find((l) => l.alias === i) ?? null;
+    j(c), ae(c);
+  }, re = (e) => {
+    const i = e.target.value;
+    B(A.find((c) => c.id === i) ?? null);
+  }, ne = (e, i) => {
+    g((c) => c.map((l) => l === e ? { ...l, selected: i } : l));
+  }, se = () => g((e) => e.map((i) => ({ ...i, selected: !0 }))), ce = () => g((e) => e.map((i) => ({ ...i, selected: !1 }))), z = (e) => {
+    const i = Array.isArray(e) ? e : [e];
+    p(!1), R(i), m("error");
+  }, le = async () => {
+    var Z, J;
+    const e = S.filter((D) => D.selected).map((D) => D.alias);
     if (!e.length) {
-      w("At least one property must be selected");
+      z("At least one property must be selected");
       return;
     }
-    const o = { properties: e }, i = await fetch(`/umbraco/backoffice/api/Imports/template/${f.alias}`, {
+    const i = { properties: e }, c = await a(`/umbraco/backoffice/api/Imports/template/${u.alias}`, {
       method: "POST",
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(o)
-    }), l = await i.blob(), y = ((J = ((i.headers.get("Content-Disposition") ?? "").split(";")[1] ?? "").split("=")[1]) == null ? void 0 : J.replaceAll('"', "")) ?? "template.csv", N = new Blob([l]), V = window.URL.createObjectURL(N), b = document.createElement("a");
-    b.href = V, b.setAttribute("download", y), document.body.appendChild(b), b.click(), (Z = b.parentNode) == null || Z.removeChild(b), window.URL.revokeObjectURL(V);
-  }, ie = async () => {
-    var y, N;
-    d(!0);
-    const e = q.current, o = B.current;
-    if (!e || !e.value || ((y = e.value.split(".")[1]) == null ? void 0 : y.toLowerCase()) !== "csv") {
-      w("A valid CSV file must be specified");
+      body: JSON.stringify(i)
+    }), l = await c.blob(), N = ((Z = ((c.headers.get("Content-Disposition") ?? "").split(";")[1] ?? "").split("=")[1]) == null ? void 0 : Z.replaceAll('"', "")) ?? "template.csv", T = new Blob([l]), G = window.URL.createObjectURL(T), y = document.createElement("a");
+    y.href = G, y.setAttribute("download", N), document.body.appendChild(y), y.click(), (J = y.parentNode) == null || J.removeChild(y), window.URL.revokeObjectURL(G);
+  }, de = async () => {
+    var N, T;
+    p(!0);
+    const e = V.current, i = q.current;
+    if (!e || !e.value || ((N = e.value.split(".")[1]) == null ? void 0 : N.toLowerCase()) !== "csv") {
+      z("A valid CSV file must be specified");
       return;
     }
-    if (o && o.value && ((N = o.value.split(".")[1]) == null ? void 0 : N.toLowerCase()) !== "zip") {
-      w("The selected file is not a valid ZIP file");
+    if (i && i.value && ((T = i.value.split(".")[1]) == null ? void 0 : T.toLowerCase()) !== "zip") {
+      z("The selected file is not a valid ZIP file");
       return;
     }
-    const i = await $(e), l = o ? await $(o) : null, g = {
-      datePattern: A == null ? void 0 : A.id,
-      moveUpdatedContentToCurrentLocation: M,
-      csvFile: i,
+    const c = await $(e), l = i ? await $(i) : null, w = {
+      datePattern: f == null ? void 0 : f.id,
+      moveUpdatedContentToCurrentLocation: F,
+      csvFile: c,
       zipFile: l
-    }, E = await fetch(
-      `/umbraco/backoffice/api/Imports/queue/${t}/${f.alias}`,
+    }, I = await a(
+      `/umbraco/backoffice/api/Imports/queue/${o}/${u.alias}`,
       {
         method: "POST",
         headers: {
           Accept: "*/*",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(g)
+        body: JSON.stringify(w)
       }
     );
-    E.status === 200 ? (s("success"), d(!1)) : w(await E.json());
+    I.status === 200 ? (m("success"), p(!1)) : z(await I.json());
   }, $ = async (e) => {
     if (!e.files || e.files.length === 0)
       return null;
-    const o = new FormData();
-    return o.append("file", e.files[0]), await (await fetch("/umbraco/api/Storage/tempUpload", {
+    const i = new FormData();
+    return i.append("file", e.files[0]), await (await a("/umbraco/api/Storage/tempUpload", {
       method: "POST",
-      body: o
+      body: i
     })).json();
-  };
+  }, H = S.filter((e) => e.selected).length;
   return /* @__PURE__ */ n("div", { className: "n3o-data-import", children: [
-    r === "success" ? /* @__PURE__ */ n("div", { className: "umb-group-panel", children: [
-      /* @__PURE__ */ a("div", { className: "umb-group-panel__header", children: "Processing" }),
-      /* @__PURE__ */ n("div", { className: "umb-group-panel__content", children: [
-        /* @__PURE__ */ a("p", { children: "CSV file is processing and will appear shortly." }),
-        /* @__PURE__ */ n("p", { className: "actions", children: [
-          /* @__PURE__ */ a("uui-button", { look: "primary", href: "/umbraco#/content?dashboard=imports", children: "View Import Queue" }),
-          /* @__PURE__ */ a("uui-button", { look: "secondary", label: "Import Another File", onClick: W, children: "Import Another File" })
-        ] })
+    r === "success" ? /* @__PURE__ */ n("uui-box", { headline: "Import queued", children: [
+      /* @__PURE__ */ n("div", { className: "statusBox statusBox--positive", children: [
+        /* @__PURE__ */ t("uui-icon", { name: "icon-check" }),
+        /* @__PURE__ */ t("span", { children: "Your CSV file has been queued and will be processed shortly." })
+      ] }),
+      /* @__PURE__ */ n("div", { className: "actions", children: [
+        /* @__PURE__ */ t("a", { className: "btn btn--primary", href: "/umbraco#/content?dashboard=imports", children: "View import queue" }),
+        /* @__PURE__ */ t("button", { type: "button", className: "btn btn--secondary", onClick: W, children: "Import another file" })
       ] })
-    ] }) : r === "error" ? /* @__PURE__ */ n("div", { className: "umb-group-panel", children: [
-      /* @__PURE__ */ a("div", { className: "umb-group-panel__header", children: "Error" }),
-      /* @__PURE__ */ n("div", { className: "umb-group-panel__content", children: [
-        L ? /* @__PURE__ */ a("ul", { children: L.map((e, o) => /* @__PURE__ */ a("li", { className: "text-error", children: e }, o)) }) : null,
-        /* @__PURE__ */ a("p", { children: /* @__PURE__ */ a("uui-button", { look: "secondary", label: "Start Over", onClick: W, children: "Start Over" }) })
-      ] })
-    ] }) : /* @__PURE__ */ n(he, { children: [
-      /* @__PURE__ */ n("div", { className: "umb-group-panel", children: [
-        /* @__PURE__ */ a("div", { className: "umb-group-panel__header", children: "Options" }),
-        /* @__PURE__ */ n("div", { className: "umb-group-panel__content", children: [
-          /* @__PURE__ */ n("div", { className: "control-group", children: [
-            /* @__PURE__ */ n("label", { children: [
-              "Content Type ",
-              /* @__PURE__ */ a("strong", { className: "required", children: "*" })
-            ] }),
-            /* @__PURE__ */ n("select", { onChange: te, disabled: c, children: [
-              /* @__PURE__ */ a("option", { value: "", selected: !f }),
-              h.map((e) => /* @__PURE__ */ a("option", { value: e.alias, children: e.name }, e.alias))
-            ] })
-          ] }),
-          /* @__PURE__ */ n("div", { className: "control-group", children: [
-            /* @__PURE__ */ n("label", { children: [
-              "Date Pattern ",
-              /* @__PURE__ */ a("strong", { className: "required", children: "*" })
-            ] }),
-            /* @__PURE__ */ a("select", { onChange: ae, disabled: c, children: D.map((e) => /* @__PURE__ */ a("option", { value: e.id, children: e.name }, e.id)) })
-          ] }),
-          /* @__PURE__ */ n("div", { className: "control-group", children: [
-            /* @__PURE__ */ a("label", { children: "Move Updated Content to Current Location" }),
-            /* @__PURE__ */ a(
-              "input",
+    ] }) : r === "error" ? /* @__PURE__ */ n("uui-box", { headline: "Import failed", children: [
+      /* @__PURE__ */ n("div", { className: "statusBox statusBox--danger", children: [
+        /* @__PURE__ */ t("uui-icon", { name: "icon-alert" }),
+        /* @__PURE__ */ t("div", { children: E && E.length > 0 ? /* @__PURE__ */ t("ul", { className: "errorList", children: E.map((e, i) => /* @__PURE__ */ t("li", { children: e }, i)) }) : /* @__PURE__ */ t("span", { children: "Something went wrong while queueing the import." }) })
+      ] }),
+      /* @__PURE__ */ t("div", { className: "actions", children: /* @__PURE__ */ t("button", { type: "button", className: "btn btn--secondary", onClick: W, children: "Start over" }) })
+    ] }) : /* @__PURE__ */ n(X, { children: [
+      /* @__PURE__ */ n("uui-box", { headline: "1. Choose what to import", children: [
+        /* @__PURE__ */ t(
+          "umb-property-layout",
+          {
+            label: "Content type",
+            description: "The child type that rows in your CSV will be imported as.",
+            mandatory: !0,
+            children: /* @__PURE__ */ t("div", { slot: "editor", children: /* @__PURE__ */ n(
+              "select",
               {
-                type: "checkbox",
-                checked: M,
-                onChange: (e) => K(e.target.checked),
-                disabled: c
+                className: "nativeSelect",
+                value: (u == null ? void 0 : u.alias) ?? "",
+                onChange: ie,
+                disabled: s || v.length === 0,
+                children: [
+                  /* @__PURE__ */ t("option", { value: "", disabled: !0, children: "Select a content type…" }),
+                  v.map((e) => /* @__PURE__ */ t("option", { value: e.alias, children: e.name }, e.alias))
+                ]
+              }
+            ) })
+          }
+        ),
+        /* @__PURE__ */ t(
+          "umb-property-layout",
+          {
+            label: "Date pattern",
+            description: "How dates in your CSV are formatted, so they can be parsed correctly.",
+            mandatory: !0,
+            children: /* @__PURE__ */ t("div", { slot: "editor", children: /* @__PURE__ */ t(
+              "select",
+              {
+                className: "nativeSelect",
+                value: (f == null ? void 0 : f.id) ?? "",
+                onChange: re,
+                disabled: s || A.length === 0,
+                children: A.map((e) => /* @__PURE__ */ t("option", { value: e.id, children: e.name }, e.id))
+              }
+            ) })
+          }
+        ),
+        /* @__PURE__ */ t(
+          "umb-property-layout",
+          {
+            label: "Move updated content",
+            description: "When enabled, existing content that is updated will be moved beneath the current item.",
+            children: /* @__PURE__ */ t("div", { slot: "editor", children: /* @__PURE__ */ n("label", { className: "toggleOption", children: [
+              /* @__PURE__ */ t(
+                "input",
+                {
+                  type: "checkbox",
+                  checked: F,
+                  onChange: (e) => te(e.target.checked),
+                  disabled: s
+                }
+              ),
+              /* @__PURE__ */ t("span", { children: "Move updated content to the current location" })
+            ] }) })
+          }
+        )
+      ] }),
+      /* @__PURE__ */ n("uui-box", { headline: "2. Select properties", children: [
+        /* @__PURE__ */ n("div", { slot: "header-actions", className: "selectionCount", children: [
+          H,
+          " selected"
+        ] }),
+        u ? S.length === 0 ? /* @__PURE__ */ t("p", { className: "emptyState", children: "This content type has no importable properties." }) : /* @__PURE__ */ n(X, { children: [
+          /* @__PURE__ */ n("div", { className: "selectionActions", children: [
+            /* @__PURE__ */ t(
+              "button",
+              {
+                type: "button",
+                className: "btn btn--secondary btn--compact",
+                disabled: s,
+                onClick: se,
+                children: "Select all"
+              }
+            ),
+            /* @__PURE__ */ t(
+              "button",
+              {
+                type: "button",
+                className: "btn btn--secondary btn--compact",
+                disabled: s,
+                onClick: ce,
+                children: "Clear"
               }
             )
           ] }),
-          /* @__PURE__ */ n("div", { className: "control-group", children: [
-            /* @__PURE__ */ n("label", { children: [
-              "CSV File ",
-              /* @__PURE__ */ a("strong", { className: "required", children: "*" })
-            ] }),
-            /* @__PURE__ */ a("input", { type: "file", id: "csvFile", ref: q, disabled: c })
-          ] }),
-          /* @__PURE__ */ n("div", { className: "control-group", children: [
-            /* @__PURE__ */ a("label", { children: "ZIP Assets File (optional)" }),
-            /* @__PURE__ */ a("input", { type: "file", id: "zipFile", ref: B, disabled: c })
-          ] })
-        ] })
-      ] }),
-      f ? /* @__PURE__ */ n("div", { className: "umb-group-panel", children: [
-        /* @__PURE__ */ a("div", { className: "umb-group-panel__header", children: "Properties" }),
-        /* @__PURE__ */ a("div", { className: "umb-group-panel__content", children: /* @__PURE__ */ n("div", { className: "listTable", children: [
-          /* @__PURE__ */ a("a", { className: "link", onClick: re, children: "Select All" }),
-          " ",
-          "|",
-          " ",
-          /* @__PURE__ */ a("a", { className: "link", onClick: ne, children: "Clear Selection" }),
-          /* @__PURE__ */ a("ul", { className: "selectionCheckBoxes", children: j.map((e) => /* @__PURE__ */ a("li", { children: /* @__PURE__ */ n("label", { children: [
-            /* @__PURE__ */ a(
+          /* @__PURE__ */ t("div", { className: "checkboxGrid", children: S.map((e) => /* @__PURE__ */ n("label", { className: "checkOption", children: [
+            /* @__PURE__ */ t(
               "input",
               {
                 type: "checkbox",
-                value: e.alias,
                 checked: !!e.selected,
-                onChange: (o) => oe(e, o.target.checked)
+                onChange: (i) => ne(e, i.target.checked),
+                disabled: s
               }
             ),
-            " ",
-            e.columnTitle
-          ] }) }, e.alias)) })
-        ] }) })
-      ] }) : null,
-      /* @__PURE__ */ n("div", { className: "actions", children: [
-        f ? /* @__PURE__ */ a("uui-button", { look: "secondary", label: "Download Template", onClick: () => void se(), children: "Download Template" }) : null,
-        /* @__PURE__ */ a("uui-button", { look: "primary", label: "Import", disabled: c, onClick: () => void ie(), children: c ? "Please wait..." : "Import" })
+            /* @__PURE__ */ t("span", { children: e.columnTitle })
+          ] }, e.alias)) })
+        ] }) : /* @__PURE__ */ t("p", { className: "emptyState", children: "Select a content type above to choose which properties to import." })
+      ] }),
+      /* @__PURE__ */ n("uui-box", { headline: "3. Download template", children: [
+        /* @__PURE__ */ t("p", { className: "boxHint", children: "Download a CSV template containing a column for each selected property, then fill it in with your data." }),
+        /* @__PURE__ */ n(
+          "button",
+          {
+            type: "button",
+            className: "btn btn--secondary",
+            disabled: !u || H === 0 || s,
+            onClick: () => void le(),
+            children: [
+              /* @__PURE__ */ t("uui-icon", { name: "icon-download-alt" }),
+              "Download template"
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ n("uui-box", { headline: "4. Upload & queue", children: [
+        /* @__PURE__ */ t(
+          "umb-property-layout",
+          {
+            label: "CSV file",
+            description: "The completed CSV file containing the rows to import.",
+            mandatory: !0,
+            children: /* @__PURE__ */ t("div", { slot: "editor", children: /* @__PURE__ */ t("input", { type: "file", id: "csvFile", accept: ".csv", ref: V, disabled: s }) })
+          }
+        ),
+        /* @__PURE__ */ t(
+          "umb-property-layout",
+          {
+            label: "ZIP assets file",
+            description: "Optional. A ZIP archive of media/assets referenced by the CSV.",
+            children: /* @__PURE__ */ t("div", { slot: "editor", children: /* @__PURE__ */ t("input", { type: "file", id: "zipFile", accept: ".zip", ref: q, disabled: s }) })
+          }
+        ),
+        s ? /* @__PURE__ */ n("div", { className: "progress", children: [
+          /* @__PURE__ */ t("uui-loader-bar", {}),
+          /* @__PURE__ */ t("span", { children: "Queueing import…" })
+        ] }) : null,
+        /* @__PURE__ */ t("div", { className: "actions", children: /* @__PURE__ */ t(
+          "button",
+          {
+            type: "button",
+            className: "btn btn--primary btn--positive",
+            disabled: !u || s,
+            onClick: () => void de(),
+            children: s ? "Importing…" : "Import"
+          }
+        ) })
       ] })
     ] }),
-    /* @__PURE__ */ a("style", { children: be })
+    /* @__PURE__ */ t("style", { children: ye })
   ] });
 }
-const be = `
+const ye = `
     .n3o-data-import {
         display: block;
-        padding: var(--uui-size-layout-1);
+        padding: var(--uui-size-space-4);
     }
-    .n3o-data-import .umb-group-panel {
+    .n3o-data-import uui-box {
+        --uui-box-default-padding: var(--uui-size-space-4);
+        margin-bottom: var(--uui-size-space-3);
+    }
+    .n3o-data-import .nativeSelect {
+        width: 100%;
+        max-width: 420px;
+        box-sizing: border-box;
+        height: var(--uui-size-11, 36px);
+        padding: 0 var(--uui-size-space-3);
+        font: inherit;
+        color: var(--uui-color-text);
         background: var(--uui-color-surface);
         border: 1px solid var(--uui-color-border);
         border-radius: var(--uui-border-radius);
-        margin-bottom: var(--uui-size-space-5);
     }
-    .n3o-data-import .umb-group-panel__header {
+    .n3o-data-import .nativeSelect:focus {
+        outline: none;
+        border-color: var(--uui-color-focus);
+        box-shadow: 0 0 0 1px var(--uui-color-focus);
+    }
+    .n3o-data-import .nativeSelect:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .n3o-data-import input[type='file'] {
+        font: inherit;
+    }
+    .n3o-data-import .toggleOption,
+    .n3o-data-import .checkOption {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-2);
+        cursor: pointer;
+    }
+    .n3o-data-import .toggleOption input,
+    .n3o-data-import .checkOption input {
+        cursor: pointer;
+    }
+    .n3o-data-import .selectionCount {
+        font-size: var(--uui-type-small-size);
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-import .selectionActions {
+        display: flex;
+        gap: var(--uui-size-space-2);
+        margin-bottom: var(--uui-size-space-3);
+    }
+    .n3o-data-import .checkboxGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--uui-size-space-1) var(--uui-size-space-5);
+    }
+    .n3o-data-import .emptyState {
+        margin: 0;
+        color: var(--uui-color-text-alt);
+        font-style: italic;
+    }
+    .n3o-data-import .boxHint {
+        margin: 0 0 var(--uui-size-space-4);
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-import .progress {
+        display: flex;
+        flex-direction: column;
+        gap: var(--uui-size-space-2);
+        margin: var(--uui-size-space-4) 0;
+        color: var(--uui-color-text-alt);
+    }
+    .n3o-data-import .statusBox {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--uui-size-space-3);
         padding: var(--uui-size-space-4) var(--uui-size-space-5);
-        border-bottom: 1px solid var(--uui-color-border);
-        font-weight: bold;
-    }
-    .n3o-data-import .umb-group-panel__content {
-        padding: var(--uui-size-space-5);
-    }
-    .n3o-data-import .control-group {
+        border-radius: var(--uui-border-radius);
         margin-bottom: var(--uui-size-space-4);
     }
-    .n3o-data-import .control-group label {
-        display: block;
-        margin-bottom: var(--uui-size-space-2);
-        font-weight: bold;
+    .n3o-data-import .statusBox--positive {
+        background: var(--uui-color-positive);
+        color: var(--uui-color-positive-contrast);
     }
-    .n3o-data-import .required {
-        color: var(--uui-color-danger);
+    .n3o-data-import .statusBox--danger {
+        background: var(--uui-color-danger);
+        color: var(--uui-color-danger-contrast);
     }
-    .n3o-data-import select {
-        min-width: 250px;
-        padding: var(--uui-size-space-2);
-    }
-    .n3o-data-import .listTable .link {
-        cursor: pointer;
-        color: var(--uui-color-interactive);
-    }
-    .n3o-data-import .selectionCheckBoxes {
-        list-style: none;
-        padding: 0;
-        margin-top: var(--uui-size-space-4);
-    }
-    .n3o-data-import .selectionCheckBoxes li {
-        margin-bottom: var(--uui-size-space-2);
+    .n3o-data-import .errorList {
+        margin: 0;
+        padding-left: var(--uui-size-space-4);
     }
     .n3o-data-import .actions {
         display: flex;
         gap: var(--uui-size-space-3);
         align-items: center;
+        margin-top: var(--uui-size-space-4);
     }
-    .n3o-data-import .text-error {
-        color: var(--uui-color-danger);
+    .n3o-data-import .btn {
+        font: inherit;
+        font-weight: 700;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--uui-size-space-2);
+        padding: 0 var(--uui-size-space-4);
+        height: var(--uui-size-11, 36px);
+        border: 1px solid transparent;
+        border-radius: var(--uui-border-radius);
+        cursor: pointer;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+    .n3o-data-import .btn--compact {
+        height: var(--uui-size-9, 30px);
+        padding: 0 var(--uui-size-space-3);
+        font-size: var(--uui-type-small-size);
+    }
+    .n3o-data-import .btn--secondary {
+        background: var(--uui-color-surface);
+        color: var(--uui-color-text);
+        border-color: var(--uui-color-border);
+    }
+    .n3o-data-import .btn--secondary:hover:not(:disabled) {
+        background: var(--uui-color-surface-emphasis);
+        border-color: var(--uui-color-border-emphasis);
+    }
+    .n3o-data-import .btn--primary {
+        background: var(--uui-color-default);
+        color: var(--uui-color-default-contrast);
+    }
+    .n3o-data-import .btn--primary.btn--positive {
+        background: var(--uui-color-positive);
+        color: var(--uui-color-positive-contrast);
+    }
+    .n3o-data-import .btn--primary:hover:not(:disabled) {
+        background: var(--uui-color-positive-emphasis, var(--uui-color-positive));
+    }
+    .n3o-data-import .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 `;
-var fe = Object.getOwnPropertyDescriptor, Q = (t) => {
-  throw TypeError(t);
-}, ge = (t, r, s, c) => {
-  for (var d = c > 1 ? void 0 : c ? fe(r, s) : r, h = t.length - 1, k; h >= 0; h--)
-    (k = t[h]) && (d = k(d) || d);
-  return d;
-}, x = (t, r, s) => r.has(t) || Q("Cannot " + s), u = (t, r, s) => (x(t, r, "read from private field"), s ? s.call(t) : r.get(t)), T = (t, r, s) => r.has(t) ? Q("Cannot add the same private member more than once") : r instanceof WeakSet ? r.add(t) : r.set(t, s), P = (t, r, s, c) => (x(t, r, "write to private field"), r.set(t, s), s), H = (t, r, s) => (x(t, r, "access private method"), s), m, C, _, S, I;
+var we = Object.getOwnPropertyDescriptor, Y = (o) => {
+  throw TypeError(o);
+}, xe = (o, a, r, m) => {
+  for (var s = m > 1 ? void 0 : m ? we(a, r) : a, p = o.length - 1, v; p >= 0; p--)
+    (v = o[p]) && (s = v(s) || s);
+  return s;
+}, L = (o, a, r) => a.has(o) || Y("Cannot " + r), h = (o, a, r) => (L(o, a, "read from private field"), r ? r.call(o) : a.get(o)), _ = (o, a, r) => a.has(o) ? Y("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(o) : a.set(o, r), P = (o, a, r, m) => (L(o, a, "write to private field"), a.set(o, r), r), M = (o, a, r) => (L(o, a, "access private method"), r), b, x, k, C, O;
 const Ce = "n3o-data-import";
-let O = class extends ce(HTMLElement) {
+let U = class extends he(ue(HTMLElement)) {
   constructor() {
-    super(), T(this, S), T(this, m), T(this, C), T(this, _, null);
-    const t = this.attachShadow({ mode: "open" });
-    P(this, C, document.createElement("div")), t.appendChild(u(this, C)), this.consumeContext(de, (r) => {
-      r && this.observe(
-        r.unique,
-        (s) => {
-          s && s !== u(this, _) && (P(this, _, s), H(this, S, I).call(this));
+    super(), _(this, C), _(this, b), _(this, x), _(this, k, null);
+    const o = this.attachShadow({ mode: "open" });
+    P(this, x, document.createElement("div")), o.appendChild(h(this, x)), this.consumeContext(me, (a) => {
+      a && this.observe(
+        a.unique,
+        (r) => {
+          r && r !== h(this, k) && (P(this, k, r), M(this, C, O).call(this));
         },
         "_observeUnique"
       );
     });
   }
+  // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+  authFetchChanged(o) {
+    M(this, C, O).call(this);
+  }
   connectedCallback() {
-    var t;
-    (t = super.connectedCallback) == null || t.call(this), u(this, m) ?? P(this, m, me(u(this, C))), H(this, S, I).call(this);
+    var o;
+    (o = super.connectedCallback) == null || o.call(this), h(this, b) ?? P(this, b, fe(h(this, x))), M(this, C, O).call(this);
   }
   disconnectedCallback() {
-    var t, r;
-    (t = super.disconnectedCallback) == null || t.call(this), (r = u(this, m)) == null || r.unmount(), P(this, m, void 0);
+    var o, a;
+    (o = super.disconnectedCallback) == null || o.call(this), (a = h(this, b)) == null || a.unmount(), P(this, b, void 0);
   }
 };
-m = /* @__PURE__ */ new WeakMap();
-C = /* @__PURE__ */ new WeakMap();
-_ = /* @__PURE__ */ new WeakMap();
-S = /* @__PURE__ */ new WeakSet();
-I = function() {
-  var t;
-  (t = u(this, m)) == null || t.render(
-    ue(ve, {
-      contentKey: u(this, _)
+b = /* @__PURE__ */ new WeakMap();
+x = /* @__PURE__ */ new WeakMap();
+k = /* @__PURE__ */ new WeakMap();
+C = /* @__PURE__ */ new WeakSet();
+O = function() {
+  var o;
+  (o = h(this, b)) == null || o.render(
+    ve(ge, {
+      contentKey: h(this, k),
+      authFetch: this.authFetch
     })
   );
 };
-O = ge([
-  le(Ce)
-], O);
-const Ee = O;
+U = xe([
+  pe(Ce)
+], U);
+const Ie = U;
 export {
-  O as N3oDataImportElement,
-  Ee as default
+  U as N3oDataImportElement,
+  Ie as default
 };
 //# sourceMappingURL=data-import.js.map

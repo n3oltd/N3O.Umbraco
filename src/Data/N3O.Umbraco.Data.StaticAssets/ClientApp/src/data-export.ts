@@ -1,9 +1,11 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
+import { UmbAuthFetchMixin } from '@n3o/auth-fetch';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { DataExportApp } from './data-export-app';
+import type { AuthFetch } from './auth-fetch';
 
 const elementName = 'n3o-data-export';
 
@@ -11,9 +13,11 @@ const elementName = 'n3o-data-export';
 // elements; this thin element keeps a Lit base (UmbElementMixin) ONLY for context plumbing — it consumes
 // UMB_DOCUMENT_WORKSPACE_CONTEXT to obtain the current document key (`unique`) and passes it as a prop
 // into the React UI (DataExportApp), which renders everything and talks to the backend. React is NOT
-// bundled here — it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
+// bundled here — it is external and resolved at runtime from the shared N3O.Umbraco.ReactRuntime import
+// map. The authenticated fetch is likewise shared: UmbAuthFetchMixin (from @n3o/auth-fetch) gives us
+// `this.authFetch` (rebuilt from UMB_AUTH_CONTEXT) with no per-plugin auth boilerplate.
 @customElement(elementName)
-export class N3oDataExportElement extends UmbElementMixin(HTMLElement) {
+export class N3oDataExportElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) {
     #root?: Root;
     #mount: HTMLDivElement;
     #contentKey: string | null = null;
@@ -43,6 +47,11 @@ export class N3oDataExportElement extends UmbElementMixin(HTMLElement) {
         });
     }
 
+    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+    authFetchChanged(_authFetch: AuthFetch | null): void {
+        this.#render();
+    }
+
     connectedCallback(): void {
         super.connectedCallback?.();
         this.#root ??= createRoot(this.#mount);
@@ -59,6 +68,7 @@ export class N3oDataExportElement extends UmbElementMixin(HTMLElement) {
         this.#root?.render(
             createElement(DataExportApp, {
                 contentKey: this.#contentKey,
+                authFetch: this.authFetch,
             }),
         );
     }
