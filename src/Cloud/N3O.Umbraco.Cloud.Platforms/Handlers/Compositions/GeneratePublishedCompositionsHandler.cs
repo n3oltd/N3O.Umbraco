@@ -29,12 +29,14 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
         var compositionsDirectory = WebRoot.GetDirectory(_webHostEnvironment,
                                                          Path.Combine("platforms", "compositions"));
 
-        if (compositionsDirectory.Exists) {
-            _logger.LogWarning("Found Composition Directory {Directory}", compositionsDirectory.Name);
-        } else {
-            _logger.LogWarning("Could not fund the composition directory for path: {Path}", Path.Combine("platforms", "compositions"));
+        if (compositionsDirectory == null) {
+            _logger.LogWarning("Could not find the composition directory for path: {Path}", Path.Combine("platforms", "compositions"));
+
+            return None.Empty;
         }
-        
+
+        _logger.LogWarning("Found Composition Directory {Directory}", compositionsDirectory.Name);
+
         foreach (var directory in compositionsDirectory.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
             var publishedComposition = await GeneratePublishedCompositionAsync(directory, relativeUrlPath);
 
