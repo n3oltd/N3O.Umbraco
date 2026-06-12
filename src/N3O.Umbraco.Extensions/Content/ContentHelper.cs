@@ -190,8 +190,7 @@ public class ContentHelper : IContentHelper {
     
     private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
         var contentProperties = new List<ContentProperties>();
-        
-        // In v17 contentData is a flat JArray of block item JObjects (no nested arrays).
+
         if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
             foreach (var block in contentData.OrEmpty()) {
                 if (block is JObject jObject) {
@@ -208,8 +207,6 @@ public class ContentHelper : IContentHelper {
         var contentTypeKey = Guid.Parse((string) element["contentTypeKey"]);
         var contentType = _contentTypeService.Value.Get(contentTypeKey);
 
-        // In v17 block item property values live in a flat "values" array of { alias, value } objects
-        // (the v9 shape stored each property as a top-level field keyed by its alias).
         var valuesByAlias = GetBlockElementValuesByAlias(element);
 
         var properties = new List<(IPropertyType, object)>();
@@ -226,7 +223,6 @@ public class ContentHelper : IContentHelper {
     }
 
     private static Guid GetBlockElementKey(JObject element) {
-        // v17 stores the block item identity as "key"; legacy/migrated content may still carry a "udi".
         var key = (string) element["key"];
 
         if (key.HasValue()) {
