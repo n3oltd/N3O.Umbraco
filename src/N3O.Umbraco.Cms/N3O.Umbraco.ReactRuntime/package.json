@@ -1,8 +1,9 @@
 {
-    "name": "n3o-umbraco-react-runtime",
+    "name": "@n3o/backoffice-core",
     "version": "1.0.0",
     "private": true,
     "type": "module",
+    "types": "./src/auth-fetch.ts",
     "scripts": {
         "build": "vite build -c vite.config.react.ts && vite build -c vite.config.rest.ts"
     },

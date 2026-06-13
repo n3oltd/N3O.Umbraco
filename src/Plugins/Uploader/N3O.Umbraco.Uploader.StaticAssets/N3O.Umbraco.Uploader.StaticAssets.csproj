@@ -34,14 +34,6 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-    <!-- Build the Lit/TypeScript client app (Vite). The Razor SDK packs/serves wwwroot automatically. -->
-    <PropertyGroup>
-        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
-    </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="BeforeBuild">
-        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-    </Target>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
     </ItemGroup>

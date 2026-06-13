@@ -35,15 +35,6 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
-    <!-- Build the Lit/TypeScript client app (Vite) before assets are gathered into the static web assets manifest. -->
-    <PropertyGroup>
-        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
-    </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="BeforeBuild" Condition="Exists('$(ClientAppDir)\package.json')">
-        <Message Text="Building Cells client app (Vite)" Importance="high" />
-        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-    </Target>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Cells\N3O.Umbraco.Cells.csproj" />
     </ItemGroup>

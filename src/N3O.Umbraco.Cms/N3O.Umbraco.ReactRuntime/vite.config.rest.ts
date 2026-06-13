@@ -14,8 +14,8 @@ export default defineConfig({
             entry: {
                 'react-jsx-runtime': 'src/react-jsx-runtime.js',
                 'react-dom': 'src/react-dom.js',
-                'auth-fetch': 'src/auth-fetch.js',
-                'workspace-visibility-condition': 'src/workspace-visibility-condition.js',
+                'auth-fetch': 'src/auth-fetch.ts',
+                'workspace-visibility-condition': 'src/workspace-visibility-condition.ts',
             },
             formats: ['es'],
         },

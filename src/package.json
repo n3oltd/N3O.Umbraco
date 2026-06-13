@@ -1,0 +1,10 @@
+{
+  "name": "n3o-umbraco-clientapps",
+  "private": true,
+  "workspaces": [
+    "**/Apps/**",
+    "N3O.Umbraco.Cms/N3O.Umbraco.ReactRuntime",
+    "!**/bin/**",
+    "!**/obj/**"
+  ]
+}

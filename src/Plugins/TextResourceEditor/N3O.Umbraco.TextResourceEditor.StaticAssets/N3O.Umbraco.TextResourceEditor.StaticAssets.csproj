@@ -35,15 +35,6 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
-    <!-- Build the React/TypeScript client app (Vite) into wwwroot before the SDK gathers static web assets. -->
-    <PropertyGroup>
-        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
-    </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="BeforeBuild" Condition="Exists('$(ClientAppDir)\package.json')">
-        <Message Text="Building TextResourceEditor client app (Vite)" Importance="high" />
-        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-    </Target>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
     </ItemGroup>

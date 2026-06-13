@@ -1,7 +1,8 @@
 {
     "$schema": "../../umbraco-package-schema.json",
+    "id": "N3O.Umbraco.EditorJs",
     "name": "N3O EditorJs",
-    "version": "1.0.0",
+    "version": "17.0.0",
     "extensions": [
         {
             "type": "propertyEditorUi",

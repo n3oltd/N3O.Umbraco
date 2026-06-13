@@ -1,7 +1,8 @@
 {
     "$schema": "../../umbraco-package-schema.json",
+    "id": "telethon-on-air-rule",
     "name": "N3O Telethon On Air Segment Rule",
-    "version": "1.0.0",
+    "version": "17.0.0",
     "extensions": [
         {
             "//": "BLOCKER-04: Engage v17 client-side segment-rule registration API is unknown. This bundle loads the (placeholder) rule descriptor + element definitions so they are available once the real Engage registration mechanism is wired up. See segment-rule-telethon-on-air.js and the migration report.",

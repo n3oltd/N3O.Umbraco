@@ -32,15 +32,6 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
-    <!-- Build the Lit/TypeScript client app (Vite) before the SDK gathers wwwroot static web assets. -->
-    <PropertyGroup>
-        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
-    </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="BeforeBuild" Condition="Exists('$(ClientAppDir)\package.json')">
-        <Message Text="Building Scheduler client app (Vite)" Importance="high" />
-        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-    </Target>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
     </ItemGroup>

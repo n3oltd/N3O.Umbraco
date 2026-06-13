@@ -48,8 +48,8 @@
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.7.1" />
         <PackageReference Include="Umbraco.Community.Contentment" Version="6.1.4" />
-        <PackageReference Include="Refit" Version="10.1.6" />
-        <PackageReference Include="Refit.Newtonsoft.Json" Version="10.1.6" />
+        <PackageReference Include="Refit" Version="10.2.0" />
+        <PackageReference Include="Refit.Newtonsoft.Json" Version="10.2.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="Slugify.Core" Version="5.1.1" />
         <PackageReference Include="Umbraco.Cms.Core" Version="17.3.5" />

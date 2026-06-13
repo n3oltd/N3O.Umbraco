@@ -1,6 +1,6 @@
 import { customElement as b } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as M } from "@umbraco-cms/backoffice/element-api";
-import { UmbAuthFetchMixin as D } from "@n3o/auth-fetch";
+import { UmbAuthFetchMixin as D } from "@n3o/backoffice-core";
 import { UmbPropertyValueChangeEvent as F } from "@umbraco-cms/backoffice/property-editor";
 import { createElement as I } from "react";
 import { createRoot as O } from "react-dom/client";

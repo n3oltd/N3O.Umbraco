@@ -1,0 +1,10 @@
+{
+    "extends": "../../../../tsconfig.base.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "paths": {
+            "handsontable": ["./node_modules/handsontable/index.d.ts", "../../../../node_modules/handsontable/index.d.ts"]
+        }
+    },
+    "include": ["src"]
+}
