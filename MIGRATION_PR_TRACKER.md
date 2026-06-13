@@ -23,16 +23,16 @@ Legend: ✅ Done (in an active PR) · 🔄 In progress (pushed, no PR yet) · �
 
 Each is built, committed, and pushed; just needs a PR opened against `v17` (compare URL: `…/compare/v17...<branch>`).
 
-| Project | Branch | Tip | Notes |
-|---|---|---|---|
-| **ReactRuntime (auth + visibility)** | `v17-N3O.Umbraco.ReactRuntime` | `74a2a8ef8` | **Foundation — must merge first.** Shared `@n3o/auth-fetch` (`createAuthFetch` + `UmbAuthFetchMixin`) + `N3O.Condition.WorkspaceVisibility` condition added to the Cms ReactRuntime (importmap + condition manifest). |
-| **Data** | `v17-N3O.Umbraco.Data` | `1b5e1bf7e` | v17 migration; **runtime-verified import flow** (queue → Hangfire → content created); `EnsureDataTypeExistsAsync` sets `EditorUiAlias`; import status-row DB connection isolated from the content scope (DL-05). Export/Import visibility controllers restored. |
-| **Data.StaticAssets** | `v17-N3O.Umbraco.Data.StaticAssets` | `da5b34167` | Authed Export/Import + ImportDataEditor now via shared `@n3o/auth-fetch`; native HTML controls (avoids the upstream uui FormControlMixin/React bug); import "View queue" link points at the v17 route. Export/Import visibility-condition manifests restored. |
-| **Cloud.Platforms** | `v17-N3O.Umbraco.Cloud.Platforms` | `e9768e4bf` | v17 migration. Preview visibility endpoint (PlatformsPreviewController + PreviewApiName doc) restored. |
-| **Cloud.Platforms.StaticAssets** | `v17-N3O.Umbraco.Cloud.Platforms.StaticAssets` | `1d45c50b2` | RCL packaging; Preview workspace view. Preview visibility condition restored. |
-| **Blocks** | `v17-N3O.Umbraco.Blocks` | `736ec5463` | v17 migration; dead `BlockItemDataExtensions` removed. |
+> **Branch convention (2026-06-13):** each domain project and its `.StaticAssets` backoffice sibling now live on **one combined branch** named after the domain project (e.g. `v17-N3O.Umbraco.Data` carries both `N3O.Umbraco.Data` and `N3O.Umbraco.Data.StaticAssets`). The former separate `*.StaticAssets` branches were deleted. **Keep this for all future per-project branches.** The Data + Cloud.Platforms branches were **re-cut fresh from `v17-Talha`** so they also carry the shared npm-workspace infra (root `package.json` glob, `package-lock.json`, `tsconfig.base.json`, `build/vite-config`, `Directory.Build.targets`) and the `ClientApp→Apps` rename. NB: that shared infra is solution-wide, so it overlaps across these branches and whichever merges first lands it; the others may need a rebase/no-op on those files.
 
-> **Merge order:** `v17-N3O.Umbraco.ReactRuntime` → `v17` first; then Data / Data.StaticAssets / Cloud.Platforms / Cloud.Platforms.StaticAssets (they `import '@n3o/auth-fetch'` + reference the condition, which only exist once the runtime lands).
+| Project (domain + .StaticAssets) | Branch | Tip | Notes |
+|---|---|---|---|
+| **ReactRuntime (auth + visibility)** | `v17-N3O.Umbraco.ReactRuntime` | `74a2a8ef8` | **Foundation — must merge first.** Shared `@n3o/auth-fetch` (`createAuthFetch` + `UmbAuthFetchMixin`) + `N3O.Condition.WorkspaceVisibility` condition added to the Cms ReactRuntime (importmap + condition manifest). _(Still predates the workspace restructure — will need the same re-cut treatment.)_ |
+| **Data** (+ Data.StaticAssets) | `v17-N3O.Umbraco.Data` | `b0e1b7d6a` | Combined. v17 migration; **runtime-verified import flow** (queue → Hangfire → content created); `EnsureDataTypeExistsAsync` sets `EditorUiAlias`; import status-row DB connection isolated (DL-05); Export/Import visibility controllers + manifests restored. StaticAssets: authed Export/Import + ImportDataEditor via shared `@n3o/auth-fetch`; native HTML controls (upstream uui FormControlMixin/React bug); "View queue" → v17 route. |
+| **Cloud.Platforms** (+ Cloud.Platforms.StaticAssets) | `v17-N3O.Umbraco.Cloud.Platforms` | `8c4d1be54` | Combined. v17 migration; Preview visibility endpoint (`PlatformsPreviewController` + `PreviewApiName`) restored. StaticAssets: RCL packaging; Preview workspace view + visibility condition restored. |
+| **Blocks** | `v17-N3O.Umbraco.Blocks` | `736ec5463` | v17 migration; dead `BlockItemDataExtensions` removed. _(Predates the workspace restructure — will need the same re-cut treatment.)_ |
+
+> **Merge order:** `v17-N3O.Umbraco.ReactRuntime` → `v17` first; then `v17-N3O.Umbraco.Data` / `v17-N3O.Umbraco.Cloud.Platforms` (they `import '@n3o/auth-fetch'` + reference the condition, which only exist once the runtime lands).
 
 ---
 
