@@ -2,7 +2,8 @@ import { customElement as x } from "@umbraco-cms/backoffice/external/lit";
 import { createElement as k } from "react";
 import { createRoot as C } from "react-dom/client";
 import { jsxs as v, Fragment as f, jsx as n } from "react/jsx-runtime";
-function W({ value: r }) {
+const W = ".n3o-import-errors-viewer .row-wrapper{margin-bottom:40px;width:100%}.n3o-import-errors-viewer .row{display:block;width:90%}.text-error{color:var(--uui-color-danger)}.text-warning{color:var(--uui-color-warning)}";
+function y({ value: r }) {
   const e = (r == null ? void 0 : r.errors) ?? null, t = (r == null ? void 0 : r.warnings) ?? null, c = !!e && e.length > 0, o = !!t && t.length > 0;
   return /* @__PURE__ */ v("div", { className: "n3o-import-errors-viewer", children: [
     c ? /* @__PURE__ */ v(f, { children: [
@@ -14,25 +15,9 @@ function W({ value: r }) {
       t.map((s, l) => /* @__PURE__ */ n("div", { className: "row-wrapper", children: /* @__PURE__ */ n("div", { className: "row", children: s }) }, `warning-${l}`))
     ] }) : null,
     !c && !o ? /* @__PURE__ */ n("div", { className: "row-wrapper", children: /* @__PURE__ */ n("div", { className: "row", children: "No warnings or errors" }) }) : null,
-    /* @__PURE__ */ n("style", { children: y })
+    /* @__PURE__ */ n("style", { children: W })
   ] });
 }
-const y = `
-    .n3o-import-errors-viewer .row-wrapper {
-        margin-bottom: 40px;
-        width: 100%;
-    }
-    .n3o-import-errors-viewer .row {
-        display: block;
-        width: 90%;
-    }
-    .text-error {
-        color: var(--uui-color-danger);
-    }
-    .text-warning {
-        color: var(--uui-color-warning);
-    }
-`;
 var M = Object.getOwnPropertyDescriptor, E = (r) => {
   throw TypeError(r);
 }, I = (r, e, t, c) => {
@@ -73,7 +58,7 @@ w = /* @__PURE__ */ new WeakSet();
 _ = function() {
   var r;
   (r = i(this, a)) == null || r.render(
-    k(W, {
+    k(y, {
       value: i(this, d)
     })
   );

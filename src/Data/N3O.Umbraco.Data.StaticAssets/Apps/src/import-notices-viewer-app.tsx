@@ -1,3 +1,5 @@
+import styles from './import-notices-viewer-app.css?inline';
+
 export interface ImportNoticesValue {
     errors: string[];
     warnings: string[];
@@ -55,20 +57,3 @@ export function ImportNoticesViewerApp({ value }: ImportNoticesViewerAppProps) {
         </div>
     );
 }
-
-const styles = `
-    .n3o-import-errors-viewer .row-wrapper {
-        margin-bottom: 40px;
-        width: 100%;
-    }
-    .n3o-import-errors-viewer .row {
-        display: block;
-        width: 90%;
-    }
-    .text-error {
-        color: var(--uui-color-danger);
-    }
-    .text-warning {
-        color: var(--uui-color-warning);
-    }
-`;

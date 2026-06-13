@@ -1,3 +1,5 @@
+import styles from './text-resource-editor-app.css?inline';
+
 export interface TextResourceEntry {
     source: string;
     custom: string | null | undefined;
@@ -59,33 +61,3 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
         </uui-box>
     );
 }
-
-const styles = `
-    .n3o-text-resource-editor .row-wrapper {
-        margin-bottom: 40px;
-        width: 100%;
-    }
-
-    .n3o-text-resource-editor .row-1 {
-        display: block;
-        width: 90%;
-    }
-
-    .n3o-text-resource-editor .row-2 {
-        display: block;
-        width: 90%;
-    }
-
-    .n3o-text-resource-editor .delete {
-        cursor: pointer;
-    }
-
-    .n3o-text-resource-editor .text {
-        font-weight: bold;
-    }
-
-    .n3o-text-resource-editor .custom {
-        width: 100%;
-        margin-top: 10px;
-    }
-`;

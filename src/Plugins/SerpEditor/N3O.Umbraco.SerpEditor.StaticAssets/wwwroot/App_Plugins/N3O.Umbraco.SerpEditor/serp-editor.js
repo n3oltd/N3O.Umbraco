@@ -3,7 +3,8 @@ import { UmbPropertyValueChangeEvent as A } from "@umbraco-cms/backoffice/proper
 import { useState as M, useEffect as W, createElement as T } from "react";
 import { createRoot as D } from "react-dom/client";
 import { jsxs as i, jsx as f } from "react/jsx-runtime";
-function O({ value: e, maxCharsTitle: t, maxCharsDescription: r, onChange: l }) {
+const O = ".sv{display:flex;gap:40px}.sv-form{flex:0 0 30%}.sv-demo{flex:1 1 600px;max-width:600px}.sv-form input,.sv-form textarea{width:100%;box-sizing:border-box}.sv-form textarea{height:100px;margin-top:12px}.sv-form p.sv-error{color:var(--uui-color-danger, red);margin-top:3px}.sv-demo h6,.sv-demo p{font-family:Arial,Helvetica,sans-serif;padding:0;margin:0}.sv-demo h6{font-size:20px;line-height:1.3;margin-bottom:3px;color:#1a0dab;text-decoration:underline}.sv-demo p{font-size:14px;margin-bottom:3px;line-height:1.57;word-wrap:break-word}.sv-demo p.sv-url{color:#006621}";
+function z({ value: e, maxCharsTitle: t, maxCharsDescription: r, onChange: l }) {
   const [h, m] = M("");
   W(() => {
     let c = !0;
@@ -56,21 +57,9 @@ function O({ value: e, maxCharsTitle: t, maxCharsDescription: r, onChange: l }) 
         /* @__PURE__ */ f("p", { children: v })
       ] })
     ] }),
-    /* @__PURE__ */ f("style", { children: z })
+    /* @__PURE__ */ f("style", { children: O })
   ] });
 }
-const z = `
-    .sv { display: flex; gap: 40px; }
-    .sv-form { flex: 0 0 30%; }
-    .sv-demo { flex: 1 1 600px; max-width: 600px; }
-    .sv-form input, .sv-form textarea { width: 100%; box-sizing: border-box; }
-    .sv-form textarea { height: 100px; margin-top: 12px; }
-    .sv-form p.sv-error { color: var(--uui-color-danger, red); margin-top: 3px; }
-    .sv-demo h6, .sv-demo p { font-family: Arial, Helvetica, sans-serif; padding: 0; margin: 0; }
-    .sv-demo h6 { font-size: 20px; line-height: 1.3; margin-bottom: 3px; color: #1a0dab; text-decoration: underline; }
-    .sv-demo p { font-size: 14px; margin-bottom: 3px; line-height: 1.57; word-wrap: break-word; }
-    .sv-demo p.sv-url { color: #006621; }
-`;
 var P = Object.getOwnPropertyDescriptor, b = (e) => {
   throw TypeError(e);
 }, V = (e, t, r, l) => {
@@ -113,7 +102,7 @@ _ = /* @__PURE__ */ new WeakSet();
 w = function() {
   var e;
   (e = s(this, n)) == null || e.render(
-    T(O, {
+    T(z, {
       value: s(this, d),
       maxCharsTitle: s(this, E),
       maxCharsDescription: s(this, g),

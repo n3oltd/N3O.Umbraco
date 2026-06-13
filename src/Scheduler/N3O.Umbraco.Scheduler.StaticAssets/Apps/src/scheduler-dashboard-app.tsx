@@ -1,3 +1,5 @@
+import styles from './scheduler-dashboard-app.css?inline';
+
 // NOTE: React shell is overhead here (the dashboard merely wraps a Hangfire <iframe>) — kept for
 // uniformity per migration decision. There is no React-shaped UI: the component renders a single
 // iframe, ported verbatim from the legacy AngularJS view N3O.Umbraco.Scheduler.html.
@@ -20,8 +22,3 @@ export function SchedulerDashboardApp() {
         </>
     );
 }
-
-const styles = `
-    :host { display: block; width: 100%; height: 100%; }
-    iframe { display: block; width: 100%; height: 100%; border: 0; }
-`;

@@ -5,7 +5,8 @@ import { UmbAuthFetchMixin as me } from "@n3o/backoffice-core";
 import { useState as h, useEffect as ve, createElement as xe } from "react";
 import { createRoot as fe } from "react-dom/client";
 import { jsxs as s, jsx as a, Fragment as J } from "react/jsx-runtime";
-function ge({ contentKey: t, authFetch: o }) {
+const ge = ".n3o-data-export{display:block;padding:var(--uui-size-space-4)}.n3o-data-export uui-box{--uui-box-default-padding: var(--uui-size-space-4);margin-bottom:var(--uui-size-space-3)}.n3o-data-export .nativeSelect{width:100%;max-width:420px;box-sizing:border-box;height:var(--uui-size-11, 36px);padding:0 var(--uui-size-space-3);font:inherit;color:var(--uui-color-text);background:var(--uui-color-surface);border:1px solid var(--uui-color-border);border-radius:var(--uui-border-radius)}.n3o-data-export .nativeSelect:focus{outline:none;border-color:var(--uui-color-focus);box-shadow:0 0 0 1px var(--uui-color-focus)}.n3o-data-export .nativeSelect:disabled{opacity:.5;cursor:not-allowed}.n3o-data-export .radioGroup{display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--uui-size-space-2) var(--uui-size-space-5)}.n3o-data-export .radioOption,.n3o-data-export .toggleOption,.n3o-data-export .checkOption{display:flex;align-items:center;gap:var(--uui-size-space-2);cursor:pointer}.n3o-data-export .radioOption input,.n3o-data-export .toggleOption input,.n3o-data-export .checkOption input{cursor:pointer}.n3o-data-export .selectionCount{font-size:var(--uui-type-small-size);color:var(--uui-color-text-alt)}.n3o-data-export .selectionActions{display:flex;gap:var(--uui-size-space-2);margin-bottom:var(--uui-size-space-3)}.n3o-data-export .checkboxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--uui-size-space-1) var(--uui-size-space-5)}.n3o-data-export .emptyState{margin:0;color:var(--uui-color-text-alt);font-style:italic}.n3o-data-export .hint{margin:0 0 var(--uui-size-space-4);color:var(--uui-color-text-alt)}.n3o-data-export .errorBox{display:flex;align-items:center;gap:var(--uui-size-space-3);margin-bottom:var(--uui-size-space-4);padding:var(--uui-size-space-4) var(--uui-size-space-5);border-radius:var(--uui-border-radius);background:var(--uui-color-danger);color:var(--uui-color-danger-contrast)}.n3o-data-export .progress{display:flex;flex-direction:column;gap:var(--uui-size-space-2);margin-bottom:var(--uui-size-space-4);color:var(--uui-color-text-alt)}.n3o-data-export .actions{margin-top:var(--uui-size-space-4)}.n3o-data-export .btn{font:inherit;font-weight:700;line-height:1;display:inline-flex;align-items:center;gap:var(--uui-size-space-2);padding:0 var(--uui-size-space-4);height:var(--uui-size-11, 36px);border:1px solid transparent;border-radius:var(--uui-border-radius);cursor:pointer;box-sizing:border-box}.n3o-data-export .btn--compact{height:var(--uui-size-9, 30px);padding:0 var(--uui-size-space-3);font-size:var(--uui-type-small-size)}.n3o-data-export .btn--secondary{background:var(--uui-color-surface);color:var(--uui-color-text);border-color:var(--uui-color-border)}.n3o-data-export .btn--secondary:hover:not(:disabled){background:var(--uui-color-surface-emphasis);border-color:var(--uui-color-border-emphasis)}.n3o-data-export .btn--primary{background:var(--uui-color-default);color:var(--uui-color-default-contrast)}.n3o-data-export .btn--primary.btn--positive{background:var(--uui-color-positive);color:var(--uui-color-positive-contrast)}.n3o-data-export .btn--primary:hover:not(:disabled){background:var(--uui-color-positive-emphasis, var(--uui-color-positive))}.n3o-data-export .btn:disabled{opacity:.5;cursor:not-allowed}";
+function ye({ contentKey: t, authFetch: o }) {
   const [i, f] = h([]), [p, g] = h(null), [v, G] = h("excel"), [R, X] = h(!1), [N, z] = h([]), [S, y] = h([]), [d, M] = h(!1), [K, _] = h(""), [W, $] = h(null);
   ve(() => {
     if (!t || !o)
@@ -279,145 +280,9 @@ function ge({ contentKey: t, authFetch: o }) {
         children: d ? "Exporting…" : "Export"
       }
     ) }),
-    /* @__PURE__ */ a("style", { children: ye })
+    /* @__PURE__ */ a("style", { children: ge })
   ] });
 }
-const ye = `
-    .n3o-data-export {
-        display: block;
-        padding: var(--uui-size-space-4);
-    }
-    .n3o-data-export uui-box {
-        --uui-box-default-padding: var(--uui-size-space-4);
-        margin-bottom: var(--uui-size-space-3);
-    }
-    .n3o-data-export .nativeSelect {
-        width: 100%;
-        max-width: 420px;
-        box-sizing: border-box;
-        height: var(--uui-size-11, 36px);
-        padding: 0 var(--uui-size-space-3);
-        font: inherit;
-        color: var(--uui-color-text);
-        background: var(--uui-color-surface);
-        border: 1px solid var(--uui-color-border);
-        border-radius: var(--uui-border-radius);
-    }
-    .n3o-data-export .nativeSelect:focus {
-        outline: none;
-        border-color: var(--uui-color-focus);
-        box-shadow: 0 0 0 1px var(--uui-color-focus);
-    }
-    .n3o-data-export .nativeSelect:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    .n3o-data-export .radioGroup {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: var(--uui-size-space-2) var(--uui-size-space-5);
-    }
-    .n3o-data-export .radioOption,
-    .n3o-data-export .toggleOption,
-    .n3o-data-export .checkOption {
-        display: flex;
-        align-items: center;
-        gap: var(--uui-size-space-2);
-        cursor: pointer;
-    }
-    .n3o-data-export .radioOption input,
-    .n3o-data-export .toggleOption input,
-    .n3o-data-export .checkOption input {
-        cursor: pointer;
-    }
-    .n3o-data-export .selectionCount {
-        font-size: var(--uui-type-small-size);
-        color: var(--uui-color-text-alt);
-    }
-    .n3o-data-export .selectionActions {
-        display: flex;
-        gap: var(--uui-size-space-2);
-        margin-bottom: var(--uui-size-space-3);
-    }
-    .n3o-data-export .checkboxGrid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: var(--uui-size-space-1) var(--uui-size-space-5);
-    }
-    .n3o-data-export .emptyState {
-        margin: 0;
-        color: var(--uui-color-text-alt);
-        font-style: italic;
-    }
-    .n3o-data-export .hint {
-        margin: 0 0 var(--uui-size-space-4);
-        color: var(--uui-color-text-alt);
-    }
-    .n3o-data-export .errorBox {
-        display: flex;
-        align-items: center;
-        gap: var(--uui-size-space-3);
-        margin-bottom: var(--uui-size-space-4);
-        padding: var(--uui-size-space-4) var(--uui-size-space-5);
-        border-radius: var(--uui-border-radius);
-        background: var(--uui-color-danger);
-        color: var(--uui-color-danger-contrast);
-    }
-    .n3o-data-export .progress {
-        display: flex;
-        flex-direction: column;
-        gap: var(--uui-size-space-2);
-        margin-bottom: var(--uui-size-space-4);
-        color: var(--uui-color-text-alt);
-    }
-    .n3o-data-export .actions {
-        margin-top: var(--uui-size-space-4);
-    }
-    .n3o-data-export .btn {
-        font: inherit;
-        font-weight: 700;
-        line-height: 1;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--uui-size-space-2);
-        padding: 0 var(--uui-size-space-4);
-        height: var(--uui-size-11, 36px);
-        border: 1px solid transparent;
-        border-radius: var(--uui-border-radius);
-        cursor: pointer;
-        box-sizing: border-box;
-    }
-    .n3o-data-export .btn--compact {
-        height: var(--uui-size-9, 30px);
-        padding: 0 var(--uui-size-space-3);
-        font-size: var(--uui-type-small-size);
-    }
-    .n3o-data-export .btn--secondary {
-        background: var(--uui-color-surface);
-        color: var(--uui-color-text);
-        border-color: var(--uui-color-border);
-    }
-    .n3o-data-export .btn--secondary:hover:not(:disabled) {
-        background: var(--uui-color-surface-emphasis);
-        border-color: var(--uui-color-border-emphasis);
-    }
-    .n3o-data-export .btn--primary {
-        background: var(--uui-color-default);
-        color: var(--uui-color-default-contrast);
-    }
-    .n3o-data-export .btn--primary.btn--positive {
-        background: var(--uui-color-positive);
-        color: var(--uui-color-positive-contrast);
-    }
-    .n3o-data-export .btn--primary:hover:not(:disabled) {
-        background: var(--uui-color-positive-emphasis, var(--uui-color-positive));
-    }
-    .n3o-data-export .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-`;
 var ke = Object.getOwnPropertyDescriptor, V = (t) => {
   throw TypeError(t);
 }, Ce = (t, o, i, f) => {
@@ -460,7 +325,7 @@ w = /* @__PURE__ */ new WeakSet();
 A = function() {
   var t;
   (t = b(this, m)) == null || t.render(
-    xe(ge, {
+    xe(ye, {
       contentKey: b(this, E),
       authFetch: this.authFetch
     })

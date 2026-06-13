@@ -2,19 +2,14 @@ import { customElement as _ } from "@umbraco-cms/backoffice/external/lit";
 import { createElement as f } from "react";
 import { createRoot as w } from "react-dom/client";
 import { jsxs as C, jsx as i } from "react/jsx-runtime";
-function y() {
+const y = ":host{display:block}p{margin:0 0 var(--uui-size-space-4)}p:last-of-type{margin-bottom:0}a{color:var(--uui-color-interactive)}";
+function E() {
   return /* @__PURE__ */ C("uui-box", { headline: "Help & Support", children: [
     /* @__PURE__ */ i("p", { children: "Please visit the N3O Support Centre to view the latest help articles, documentation and to contact our support team with any queries." }),
     /* @__PURE__ */ i("p", { children: /* @__PURE__ */ i("a", { href: "https://support.n3o.ltd", target: "_blank", rel: "noopener", children: "Visit Support Centre →" }) }),
-    /* @__PURE__ */ i("style", { children: E })
+    /* @__PURE__ */ i("style", { children: y })
   ] });
 }
-const E = `
-    :host { display: block; }
-    p { margin: 0 0 var(--uui-size-space-4); }
-    p:last-of-type { margin-bottom: 0; }
-    a { color: var(--uui-color-interactive); }
-`;
 var k = Object.getOwnPropertyDescriptor, m = (e) => {
   throw TypeError(e);
 }, S = (e, t, r, l) => {
@@ -30,7 +25,7 @@ let h = class extends HTMLElement {
     p(this, n, document.createElement("div")), e.appendChild(o(this, n));
   }
   connectedCallback() {
-    o(this, a) ?? p(this, a, w(o(this, n))), o(this, a).render(f(y));
+    o(this, a) ?? p(this, a, w(o(this, n))), o(this, a).render(f(E));
   }
   disconnectedCallback() {
     var e;

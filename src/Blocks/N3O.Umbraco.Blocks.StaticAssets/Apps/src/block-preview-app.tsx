@@ -1,3 +1,5 @@
+import styles from './block-preview-app.css?inline';
+
 interface BlockPreviewAppProps {
     loaded: boolean;
     markup: string;
@@ -24,59 +26,3 @@ export function BlockPreviewApp({ loaded, markup }: BlockPreviewAppProps) {
         </>
     );
 }
-
-const styles = `
-    :host {
-        display: block;
-    }
-
-    .block-preview-frame {
-        display: block;
-        width: 100%;
-        border: none;
-        transform: scale(0.9);
-        transform-origin: top left;
-    }
-
-    .preview-alert {
-        background-color: #f0ac00;
-        border: 1px solid transparent;
-        border-radius: 0;
-        margin-bottom: 20px;
-        padding: 8px 35px 8px 14px;
-        position: relative;
-    }
-
-    .preview-alert uui-loader {
-        margin-right: 16px;
-    }
-
-    .preview-alert,
-    .preview-alert a,
-    .preview-alert h4 {
-        color: #fff;
-    }
-
-    .preview-alert pre {
-        white-space: normal;
-    }
-
-    .preview-alert-warning {
-        background-color: #f0ac00;
-        border-color: transparent;
-        color: #fff;
-    }
-
-    .preview-alert-info {
-        background-color: #3544b1;
-        border-color: transparent;
-        color: #fff;
-    }
-
-    .preview-alert-danger,
-    .preview-alert-error {
-        background-color: #d42054;
-        border-color: transparent;
-        color: #fff;
-    }
-`;

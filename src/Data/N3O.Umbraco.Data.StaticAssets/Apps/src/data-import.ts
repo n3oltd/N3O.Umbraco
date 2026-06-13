@@ -5,7 +5,7 @@ import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { DataImportApp } from './data-import-app';
-import type { AuthFetch } from './auth-fetch';
+import type { AuthFetch } from '@n3o/backoffice-core';
 
 const elementName = 'n3o-data-import';
 

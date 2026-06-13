@@ -1,3 +1,5 @@
+import styles from './import-data-editor-app.css?inline';
+
 export interface ImportField {
     name: string;
     value: string | null;
@@ -60,25 +62,3 @@ export function ImportDataEditorApp({ value, onTextChange, onFileSelected }: Imp
         </div>
     );
 }
-
-const styles = `
-    .n3o-import-fields-editor .row-wrapper {
-        margin-bottom: 40px;
-        width: 100%;
-    }
-    .n3o-import-fields-editor .row-1 {
-        display: block;
-        width: 90%;
-    }
-    .n3o-import-fields-editor .row-2 {
-        display: block;
-        width: 90%;
-    }
-    .n3o-import-fields-editor .text {
-        font-weight: bold;
-    }
-    .n3o-import-fields-editor .custom {
-        width: 100%;
-        margin-top: 10px;
-    }
-`;

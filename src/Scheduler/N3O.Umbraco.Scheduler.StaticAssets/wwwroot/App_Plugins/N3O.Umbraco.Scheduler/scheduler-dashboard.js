@@ -2,7 +2,8 @@ import { customElement as v } from "@umbraco-cms/backoffice/external/lit";
 import { createElement as _ } from "react";
 import { createRoot as w } from "react-dom/client";
 import { jsxs as g, Fragment as k, jsx as p } from "react/jsx-runtime";
-function y() {
+const y = ":host{display:block;width:100%;height:100%}iframe{display:block;width:100%;height:100%;border:0}";
+function E() {
   return /* @__PURE__ */ g(k, { children: [
     /* @__PURE__ */ p(
       "iframe",
@@ -16,13 +17,9 @@ function y() {
         allowFullScreen: !0
       }
     ),
-    /* @__PURE__ */ p("style", { children: E })
+    /* @__PURE__ */ p("style", { children: y })
   ] });
 }
-const E = `
-    :host { display: block; width: 100%; height: 100%; }
-    iframe { display: block; width: 100%; height: 100%; border: 0; }
-`;
 var S = Object.getOwnPropertyDescriptor, f = (e) => {
   throw TypeError(e);
 }, C = (e, t, r, i) => {
@@ -38,7 +35,7 @@ let d = class extends HTMLElement {
     h(this, s, document.createElement("div")), e.appendChild(o(this, s));
   }
   connectedCallback() {
-    o(this, a) ?? h(this, a, w(o(this, s))), o(this, a).render(_(y));
+    o(this, a) ?? h(this, a, w(o(this, s))), o(this, a).render(_(E));
   }
   disconnectedCallback() {
     var e;
