@@ -6,29 +6,29 @@ import { useState as d, useRef as Q, useEffect as be, createElement as ve } from
 import { createRoot as fe } from "react-dom/client";
 import { jsxs as n, jsx as t, Fragment as X } from "react/jsx-runtime";
 const ge = ".n3o-data-import{display:block;padding:var(--uui-size-space-4)}.n3o-data-import uui-box{--uui-box-default-padding: var(--uui-size-space-4);margin-bottom:var(--uui-size-space-3)}.n3o-data-import .nativeSelect{width:100%;max-width:420px;box-sizing:border-box;height:var(--uui-size-11, 36px);padding:0 var(--uui-size-space-3);font:inherit;color:var(--uui-color-text);background:var(--uui-color-surface);border:1px solid var(--uui-color-border);border-radius:var(--uui-border-radius)}.n3o-data-import .nativeSelect:focus{outline:none;border-color:var(--uui-color-focus);box-shadow:0 0 0 1px var(--uui-color-focus)}.n3o-data-import .nativeSelect:disabled{opacity:.5;cursor:not-allowed}.n3o-data-import input[type=file]{font:inherit}.n3o-data-import .toggleOption,.n3o-data-import .checkOption{display:flex;align-items:center;gap:var(--uui-size-space-2);cursor:pointer}.n3o-data-import .toggleOption input,.n3o-data-import .checkOption input{cursor:pointer}.n3o-data-import .selectionCount{font-size:var(--uui-type-small-size);color:var(--uui-color-text-alt)}.n3o-data-import .selectionActions{display:flex;gap:var(--uui-size-space-2);margin-bottom:var(--uui-size-space-3)}.n3o-data-import .checkboxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--uui-size-space-1) var(--uui-size-space-5)}.n3o-data-import .emptyState{margin:0;color:var(--uui-color-text-alt);font-style:italic}.n3o-data-import .boxHint{margin:0 0 var(--uui-size-space-4);color:var(--uui-color-text-alt)}.n3o-data-import .progress{display:flex;flex-direction:column;gap:var(--uui-size-space-2);margin:var(--uui-size-space-4) 0;color:var(--uui-color-text-alt)}.n3o-data-import .statusBox{display:flex;align-items:flex-start;gap:var(--uui-size-space-3);padding:var(--uui-size-space-4) var(--uui-size-space-5);border-radius:var(--uui-border-radius);margin-bottom:var(--uui-size-space-4)}.n3o-data-import .statusBox--positive{background:var(--uui-color-positive);color:var(--uui-color-positive-contrast)}.n3o-data-import .statusBox--danger{background:var(--uui-color-danger);color:var(--uui-color-danger-contrast)}.n3o-data-import .errorList{margin:0;padding-left:var(--uui-size-space-4)}.n3o-data-import .actions{display:flex;gap:var(--uui-size-space-3);align-items:center;margin-top:var(--uui-size-space-4)}.n3o-data-import .btn{font:inherit;font-weight:700;line-height:1;display:inline-flex;align-items:center;gap:var(--uui-size-space-2);padding:0 var(--uui-size-space-4);height:var(--uui-size-11, 36px);border:1px solid transparent;border-radius:var(--uui-border-radius);cursor:pointer;box-sizing:border-box;text-decoration:none}.n3o-data-import .btn--compact{height:var(--uui-size-9, 30px);padding:0 var(--uui-size-space-3);font-size:var(--uui-type-small-size)}.n3o-data-import .btn--secondary{background:var(--uui-color-surface);color:var(--uui-color-text);border-color:var(--uui-color-border)}.n3o-data-import .btn--secondary:hover:not(:disabled){background:var(--uui-color-surface-emphasis);border-color:var(--uui-color-border-emphasis)}.n3o-data-import .btn--primary{background:var(--uui-color-default);color:var(--uui-color-default-contrast)}.n3o-data-import .btn--primary.btn--positive{background:var(--uui-color-positive);color:var(--uui-color-positive-contrast)}.n3o-data-import .btn--primary:hover:not(:disabled){background:var(--uui-color-positive-emphasis, var(--uui-color-positive))}.n3o-data-import .btn:disabled{opacity:.5;cursor:not-allowed}";
-function ye({ contentKey: o, authFetch: a }) {
-  const [r, m] = d("form"), [s, p] = d(!1), [v, K] = d([]), [u, j] = d(null), [A, ee] = d([]), [f, B] = d(null), [F, te] = d(!1), [S, g] = d([]), [E, R] = d(null), V = Q(null), q = Q(null);
+function ye({ contentKey: a, authFetch: o }) {
+  const [r, m] = d("form"), [s, p] = d(!1), [v, K] = d([]), [u, j] = d(null), [O, ee] = d([]), [f, B] = d(null), [F, te] = d(!1), [S, g] = d([]), [A, R] = d(null), V = Q(null), q = Q(null);
   be(() => {
-    if (!o || !a)
+    if (!a || !o)
       return;
     let e = !0;
     return (async () => {
-      const c = await oe(o), w = await (await a("/umbraco/backoffice/api/Imports/lookups/datePatterns", {
+      const c = await ae(a), w = await (await o("/umbraco/backoffice/api/Imports/lookups/datePatterns", {
         headers: { Accept: "application/json" }
       })).json();
       e && (K(c), ee(w), B(w[0] ?? null));
     })(), () => {
       e = !1;
     };
-  }, [o, a]);
-  const oe = async (e) => await (await a(`/umbraco/backoffice/api/ContentTypes/${e}/relations?type=child`, {
+  }, [a, o]);
+  const ae = async (e) => await (await o(`/umbraco/backoffice/api/ContentTypes/${e}/relations?type=child`, {
     headers: { Accept: "application/json" }
-  })).json(), ae = async (e) => {
+  })).json(), oe = async (e) => {
     if (!e) {
       g([]);
       return;
     }
-    const c = await (await a(`/umbraco/backoffice/api/Imports/importableProperties/${e.alias}`, {
+    const c = await (await o(`/umbraco/backoffice/api/Imports/importableProperties/${e.alias}`, {
       headers: { Accept: "application/json" }
     })).json();
     for (const l of c)
@@ -38,10 +38,10 @@ function ye({ contentKey: o, authFetch: a }) {
     p(!1), j(null), R(null), g([]), m("form");
   }, ie = (e) => {
     const i = e.target.value, c = v.find((l) => l.alias === i) ?? null;
-    j(c), ae(c);
+    j(c), oe(c);
   }, re = (e) => {
     const i = e.target.value;
-    B(A.find((c) => c.id === i) ?? null);
+    B(O.find((c) => c.id === i) ?? null);
   }, ne = (e, i) => {
     g((c) => c.map((l) => l === e ? { ...l, selected: i } : l));
   }, se = () => g((e) => e.map((i) => ({ ...i, selected: !0 }))), ce = () => g((e) => e.map((i) => ({ ...i, selected: !1 }))), z = (e) => {
@@ -54,7 +54,7 @@ function ye({ contentKey: o, authFetch: a }) {
       z("At least one property must be selected");
       return;
     }
-    const i = { properties: e }, c = await a(`/umbraco/backoffice/api/Imports/template/${u.alias}`, {
+    const i = { properties: e }, c = await o(`/umbraco/backoffice/api/Imports/template/${u.alias}`, {
       method: "POST",
       headers: {
         Accept: "*/*",
@@ -62,7 +62,7 @@ function ye({ contentKey: o, authFetch: a }) {
       },
       body: JSON.stringify(i)
     }), l = await c.blob(), N = ((Z = ((c.headers.get("Content-Disposition") ?? "").split(";")[1] ?? "").split("=")[1]) == null ? void 0 : Z.replaceAll('"', "")) ?? "template.csv", T = new Blob([l]), G = window.URL.createObjectURL(T), y = document.createElement("a");
-    y.href = G, y.setAttribute("download", N), document.body.appendChild(y), y.click(), (J = y.parentNode) == null || J.removeChild(y), window.URL.revokeObjectURL(G);
+    y.href = G, y.setAttribute("download", N), document.body.appendChild(y), y.dispatchEvent(new MouseEvent("click", { bubbles: !1, cancelable: !1 })), (J = y.parentNode) == null || J.removeChild(y), window.URL.revokeObjectURL(G);
   }, de = async () => {
     var N, T;
     p(!0);
@@ -80,8 +80,8 @@ function ye({ contentKey: o, authFetch: a }) {
       moveUpdatedContentToCurrentLocation: F,
       csvFile: c,
       zipFile: l
-    }, I = await a(
-      `/umbraco/backoffice/api/Imports/queue/${o}/${u.alias}`,
+    }, I = await o(
+      `/umbraco/backoffice/api/Imports/queue/${a}/${u.alias}`,
       {
         method: "POST",
         headers: {
@@ -96,7 +96,7 @@ function ye({ contentKey: o, authFetch: a }) {
     if (!e.files || e.files.length === 0)
       return null;
     const i = new FormData();
-    return i.append("file", e.files[0]), await (await a("/umbraco/api/Storage/tempUpload", {
+    return i.append("file", e.files[0]), await (await o("/umbraco/api/Storage/tempUpload", {
       method: "POST",
       body: i
     })).json();
@@ -114,7 +114,7 @@ function ye({ contentKey: o, authFetch: a }) {
     ] }) : r === "error" ? /* @__PURE__ */ n("uui-box", { headline: "Import failed", children: [
       /* @__PURE__ */ n("div", { className: "statusBox statusBox--danger", children: [
         /* @__PURE__ */ t("uui-icon", { name: "icon-alert" }),
-        /* @__PURE__ */ t("div", { children: E && E.length > 0 ? /* @__PURE__ */ t("ul", { className: "errorList", children: E.map((e, i) => /* @__PURE__ */ t("li", { children: e }, i)) }) : /* @__PURE__ */ t("span", { children: "Something went wrong while queueing the import." }) })
+        /* @__PURE__ */ t("div", { children: A && A.length > 0 ? /* @__PURE__ */ t("ul", { className: "errorList", children: A.map((e, i) => /* @__PURE__ */ t("li", { children: e }, i)) }) : /* @__PURE__ */ t("span", { children: "Something went wrong while queueing the import." }) })
       ] }),
       /* @__PURE__ */ t("div", { className: "actions", children: /* @__PURE__ */ t("button", { type: "button", className: "btn btn--secondary", onClick: W, children: "Start over" }) })
     ] }) : /* @__PURE__ */ n(X, { children: [
@@ -152,8 +152,8 @@ function ye({ contentKey: o, authFetch: a }) {
                 className: "nativeSelect",
                 value: (f == null ? void 0 : f.id) ?? "",
                 onChange: re,
-                disabled: s || A.length === 0,
-                children: A.map((e) => /* @__PURE__ */ t("option", { value: e.id, children: e.name }, e.id))
+                disabled: s || O.length === 0,
+                children: O.map((e) => /* @__PURE__ */ t("option", { value: e.id, children: e.name }, e.id))
               }
             ) })
           }
@@ -273,48 +273,48 @@ function ye({ contentKey: o, authFetch: a }) {
     /* @__PURE__ */ t("style", { children: ge })
   ] });
 }
-var we = Object.getOwnPropertyDescriptor, Y = (o) => {
-  throw TypeError(o);
-}, xe = (o, a, r, m) => {
-  for (var s = m > 1 ? void 0 : m ? we(a, r) : a, p = o.length - 1, v; p >= 0; p--)
-    (v = o[p]) && (s = v(s) || s);
+var we = Object.getOwnPropertyDescriptor, Y = (a) => {
+  throw TypeError(a);
+}, xe = (a, o, r, m) => {
+  for (var s = m > 1 ? void 0 : m ? we(o, r) : o, p = a.length - 1, v; p >= 0; p--)
+    (v = a[p]) && (s = v(s) || s);
   return s;
-}, L = (o, a, r) => a.has(o) || Y("Cannot " + r), h = (o, a, r) => (L(o, a, "read from private field"), r ? r.call(o) : a.get(o)), _ = (o, a, r) => a.has(o) ? Y("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(o) : a.set(o, r), P = (o, a, r, m) => (L(o, a, "write to private field"), a.set(o, r), r), M = (o, a, r) => (L(o, a, "access private method"), r), b, x, k, C, O;
+}, L = (a, o, r) => o.has(a) || Y("Cannot " + r), h = (a, o, r) => (L(a, o, "read from private field"), r ? r.call(a) : o.get(a)), _ = (a, o, r) => o.has(a) ? Y("Cannot add the same private member more than once") : o instanceof WeakSet ? o.add(a) : o.set(a, r), P = (a, o, r, m) => (L(a, o, "write to private field"), o.set(a, r), r), M = (a, o, r) => (L(a, o, "access private method"), r), b, x, k, C, E;
 const Ce = "n3o-data-import";
 let U = class extends he(ue(HTMLElement)) {
   constructor() {
     super(), _(this, C), _(this, b), _(this, x), _(this, k, null);
-    const o = this.attachShadow({ mode: "open" });
-    P(this, x, document.createElement("div")), o.appendChild(h(this, x)), this.consumeContext(me, (a) => {
-      a && this.observe(
-        a.unique,
+    const a = this.attachShadow({ mode: "open" });
+    P(this, x, document.createElement("div")), a.appendChild(h(this, x)), this.consumeContext(me, (o) => {
+      o && this.observe(
+        o.unique,
         (r) => {
-          r && r !== h(this, k) && (P(this, k, r), M(this, C, O).call(this));
+          r && r !== h(this, k) && (P(this, k, r), M(this, C, E).call(this));
         },
         "_observeUnique"
       );
     });
   }
   // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
-  authFetchChanged(o) {
-    M(this, C, O).call(this);
+  authFetchChanged(a) {
+    M(this, C, E).call(this);
   }
   connectedCallback() {
-    var o;
-    (o = super.connectedCallback) == null || o.call(this), h(this, b) ?? P(this, b, fe(h(this, x))), M(this, C, O).call(this);
+    var a;
+    (a = super.connectedCallback) == null || a.call(this), h(this, b) ?? P(this, b, fe(h(this, x))), M(this, C, E).call(this);
   }
   disconnectedCallback() {
-    var o, a;
-    (o = super.disconnectedCallback) == null || o.call(this), (a = h(this, b)) == null || a.unmount(), P(this, b, void 0);
+    var a, o;
+    (a = super.disconnectedCallback) == null || a.call(this), (o = h(this, b)) == null || o.unmount(), P(this, b, void 0);
   }
 };
 b = /* @__PURE__ */ new WeakMap();
 x = /* @__PURE__ */ new WeakMap();
 k = /* @__PURE__ */ new WeakMap();
 C = /* @__PURE__ */ new WeakSet();
-O = function() {
-  var o;
-  (o = h(this, b)) == null || o.render(
+E = function() {
+  var a;
+  (a = h(this, b)) == null || a.render(
     ve(ye, {
       contentKey: h(this, k),
       authFetch: this.authFetch
