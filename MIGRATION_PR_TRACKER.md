@@ -29,7 +29,7 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 |---|---|---|---|
 | **ReactRuntime (auth + visibility)** | `v17-N3O.Umbraco.ReactRuntime` | `74a2a8ef8` | **Foundation — must merge first.** Shared `@n3o/auth-fetch` (`createAuthFetch` + `UmbAuthFetchMixin`) + `N3O.Condition.WorkspaceVisibility` condition added to the Cms ReactRuntime (importmap + condition manifest). _(Still predates the workspace restructure — will need the same re-cut treatment.)_ |
 | **Data** (+ Data.StaticAssets) | `v17-N3O.Umbraco.Data` | `8b008592c` | Combined. v17 migration; **runtime-verified import flow** (queue → Hangfire → content created); `EnsureDataTypeExistsAsync` sets `EditorUiAlias`; import status-row DB connection isolated (DL-05); Export/Import visibility controllers + manifests restored. StaticAssets: authed Export/Import + ImportDataEditor via shared `@n3o/auth-fetch`; native HTML controls (upstream uui FormControlMixin/React bug); "View queue" → v17 route. |
-| **Cloud.Platforms** (+ Cloud.Platforms.StaticAssets) | `v17-N3O.Umbraco.Cloud.Platforms` | `54845626a` | Combined. v17 migration; Preview visibility endpoint (`PlatformsPreviewController` + `PreviewApiName`) restored. StaticAssets: RCL packaging; Preview workspace view + visibility condition restored. |
+| **Cloud.Platforms** (+ Cloud.Platforms.StaticAssets + Marketing.StaticAssets) | `v17-N3O.Umbraco.Cloud.Platforms` | `83b9a8b86` | Combined. v17 migration; Preview visibility endpoint restored. **BLOCKER-04 resolved:** TelethonOnAir registered via `engageSegmentRule` extension type (Engage v17 API confirmed from `manifests-personalization.js`; verified live in private manifest + Extension Insights). Preview `contentTypeAlias` undefined fix (route now accepts GUID, resolves alias server-side). `CampaignSending`/`OfferingSending` comment-updated (embed codes work; URL display + tab visibility deferred). Auth0 `UserSaving` + `ExceptionMiddleware` null guards. Marketing.StaticAssets telethon-on-air-rule App_Plugins added to this branch. |
 | **Blocks** | `v17-N3O.Umbraco.Blocks` | `736ec5463` | v17 migration; dead `BlockItemDataExtensions` removed. _(Predates the workspace restructure — will need the same re-cut treatment.)_ |
 
 > **Merge order:** `v17-N3O.Umbraco.ReactRuntime` → `v17` first; then `v17-N3O.Umbraco.Data` / `v17-N3O.Umbraco.Cloud.Platforms` (they `import '@n3o/auth-fetch'` + reference the condition, which only exist once the runtime lands).
@@ -46,8 +46,17 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 - Block List lookup schema (`PropertyType.Nested`) needs real-content validation.
 - `ImportsMigrationsComponent` plan name not namespaced (rename has migration-rerun risk — needs a decision).
 - Export memory (`ProcessExportHandler` buffers whole file) — no safe in-scope fix; needs a multi-project streaming change.
-- CS0618 deprecations (`IDataTypeService.GetDataType(int)` U18, `IAuditService.GetLogs(int)` U19) — deliberate TODOs.
+- ✅ **CS0618 `IDataTypeService.GetDataType(int)`** — replaced with `GetAsync(propertyType.DataTypeKey)` (2026-06-14).
+- ✅ **CS0618 `IAuditService.GetLogs(int)`** — replaced with `GetItemsByEntityAsync(...).Items.FirstOrDefault()` (2026-06-14).
 - `EPPlus 8.5.4` commercial-license review.
+
+## ⏳ In progress — remaining known issues (Cloud.Platforms)
+
+- Campaign/Offering staging+prod URL display — previously injected dynamically; needs a new workspace view + backend endpoint.
+- Crowdfunding tab visibility for unpublished campaigns — needs a workspace condition.
+- ✅ **BLOCKER-04: TelethonOnAir segment rule client-side registration** — resolved 2026-06-14. `engageSegmentRule` extension type confirmed from `Umbraco.Engage.StaticAssets` 17.2.2; registered in `umbraco-package.json`. Verified live in private manifest + Extension Insights with Engage running.
+- SubscriptionFile.cs TODO markers (needs runtime audit).
+- PlatformsContentAppsComposer / PlatformsPreviewApp.cs stale comment-only files (can delete).
 
 ## ⏳ Not started — not yet sliced into per-project PRs
 

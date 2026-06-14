@@ -1,10 +1,34 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-14 (session 15) — use this to orient the next session*
+*Updated: 2026-06-14 (session 15 continued) — use this to orient the next session*
 
 ---
 
 ## Current State
+
+**Latest (2026-06-14, session 15 continued #2) — Cloud fixes: BLOCKER-04 resolved + preview alias + null guards:**
+- **BLOCKER-04 RESOLVED — TelethonOnAir segment rule now registered in Engage v17.** Confirmed Engage v17 client-side API: extension type `"engageSegmentRule"` registered via `umbraco-package.json`. Added `engageSegmentRule` extension entry to `Cloud.Platforms.Marketing.StaticAssets/wwwroot/App_Plugins/telethon-on-air-rule/umbraco-package.json` with `meta.type = "TelethonOnAir"` matching the C# server-side type. Verified live: both `bundle` + `engageSegmentRule` appear in the private manifest response; Extension Insights shows the bundle; Engage API (configuration/package/main-switch) all 200. BLOCKER-04 placeholder comments cleaned from all 3 JS files.
+- **Cloud preview `contentTypeAlias` undefined — FIXED.** `PlatformsBackOfficeController` route changed to `previewHtml/{documentTypeKey:guid}`; resolves alias server-side via `IContentTypeService.Get(guid)` + `IFluentParameters.Add("contentTypeAlias", ...)`. `platforms-preview-app.tsx` now passes `content.documentType.unique` (GUID, available in v17) instead of undefined alias. Rebuilt `platforms-preview.js`.
+- **`CampaignSending.cs` / `OfferingSending.cs`** — TODO comments updated: embed codes (`donationFormEmbedCode` etc.) are live content properties in MH DB (1038 rows); they show automatically in the v17 editor. URL display and crowdfunding tab visibility explicitly deferred.
+- **`Auth0/UserSaving.cs`** — null guard on `_auth0BackOfficeOptions.Auth0?.Login` (was NRE when Auth0 not configured, crashed login endpoint with 500).
+- **`ExceptionMiddleware.cs`** — null guard on `endpoint?.ControllerName` / `endpoint?.ActionName` (was NRE for non-controller requests).
+- All pushed to `v17-Talha` (`12c7ff696`) + `v17-N3O.Umbraco.Cloud.Platforms` (`83b9a8b86`).
+- **TestSite wired for Cloud.Platforms testing:** Added `TestSiteCloudProfile` (dev profile setting subscription `eu1/6e` via `SubscriptionDescriptor.FromCode`) + `TestSiteComposer` (explicit `IExchangeRateProvider` registration fallback) + `Marketing`/`Marketing.StaticAssets` project references. Changes are TestSite-only (not in the per-project branches).
+
+**Remaining open on Cloud (not yet in branch):**
+- Campaign/Offering staging+prod URL display — needs new workspace view + backend endpoint
+- Crowdfunding tab visibility for unpublished campaigns — needs workspace condition
+- SubscriptionFile.cs TODO markers (medium)
+- PlatformsContentAppsComposer / PlatformsPreviewApp.cs stale TODO files (low — can delete)
+- LinkExtensions.cs stale TODO comment (low)
+- README / csproj Description placeholders (documentation)
+
+**Latest (2026-06-14, session 15 continued) — Data bug fixes + CS0618 deprecations resolved:**
+- **Bug: Import template download failed (SecurityError: pushState blob URL) — FIXED.** `data-import-app.tsx`: `link.click()` → `link.dispatchEvent(new MouseEvent('click', {bubbles:false,cancelable:false}))`. Root cause: Umbraco's SPA router intercepts bubbling click events on `document.body` and calls `history.pushState(blob_url)`, which the browser rejects. Non-bubbling dispatch bypasses the router. Verified: HTTP 200 on template endpoint, zero console errors.
+- **Bug: UIBuilder Imports entry editor showed 500 "No data type found with the Name: N3O Import Data Editor" — FIXED.** `DataComposer.EnsureDataTypeExistsAsync` was creating data types with `Name = dataEditor.Alias` (`"N3O.Umbraco.Data.ImportDataEditor"`) but UIBuilder's `SetDataType()` looks up by friendly name (`"N3O Import Data Editor"`). Fix: method now takes an explicit name param; on startup it **calls `UpdateAsync`** for existing data types whose names are wrong (fixes live DBs without a migration). Verified live: entry modal renders all fields (Data = ImportDataEditor, Notices = ImportNoticesViewer, all 200).
+- **CS0618 fixed: `ContentTypeExtensions.cs`** — `GetDataType(int)` → `GetAsync(propertyType.DataTypeKey)` using `IPropertyType.DataTypeKey` (Guid) available in v17.
+- **CS0618 fixed: `ContentMetadataConverter.LatestState.cs`** — `GetLogs(int)` → `GetItemsByEntityAsync(id, skip:0, take:1, Descending, null, null).GetAwaiter().GetResult().Items.FirstOrDefault()`. Return type is `PagedModel<IAuditItem>`.
+- All 6 changed files committed and pushed to `v17-Talha` (`e7c7a1460`) + `v17-N3O.Umbraco.Data` (`c3d2846bb`).
 
 **Latest (2026-06-14, session 15) — Scheduler project wired + Hangfire dashboard fixed + UIBuilder 17.2.2 + Data cleanup:**
 - **Scheduler project wired into TestSite.** `N3O.Umbraco.TestSite.csproj` + `N3O.Umbraco.TestSite.slnx` now reference both `N3O.Umbraco.Scheduler` and `N3O.Umbraco.Scheduler.StaticAssets`. `Scheduler.StaticAssets.csproj` also gained a `BuildClientApps` MSBuild target (flat-path glob `Apps\package.json`) so the frontend auto-builds on `dotnet build`.
