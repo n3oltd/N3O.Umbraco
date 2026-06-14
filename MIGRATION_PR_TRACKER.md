@@ -59,20 +59,9 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 
 ## 🔄 In progress — pushed to a branch, no PR yet (small-change projects, session 16)
 
-| Project(s) | Branch | Files changed | Notes |
+| Branch | Tip | Projects | Notes |
 |---|---|---|---|
-| Authentication + Auth0 | `v17-N3O.Umbraco.Authentication` | AuthController open-redirect fix; Auth0 null guard on Login + removed AutoRedirect/Icon options | |
-| Storage + Storage.Azure | `v17-N3O.Umbraco.Storage` | v17 API updates | |
-| Blog | `v17-N3O.Umbraco.Blog` | BlogPostUrlProvider (NewDefaultUrlProvider base, abstract Alias) | |
-| Events | `v17-N3O.Umbraco.Events` | EventUrlProvider (same pattern) | |
-| Vacancies | `v17-N3O.Umbraco.Vacancies` | VacanciesUrlProvider (same pattern) | |
-| Email | `v17-N3O.Umbraco.Email` | MimeMessageExtensions v17 API update | |
-| Validation | `v17-N3O.Umbraco.Validation` | ExceptionMiddleware null guards | |
-| Cdn.Cloudflare | `v17-N3O.Umbraco.Cdn.Cloudflare` | Cloudflare client model updates | |
-| Sync.Extensions | `v17-N3O.Umbraco.Sync.Extensions` | SyncContentHandler reimplemented on PublisherProcessor (BLOCKER-05) | |
-| Bundling | `v17-N3O.Umbraco.Bundling` | Bundler/AssetBundle stubs (throws NotSupportedException) | |
-| Marketing | `v17-N3O.Umbraco.Marketing` | UmbracoEngageSegmentsDataSource v17 Contentment API update | |
-| Markup.Markdown | `v17-N3O.Umbraco.Markup.Markdown` | OurMarkdownValueConverter ctor update | |
+| **`v17-small-projects`** | `6d899eaeb` | Authentication + Auth0, Storage + Storage.Azure, Blog, Events, Vacancies, Email, Validation, Cdn.Cloudflare, Sync.Extensions, Bundling, Marketing, Markup.Markdown | 14 projects · 33 files · each ≤3 non-csproj changes |
 
 ## ⏳ Not started — not yet sliced into per-project PRs
 
