@@ -137,24 +137,34 @@ public class DataComponent : IAsyncComponent {
     public async Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
         if (_runtimeState.Level == RuntimeLevel.Run) {
             await EnsureDataTypeExistsAsync(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
-                                                                             _iioHelper));
+                                                                             _iioHelper),
+                                            ImportNoticesViewerDataEditor.DataEditorName);
 
             await EnsureDataTypeExistsAsync(new ImportDataEditorDataEditor(_dataValueEditorFactory,
-                                                                          _iioHelper));
+                                                                          _iioHelper),
+                                            ImportDataEditorDataEditor.DataEditorName);
         }
     }
 
-    private async Task EnsureDataTypeExistsAsync(DataEditor dataEditor) {
+    private async Task EnsureDataTypeExistsAsync(DataEditor dataEditor, string name) {
         var key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
 
         // Look up by the deterministic Key (not GetDataType(alias), which matches by Name and
         // misses the existing row on restart/upgrade -> duplicate-key crash). See BLOCKER-11.
-        if (await _dataTypeService.GetAsync(key) != null) {
+        var existing = await _dataTypeService.GetAsync(key);
+
+        if (existing != null) {
+            // Fix data types created with the wrong name (alias instead of display name).
+            if (!existing.Name.EqualsInvariant(name)) {
+                existing.Name = name;
+                await _dataTypeService.UpdateAsync(existing, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
+            }
+
             return;
         }
 
         var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
-        dataType.Name = dataEditor.Alias;
+        dataType.Name = name;
         dataType.Key = key;
         // The UI editor alias (propertyEditorUi) equals the [DataEditor] alias for these editors; setting
         // it stops the v17 data-type screen showing an empty property-editor picker. See DL-09 / BLOCKER-11.

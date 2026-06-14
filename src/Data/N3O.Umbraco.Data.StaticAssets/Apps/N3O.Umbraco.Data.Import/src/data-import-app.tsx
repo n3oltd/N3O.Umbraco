@@ -164,7 +164,7 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         link.href = blobUrl;
         link.setAttribute('download', filename);
         document.body.appendChild(link);
-        link.click();
+        link.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: false }));
         link.parentNode?.removeChild(link);
         window.URL.revokeObjectURL(blobUrl);
     };
