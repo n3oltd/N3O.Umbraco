@@ -52,11 +52,10 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 
 ## ⏳ In progress — remaining known issues (Cloud.Platforms)
 
-- Campaign/Offering staging+prod URL display — previously injected dynamically; needs a new workspace view + backend endpoint.
-- Crowdfunding tab visibility for unpublished campaigns — needs a workspace condition.
+- ✅ **Campaign/Offering URL display** — resolved 2026-06-14 (session 16). New `N3O.WorkspaceView.PlatformsUrls` workspace view: `PlatformsBackOfficeController.GetContentUrls` endpoint + `platforms-urls.ts`/`platforms-urls-app.tsx`; shows staging + production URLs for campaigns and offerings using `ContentLocatorExtensions` + `UrlSettingsContent`. Build 0 errors; frontend builds 0 errors.
 - ✅ **BLOCKER-04: TelethonOnAir segment rule client-side registration** — resolved 2026-06-14. `engageSegmentRule` extension type confirmed from `Umbraco.Engage.StaticAssets` 17.2.2; registered in `umbraco-package.json`. Verified live in private manifest + Extension Insights with Engage running.
-- SubscriptionFile.cs TODO markers (needs runtime audit).
-- PlatformsContentAppsComposer / PlatformsPreviewApp.cs stale comment-only files (can delete).
+- ✅ **Cleanup** — resolved 2026-06-14 (session 16). Deleted `PlatformsContentAppsComposer.cs` + `PlatformsPreviewApp.cs` stubs; removed stale `TODO Migration Review` from `LinkExtensions.cs`; removed `SubscriptionFile.cs` TODO comment.
+- Crowdfunding tab visibility for unpublished campaigns — needs a workspace condition (deferred).
 
 ## ⏳ Not started — not yet sliced into per-project PRs
 

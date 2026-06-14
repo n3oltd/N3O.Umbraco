@@ -1,6 +1,6 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-14 (session 15 continued) — use this to orient the next session*
+*Updated: 2026-06-14 (session 16) — use this to orient the next session*
 
 ---
 
@@ -15,8 +15,19 @@
 - All pushed to `v17-Talha` (`12c7ff696`) + `v17-N3O.Umbraco.Cloud.Platforms` (`83b9a8b86`).
 - **TestSite wired for Cloud.Platforms testing:** Added `TestSiteCloudProfile` (dev profile setting subscription `eu1/6e` via `SubscriptionDescriptor.FromCode`) + `TestSiteComposer` (explicit `IExchangeRateProvider` registration fallback) + `Marketing`/`Marketing.StaticAssets` project references. Changes are TestSite-only (not in the per-project branches).
 
+**Latest (2026-06-14, session 16) — Cloud cleanup + Campaign/Offering URL display workspace view:**
+- **Deleted stubs:** `PlatformsContentAppsComposer.cs` + `PlatformsPreviewApp.cs` (comment-only leftovers from the v14 IContentAppFactory removal — the real work is in `umbraco-package.json`).
+- **LinkExtensions.cs** — removed stale `// TODO Migration Review:` inline comment (code was already correct).
+- **SubscriptionFile.cs** — removed `/*TODO Need to update these*/` comment.
+- **Campaign/Offering URL display — IMPLEMENTED** as `N3O.WorkspaceInfoApp.PlatformsUrls` (a panel inside the existing Info tab, matching the v13 pattern of injecting into the content editor rather than adding a new tab):
+  - Backend: `PlatformsBackOfficeController.GetContentUrls(Guid contentId)` — checks campaign/offering composition, reads `UrlSettingsContent.StagingBaseUrl`/`ProductionBaseUrl`, constructs URLs via `ContentLocatorExtensions.GetCampaignPath`/`GetOfferingPath`. Returns `{ permitted, stagingUrl, productionUrl }`.
+  - Frontend: `platforms-urls-info-app.ts` — pure Lit `UmbLitElement`, type `workspaceInfoApp`, renders `<umb-workspace-info-app-layout headline="Platform URLs">` with staging/production URL rows + copy buttons. Handles its own visibility (renders nothing when `permitted=false` or no URLs configured — no separate condition extension needed). Auth: consumes `UMB_AUTH_CONTEXT.getOpenApiConfiguration()` for bearer token.
+  - `umbraco-package.json` — `workspaceInfoApp` extension, weight 50, condition `Umb.Condition.WorkspaceAlias = Umb.Workspace.Document`.
+  - `vite.config.ts` — `platforms-urls-info-app` entry; frontend builds 0 errors.
+  - `CampaignSending.cs` / `OfferingSending.cs` — updated comments to reflect URL display done.
+  - Build: 0 errors. **Live-verified in TestSite**: extension registered as `workspaceInfoApp` in Extension Insights (alias `N3O.WorkspaceInfoApp.PlatformsUrls`, weight 50); Info tab on campaign content renders cleanly with no extra tab; 0 console errors. Panel shows "URLs not available" when `UrlSettingsContent` staging/production URLs are not configured (correct for TestSite — will show actual URLs on a real site).
+
 **Remaining open on Cloud (not yet in branch):**
-- Campaign/Offering staging+prod URL display — needs new workspace view + backend endpoint
 - Crowdfunding tab visibility for unpublished campaigns — needs workspace condition
 - SubscriptionFile.cs TODO markers (medium)
 - PlatformsContentAppsComposer / PlatformsPreviewApp.cs stale TODO files (low — can delete)

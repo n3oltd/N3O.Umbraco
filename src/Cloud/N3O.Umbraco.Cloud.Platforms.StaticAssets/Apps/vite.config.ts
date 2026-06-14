@@ -5,7 +5,10 @@ import { n3oPluginConfig } from '../../../build/vite-config';
 // by Umbraco's import map (react/react-dom are the self-hosted shared runtime from
 // N3O.Umbraco.Cms App_Plugins/N3O.Umbraco.ReactRuntime). Only this plugin's own code is bundled.
 export default n3oPluginConfig({
-    entries: { 'platforms-preview': 'src/platforms-preview.ts' },
+    entries: {
+        'platforms-preview': 'src/platforms-preview.ts',
+        'platforms-urls-info-app': 'src/platforms-urls-info-app.ts',
+    },
     outDir: '../wwwroot/App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview',
     react: true,
 });
