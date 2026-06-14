@@ -1,23 +1,10 @@
 import { LitElement, html, css } from '@umbraco-cms/backoffice/external/lit';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 
-// ----------------------------------------------------------------------------
-// PLACEHOLDER (BLOCKER-04) — Telethon On Air segment rule EDITOR component.
-//
-// TODO Migration Review: The original AngularJS editor component delegated entirely to Engage's own
-// <ums-segment-rule-editor> directive:
-//   <ums-segment-rule-editor name="$ctrl.rule.name" type="$ctrl.rule.type"
-//                            save="$ctrl.save()"></ums-segment-rule-editor>
-// i.e. the rule itself has no custom fields (empty defaultConfig {}); Engage
-// supplies the generic editor chrome (name/type + save).
-//
-// The Engage v17 (Bellissima) client-side equivalent of <ums-segment-rule-editor>
-// and of the segment-rule extension contract is UNKNOWN (see BLOCKER-04 + report).
-// This placeholder preserves the same inputs the AngularJS component received
-// (rule, config) and the same `save` callback, and surfaces the rule name/type
-// so the rule is still identifiable in the UI. It must be re-pointed at the real
-// Engage v17 editor host once that client API is confirmed.
-// ----------------------------------------------------------------------------
+// Telethon On Air segment rule EDITOR component.
+// Registered via umbraco-package.json as type "engageSegmentRule" (elementName).
+// The rule has no configurable fields (empty config {}), so this element only
+// identifies the rule type; Engage v17 provides the generic editor chrome.
 const elementName = 'segment-rule-telethon-on-air-editor';
 
 class SegmentRuleTelethonOnAirEditorElement extends UmbElementMixin(LitElement) {

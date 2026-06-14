@@ -1,45 +1,7 @@
-// ----------------------------------------------------------------------------
-// PLACEHOLDER (BLOCKER-04) — Telethon On Air segment rule REGISTRATION.
-//
-// The original AngularJS file registered this rule with Engage's segment-rule
-// repository service:
-//
-//   angular.module("umbraco").run(["umsSegmentRuleRepository", function (ruleRepo) {
-//       ruleRepo.addRule({
-//           name: "Telethon On Air",
-//           type: "TelethonOnAir",
-//           iconUrl: "data:image/png;base64,...",
-//           order: 4,
-//           defaultConfig: {},
-//           components: {
-//               display: "segment-rule-telethon-on-air-display",
-//               editor:  "segment-rule-telethon-on-air-editor",
-//           },
-//       });
-//   });
-//
-// In Umbraco 17 (Bellissima) there is no `angular.module(...).run` and no
-// `umsSegmentRuleRepository`. The Engage v17.2.2 *client-side* extension API for
-// contributing a custom segment rule (the equivalent of `ruleRepo.addRule`) is
-// UNKNOWN and could not be confirmed from the codebase or the migrated reference
-// plugin. Per the migration guidance we are NOT inventing that API.
-//
-// The rule descriptor below is preserved verbatim (name, type, iconUrl, order,
-// defaultConfig, and the editor/display element tag names) so it can be handed to
-// the real Engage v17 registration mechanism once it is identified. The two Lit
-// components it references already exist and are registered via umbraco-package.json:
-//   - editor:  segment-rule-telethon-on-air-editor  (segment-rule-telethon-on-air-editor.js)
-//   - display: segment-rule-telethon-on-air-display (segment-rule-telethon-on-air-display.js)
-//
-// ACTION REQUIRED (see report / BLOCKER-04):
-//   Replace the placeholder below with the Engage v17 client-side segment-rule
-//   registration call once the API is confirmed (likely an Umbraco extension
-//   manifest type, an Engage extension-registry entry, or an Engage JS API on the
-//   global Umbraco/Engage namespace).
-// ----------------------------------------------------------------------------
-
-// Ensure the editor + display custom elements are defined when this bundle loads,
-// so they are ready for the Engage v17 registration once it is wired up.
+// Loads and registers the Telethon On Air segment rule custom elements so they are
+// available when Engage renders the rule editor (elementName in umbraco-package.json).
+// The engageSegmentRule extension entry in umbraco-package.json tells Engage about
+// this rule; this bundle just ensures the element classes are defined first.
 import './segment-rule-telethon-on-air-editor.js';
 import './segment-rule-telethon-on-air-display.js';
 

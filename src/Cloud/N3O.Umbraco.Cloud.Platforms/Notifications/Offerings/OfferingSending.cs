@@ -1,9 +1,6 @@
-// TODO Migration Review: SendingContentNotification and ContentVariantDisplay were removed in Umbraco 14
-// when the Angular backoffice was replaced with Bellissima.
+// v17 status (Bellissima migration):
 //
-// This handler previously set staging/production URL info on the offering content display model
-// when the editor was opened in the backoffice.
-//
-// TODO Migration Review (v17 replacement): Implement a Bellissima workspace view extension that fetches
-// and displays offering URLs, or configure URL providers via IContentUrlProvider.
+// Staging/production URL display for offerings: NOT YET IMPLEMENTED. Requires a new workspace
+// view extension (Lit) that fetches and displays the platforms URLs for the current offering.
+// Deferred — needs a backend endpoint and knowledge of the URL scheme.
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;

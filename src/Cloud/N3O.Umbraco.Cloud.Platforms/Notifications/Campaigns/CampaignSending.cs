@@ -1,15 +1,14 @@
-// SendingContentNotification, ContentVariantDisplay, ContentPropertyDisplay and Tab<T> were
-// TODO Migration Review: all removed in Umbraco 14 when the Angular backoffice was replaced with Bellissima.
+// v17 status (Bellissima migration):
 //
-// This handler previously:
-//   1. Injected embed-code HTML into read-only properties when the campaign editor opened
-//   2. Set staging/production URL info on the content display model
-//   3. Hid "crowdfunding" tabs for unpublished campaigns
+// 1. Embed codes (donationFormEmbedCode / donationButtonEmbedCode / donationPopupEmbedCode):
+//    These are stored as Umbraco content properties and are displayed automatically by the v17
+//    backoffice editor — no handler required for this functionality.
 //
-// TODO Migration Review (v17 replacement): Implement equivalent functionality using:
-//   - A Bellissima workspace view extension (Lit web component) to show embed codes
-//   - IContentUrlProvider or equivalent for custom URL display in the backoffice
-//   - Workspace conditions to hide sections based on content state
+// 2. Staging/production URL display: NOT YET IMPLEMENTED. Requires a new workspace view
+//    extension (Lit) that fetches and displays the platforms URLs for the current campaign.
+//    Deferred — needs a backend endpoint and knowledge of the URL scheme.
 //
-// Register these as Bellissima UI extensions in an App_Plugins umbraco-package.json manifest.
+// 3. Crowdfunding tab visibility for unpublished campaigns: NOT YET IMPLEMENTED. Requires a
+//    custom Bellissima workspace condition based on the content's publish state.
+//    Deferred.
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;

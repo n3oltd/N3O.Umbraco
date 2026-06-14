@@ -1,7 +1,7 @@
-import { LitElement as B, html as U, nothing as $, css as H, customElement as L } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as U, html as B, nothing as $, css as H, customElement as L } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT as z } from "@umbraco-cms/backoffice/document";
-import { useRef as I, useEffect as G, createElement as J } from "react";
+import { useRef as S, useEffect as G, createElement as J } from "react";
 import { createRoot as K } from "react-dom/client";
 import { jsx as X } from "react/jsx-runtime";
 function F(e, t) {
@@ -11,38 +11,38 @@ function F(e, t) {
   }), n.contentTypeAlias = t, n;
 }
 function Q({ unique: e, getContent: t }) {
-  const n = I(null), a = I(null);
+  const n = S(null), a = S(null);
   return G(() => {
-    let r = !0;
+    let i = !0;
     const l = async () => {
-      var q, N;
-      const d = t();
-      if (!d)
+      var W, N;
+      const p = t();
+      if (!p)
         return;
-      const v = d, M = ((q = v.contentType) == null ? void 0 : q.alias) ?? v.contentTypeAlias, W = d.variants ?? [], g = W.find((A) => A.culture == null || A.segment == null) ?? W[0], j = d.values ?? [], w = F(j, M);
-      w.name = g == null ? void 0 : g.name, w.key = d.unique, w.parentId = ((N = v.parent) == null ? void 0 : N.unique) ?? v.parentId;
-      const D = await (await fetch("/umbraco/backoffice/api/cloudBackOffice/subscription/code")).json(), P = await (await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${M}`, {
+      const O = (W = p.documentType) == null ? void 0 : W.unique, q = p, M = p.variants ?? [], E = M.find((I) => I.culture == null || I.segment == null) ?? M[0], j = p.values ?? [], v = F(j, O);
+      v.name = E == null ? void 0 : E.name, v.key = p.unique, v.parentId = ((N = q.parent) == null ? void 0 : N.unique) ?? q.parentId;
+      const D = await (await fetch("/umbraco/backoffice/api/cloudBackOffice/subscription/code")).json(), g = await (await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${O}`, {
         method: "POST",
         headers: {
           accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(w)
+        body: JSON.stringify(v)
       })).json();
-      if (P.eTag === a.current)
+      if (g.eTag === a.current)
         return;
-      a.current = P.eTag;
-      const y = n.current;
-      if (!y || !r)
+      a.current = g.eTag;
+      const w = n.current;
+      if (!w || !i)
         return;
-      y.innerHTML = "";
-      const i = document.createElement("iframe");
-      i.style.width = "100%", i.style.aspectRatio = "16 / 9", i.style.border = "0", i.style.transform = "scale(0.9)", i.style.transformOrigin = "0 0", i.style.display = "none", y.appendChild(i);
-      const u = i.contentWindow.document;
-      u.open(), u.write(P.html), u.close();
-      const T = u.createElement("script");
-      T.src = `https://cdn.n3o.cloud/connect-${D}/platforms-js/platforms.js`, T.type = "module", u.body.appendChild(T), window.setInterval(() => {
-        i.style.display = "block", y.style.display = "block";
+      w.innerHTML = "";
+      const r = document.createElement("iframe");
+      r.style.width = "100%", r.style.aspectRatio = "16 / 9", r.style.border = "0", r.style.transform = "scale(0.9)", r.style.transformOrigin = "0 0", r.style.display = "none", w.appendChild(r);
+      const u = r.contentWindow.document;
+      u.open(), u.write(g.html), u.close();
+      const P = u.createElement("script");
+      P.src = `https://cdn.n3o.cloud/connect-${D}/platforms-js/platforms.js`, P.type = "module", u.body.appendChild(P), window.setInterval(() => {
+        r.style.display = "block", w.style.display = "block";
       }, 2e3);
     };
     l();
@@ -50,31 +50,31 @@ function Q({ unique: e, getContent: t }) {
       l();
     }, 1e4);
     return () => {
-      r = !1, window.clearInterval(m);
+      i = !1, window.clearInterval(m);
     };
   }, [e, t]), /* @__PURE__ */ X("div", { ref: n, id: "platformsPreviewContainer", style: { display: "none" } });
 }
-var V = Object.getOwnPropertyDescriptor, S = (e) => {
+var V = Object.getOwnPropertyDescriptor, A = (e) => {
   throw TypeError(e);
 }, Y = (e, t, n, a) => {
-  for (var r = a > 1 ? void 0 : a ? V(t, n) : t, l = e.length - 1, m; l >= 0; l--)
-    (m = e[l]) && (r = m(r) || r);
-  return r;
-}, R = (e, t, n) => t.has(e) || S("Cannot " + n), s = (e, t, n) => (R(e, t, "read from private field"), t.get(e)), p = (e, t, n) => t.has(e) ? S("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, n), f = (e, t, n, a) => (R(e, t, "write to private field"), t.set(e, n), n), b = (e, t, n) => (R(e, t, "access private method"), n), _, k, c, o, O, h, C;
+  for (var i = a > 1 ? void 0 : a ? V(t, n) : t, l = e.length - 1, m; l >= 0; l--)
+    (m = e[l]) && (i = m(i) || i);
+  return i;
+}, T = (e, t, n) => t.has(e) || A("Cannot " + n), s = (e, t, n) => (T(e, t, "read from private field"), t.get(e)), d = (e, t, n) => t.has(e) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, n), f = (e, t, n, a) => (T(e, t, "write to private field"), t.set(e, n), n), b = (e, t, n) => (T(e, t, "access private method"), n), y, C, c, o, R, h, _;
 const Z = "n3o-platforms-preview";
-let E = class extends x(B) {
+let k = class extends x(U) {
   constructor() {
-    super(), p(this, h), p(this, _), p(this, k), p(this, c), p(this, o), p(this, O, () => {
+    super(), d(this, h), d(this, y), d(this, C), d(this, c), d(this, o), d(this, R, () => {
       var e;
-      return (e = s(this, _)) == null ? void 0 : e.getData();
+      return (e = s(this, y)) == null ? void 0 : e.getData();
     }), f(this, o, document.createElement("div")), this.consumeContext(z, (e) => {
-      f(this, _, e), this.observe(e == null ? void 0 : e.unique, (t) => {
-        f(this, k, t), b(this, h, C).call(this);
+      f(this, y, e), this.observe(e == null ? void 0 : e.unique, (t) => {
+        f(this, C, t), b(this, h, _).call(this);
       });
     });
   }
   connectedCallback() {
-    super.connectedCallback(), b(this, h, C).call(this);
+    super.connectedCallback(), b(this, h, _).call(this);
   }
   disconnectedCallback() {
     var e;
@@ -82,40 +82,40 @@ let E = class extends x(B) {
   }
   // Lit owns the shadow root; we host a single mount div in it and let React render into that.
   render() {
-    return s(this, o).parentNode == null ? U`${s(this, o)}` : $;
+    return s(this, o).parentNode == null ? B`${s(this, o)}` : $;
   }
   updated() {
-    !s(this, c) && s(this, o).isConnected && (f(this, c, K(s(this, o))), b(this, h, C).call(this));
+    !s(this, c) && s(this, o).isConnected && (f(this, c, K(s(this, o))), b(this, h, _).call(this));
   }
 };
-_ = /* @__PURE__ */ new WeakMap();
-k = /* @__PURE__ */ new WeakMap();
+y = /* @__PURE__ */ new WeakMap();
+C = /* @__PURE__ */ new WeakMap();
 c = /* @__PURE__ */ new WeakMap();
 o = /* @__PURE__ */ new WeakMap();
-O = /* @__PURE__ */ new WeakMap();
+R = /* @__PURE__ */ new WeakMap();
 h = /* @__PURE__ */ new WeakSet();
-C = function() {
+_ = function() {
   var e;
   (e = s(this, c)) == null || e.render(
     J(Q, {
-      unique: s(this, k),
-      getContent: s(this, O)
+      unique: s(this, C),
+      getContent: s(this, R)
     })
   );
 };
-E.styles = H`
+k.styles = H`
         :host {
             display: block;
             height: 100%;
             padding: var(--uui-size-layout-1);
         }
     `;
-E = Y([
+k = Y([
   L(Z)
-], E);
-const ce = E;
+], k);
+const ce = k;
 export {
-  E as N3oPlatformsPreviewElement,
+  k as N3oPlatformsPreviewElement,
   ce as default
 };
 //# sourceMappingURL=platforms-preview.js.map

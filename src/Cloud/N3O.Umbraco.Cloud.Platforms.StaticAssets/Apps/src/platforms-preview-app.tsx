@@ -20,7 +20,7 @@ interface PlatformsPreviewAppProps {
 
 function getApiReq(
     values: Array<UmbDocumentValueModel>,
-    contentTypeAlias: string | undefined,
+    documentTypeUnique: string | undefined,
 ): Record<string, unknown> {
     const req: Record<string, unknown> = {};
 
@@ -28,7 +28,7 @@ function getApiReq(
         req[property.alias] = property.value;
     });
 
-    req['contentTypeAlias'] = contentTypeAlias;
+    req['contentTypeAlias'] = documentTypeUnique;
 
     return req;
 }
@@ -52,27 +52,22 @@ export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppP
                 return;
             }
 
-            // WORKSPACE-CONTEXT SHAPE FLAG:
-            // The TS type UmbDocumentDetailModel has no `contentType`, `contentTypeAlias`, `parent`, or `parentId`
-            // properties. The original JS accessed these as legacy/undocumented fields on the in-memory model.
-            // `documentType.unique` is the GUID not an alias; there is no typed way to get the content-type alias
-            // via getData(). These casts preserve the runtime behaviour without changing the API calls.
-            // They should be verified once the content-type alias requirement is clarified upstream.
+            // In v17 UmbDocumentDetailModel.documentType has {unique, icon, collection} but no alias.
+            // The server resolves the alias from the GUID (see PlatformsBackOfficeController).
+            const documentTypeUnique: string | undefined = content.documentType?.unique;
+
+            // Parent and parentId are not in the typed model; cast to access as legacy fields if present.
             const rawContent = content as UmbDocumentDetailModel & {
-                contentType?: { alias?: string };
-                contentTypeAlias?: string;
                 parent?: { unique?: string };
                 parentId?: string;
             };
-
-            const contentTypeAlias: string | undefined = rawContent.contentType?.alias ?? rawContent.contentTypeAlias;
 
             const variants: Array<UmbDocumentVariantModel> = content.variants ?? [];
             const variant: UmbDocumentVariantModel | undefined =
                 variants.find((v) => v.culture == null || v.segment == null) ?? variants[0];
 
             const values: Array<UmbDocumentValueModel> = content.values ?? [];
-            const apiReq = getApiReq(values, contentTypeAlias);
+            const apiReq = getApiReq(values, documentTypeUnique);
 
             apiReq['name'] = variant?.name;
             apiReq['key'] = content.unique;
@@ -81,7 +76,7 @@ export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppP
             const subscriptionCodeRes = await fetch('/umbraco/backoffice/api/cloudBackOffice/subscription/code');
             const subscriptionCode = (await subscriptionCodeRes.json()) as string;
 
-            const apiRes = await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${contentTypeAlias}`, {
+            const apiRes = await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${documentTypeUnique}`, {
                 method: 'POST',
                 headers: {
                     accept: 'application/json',
