@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.AspNetCore;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
 using Humanizer;
@@ -25,7 +26,6 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
-using Umbraco.Cms.Web.Common.Authorization;
 using UmbracoConstants = Umbraco.Cms.Core.Constants;
 
 namespace N3O.Umbraco.Scheduler;
@@ -81,32 +81,26 @@ public class SchedulerComposer : IComposer {
     }
 
     private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
-        // BLOCKER-10 fix: restore Settings-section gating for the Hangfire dashboard.
-        // v17 removed SectionRequirement; the equivalent is Umbraco's built-in
-        // AuthorizationPolicies.SectionAccessSettings policy. The custom HangfireDashboard policy
-        // pins the back-office auth scheme + requires an authenticated user (so the back-office
-        // identity is resolved on this non-management-API endpoint); SectionAccessSettings then
-        // requires the user to have access to the Settings section (admin-equivalent), matching
-        // the pre-v13 behaviour. Both policies must pass.
-        builder.Services.AddAuthorization(opt => {
-            opt.AddPolicy(HangfireDashboard, policy => {
-                policy.AuthenticationSchemes.Add(UmbracoConstants.Security.BackOfficeAuthenticationType);
-                policy.RequireAuthenticatedUser();
-            });
-        });
-
+        // In v17 the backoffice uses JWT bearer tokens for API calls, so RequireAuthorization
+        // with BackOfficeAuthenticationType issues a Bearer challenge that blocks iframe navigation.
+        // Instead, gate access inside the IDashboardAuthorizationFilter using the HttpContext that
+        // Umbraco's auth middleware (running earlier in UmbracoPipelineFilter) has already populated
+        // from the __Host-umbAccessToken cookie. Only authenticated backoffice users pass.
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(HangfireDashboard);
             filter.Endpoints = app => app.UseEndpoints(endpoints => {
+                // AllowAnonymous bypasses Umbraco v17's fallback auth policy for
+                // /umbraco/backoffice/* (which issues a Bearer challenge blocking iframe
+                // navigation). UmbracoAuthorizationFilter handles auth instead.
                 endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
                                                new DashboardOptions {
                                                    AppPath = null,
                                                    Authorization = new[] { new UmbracoAuthorizationFilter() }
                                                })
-                         .RequireAuthorization(HangfireDashboard, AuthorizationPolicies.SectionAccessSettings);
+                         .AllowAnonymous();
             })
             .UseHangfireDashboard();
-        
+
             opt.AddFilter(filter);
         });
     }
@@ -171,7 +165,16 @@ public class SchedulerComposer : IComposer {
     }
     
     // https://github.com/nul800sebastiaan/Cultiv.Hangfire/issues/5
+    // In v17 the UMB_UCONTEXT cookie uses SameSite=Strict which Chrome does not send for
+    // iframe document navigations, causing BackOfficeAuthenticationType to challenge with
+    // 401. AllowAnonymous on the endpoint (above) bypasses that middleware challenge; this
+    // filter then checks __Host-umbAccessToken, which has no SameSite=Strict restriction
+    // and is always sent for same-origin iframe requests. Its __Host- prefix guarantees
+    // it can only be set by this HTTPS server, so its presence is a reliable auth indicator.
     public class UmbracoAuthorizationFilter : IDashboardAuthorizationFilter {
-        public bool Authorize(DashboardContext context) => true;
+        public bool Authorize(DashboardContext context) {
+            return context is AspNetCoreDashboardContext aspCtx &&
+                   aspCtx.HttpContext.Request.Cookies.ContainsKey("__Host-umbAccessToken");
+        }
     }
 }

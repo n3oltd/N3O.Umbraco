@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Plugins.Controllers;
+using N3O.Umbraco.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Web.Common.Authorization;
 using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.Data.Controllers;
@@ -18,9 +16,8 @@ namespace N3O.Umbraco.Data.Controllers;
 // this endpoint (via the N3O.Condition.WorkspaceVisibility frontend condition) to decide whether to show.
 // Reachable by any authenticated back-office user so non-export users receive { permitted: false } rather
 // than a 403; the group/filter gating is done in code below.
-[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("/umbraco/backoffice/api/Exports")]
-public class ExportVisibilityController : PluginController {
+public class ExportVisibilityController : BackofficeAuthorizedApiController {
     private readonly IEnumerable<IExportContentFilter> _contentFilters;
     private readonly IContentService _contentService;
     private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;

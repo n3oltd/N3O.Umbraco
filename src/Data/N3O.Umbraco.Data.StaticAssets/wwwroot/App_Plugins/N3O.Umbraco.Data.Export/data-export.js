@@ -23,7 +23,7 @@ function ye({ contentKey: t, authFetch: o }) {
       e = !1;
     };
   }, [t, o]);
-  const Q = async (e) => await (await o(`/umbraco/api/ContentTypes/${e}/relations?type=descendant`, {
+  const Q = async (e) => await (await o(`/umbraco/backoffice/api/ContentTypes/${e}/relations?type=descendant`, {
     headers: { Accept: "application/json" }
   })).json(), Y = async (e) => {
     if (!e) {

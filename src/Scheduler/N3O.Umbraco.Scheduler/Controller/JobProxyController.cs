@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
@@ -12,6 +13,11 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Scheduler.Controllers;
 
 [ApiDocument("JobProxy")]
+// Hangfire workers invoke this endpoint via an in-process HTTP POST (server-to-server, no
+// user session). The route (/umbraco/api/...) carries no backoffice auth, so AllowAnonymous
+// is declared explicitly to document this intent. The per-process random X-Api-Key header
+// (checked by IsAuthorized below) is the only required credential.
+[AllowAnonymous]
 public class JobProxyController : ApiController {
     private readonly IJsonProvider _jsonProvider;
     private readonly IMediator _mediator;
@@ -40,7 +46,9 @@ public class JobProxyController : ApiController {
 
             return Ok();
         } catch (Exception ex) {
-            return BadRequest(new { error = ex.Message, stackTrace = ex.StackTrace });
+            // ex.ToString() captures the full exception chain (type, message, inner exceptions,
+            // stack trace) — ex.Message alone drops inner exceptions and the stack trace.
+            return BadRequest(new { error = ex.ToString() });
         }
     }
 

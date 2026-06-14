@@ -72,7 +72,7 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
     }, [contentKey, authFetch]);
 
     const getContentTypes = async (contentId: string): Promise<ContentType[]> => {
-        const res = await authFetch!(`/umbraco/api/ContentTypes/${contentId}/relations?type=child`, {
+        const res = await authFetch!(`/umbraco/backoffice/api/ContentTypes/${contentId}/relations?type=child`, {
             headers: { Accept: 'application/json' },
         });
 
