@@ -49,8 +49,8 @@ public class ExceptionMiddleware : IMiddleware {
                     _logger.Value
                            .LogError(ex,
                                      "An unhandled exception occured executing {ControllerName} / {ActionName}. Exception message: {Message}",
-                                     endpoint.ControllerName,
-                                     endpoint.ActionName,
+                                     endpoint?.ControllerName,
+                                     endpoint?.ActionName,
                                      ex.Message);
                 }
 

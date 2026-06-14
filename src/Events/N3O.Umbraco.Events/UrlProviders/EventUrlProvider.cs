@@ -9,11 +9,13 @@ using UrlProvider = N3O.Umbraco.UrlProviders.UrlProvider;
 namespace N3O.Umbraco.Events.UrlProviders;
 
 public class EventUrlProvider : UrlProvider {
+    public override string Alias => "eventUrlProvider";
+
     private static readonly string EventsPageAlias = AliasHelper<EventsPageContent>.ContentTypeAlias();
     private static readonly string EventAlias = AliasHelper<EventContent>.ContentTypeAlias();
     
     public EventUrlProvider(ILogger<EventUrlProvider> logger,
-                            DefaultUrlProvider defaultUrlProvider,
+                            NewDefaultUrlProvider defaultUrlProvider,
                             IContentCache contentCache)
         : base(logger, defaultUrlProvider, contentCache) { }
 

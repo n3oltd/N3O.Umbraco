@@ -19,7 +19,7 @@ public class UmbracoEngageSegmentsDataSource : IContentmentDataSource  {
     public string Description => "Data source for Umbraco Engage segments";
     public string Icon => "icon-people";
     public Dictionary<string, object> DefaultValues => null;
-    public IEnumerable<ConfigurationField> Fields => null;
+    public IEnumerable<ContentmentConfigurationField> Fields => null;
     public string Group => "N3O";
     public OverlaySize OverlaySize => OverlaySize.Small;
 
