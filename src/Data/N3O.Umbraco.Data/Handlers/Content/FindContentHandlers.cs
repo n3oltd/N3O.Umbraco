@@ -38,7 +38,7 @@ public class FindContentHandlers :
     public Task<IEnumerable<ContentRes>> Handle(FindChildrenQuery req, CancellationToken cancellationToken) {
         var content = req.ContentId.Run(_contentLocator.ById, true);
 
-        return Task.FromResult(FilterAndConvert(content.Children, req.Model));
+        return Task.FromResult(FilterAndConvert(content.Children(), req.Model));
     }
 
     public Task<IEnumerable<ContentRes>> Handle(FindDescendantsQuery req, CancellationToken cancellationToken) {

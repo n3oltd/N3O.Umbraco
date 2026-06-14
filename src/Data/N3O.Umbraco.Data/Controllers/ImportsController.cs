@@ -6,6 +6,7 @@ using N3O.Umbraco.Data.Exceptions;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
+using N3O.Umbraco.Data.Security;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
@@ -18,6 +19,7 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Data.Controllers;
 
 [ApiDocument(DataConstants.ApiNames.Imports)]
+[RequireUserGroup(DataConstants.SecurityGroups.ImportUsers.Alias)]
 public class ImportsController : PluginController {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;

@@ -1,3 +1,4 @@
+using Humanizer;
 using Humanizer.Bytes;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Data.Lookups;

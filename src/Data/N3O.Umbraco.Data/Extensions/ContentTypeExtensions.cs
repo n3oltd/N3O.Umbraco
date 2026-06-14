@@ -33,20 +33,26 @@ public static class ContentTypeExtensions {
                                                        IContentType contentType,
                                                        IPropertyType propertyType,
                                                        PropertyGroup group = null) {
+        // TODO Migration Review (CS0618): IDataTypeService.GetDataType(int) is obsolete (removed in Umbraco 18). The
+        // async replacement is GetAsync(Guid), but propertyType only exposes an int DataTypeId (no key here),
+        // and this method is a public static iterator (yield return) that cannot be made async. Converting
+        // would change the public IEnumerable<UmbracoPropertyInfo> signature and ripple to callers outside
+        // this project. Left as-is to avoid breaking the build / behaviour.
         var dataType = dataTypeService.GetDataType(propertyType.DataTypeId);
         var elements = new List<ElementInfo>();
         
-        if (propertyType.IsNestedContent()) {
-            var nestedContentConfiguration = dataType.ConfigurationAs<NestedContentConfiguration>();
-            var nestedContentTypes = nestedContentConfiguration.ContentTypes
-                                                               .Select(x => contentTypeService.Get(x.Alias))
-                                                               .ToList();
+        if (propertyType.IsBlockList()) {
+            var blockListConfiguration = dataType.ConfigurationAs<BlockListConfiguration>();
 
-            foreach (var nestedContentType in nestedContentTypes) {
-                elements.Add(new ElementInfo(nestedContentType,
-                                             GetUmbracoProperties(nestedContentType,
-                                                                  dataTypeService,
-                                                                  contentTypeService)));
+            foreach (var block in blockListConfiguration?.Blocks.OrEmpty()) {
+                var blockContentType = contentTypeService.Get(block.ContentElementTypeKey);
+
+                if (blockContentType != null) {
+                    elements.Add(new ElementInfo(blockContentType,
+                                                 GetUmbracoProperties(blockContentType,
+                                                                      dataTypeService,
+                                                                      contentTypeService)));
+                }
             }
         }
 

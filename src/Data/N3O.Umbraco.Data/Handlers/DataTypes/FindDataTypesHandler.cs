@@ -27,11 +27,11 @@ public class FindDataTypesHandler :
         _mapper = mapper;
     }
     
-    public Task<IEnumerable<DataTypeRes>> Handle(FindDataTypesQuery req, CancellationToken cancellationToken) {
-        var dataTypes = _dataTypeService.GetAll();
+    public async Task<IEnumerable<DataTypeRes>> Handle(FindDataTypesQuery req, CancellationToken cancellationToken) {
+        var dataTypes = await _dataTypeService.GetAllAsync();
 
         dataTypes = _dataTypeQueryFilter.Apply(dataTypes, req.Model);
 
-        return Task.FromResult(dataTypes.Select(_mapper.Map<IDataType, DataTypeRes>));
+        return dataTypes.Select(_mapper.Map<IDataType, DataTypeRes>);
     }
 }

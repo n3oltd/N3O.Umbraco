@@ -1,11 +1,12 @@
+using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Migrations;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 
-public class ImportsMigrationV2 : MigrationBase {
+public class ImportsMigrationV2 : AsyncMigrationBase {
     public ImportsMigrationV2(IMigrationContext context) : base(context) { }
 
-    protected override void Migrate() {
+    protected override Task MigrateAsync() {
         if (!ColumnExists(DataConstants.Tables.Imports.Name, nameof(Import.MoveUpdatedContentToContainer))) {
             Alter.Table(DataConstants.Tables.Imports.Name)
                  .AddColumn(nameof(Import.MoveUpdatedContentToContainer))
@@ -14,5 +15,7 @@ public class ImportsMigrationV2 : MigrationBase {
                  .WithDefaultValue(false)
                  .Do();
         }
+
+        return Task.CompletedTask;
     }
 }

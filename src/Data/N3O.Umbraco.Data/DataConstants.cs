@@ -60,15 +60,15 @@ public static class DataConstants {
 
     public static class SecurityGroups {
         public static class ExportUsers {
-            public static readonly string Alias = "exportUsers";
-            public static readonly string Name = "Export Users";
+            public const string Alias = "exportUsers";
+            public const string Name = "Export Users";
         }
 
-        public static class ImportUsers { 
-            public static readonly string Alias = "importUsers";
-            public static readonly string Name = "Import Users";
+        public static class ImportUsers {
+            public const string Alias = "importUsers";
+            public const string Name = "Import Users";
+        }
     }
-}
     
     public static class Tables {
         public static class Imports {

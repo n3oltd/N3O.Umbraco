@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.Data.Export",
+    "name": "N3O Data Export",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "workspaceView",
+            "alias": "N3O.WorkspaceView.DataExport",
+            "name": "N3O Data Export",
+            "element": "/App_Plugins/N3O.Umbraco.Data.Export/data-export.js",
+            "meta": {
+                "label": "Export",
+                "pathname": "export",
+                "icon": "icon-download-alt"
+            },
+            "conditions": [
+                {
+                    "alias": "Umb.Condition.WorkspaceAlias",
+                    "match": "Umb.Workspace.Document"
+                },
+                {
+                    "alias": "N3O.Condition.WorkspaceVisibility",
+                    "endpoint": "/umbraco/backoffice/api/Exports/visibility"
+                }
+            ]
+        }
+    ]
+}

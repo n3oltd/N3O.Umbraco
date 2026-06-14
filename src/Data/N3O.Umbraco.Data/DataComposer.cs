@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Data.Builders;
-using N3O.Umbraco.Data.ContentApps;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.DataTypes;
 using N3O.Umbraco.Data.Filters;
@@ -11,6 +10,8 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using OfficeOpenXml;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -75,7 +76,6 @@ public class DataComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IExportPropertyFilter>(),
                     t => builder.Services.AddTransient(typeof(IExportPropertyFilter), t));
 
-        builder.ContentApps().Append<ExportApp>();
     }
 
     private void RegisterImports(IUmbracoBuilder builder) {
@@ -90,7 +90,6 @@ public class DataComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IImportPropertyFilter>(),
                     t => builder.Services.AddTransient(typeof(IImportPropertyFilter), t));
 
-        builder.ContentApps().Append<ImportApp>();
     }
     
     private void RegisterMatchers(IUmbracoBuilder builder) {
@@ -116,51 +115,55 @@ public class DataComposer : Composer {
     }
 }
 
-public class DataComponent : IComponent {
+public class DataComponent : IAsyncComponent {
     private readonly IRuntimeState _runtimeState;
     private readonly IDataTypeService _dataTypeService;
     private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
     private readonly IDataValueEditorFactory _dataValueEditorFactory;
-    private readonly IEditorConfigurationParser _editorConfigurationParser;
     private readonly IIOHelper _iioHelper;
 
     public DataComponent(IRuntimeState runtimeState,
                          IDataTypeService dataTypeService,
                          IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
                          IDataValueEditorFactory dataValueEditorFactory,
-                         IEditorConfigurationParser editorConfigurationParser,
                          IIOHelper iioHelper) {
         _runtimeState = runtimeState;
         _dataTypeService = dataTypeService;
         _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
         _dataValueEditorFactory = dataValueEditorFactory;
-        _editorConfigurationParser = editorConfigurationParser;
         _iioHelper = iioHelper;
     }
     
-    public void Initialize() {
+    public async Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
         if (_runtimeState.Level == RuntimeLevel.Run) {
-            EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
-                                                                   _iioHelper,
-                                                                   _editorConfigurationParser));
-            
-            EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory,
-                                                                _iioHelper,
-                                                                _editorConfigurationParser));
+            await EnsureDataTypeExistsAsync(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
+                                                                             _iioHelper));
+
+            await EnsureDataTypeExistsAsync(new ImportDataEditorDataEditor(_dataValueEditorFactory,
+                                                                          _iioHelper));
         }
     }
 
-    private void EnsureDataTypeExists(DataEditor dataEditor) {
-        if (_dataTypeService.GetDataType(dataEditor.Name) != null) {
+    private async Task EnsureDataTypeExistsAsync(DataEditor dataEditor) {
+        var key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
+
+        // Look up by the deterministic Key (not GetDataType(alias), which matches by Name and
+        // misses the existing row on restart/upgrade -> duplicate-key crash). See BLOCKER-11.
+        if (await _dataTypeService.GetAsync(key) != null) {
             return;
         }
-        
-        var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
-        dataType.Name = dataEditor.Name;
-        dataType.Key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
 
-        _dataTypeService.Save(dataType);
+        var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
+        dataType.Name = dataEditor.Alias;
+        dataType.Key = key;
+        // The UI editor alias (propertyEditorUi) equals the [DataEditor] alias for these editors; setting
+        // it stops the v17 data-type screen showing an empty property-editor picker. See DL-09 / BLOCKER-11.
+        dataType.EditorUiAlias = dataEditor.Alias;
+
+        await _dataTypeService.CreateAsync(dataType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
     }
 
-    public void Terminate() { }
+    public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) {
+        return Task.CompletedTask;
+    }
 }

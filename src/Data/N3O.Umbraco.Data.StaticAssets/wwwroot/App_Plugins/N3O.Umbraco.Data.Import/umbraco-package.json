@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.Data.Import",
+    "name": "N3O Data Import",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "workspaceView",
+            "alias": "N3O.WorkspaceView.DataImport",
+            "name": "N3O Data Import",
+            "element": "/App_Plugins/N3O.Umbraco.Data.Import/data-import.js",
+            "meta": {
+                "label": "Import",
+                "pathname": "import",
+                "icon": "icon-page-up"
+            },
+            "conditions": [
+                {
+                    "alias": "Umb.Condition.WorkspaceAlias",
+                    "match": "Umb.Workspace.Document"
+                },
+                {
+                    "alias": "N3O.Condition.WorkspaceVisibility",
+                    "endpoint": "/umbraco/backoffice/api/Imports/visibility"
+                }
+            ]
+        }
+    ]
+}
