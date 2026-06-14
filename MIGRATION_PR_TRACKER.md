@@ -57,9 +57,26 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 - ✅ **Cleanup** — resolved 2026-06-14 (session 16). Deleted `PlatformsContentAppsComposer.cs` + `PlatformsPreviewApp.cs` stubs; removed stale `TODO Migration Review` from `LinkExtensions.cs`; removed `SubscriptionFile.cs` TODO comment.
 - Crowdfunding tab visibility for unpublished campaigns — needs a workspace condition (deferred).
 
+## 🔄 In progress — pushed to a branch, no PR yet (small-change projects, session 16)
+
+| Project(s) | Branch | Files changed | Notes |
+|---|---|---|---|
+| Authentication + Auth0 | `v17-N3O.Umbraco.Authentication` | AuthController open-redirect fix; Auth0 null guard on Login + removed AutoRedirect/Icon options | |
+| Storage + Storage.Azure | `v17-N3O.Umbraco.Storage` | v17 API updates | |
+| Blog | `v17-N3O.Umbraco.Blog` | BlogPostUrlProvider (NewDefaultUrlProvider base, abstract Alias) | |
+| Events | `v17-N3O.Umbraco.Events` | EventUrlProvider (same pattern) | |
+| Vacancies | `v17-N3O.Umbraco.Vacancies` | VacanciesUrlProvider (same pattern) | |
+| Email | `v17-N3O.Umbraco.Email` | MimeMessageExtensions v17 API update | |
+| Validation | `v17-N3O.Umbraco.Validation` | ExceptionMiddleware null guards | |
+| Cdn.Cloudflare | `v17-N3O.Umbraco.Cdn.Cloudflare` | Cloudflare client model updates | |
+| Sync.Extensions | `v17-N3O.Umbraco.Sync.Extensions` | SyncContentHandler reimplemented on PublisherProcessor (BLOCKER-05) | |
+| Bundling | `v17-N3O.Umbraco.Bundling` | Bundler/AssetBundle stubs (throws NotSupportedException) | |
+| Marketing | `v17-N3O.Umbraco.Marketing` | UmbracoEngageSegmentsDataSource v17 Contentment API update | |
+| Markup.Markdown | `v17-N3O.Umbraco.Markup.Markdown` | OurMarkdownValueConverter ctor update | |
+
 ## ⏳ Not started — not yet sliced into per-project PRs
 
-- **All other framework projects** (e.g. Giving.*, Crowdfunding, Marketing/Engage, Forms, Maps.Google, UIBuilder, Webhooks, Authentication/Auth0, Blazor.BackOffice, etc.) — still only in `v17-Talha`, not yet cut into per-project branches/PRs.
+- **All other framework projects** (e.g. Giving.*, Crowdfunding, Forms, Maps.Google, UIBuilder, Webhooks, Blazor.BackOffice, Scheduler, Plugins, Search, etc.) — still only in `v17-Talha`, not yet cut into per-project branches/PRs.
 - **DemoSite** (Web + Core, the test harness) and **solution-wide files** (`Directory.Build.props/targets`, `*.sln`, `NuGet.Config`, root `.gitignore`, `.github/` CI, root migration `*.md` docs) — deferred to a single PR **at the end**, per the agreed workflow.
 - **Backoffice npm-workspace unification + `ClientApp→Apps` rename** — solution-wide (root `package.json` glob + `package-lock.json` + `tsconfig.base.json` + `build/vite-config` + `Directory.Build.targets` + the 12 folder renames). Lives on `v17-Talha` (`e89ee591e`); part of the final solution-wide PR. Can't be sliced per-project (depends on all app migrations being present), so per-project `.StaticAssets` slices keep their `ClientApp` layout until this lands.
 
