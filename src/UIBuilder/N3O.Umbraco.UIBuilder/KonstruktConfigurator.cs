@@ -1,18 +1,18 @@
-﻿using Konstrukt.Configuration;
-using Konstrukt.Configuration.Builders;
+using System.Runtime.CompilerServices;
+using Umbraco.UIBuilder.Configuration;
+using Umbraco.UIBuilder.Configuration.Builders;
 
 namespace N3O.Umbraco.UIBuilder;
 
-public abstract class KonstruktConfigurator : IKonstruktConfigurator {
-    private static KonstruktWithSectionConfigBuilder _contentSection;
-    
-    public abstract void Configure(KonstruktConfigBuilder builder);
+public abstract class KonstruktConfigurator : IConfigurator {
+    // Keyed by builder instance so each UIBuilder config run gets exactly one "content"
+    // section, correctly shared across all configurators in that run, without carrying
+    // state across re-invocations of the factory lambda.
+    private static readonly ConditionalWeakTable<UIBuilderConfigBuilder, WithSectionConfigBuilder> _sections = new();
 
-    protected KonstruktWithSectionConfigBuilder GetContentSection(KonstruktConfigBuilder builder) {
-        if (_contentSection == null) {
-            _contentSection = builder.WithSection("content");
-        }
+    public abstract void Configure(UIBuilderConfigBuilder builder);
 
-        return _contentSection;
+    protected WithSectionConfigBuilder GetContentSection(UIBuilderConfigBuilder builder) {
+        return _sections.GetValue(builder, b => b.WithSection("content"));
     }
 }
