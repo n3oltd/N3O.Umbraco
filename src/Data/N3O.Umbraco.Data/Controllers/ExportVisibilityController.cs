@@ -44,7 +44,7 @@ public class ExportVisibilityController : BackofficeAuthorizedApiController {
 
         // User must be an Umbraco admin OR a member of the Export Users group
         if (userGroups.All(x => !x.Alias.EqualsInvariant(UmbracoSecurity.AdminGroupAlias) &&
-                                x.Name != DataConstants.SecurityGroups.ExportUsers.Name)) {
+                                !x.Alias.EqualsInvariant(DataConstants.SecurityGroups.ExportUsers.Alias))) {
             return false;
         }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AuthFetch } from '@n3o/backoffice-core';
 import styles from './data-export-app.css?inline';
 
@@ -50,6 +50,8 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
     const [progress, setProgress] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const cancelledRef = useRef<boolean>(false);
+
     useEffect(() => {
         if (!contentKey || !authFetch) {
             return;
@@ -80,6 +82,7 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
 
         return () => {
             active = false;
+            cancelledRef.current = true;
         };
     }, [contentKey, authFetch]);
 
@@ -122,10 +125,17 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
     };
 
     const poll = (exportId: string): Promise<ExportProgressResponse> => {
+        cancelledRef.current = false;
+
         const executePoll = async (
             resolve: (value: ExportProgressResponse) => void,
             reject: (reason?: unknown) => void
         ): Promise<void> => {
+            if (cancelledRef.current) {
+                reject(new Error('poll cancelled'));
+                return;
+            }
+
             const getProgress = await authFetch!(`/umbraco/backoffice/api/Exports/export/${exportId}/progress`, {
                 headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                 method: 'GET',

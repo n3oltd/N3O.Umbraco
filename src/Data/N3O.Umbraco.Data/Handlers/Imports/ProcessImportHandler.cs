@@ -93,13 +93,12 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
             try {
                 var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
                 var parser = await GetParserAsync(import);
-                var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Data)
-                                                      .Fields
-                                                      .GroupBy(x => x.Property)
-                                                      .Where(x => x.Any(f => f.Value.HasValue()))
-                                                      .ToDictionary(x => propertyInfos[x.Key],
-                                                                    x => x.ToList());
                 var importData = _jsonProvider.DeserializeObject<ImportData>(import.Data);
+                var propertyInfoFields = importData.Fields
+                                                   .GroupBy(x => x.Property)
+                                                   .Where(x => x.Any(f => f.Value.HasValue()))
+                                                   .ToDictionary(x => propertyInfos[x.Key],
+                                                                 x => x.ToList());
                 var contentPublisher = GetContentPublisher(import, importData.ContentId);
 
                 foreach (var (propertyInfo, fields) in propertyInfoFields) {

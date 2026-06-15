@@ -2,10 +2,10 @@ import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
 import {
-    UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { UmbChangeEvent } from '@umbraco-cms/backoffice/event';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { ImportDataEditorApp, type ImportDataValue } from './import-data-editor-app';
@@ -70,6 +70,7 @@ export class N3oImportDataEditorElement
             return;
         }
         this.#value.fields[index].value = value;
+        this.#render();
         this.#dispatchChange();
     }
 
@@ -83,7 +84,11 @@ export class N3oImportDataEditorElement
 
         const req = { file: storageToken };
 
-        const res = await (this.authFetch ?? fetch)(`/umbraco/backoffice/api/Imports/queued/${reference}/files`, {
+        if (!this.authFetch) {
+            alert('Authentication context not ready, please try again');
+            return;
+        }
+        const res = await this.authFetch(`/umbraco/backoffice/api/Imports/queued/${reference}/files`, {
             method: 'POST',
             headers: {
                 'Accept': '*/*',
@@ -102,10 +107,14 @@ export class N3oImportDataEditorElement
     }
 
     async #getStorageToken(file: File): Promise<unknown> {
+        if (!this.authFetch) {
+            throw new Error('Authentication context not ready');
+        }
+
         const data = new FormData();
         data.append('file', file);
 
-        const res = await (this.authFetch ?? fetch)('/umbraco/api/Storage/tempUpload', {
+        const res = await this.authFetch('/umbraco/api/Storage/tempUpload', {
             method: 'POST',
             body: data,
         });
@@ -114,7 +123,7 @@ export class N3oImportDataEditorElement
     }
 
     #dispatchChange(): void {
-        this.dispatchEvent(new UmbPropertyValueChangeEvent());
+        this.dispatchEvent(new UmbChangeEvent());
     }
 
     #render(): void {
