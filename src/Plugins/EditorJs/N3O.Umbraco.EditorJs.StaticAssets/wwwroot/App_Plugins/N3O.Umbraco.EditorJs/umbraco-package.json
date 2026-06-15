@@ -1,5 +1,5 @@
 {
-    "$schema": "../../umbraco-package-schema.json",
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
     "id": "N3O.Umbraco.EditorJs",
     "name": "N3O EditorJs",
     "version": "17.0.0",

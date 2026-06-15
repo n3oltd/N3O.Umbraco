@@ -6,5 +6,5 @@ import { n3oPluginConfig } from '../../../build/vite-config';
 // the loader's own code is bundled.
 export default n3oPluginConfig({
     entries: { 'N3O.Umbraco.Blazor.BackOffice': 'src/N3O.Umbraco.Blazor.BackOffice.ts' },
-    outDir: '../App_Plugins/N3O.Umbraco.Blazor.BackOffice',
+    outDir: '../wwwroot/App_Plugins/N3O.Umbraco.Blazor.BackOffice',
 });

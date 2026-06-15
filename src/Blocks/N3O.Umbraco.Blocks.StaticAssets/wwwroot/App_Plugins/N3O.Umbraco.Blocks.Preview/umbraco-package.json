@@ -8,7 +8,8 @@
             "type": "blockEditorCustomView",
             "alias": "N3O.BlockCustomView.Preview",
             "name": "N3O Block Preview",
-            "element": "/App_Plugins/N3O.Umbraco.Blocks.Preview/block-preview.js"
+            "element": "/App_Plugins/N3O.Umbraco.Blocks.Preview/block-preview.js",
+            "forBlockEditor": "block-grid"
         }
     ]
 }

@@ -42,7 +42,7 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 
 ## ⏳ In progress — remaining known issues (Data / Data.StaticAssets)
 
-- **TextResourceEditor** still renders `<uui-input>` in React (same upstream uui FormControlMixin bug) — needs the native-control rework.
+- ✅ **TextResourceEditor** — native-control rework done (2026-06-15, session 17): `<uui-input>` → native `<input>` (React `onChange`), the last plugin hit by the upstream uui FormControlMixin+React bug. On `v17-Talha` (not yet sliced into a per-project branch).
 - Block List lookup schema (`PropertyType.Nested`) needs real-content validation.
 - `ImportsMigrationsComponent` plan name not namespaced (rename has migration-rerun risk — needs a decision).
 - Export memory (`ProcessExportHandler` buffers whole file) — no safe in-scope fix; needs a multi-project streaming change.
@@ -74,7 +74,7 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 - **N3O Image Cropper → Umbraco Image Cropper + Uploader** — replace the custom Cropper/Uploader plugins with Umbraco's built-in image cropper + upload editors.
 - **Perplex Content Blocks** — finish / validate the Perplex ContentBlocks migration (Perplex rc.3; the `ContentHelper` Perplex-block parser).
 - **JS calls + authentication header** — generalize the authenticated bearer-token fetch across all backoffice JS calls / plugins (ties into the deferred `@n3o/auth-fetch` shared runtime).
-- **`.targets` in build** — remove the remaining per-project `build/*.targets` (RCL-conversion leftovers / wrapper StaticAssets).
+- **`.targets` in build** — remove the remaining per-project `build/*.targets`. `Blazor.BackOffice` was the last RCL-conversion leftover and is now converted (2026-06-15, session 17: `build/*.targets` deleted, assets → `wwwroot/App_Plugins/`). Only the intentional **wrapper** StaticAssets pass-throughs (`Forms`/`Maps.Google`/`Marketing`/`UIBuilder`/`Workflows`) remain to review.
 - ✅ **Rename `ClientApp` → `Apps` across all backoffice projects (done 2026-06-13).** The root `src/package.json` npm-workspaces list is now a glob (`"**/Apps/**"`, `"N3O.Umbraco.Cms/N3O.Umbraco.ReactRuntime"`, `"!**/bin/**"`, `"!**/obj/**"`) so new frontend projects are auto-discovered — the glob keys off a folder named **`Apps`**. The 12 leaf frontend folders were `git mv`'d `ClientApp`→`Apps` (Blazor.BackOffice, Blocks, Cloud.Platforms, Data, Cells, Cropper, EditorJs, SerpEditor, TextResourceEditor, Uploader, WelcomeDashboard, Scheduler `.StaticAssets`). The **only** functional reference was the shared `BuildClientApp` target in repo-root `Directory.Build.targets` (`Exists(...\ClientApp\package.json)` → `...\Apps\...`); the per-project `.csproj` files and vite/tsconfig use relative paths (same depth) so needed no change, and `N3O.Umbraco.Cms` already used `Apps/*`. `src/package-lock.json` regenerated via `npm install`; `npm query .workspace` lists **14** (12 apps + DynamicListViews + ReactRuntime); `dotnet build N3O.Umbraco.sln` → **0 errors**. Committed on `v17-Talha` (`e89ee591e`); ships in the solution-wide PR (not the per-project branches — see the deferred list above).
 - **Deprecated-dependency audit** — Newtonsoft `Json.NET`, `build.targets`, and other deprecated packages/mechanisms — find and replace.
 - **Move remaining UIs to React** — migrate the remaining Lit / legacy backoffice UIs to React.

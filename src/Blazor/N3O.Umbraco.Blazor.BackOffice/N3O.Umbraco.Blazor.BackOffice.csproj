@@ -1,8 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Blazor.BackOffice</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
@@ -32,19 +34,6 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-    <ItemGroup>
-        <!-- Static (committed) assets. Built JS/maps are excluded here and added by the BuildClientApp target. -->
-        <Content Include="App_Plugins\N3O.Umbraco.Blazor.BackOffice\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.Blazor.BackOffice\**\*.js;App_Plugins\N3O.Umbraco.Blazor.BackOffice\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>

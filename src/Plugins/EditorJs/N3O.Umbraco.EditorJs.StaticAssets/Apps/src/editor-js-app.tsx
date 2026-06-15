@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-// FLAG: UMB_MEDIA_PICKER_MODAL result shape (selection[0].url/name/unique/width/height) is not
-// verified against the Umbraco 17 type definitions — result is cast via `as` below.
-import { UMB_MEDIA_PICKER_MODAL } from '@umbraco-cms/backoffice/media';
+// v17 verified: UmbPickerModalValue = { selection: Array<string | null> } (plain GUID strings).
+// URL + name are resolved after pick via UmbMediaUrlRepository / UmbMediaItemRepository.
+import { UMB_MEDIA_PICKER_MODAL, UmbMediaUrlRepository, UmbMediaItemRepository } from '@umbraco-cms/backoffice/media';
 // FLAG: UMB_LINK_PICKER_MODAL result shape (result.link.url/unique) is not verified against the
 // Umbraco 17 type definitions — result is cast via `as` below.
 import { UMB_LINK_PICKER_MODAL } from '@umbraco-cms/backoffice/multi-url-picker';
@@ -44,20 +44,21 @@ interface BlockToolConstructorArg {
     config: any;
 }
 
-// ---- media/link picker result shapes (unverified — see FLAGs below) ----
+// ---- media/link picker result shapes ----
 
+// v17 verified: UmbPickerModalValue = { selection: Array<string | null> } (plain GUID strings).
+interface MediaPickerResult {
+    selection: Array<string | null>;
+}
+
+// Internal shape after resolving the GUID to media data.
 interface MediaPickerResultItem {
     url?: string;
-    image?: string;
     name?: string;
     unique?: string;
     udi?: string;
     width?: string | number;
     height?: string | number;
-}
-
-interface MediaPickerResult {
-    selection?: MediaPickerResultItem[];
 }
 
 interface LinkPickerResult {
@@ -195,14 +196,41 @@ export function EditorJsApp({ value, bridge, onChange }: EditorJsAppProps) {
             });
 
             try {
+                // v17: result.selection is Array<string | null> — plain GUID strings.
                 const result = (await modal.onSubmit()) as MediaPickerResult;
-                const selection = result?.selection ?? [];
+                const unique = result?.selection?.find((s) => s != null) ?? null;
 
-                if (selection.length) {
-                    tool.applyMediaSelection(selection[0]);
+                if (!unique) {
+                    return;
+                }
+
+                // Resolve the GUID to a URL (UmbMediaUrlRepository) and name (UmbMediaItemRepository).
+                // The repos attach controllers to the host, so destroy them after the pick to avoid
+                // accumulating registrations across repeated image selections.
+                const urlRepo = new UmbMediaUrlRepository(host);
+                const itemRepo = new UmbMediaItemRepository(host);
+
+                try {
+                    const [urlResult, itemResult] = await Promise.all([
+                        urlRepo.requestItems([unique]),
+                        itemRepo.requestItems([unique]),
+                    ]);
+
+                    const urlModel = urlResult.data?.[0];
+                    const itemModel = itemResult.data?.[0];
+
+                    tool.applyMediaSelection({
+                        url: urlModel?.url ?? '',
+                        name: itemModel?.name ?? '',
+                        unique,
+                        udi: unique,
+                    });
+                } finally {
+                    urlRepo.destroy();
+                    itemRepo.destroy();
                 }
             } catch {
-                // Picker was cancelled
+                // Picker was cancelled or resolution failed
             }
         };
 
@@ -385,7 +413,7 @@ export function EditorJsApp({ value, bridge, onChange }: EditorJsAppProps) {
                 }
 
                 applyMediaSelection(item: MediaPickerResultItem): void {
-                    const imageUrl = item.url ?? item.image ?? '';
+                    const imageUrl = item.url ?? '';
                     const imageAlt = item.name ?? '';
 
                     this.data.url = imageUrl;

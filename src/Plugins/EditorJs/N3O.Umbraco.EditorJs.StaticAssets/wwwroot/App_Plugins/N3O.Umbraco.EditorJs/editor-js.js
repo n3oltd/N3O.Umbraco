@@ -5,9 +5,9 @@ import { UMB_MODAL_MANAGER_CONTEXT as Ki } from "@umbraco-cms/backoffice/modal";
 import { useRef as we, useEffect as Yi, createElement as Xi } from "react";
 import { createRoot as Zi } from "react-dom/client";
 import { jsxs as Hr, jsx as Ie } from "react/jsx-runtime";
-import { UMB_MEDIA_PICKER_MODAL as Gi } from "@umbraco-cms/backoffice/media";
-import { UMB_LINK_PICKER_MODAL as Ji } from "@umbraco-cms/backoffice/multi-url-picker";
-const Qi = ".skriv-let{position:relative;background-color:#fff;max-width:920px;margin:0 auto}.skriv-let.cdx-search-field__input{width:auto}.ce-popover__container{width:250px}@media(min-width:651px){.ce-block__content{max-width:calc(100% - 120px)!important;margin:0 60px}}@media(min-width:651px){.ce-toolbar__content{width:0px!important;margin:0 50px}}.cdx-block{max-width:100%!important}@media(min-width:651px){.codex-editor--narrow .ce-toolbox .ce-popover{left:0;right:0}}@media(min-width:651px){.codex-editor--narrow .ce-settings .ce-popover{right:0;left:0}}.ce-popover{width:auto!important}.ce-popover--inline .ce-popover--nested .ce-popover__container{width:250px}.skriv-let-data{margin:0 auto;max-width:800px}.cdx-label{font-weight:700}.ce-paragraph,.cdx-list__item,.cdx-quote__text,.cdx-checklist__item-text,.embed-tool__caption{font-size:1.0675rem;line-height:1.5}.simple-image{padding:20px 0}.simple-image img{scroll-margin-top:20px;cursor:pointer}.simple-image input,.simple-image [contenteditable]{width:100%;padding:10px 12px;border:1px solid #e4e4e4;background:#fff;box-sizing:border-box;border-radius:3px;outline:none;font-size:1.125rem;height:auto}.simple-image input{margin-bottom:7px}.simple-image img{max-width:100%;margin-bottom:15px}.simple-image.withBorder img{border:1px solid #e8e8eb}.simple-image.withBackground{background:#eff2f5;padding:10px}.simple-image.withBackground img{display:block;max-width:60%;margin:0 auto 15px}.skriv-let__fullscreen-button{display:flex;align-items:center;justify-content:center;position:absolute;top:0;right:0;padding:0;height:50px;width:50px;background-color:transparent;color:#1d202b;border:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;z-index:100;border-radius:7px}@media(max-width:650px){.skriv-let__fullscreen-button{background-color:#fff;border:1px solid #e8e8eb}}.skriv-let__fullscreen-button:hover{background-color:#eff2f5}.skriv-let__container:fullscreen{background-color:#fff;color:#242424;line-height:1.5;padding:20px;height:100dvh;overflow-y:scroll}.skriv-let__container:fullscreen .codex-editor{max-width:1080px;margin:0 auto}.skriv-let__container:fullscreen .skriv-let__add-image-button,.skriv-let__container:fullscreen .ce-popover-item[data-item-name=image],.skriv-let__container:fullscreen .ce-popover-item-html[data-item-name=link]{display:none}.skriv-let__container:fullscreen .ce-paragraph,.skriv-let__container:fullscreen .cdx-list__item,.skriv-let__container:fullscreen .cdx-quote__text,.skriv-let__container:fullscreen .cdx-checklist__item-text,.skriv-let__container:fullscreen .embed-tool__caption{font-size:1.25rem}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}";
+import { UMB_MEDIA_PICKER_MODAL as Gi, UmbMediaUrlRepository as Ji, UmbMediaItemRepository as Qi } from "@umbraco-cms/backoffice/media";
+import { UMB_LINK_PICKER_MODAL as es } from "@umbraco-cms/backoffice/multi-url-picker";
+const ts = ".skriv-let{position:relative;background-color:#fff;max-width:920px;margin:0 auto}.skriv-let.cdx-search-field__input{width:auto}.ce-popover__container{width:250px}@media(min-width:651px){.ce-block__content{max-width:calc(100% - 120px)!important;margin:0 60px}}@media(min-width:651px){.ce-toolbar__content{width:0px!important;margin:0 50px}}.cdx-block{max-width:100%!important}@media(min-width:651px){.codex-editor--narrow .ce-toolbox .ce-popover{left:0;right:0}}@media(min-width:651px){.codex-editor--narrow .ce-settings .ce-popover{right:0;left:0}}.ce-popover{width:auto!important}.ce-popover--inline .ce-popover--nested .ce-popover__container{width:250px}.skriv-let-data{margin:0 auto;max-width:800px}.cdx-label{font-weight:700}.ce-paragraph,.cdx-list__item,.cdx-quote__text,.cdx-checklist__item-text,.embed-tool__caption{font-size:1.0675rem;line-height:1.5}.simple-image{padding:20px 0}.simple-image img{scroll-margin-top:20px;cursor:pointer}.simple-image input,.simple-image [contenteditable]{width:100%;padding:10px 12px;border:1px solid #e4e4e4;background:#fff;box-sizing:border-box;border-radius:3px;outline:none;font-size:1.125rem;height:auto}.simple-image input{margin-bottom:7px}.simple-image img{max-width:100%;margin-bottom:15px}.simple-image.withBorder img{border:1px solid #e8e8eb}.simple-image.withBackground{background:#eff2f5;padding:10px}.simple-image.withBackground img{display:block;max-width:60%;margin:0 auto 15px}.skriv-let__fullscreen-button{display:flex;align-items:center;justify-content:center;position:absolute;top:0;right:0;padding:0;height:50px;width:50px;background-color:transparent;color:#1d202b;border:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;z-index:100;border-radius:7px}@media(max-width:650px){.skriv-let__fullscreen-button{background-color:#fff;border:1px solid #e8e8eb}}.skriv-let__fullscreen-button:hover{background-color:#eff2f5}.skriv-let__container:fullscreen{background-color:#fff;color:#242424;line-height:1.5;padding:20px;height:100dvh;overflow-y:scroll}.skriv-let__container:fullscreen .codex-editor{max-width:1080px;margin:0 auto}.skriv-let__container:fullscreen .skriv-let__add-image-button,.skriv-let__container:fullscreen .ce-popover-item[data-item-name=image],.skriv-let__container:fullscreen .ce-popover-item-html[data-item-name=link]{display:none}.skriv-let__container:fullscreen .ce-paragraph,.skriv-let__container:fullscreen .cdx-list__item,.skriv-let__container:fullscreen .cdx-quote__text,.skriv-let__container:fullscreen .cdx-checklist__item-text,.skriv-let__container:fullscreen .embed-tool__caption{font-size:1.25rem}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}";
 (function() {
   try {
     if (typeof document < "u") {
@@ -22,7 +22,7 @@ var Ve = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : t
 function vt(o) {
   return o && o.__esModule && Object.prototype.hasOwnProperty.call(o, "default") ? o.default : o;
 }
-function es(o) {
+function os(o) {
   if (o.__esModule)
     return o;
   var e = o.default;
@@ -96,7 +96,7 @@ window.requestIdleCallback = window.requestIdleCallback || function(o) {
 window.cancelIdleCallback = window.cancelIdleCallback || function(o) {
   clearTimeout(o);
 };
-let ts = (o = 21) => crypto.getRandomValues(new Uint8Array(o)).reduce((e, t) => (t &= 63, t < 36 ? e += t.toString(36) : t < 62 ? e += (t - 26).toString(36).toUpperCase() : t > 62 ? e += "-" : e += "_", e), "");
+let rs = (o = 21) => crypto.getRandomValues(new Uint8Array(o)).reduce((e, t) => (t &= 63, t < 36 ? e += t.toString(36) : t < 62 ? e += (t - 26).toString(36).toUpperCase() : t > 62 ? e += "-" : e += "_", e), "");
 var ln = /* @__PURE__ */ ((o) => (o.VERBOSE = "VERBOSE", o.INFO = "INFO", o.WARN = "WARN", o.ERROR = "ERROR", o))(ln || {});
 const A = {
   BACKSPACE: 8,
@@ -108,7 +108,7 @@ const A = {
   DOWN: 40,
   RIGHT: 39,
   DELETE: 46
-}, os = {
+}, ns = {
   LEFT: 0
 };
 function Ke(o, e, t = "log", r, n = "color: inherit") {
@@ -147,14 +147,14 @@ function Ke(o, e, t = "log", r, n = "color: inherit") {
   }
 }
 Ke.logLevel = "VERBOSE";
-function rs(o) {
+function is(o) {
   Ke.logLevel = o;
 }
 const j = Ke.bind(window, !1), Y = Ke.bind(window, !0);
 function me(o) {
   return Object.prototype.toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 }
-function R(o) {
+function H(o) {
   return me(o) === "function" || me(o) === "asyncfunction";
 }
 function U(o) {
@@ -163,7 +163,7 @@ function U(o) {
 function ie(o) {
   return me(o) === "string";
 }
-function ns(o) {
+function ss(o) {
   return me(o) === "boolean";
 }
 function Fr(o) {
@@ -184,7 +184,7 @@ function cn(o) {
   o > 185 && o < 193 || // ;=,-./` (in order)
   o > 218 && o < 223;
 }
-async function is(o, e = () => {
+async function as(o, e = () => {
 }, t = () => {
 }) {
   async function r(n, i, s) {
@@ -205,10 +205,10 @@ function at(o, e) {
     window.setTimeout(() => o.apply(t, r), e);
   };
 }
-function ss(o) {
+function ls(o) {
   return o.name.split(".").pop();
 }
-function as(o) {
+function cs(o) {
   return /^[-\w]+\/([-+\w]+|\*)$/.test(o);
 }
 function Ur(o, e, t) {
@@ -233,7 +233,7 @@ function $t(o, e, t = void 0) {
     return r = this, n = arguments, d <= 0 || d > e ? (s && (clearTimeout(s), s = null), a = c, i = o.apply(r, n), s || (r = n = null)) : !s && t.trailing !== !1 && (s = setTimeout(l, d)), i;
   };
 }
-function ls() {
+function ds() {
   const o = {
     win: !1,
     mac: !1,
@@ -255,23 +255,23 @@ function Ut(o, ...e) {
   return Ut(o, ...e);
 }
 function eo(o) {
-  const e = ls();
+  const e = ds();
   return o = o.replace(/shift/gi, "⇧").replace(/backspace/gi, "⌫").replace(/enter/gi, "⏎").replace(/up/gi, "↑").replace(/left/gi, "→").replace(/down/gi, "↓").replace(/right/gi, "←").replace(/escape/gi, "⎋").replace(/insert/gi, "Ins").replace(/delete/gi, "␡").replace(/\+/gi, " + "), e.mac ? o = o.replace(/ctrl|cmd/gi, "⌘").replace(/alt/gi, "⌥") : o = o.replace(/cmd/gi, "Ctrl").replace(/windows/gi, "WIN"), o;
 }
-function cs(o) {
+function hs(o) {
   try {
     return new URL(o).href;
   } catch {
   }
   return o.substring(0, 2) === "//" ? window.location.protocol + o : window.location.origin + o;
 }
-function ds() {
-  return ts(10);
+function us() {
+  return rs(10);
 }
-function hs(o) {
+function ps(o) {
   window.open(o, "_blank");
 }
-function us(o = "") {
+function fs(o = "") {
   return `${o}${Math.floor(Math.random() * 1e8).toString(16)}`;
 }
 function zt(o, e, t) {
@@ -295,7 +295,7 @@ function _e() {
   return window.matchMedia(`(max-width: ${hn}px)`).matches;
 }
 const Vt = typeof window < "u" && window.navigator && window.navigator.platform && (/iP(ad|hone|od)/.test(window.navigator.platform) || window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
-function ps(o, e) {
+function gs(o, e) {
   const t = Array.isArray(o) || U(o), r = Array.isArray(e) || U(e);
   return t || r ? JSON.stringify(o) === JSON.stringify(e) : o === e;
 }
@@ -746,17 +746,17 @@ let g = class V {
     };
   }
 };
-function fs(o) {
+function ms(o) {
   return !/[^\t\n\r ]/.test(o);
 }
-function gs(o) {
+function vs(o) {
   const e = window.getComputedStyle(o), t = parseFloat(e.fontSize), r = parseFloat(e.lineHeight) || t * 1.2, n = parseFloat(e.paddingTop), i = parseFloat(e.borderTopWidth), s = parseFloat(e.marginTop), a = t * 0.8, l = (r - t) / 2;
   return s + i + n + l + a;
 }
 function un(o) {
   o.dataset.empty = g.isEmpty(o) ? "true" : "false";
 }
-const ms = {
+const bs = {
   blockTunes: {
     toggler: {
       "Click to tune": "",
@@ -778,19 +778,19 @@ const ms = {
     "Nothing found": "",
     "Convert to": ""
   }
-}, vs = {
+}, ks = {
   Text: "",
   Link: "",
   Bold: "",
   Italic: ""
-}, bs = {
+}, ws = {
   link: {
     "Add a link": ""
   },
   stub: {
     "The block can not be displayed correctly.": ""
   }
-}, ks = {
+}, ys = {
   delete: {
     Delete: "",
     "Click to delete": ""
@@ -802,10 +802,10 @@ const ms = {
     "Move down": ""
   }
 }, pn = {
-  ui: ms,
-  toolNames: vs,
-  tools: bs,
-  blockTunes: ks
+  ui: bs,
+  toolNames: ks,
+  tools: ws,
+  blockTunes: ys
 }, fn = class ye {
   /**
    * Type-safe translation for internal UI texts:
@@ -1052,7 +1052,7 @@ let Xe = class {
    * @param {boolean|AddEventListenerOptions} options - useCapture or {capture, passive, once}
    */
   on(e, t, r, n = !1) {
-    const i = us("l"), s = {
+    const i = fs("l"), s = {
       id: i,
       element: e,
       eventType: t,
@@ -1227,7 +1227,7 @@ let Xe = class {
   get isRtl() {
     return this.config.i18n.direction === "rtl";
   }
-}, L = class se {
+}, I = class se {
   constructor() {
     this.instance = null, this.selection = null, this.savedSelectionRange = null, this.isFakeBackgroundEnabled = !1, this.commandBackground = "backColor";
   }
@@ -1506,7 +1506,7 @@ let Xe = class {
     r.selectNodeContents(e), t.addRange(r);
   }
 };
-function ws(o, e) {
+function xs(o, e) {
   const { type: t, target: r, addedNodes: n, removedNodes: i } = o;
   return o.type === "attributes" && o.attributeName === "data-empty" ? !1 : !!(e.contains(r) || t === "childList" && (Array.from(n).some((s) => s === e) || Array.from(i).some((s) => s === e)));
 }
@@ -1515,13 +1515,13 @@ function qt(o, e) {
   if (!o.conversionConfig)
     return !1;
   const t = o.conversionConfig[e];
-  return R(t) || ie(t);
+  return H(t) || ie(t);
 }
 function ct(o, e) {
   return qt(o.tool, e);
 }
 function wn(o, e) {
-  return Object.entries(o).some(([t, r]) => e[t] && ps(e[t], r));
+  return Object.entries(o).some(([t, r]) => e[t] && gs(e[t], r));
 }
 async function yn(o, e) {
   const t = (await o.save()).data, r = e.find((n) => n.name === o.name);
@@ -1547,17 +1547,17 @@ async function yn(o, e) {
 function zr(o, e) {
   return o.mergeable ? o.name === e.name ? !0 : ct(e, "export") && ct(o, "import") : !1;
 }
-function ys(o, e) {
+function Cs(o, e) {
   const t = e == null ? void 0 : e.export;
-  return R(t) ? t(o) : ie(t) ? o[t] : (t !== void 0 && j("Conversion «export» property must be a string or function. String means key of saved data object to export. Function should export processed string to export."), "");
+  return H(t) ? t(o) : ie(t) ? o[t] : (t !== void 0 && j("Conversion «export» property must be a string or function. String means key of saved data object to export. Function should export processed string to export."), "");
 }
 function Vr(o, e, t) {
   const r = e == null ? void 0 : e.import;
-  return R(r) ? r(o, t) : ie(r) ? {
+  return H(r) ? r(o, t) : ie(r) ? {
     [r]: o
   } : (r !== void 0 && j("Conversion «import» property must be a string or function. String means key of tool data to import. Function accepts a imported string and return composed tool data."), {});
 }
-var D = /* @__PURE__ */ ((o) => (o.Default = "default", o.Separator = "separator", o.Html = "html", o))(D || {}), oe = /* @__PURE__ */ ((o) => (o.APPEND_CALLBACK = "appendCallback", o.RENDERED = "rendered", o.MOVED = "moved", o.UPDATED = "updated", o.REMOVED = "removed", o.ON_PASTE = "onPaste", o))(oe || {});
+var R = /* @__PURE__ */ ((o) => (o.Default = "default", o.Separator = "separator", o.Html = "html", o))(R || {}), oe = /* @__PURE__ */ ((o) => (o.APPEND_CALLBACK = "appendCallback", o.RENDERED = "rendered", o.MOVED = "moved", o.UPDATED = "updated", o.REMOVED = "removed", o.ON_PASTE = "onPaste", o))(oe || {});
 let ne = class ae extends Ye {
   /**
    * @param options - block constructor options
@@ -1569,7 +1569,7 @@ let ne = class ae extends Ye {
    * @param [eventBus] - Editor common event bus. Allows to subscribe on some Editor events. Could be omitted when "virtual" Block is created. See BlocksAPI@composeBlockData.
    */
   constructor({
-    id: e = ds(),
+    id: e = us(),
     data: t,
     tool: r,
     readOnly: n,
@@ -1687,7 +1687,7 @@ let ne = class ae extends Ye {
    * @returns {boolean}
    */
   get mergeable() {
-    return R(this.toolInstance.merge);
+    return H(this.toolInstance.merge);
   }
   /**
    * If Block contains inputs, it is focusable
@@ -1731,8 +1731,8 @@ let ne = class ae extends Ye {
   set selected(e) {
     var t, r;
     this.holder.classList.toggle(ae.CSS.selected, e);
-    const n = e === !0 && L.isRangeInsideContainer(this.holder), i = e === !1 && L.isFakeCursorInsideContainer(this.holder);
-    (n || i) && ((t = this.editorEventBus) == null || t.emit(bn, { state: e }), n ? L.addFakeCursor() : L.removeFakeCursor(this.holder), (r = this.editorEventBus) == null || r.emit(kn, { state: e }));
+    const n = e === !0 && I.isRangeInsideContainer(this.holder), i = e === !1 && I.isFakeCursorInsideContainer(this.holder);
+    (n || i) && ((t = this.editorEventBus) == null || t.emit(bn, { state: e }), n ? I.addFakeCursor() : I.removeFakeCursor(this.holder), (r = this.editorEventBus) == null || r.emit(kn, { state: e }));
   }
   /**
    * Returns True if it is Selected
@@ -1783,7 +1783,7 @@ let ne = class ae extends Ye {
    * @param {object} params - method argument
    */
   call(e, t) {
-    if (R(this.toolInstance[e])) {
+    if (H(this.toolInstance[e])) {
       e === "appendCallback" && j(
         "`appendCallback` hook is deprecated and will be removed in the next major release. Use `rendered` hook instead",
         "warn"
@@ -1815,7 +1815,7 @@ let ne = class ae extends Ye {
       ...this.tunesInstances.entries(),
       ...this.defaultTunesInstances.entries()
     ].forEach(([i, s]) => {
-      if (R(s.save))
+      if (H(s.save))
         try {
           t[i] = s.save();
         } catch (a) {
@@ -1853,14 +1853,14 @@ let ne = class ae extends Ye {
   getTunes() {
     const e = [], t = [], r = typeof this.toolInstance.renderSettings == "function" ? this.toolInstance.renderSettings() : [];
     return g.isElement(r) ? e.push({
-      type: D.Html,
+      type: R.Html,
       element: r
     }) : Array.isArray(r) ? e.push(...r) : e.push(r), [
       ...this.tunesInstances.values(),
       ...this.defaultTunesInstances.values()
     ].map((n) => n.render()).forEach((n) => {
       g.isElement(n) ? t.push({
-        type: D.Html,
+        type: R.Html,
         element: n
       }) : Array.isArray(n) ? t.push(...n) : t.push(n);
     }), {
@@ -1872,7 +1872,7 @@ let ne = class ae extends Ye {
    * Update current input index with selection anchor node
    */
   updateCurrentInput() {
-    this.currentInput = g.isNativeInput(document.activeElement) || !L.anchorNode ? document.activeElement : L.anchorNode;
+    this.currentInput = g.isNativeInput(document.activeElement) || !I.anchorNode ? document.activeElement : I.anchorNode;
   }
   /**
    * Allows to say Editor that Block was changed. Used to manually trigger Editor's 'onChange' callback
@@ -1885,7 +1885,7 @@ let ne = class ae extends Ye {
    * Call Tool instance destroy method
    */
   destroy() {
-    this.unwatchBlockMutations(), this.removeInputEvents(), super.destroy(), R(this.toolInstance.destroy) && this.toolInstance.destroy();
+    this.unwatchBlockMutations(), this.removeInputEvents(), super.destroy(), H(this.toolInstance.destroy) && this.toolInstance.destroy();
   }
   /**
    * Tool could specify several entries to be displayed at the Toolbox (for example, "Heading 1", "Heading 2", "Heading 3")
@@ -1903,7 +1903,7 @@ let ne = class ae extends Ye {
    */
   async exportDataAsString() {
     const e = await this.data;
-    return ys(e, this.tool.conversionConfig);
+    return Cs(e, this.tool.conversionConfig);
   }
   /**
    * Make default Block wrappers and put Tool`s content there
@@ -1915,7 +1915,7 @@ let ne = class ae extends Ye {
     e.dataset.id = this.id, this.toolRenderedElement = r, t.appendChild(this.toolRenderedElement);
     let n = t;
     return [...this.tunesInstances.values(), ...this.defaultTunesInstances.values()].forEach((i) => {
-      if (R(i.wrap))
+      if (H(i.wrap))
         try {
           n = i.wrap(n);
         } catch (s) {
@@ -1959,7 +1959,7 @@ let ne = class ae extends Ye {
     var e;
     this.redactorDomChangedCallback = (t) => {
       const { mutations: r } = t;
-      r.some((n) => ws(n, this.toolRenderedElement)) && this.didMutated(r);
+      r.some((n) => xs(n, this.toolRenderedElement)) && this.didMutated(r);
     }, (e = this.editorEventBus) == null || e.on(Wt, this.redactorDomChangedCallback);
   }
   /**
@@ -1996,7 +1996,7 @@ let ne = class ae extends Ye {
     this.inputs.forEach(un);
   }
 };
-class xs extends N {
+class Es extends N {
   constructor() {
     super(...arguments), this.insert = (e = this.config.defaultBlock, t = {}, r = {}, n, i, s, a) => {
       const l = this.Editor.BlockManager.insert({
@@ -2246,13 +2246,13 @@ class xs extends N {
       throw new Error("Index should be greater than or equal to 0");
   }
 }
-function Cs(o, e) {
+function Ts(o, e) {
   return typeof o == "number" ? e.BlockManager.getBlockByIndex(o) : typeof o == "string" ? e.BlockManager.getBlockById(o) : e.BlockManager.getBlockById(o.id);
 }
-class Es extends N {
+class Ss extends N {
   constructor() {
     super(...arguments), this.setToFirstBlock = (e = this.Editor.Caret.positions.DEFAULT, t = 0) => this.Editor.BlockManager.firstBlock ? (this.Editor.Caret.setToBlock(this.Editor.BlockManager.firstBlock, e, t), !0) : !1, this.setToLastBlock = (e = this.Editor.Caret.positions.DEFAULT, t = 0) => this.Editor.BlockManager.lastBlock ? (this.Editor.Caret.setToBlock(this.Editor.BlockManager.lastBlock, e, t), !0) : !1, this.setToPreviousBlock = (e = this.Editor.Caret.positions.DEFAULT, t = 0) => this.Editor.BlockManager.previousBlock ? (this.Editor.Caret.setToBlock(this.Editor.BlockManager.previousBlock, e, t), !0) : !1, this.setToNextBlock = (e = this.Editor.Caret.positions.DEFAULT, t = 0) => this.Editor.BlockManager.nextBlock ? (this.Editor.Caret.setToBlock(this.Editor.BlockManager.nextBlock, e, t), !0) : !1, this.setToBlock = (e, t = this.Editor.Caret.positions.DEFAULT, r = 0) => {
-      const n = Cs(e, this.Editor);
+      const n = Ts(e, this.Editor);
       return n === void 0 ? !1 : (this.Editor.Caret.setToBlock(n, t, r), !0);
     }, this.focus = (e = !1) => e ? this.setToLastBlock(this.Editor.Caret.positions.END) : this.setToFirstBlock(this.Editor.Caret.positions.START);
   }
@@ -2272,7 +2272,7 @@ class Es extends N {
     };
   }
 }
-class Ts extends N {
+class Bs extends N {
   /**
    * Available methods
    *
@@ -2313,7 +2313,7 @@ class Ts extends N {
     this.eventsDispatcher.off(e, t);
   }
 }
-let Ss = class xn extends N {
+let Ms = class xn extends N {
   /**
    * Return namespace section for tool or block tune
    *
@@ -2348,7 +2348,7 @@ let Ss = class xn extends N {
     );
   }
 };
-class Bs extends N {
+class _s extends N {
   /**
    * Editor.js Core API modules
    */
@@ -2387,7 +2387,7 @@ class Bs extends N {
     );
   }
 }
-class Ms extends N {
+class Ls extends N {
   /**
    * Available methods
    *
@@ -2412,7 +2412,7 @@ class Ms extends N {
     this.Editor.InlineToolbar.close();
   }
 }
-class _s extends N {
+class Is extends N {
   /**
    * Available methods
    *
@@ -2572,27 +2572,27 @@ var Cn = { exports: {} };
         return s === void 0 && (s = i.apply(this, arguments)), s;
       }), c = /* @__PURE__ */ (function(w) {
         var b = {};
-        return function(E) {
-          if (typeof E == "function")
-            return E();
-          if (b[E] === void 0) {
+        return function(C) {
+          if (typeof C == "function")
+            return C();
+          if (b[C] === void 0) {
             var y = (function(B) {
               return document.querySelector(B);
-            }).call(this, E);
+            }).call(this, C);
             if (window.HTMLIFrameElement && y instanceof window.HTMLIFrameElement)
               try {
                 y = y.contentDocument.head;
               } catch {
                 y = null;
               }
-            b[E] = y;
+            b[C] = y;
           }
-          return b[E];
+          return b[C];
         };
       })(), d = null, h = 0, u = [], f = n(5);
       function p(w, b) {
-        for (var E = 0; E < w.length; E++) {
-          var y = w[E], B = a[y.id];
+        for (var C = 0; C < w.length; C++) {
+          var y = w[C], B = a[y.id];
           if (B) {
             B.refs++;
             for (var M = 0; M < B.parts.length; M++)
@@ -2608,21 +2608,21 @@ var Cn = { exports: {} };
         }
       }
       function k(w, b) {
-        for (var E = [], y = {}, B = 0; B < w.length; B++) {
-          var M = w[B], P = b.base ? M[0] + b.base : M[0], O = { css: M[1], media: M[2], sourceMap: M[3] };
-          y[P] ? y[P].parts.push(O) : E.push(y[P] = { id: P, parts: [O] });
+        for (var C = [], y = {}, B = 0; B < w.length; B++) {
+          var M = w[B], P = b.base ? M[0] + b.base : M[0], _ = { css: M[1], media: M[2], sourceMap: M[3] };
+          y[P] ? y[P].parts.push(_) : C.push(y[P] = { id: P, parts: [_] });
         }
-        return E;
+        return C;
       }
       function T(w, b) {
-        var E = c(w.insertInto);
-        if (!E)
+        var C = c(w.insertInto);
+        if (!C)
           throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
         var y = u[u.length - 1];
         if (w.insertAt === "top")
-          y ? y.nextSibling ? E.insertBefore(b, y.nextSibling) : E.appendChild(b) : E.insertBefore(b, E.firstChild), u.push(b);
+          y ? y.nextSibling ? C.insertBefore(b, y.nextSibling) : C.appendChild(b) : C.insertBefore(b, C.firstChild), u.push(b);
         else if (w.insertAt === "bottom")
-          E.appendChild(b);
+          C.appendChild(b);
         else {
           if (typeof w.insertAt != "object" || !w.insertAt.before)
             throw new Error(`[Style Loader]
@@ -2632,7 +2632,7 @@ var Cn = { exports: {} };
  (https://github.com/webpack-contrib/style-loader#insertat)
 `);
           var B = c(w.insertInto + " " + w.insertAt.before);
-          E.insertBefore(b, B);
+          C.insertBefore(b, B);
         }
       }
       function v(w) {
@@ -2644,15 +2644,15 @@ var Cn = { exports: {} };
       }
       function m(w) {
         var b = document.createElement("style");
-        return w.attrs.type === void 0 && (w.attrs.type = "text/css"), C(b, w.attrs), T(w, b), b;
+        return w.attrs.type === void 0 && (w.attrs.type = "text/css"), E(b, w.attrs), T(w, b), b;
       }
-      function C(w, b) {
-        Object.keys(b).forEach(function(E) {
-          w.setAttribute(E, b[E]);
+      function E(w, b) {
+        Object.keys(b).forEach(function(C) {
+          w.setAttribute(C, b[C]);
         });
       }
       function S(w, b) {
-        var E, y, B, M;
+        var C, y, B, M;
         if (b.transform && w.css) {
           if (!(M = b.transform(w.css)))
             return function() {
@@ -2661,36 +2661,36 @@ var Cn = { exports: {} };
         }
         if (b.singleton) {
           var P = h++;
-          E = d || (d = m(b)), y = I.bind(null, E, P, !1), B = I.bind(null, E, P, !0);
+          C = d || (d = m(b)), y = O.bind(null, C, P, !1), B = O.bind(null, C, P, !0);
         } else
-          w.sourceMap && typeof URL == "function" && typeof URL.createObjectURL == "function" && typeof URL.revokeObjectURL == "function" && typeof Blob == "function" && typeof btoa == "function" ? (E = (function(O) {
-            var $ = document.createElement("link");
-            return O.attrs.type === void 0 && (O.attrs.type = "text/css"), O.attrs.rel = "stylesheet", C($, O.attrs), T(O, $), $;
-          })(b), y = (function(O, $, ue) {
-            var ee = ue.css, Le = ue.sourceMap, Ui = $.convertToAbsoluteUrls === void 0 && Le;
-            ($.convertToAbsoluteUrls || Ui) && (ee = f(ee)), Le && (ee += `
+          w.sourceMap && typeof URL == "function" && typeof URL.createObjectURL == "function" && typeof URL.revokeObjectURL == "function" && typeof Blob == "function" && typeof btoa == "function" ? (C = (function(_) {
+            var D = document.createElement("link");
+            return _.attrs.type === void 0 && (_.attrs.type = "text/css"), _.attrs.rel = "stylesheet", E(D, _.attrs), T(_, D), D;
+          })(b), y = (function(_, D, ue) {
+            var ee = ue.css, Le = ue.sourceMap, Ui = D.convertToAbsoluteUrls === void 0 && Le;
+            (D.convertToAbsoluteUrls || Ui) && (ee = f(ee)), Le && (ee += `
 /*# sourceMappingURL=data:application/json;base64,` + btoa(unescape(encodeURIComponent(JSON.stringify(Le)))) + " */");
-            var zi = new Blob([ee], { type: "text/css" }), Rr = O.href;
-            O.href = URL.createObjectURL(zi), Rr && URL.revokeObjectURL(Rr);
-          }).bind(null, E, b), B = function() {
-            v(E), E.href && URL.revokeObjectURL(E.href);
-          }) : (E = m(b), y = (function(O, $) {
-            var ue = $.css, ee = $.media;
-            if (ee && O.setAttribute("media", ee), O.styleSheet)
-              O.styleSheet.cssText = ue;
+            var zi = new Blob([ee], { type: "text/css" }), Rr = _.href;
+            _.href = URL.createObjectURL(zi), Rr && URL.revokeObjectURL(Rr);
+          }).bind(null, C, b), B = function() {
+            v(C), C.href && URL.revokeObjectURL(C.href);
+          }) : (C = m(b), y = (function(_, D) {
+            var ue = D.css, ee = D.media;
+            if (ee && _.setAttribute("media", ee), _.styleSheet)
+              _.styleSheet.cssText = ue;
             else {
-              for (; O.firstChild; )
-                O.removeChild(O.firstChild);
-              O.appendChild(document.createTextNode(ue));
+              for (; _.firstChild; )
+                _.removeChild(_.firstChild);
+              _.appendChild(document.createTextNode(ue));
             }
-          }).bind(null, E), B = function() {
-            v(E);
+          }).bind(null, C), B = function() {
+            v(C);
           });
-        return y(w), function(O) {
-          if (O) {
-            if (O.css === w.css && O.media === w.media && O.sourceMap === w.sourceMap)
+        return y(w), function(_) {
+          if (_) {
+            if (_.css === w.css && _.media === w.media && _.sourceMap === w.sourceMap)
               return;
-            y(w = O);
+            y(w = _);
           } else
             B();
         };
@@ -2699,28 +2699,28 @@ var Cn = { exports: {} };
         if (typeof DEBUG < "u" && DEBUG && typeof document != "object")
           throw new Error("The style-loader cannot be used in a non-browser environment");
         (b = b || {}).attrs = typeof b.attrs == "object" ? b.attrs : {}, b.singleton || typeof b.singleton == "boolean" || (b.singleton = l()), b.insertInto || (b.insertInto = "head"), b.insertAt || (b.insertAt = "bottom");
-        var E = k(w, b);
-        return p(E, b), function(y) {
-          for (var B = [], M = 0; M < E.length; M++) {
-            var P = E[M];
-            (O = a[P.id]).refs--, B.push(O);
+        var C = k(w, b);
+        return p(C, b), function(y) {
+          for (var B = [], M = 0; M < C.length; M++) {
+            var P = C[M];
+            (_ = a[P.id]).refs--, B.push(_);
           }
           for (y && p(k(y, b), b), M = 0; M < B.length; M++) {
-            var O;
-            if ((O = B[M]).refs === 0) {
-              for (var $ = 0; $ < O.parts.length; $++)
-                O.parts[$]();
-              delete a[O.id];
+            var _;
+            if ((_ = B[M]).refs === 0) {
+              for (var D = 0; D < _.parts.length; D++)
+                _.parts[D]();
+              delete a[_.id];
             }
           }
         };
       };
-      var _, x = (_ = [], function(w, b) {
-        return _[w] = b, _.filter(Boolean).join(`
+      var L, x = (L = [], function(w, b) {
+        return L[w] = b, L.filter(Boolean).join(`
 `);
       });
-      function I(w, b, E, y) {
-        var B = E ? "" : y.css;
+      function O(w, b, C, y) {
+        var B = C ? "" : y.css;
         if (w.styleSheet)
           w.styleSheet.cssText = x(b, B);
         else {
@@ -2751,12 +2751,12 @@ var Cn = { exports: {} };
         var k = document.createElement("DIV"), T = document.createElement("DIV"), v = p.message, m = p.style;
         return k.classList.add(s), m && k.classList.add(s + "--" + m), k.innerHTML = v, T.classList.add(a), T.addEventListener("click", k.remove.bind(k)), k.appendChild(T), k;
       }, confirm: function(p) {
-        var k = f(p), T = document.createElement("div"), v = document.createElement("button"), m = document.createElement("button"), C = k.querySelector("." + a), S = p.cancelHandler, _ = p.okHandler;
-        return T.classList.add(u), v.innerHTML = p.okText || "Confirm", m.innerHTML = p.cancelText || "Cancel", v.classList.add(h), m.classList.add(h), v.classList.add(l), m.classList.add(c), S && typeof S == "function" && (m.addEventListener("click", S), C.addEventListener("click", S)), _ && typeof _ == "function" && v.addEventListener("click", _), v.addEventListener("click", k.remove.bind(k)), m.addEventListener("click", k.remove.bind(k)), T.appendChild(v), T.appendChild(m), k.appendChild(T), k;
+        var k = f(p), T = document.createElement("div"), v = document.createElement("button"), m = document.createElement("button"), E = k.querySelector("." + a), S = p.cancelHandler, L = p.okHandler;
+        return T.classList.add(u), v.innerHTML = p.okText || "Confirm", m.innerHTML = p.cancelText || "Cancel", v.classList.add(h), m.classList.add(h), v.classList.add(l), m.classList.add(c), S && typeof S == "function" && (m.addEventListener("click", S), E.addEventListener("click", S)), L && typeof L == "function" && v.addEventListener("click", L), v.addEventListener("click", k.remove.bind(k)), m.addEventListener("click", k.remove.bind(k)), T.appendChild(v), T.appendChild(m), k.appendChild(T), k;
       }, prompt: function(p) {
-        var k = f(p), T = document.createElement("div"), v = document.createElement("button"), m = document.createElement("input"), C = k.querySelector("." + a), S = p.cancelHandler, _ = p.okHandler;
-        return T.classList.add(u), v.innerHTML = p.okText || "Ok", v.classList.add(h), v.classList.add(l), m.classList.add(d), p.placeholder && m.setAttribute("placeholder", p.placeholder), p.default && (m.value = p.default), p.inputType && (m.type = p.inputType), S && typeof S == "function" && C.addEventListener("click", S), _ && typeof _ == "function" && v.addEventListener("click", function() {
-          _(m.value);
+        var k = f(p), T = document.createElement("div"), v = document.createElement("button"), m = document.createElement("input"), E = k.querySelector("." + a), S = p.cancelHandler, L = p.okHandler;
+        return T.classList.add(u), v.innerHTML = p.okText || "Ok", v.classList.add(h), v.classList.add(l), m.classList.add(d), p.placeholder && m.setAttribute("placeholder", p.placeholder), p.default && (m.value = p.default), p.inputType && (m.type = p.inputType), S && typeof S == "function" && E.addEventListener("click", S), L && typeof L == "function" && v.addEventListener("click", function() {
+          L(m.value);
         }), v.addEventListener("click", k.remove.bind(k)), T.appendChild(m), T.appendChild(v), k.appendChild(T), k;
       }, getWrapper: function() {
         var p = document.createElement("DIV");
@@ -2765,19 +2765,19 @@ var Cn = { exports: {} };
     }]);
   });
 })(Cn);
-var Ls = Cn.exports;
-const Is = /* @__PURE__ */ vt(Ls);
-class Os {
+var Os = Cn.exports;
+const As = /* @__PURE__ */ vt(Os);
+class Ps {
   /**
    * Show web notification
    *
    * @param {NotifierOptions | ConfirmNotifierOptions | PromptNotifierOptions} options - notification options
    */
   show(e) {
-    Is.show(e);
+    As.show(e);
   }
 }
-class As extends N {
+class Ns extends N {
   /**
    * @param moduleConfiguration - Module Configuration
    * @param moduleConfiguration.config - Editor's config
@@ -2787,7 +2787,7 @@ class As extends N {
     super({
       config: e,
       eventsDispatcher: t
-    }), this.notifier = new Os();
+    }), this.notifier = new Ps();
   }
   /**
    * Available methods
@@ -2806,7 +2806,7 @@ class As extends N {
     return this.notifier.show(e);
   }
 }
-class Ps extends N {
+class js extends N {
   /**
    * Available methods
    */
@@ -2877,8 +2877,8 @@ var En = { exports: {} };
           }
           var k = s(p), T;
           k && (T = Array.prototype.some.call(p.childNodes, n));
-          var v = !!u.parentNode, m = n(u) && n(p) && v, C = p.nodeName.toLowerCase(), S = l(this.config, C, p), _ = k && T;
-          if (_ || c(p, S) || !this.config.keepNestedBlockElements && m) {
+          var v = !!u.parentNode, m = n(u) && n(p) && v, E = p.nodeName.toLowerCase(), S = l(this.config, E, p), L = k && T;
+          if (L || c(p, S) || !this.config.keepNestedBlockElements && m) {
             if (!(p.nodeName === "SCRIPT" || p.nodeName === "STYLE"))
               for (; p.childNodes.length > 0; )
                 u.insertBefore(p.childNodes[0], p);
@@ -2886,8 +2886,8 @@ var En = { exports: {} };
             break;
           }
           for (var x = 0; x < p.attributes.length; x += 1) {
-            var I = p.attributes[x];
-            d(I, S, p) && (p.removeAttribute(I.name), x = x - 1);
+            var O = p.attributes[x];
+            d(O, S, p) && (p.removeAttribute(O.name), x = x - 1);
           }
           this._sanitize(h, p);
         } while (p = f.nextSibling());
@@ -2913,11 +2913,11 @@ var En = { exports: {} };
     return t;
   });
 })(En);
-var Ns = En.exports;
-const js = /* @__PURE__ */ vt(Ns);
+var Ds = En.exports;
+const Rs = /* @__PURE__ */ vt(Ds);
 function to(o, e) {
   return o.map((t) => {
-    const r = R(e) ? e(t.tool) : e;
+    const r = H(e) ? e(t.tool) : e;
     return X(r) || (t.data = oo(t.data, r)), t;
   });
 }
@@ -2925,31 +2925,31 @@ function J(o, e = {}) {
   const t = {
     tags: e
   };
-  return new js(t).clean(o);
+  return new Rs(t).clean(o);
 }
 function oo(o, e) {
-  return Array.isArray(o) ? Ds(o, e) : U(o) ? Rs(o, e) : ie(o) ? Hs(o, e) : o;
+  return Array.isArray(o) ? Hs(o, e) : U(o) ? Fs(o, e) : ie(o) ? $s(o, e) : o;
 }
-function Ds(o, e) {
+function Hs(o, e) {
   return o.map((t) => oo(t, e));
 }
-function Rs(o, e) {
+function Fs(o, e) {
   const t = {};
   for (const r in o) {
     if (!Object.prototype.hasOwnProperty.call(o, r))
       continue;
-    const n = o[r], i = Fs(e[r]) ? e[r] : e;
+    const n = o[r], i = Us(e[r]) ? e[r] : e;
     t[r] = oo(n, i);
   }
   return t;
 }
-function Hs(o, e) {
+function $s(o, e) {
   return U(e) ? J(o, e) : e === !1 ? J(o, {}) : o;
 }
-function Fs(o) {
-  return U(o) || ns(o) || R(o);
+function Us(o) {
+  return U(o) || ss(o) || H(o);
 }
-class $s extends N {
+class zs extends N {
   /**
    * Available methods
    *
@@ -2971,7 +2971,7 @@ class $s extends N {
     return J(e, t);
   }
 }
-class Us extends N {
+class Vs extends N {
   /**
    * Available methods
    *
@@ -2992,9 +2992,9 @@ class Us extends N {
     return this.Editor.ReadOnly.isEnabled ? (Y(e, "warn"), Promise.reject(new Error(e))) : this.Editor.Saver.save();
   }
 }
-class zs extends N {
+class Ws extends N {
   constructor() {
-    super(...arguments), this.selectionUtils = new L();
+    super(...arguments), this.selectionUtils = new I();
   }
   /**
    * Available methods
@@ -3030,7 +3030,7 @@ class zs extends N {
     this.selectionUtils.expandToTag(e);
   }
 }
-class Vs extends N {
+class qs extends N {
   /**
    * Available methods
    */
@@ -3040,7 +3040,7 @@ class Vs extends N {
     };
   }
 }
-class Ws extends N {
+class Ks extends N {
   /**
    * Exported classes
    */
@@ -3069,7 +3069,7 @@ class Ws extends N {
     };
   }
 }
-class qs extends N {
+class Ys extends N {
   /**
    * Available methods
    *
@@ -3275,13 +3275,13 @@ var Tn = { exports: {} };
     }]).default;
   });
 })(Tn);
-var Ks = Tn.exports;
-const Ys = /* @__PURE__ */ vt(Ks);
+var Xs = Tn.exports;
+const Zs = /* @__PURE__ */ vt(Xs);
 let Z = null;
 function ro() {
-  Z || (Z = new Ys());
+  Z || (Z = new Zs());
 }
-function Xs(o, e, t) {
+function Gs(o, e, t) {
   ro(), Z == null || Z.show(o, e, t);
 }
 function dt(o = !1) {
@@ -3290,10 +3290,10 @@ function dt(o = !1) {
 function ht(o, e, t) {
   ro(), Z == null || Z.onHover(o, e, t);
 }
-function Zs() {
+function Js() {
   Z == null || Z.destroy(), Z = null;
 }
-class Gs extends N {
+class Qs extends N {
   /**
    * @class
    * @param moduleConfiguration - Module Configuration
@@ -3324,7 +3324,7 @@ class Gs extends N {
    * @param {TooltipOptions} options - tooltip options
    */
   show(e, t, r) {
-    Xs(e, t, r);
+    Gs(e, t, r);
   }
   /**
    * Method hides tooltip on HTML page
@@ -3343,7 +3343,7 @@ class Gs extends N {
     ht(e, t, r);
   }
 }
-class Js extends N {
+class ea extends N {
   /**
    * Available methods / getters
    */
@@ -3383,7 +3383,7 @@ function Sn(o, e) {
   }), t;
 }
 const K = Sn(pn);
-function Qs(o, e) {
+function ta(o, e) {
   const t = {};
   return Object.keys(o).forEach((r) => {
     const n = e[r];
@@ -3450,7 +3450,7 @@ const Bn = class Re {
     if (this.items.length === 0)
       return this.cursor;
     let t = this.cursor;
-    return t === -1 ? t = e === Re.directions.RIGHT ? -1 : 0 : this.items[t].classList.remove(this.focusedCssClass), e === Re.directions.RIGHT ? t = (t + 1) % this.items.length : t = (this.items.length + t - 1) % this.items.length, g.canSetCaret(this.items[t]) && at(() => L.setCursor(this.items[t]), 50)(), this.items[t].classList.add(this.focusedCssClass), t;
+    return t === -1 ? t = e === Re.directions.RIGHT ? -1 : 0 : this.items[t].classList.remove(this.focusedCssClass), e === Re.directions.RIGHT ? t = (t + 1) % this.items.length : t = (this.items.length + t - 1) % this.items.length, g.canSetCaret(this.items[t]) && at(() => I.setCursor(this.items[t]), 50)(), this.items[t].classList.add(this.focusedCssClass), t;
   }
 };
 Bn.directions = {
@@ -3598,7 +3598,7 @@ let Oe = Bn, ut = class Kt {
    * @param {KeyboardEvent} event - enter keydown event
    */
   handleEnterPress(e) {
-    this.activated && (this.iterator.currentItem && (e.stopPropagation(), e.preventDefault(), this.iterator.currentItem.click()), R(this.activateCallback) && this.activateCallback(this.iterator.currentItem));
+    this.activated && (this.iterator.currentItem && (e.stopPropagation(), e.preventDefault(), this.iterator.currentItem.click()), H(this.activateCallback) && this.activateCallback(this.iterator.currentItem));
   }
   /**
    * Fired after flipping in any direction
@@ -3607,9 +3607,9 @@ let Oe = Bn, ut = class Kt {
     this.iterator.currentItem && this.iterator.currentItem.scrollIntoViewIfNeeded(), this.flipCallbacks.forEach((e) => e());
   }
 };
-const ea = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 12L9 7.1C9 7.04477 9.04477 7 9.1 7H10.4C11.5 7 14 7.1 14 9.5C14 9.5 14 12 11 12M9 12V16.8C9 16.9105 9.08954 17 9.2 17H12.5C14 17 15 16 15 14.5C15 11.7046 11 12 11 12M9 12H11"/></svg>', ta = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7 10L11.8586 14.8586C11.9367 14.9367 12.0633 14.9367 12.1414 14.8586L17 10"/></svg>', oa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M14.5 17.5L9.64142 12.6414C9.56331 12.5633 9.56331 12.4367 9.64142 12.3586L14.5 7.5"/></svg>', ra = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9.58284 17.5L14.4414 12.6414C14.5195 12.5633 14.5195 12.4367 14.4414 12.3586L9.58284 7.5"/></svg>', na = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7 15L11.8586 10.1414C11.9367 10.0633 12.0633 10.0633 12.1414 10.1414L17 15"/></svg>', ia = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 8L12 12M12 12L16 16M12 12L16 8M12 12L8 16"/></svg>', sa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>', aa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M13.34 10C12.4223 12.7337 11 17 11 17"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M14.21 7H14.2"/></svg>', Wr = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7.69998 12.6L7.67896 12.62C6.53993 13.7048 6.52012 15.5155 7.63516 16.625V16.625C8.72293 17.7073 10.4799 17.7102 11.5712 16.6314L13.0263 15.193C14.0703 14.1609 14.2141 12.525 13.3662 11.3266L13.22 11.12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16.22 11.12L16.3564 10.9805C17.2895 10.0265 17.3478 8.5207 16.4914 7.49733V7.49733C15.5691 6.39509 13.9269 6.25143 12.8271 7.17675L11.3901 8.38588C10.0935 9.47674 9.95706 11.4241 11.0888 12.6852L11.12 12.72"/></svg>', la = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.40999 7.29999H9.4"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 7.29999H14.59"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.30999 12H9.3"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 12H14.59"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.40999 16.7H9.4"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 16.7H14.59"/></svg>', ca = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 7V12M12 17V12M17 12H12M12 12H7"/></svg>', Mn = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M11.5 17.5L5 11M5 11V15.5M5 11H9.5"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12.5 6.5L19 13M19 13V8.5M19 13H14.5"/></svg>', da = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2"/><line x1="15.4142" x2="19" y1="15" y2="18.5858" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg>', ha = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M15.7795 11.5C15.7795 11.5 16.053 11.1962 16.5497 10.6722C17.4442 9.72856 17.4701 8.2475 16.5781 7.30145V7.30145C15.6482 6.31522 14.0873 6.29227 13.1288 7.25073L11.8796 8.49999"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8.24517 12.3883C8.24517 12.3883 7.97171 12.6922 7.47504 13.2161C6.58051 14.1598 6.55467 15.6408 7.44666 16.5869V16.5869C8.37653 17.5731 9.93744 17.5961 10.8959 16.6376L12.1452 15.3883"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M17.7802 15.1032L16.597 14.9422C16.0109 14.8624 15.4841 15.3059 15.4627 15.8969L15.4199 17.0818"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6.39064 9.03238L7.58432 9.06668C8.17551 9.08366 8.6522 8.58665 8.61056 7.99669L8.5271 6.81397"/><line x1="12.1142" x2="11.7" y1="12.2" y2="11.7858" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg>', ua = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/><line x1="12" x2="12" y1="9" y2="12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 15.02V15.01"/></svg>', pa = "__", fa = "--";
+const oa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 12L9 7.1C9 7.04477 9.04477 7 9.1 7H10.4C11.5 7 14 7.1 14 9.5C14 9.5 14 12 11 12M9 12V16.8C9 16.9105 9.08954 17 9.2 17H12.5C14 17 15 16 15 14.5C15 11.7046 11 12 11 12M9 12H11"/></svg>', ra = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7 10L11.8586 14.8586C11.9367 14.9367 12.0633 14.9367 12.1414 14.8586L17 10"/></svg>', na = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M14.5 17.5L9.64142 12.6414C9.56331 12.5633 9.56331 12.4367 9.64142 12.3586L14.5 7.5"/></svg>', ia = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9.58284 17.5L14.4414 12.6414C14.5195 12.5633 14.5195 12.4367 14.4414 12.3586L9.58284 7.5"/></svg>', sa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7 15L11.8586 10.1414C11.9367 10.0633 12.0633 10.0633 12.1414 10.1414L17 15"/></svg>', aa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 8L12 12M12 12L16 16M12 12L16 8M12 12L8 16"/></svg>', la = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>', ca = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M13.34 10C12.4223 12.7337 11 17 11 17"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M14.21 7H14.2"/></svg>', Wr = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7.69998 12.6L7.67896 12.62C6.53993 13.7048 6.52012 15.5155 7.63516 16.625V16.625C8.72293 17.7073 10.4799 17.7102 11.5712 16.6314L13.0263 15.193C14.0703 14.1609 14.2141 12.525 13.3662 11.3266L13.22 11.12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16.22 11.12L16.3564 10.9805C17.2895 10.0265 17.3478 8.5207 16.4914 7.49733V7.49733C15.5691 6.39509 13.9269 6.25143 12.8271 7.17675L11.3901 8.38588C10.0935 9.47674 9.95706 11.4241 11.0888 12.6852L11.12 12.72"/></svg>', da = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.40999 7.29999H9.4"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 7.29999H14.59"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.30999 12H9.3"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 12H14.59"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.40999 16.7H9.4"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 16.7H14.59"/></svg>', ha = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 7V12M12 17V12M17 12H12M12 12H7"/></svg>', Mn = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M11.5 17.5L5 11M5 11V15.5M5 11H9.5"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12.5 6.5L19 13M19 13V8.5M19 13H14.5"/></svg>', ua = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="2"/><line x1="15.4142" x2="19" y1="15" y2="18.5858" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg>', pa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M15.7795 11.5C15.7795 11.5 16.053 11.1962 16.5497 10.6722C17.4442 9.72856 17.4701 8.2475 16.5781 7.30145V7.30145C15.6482 6.31522 14.0873 6.29227 13.1288 7.25073L11.8796 8.49999"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8.24517 12.3883C8.24517 12.3883 7.97171 12.6922 7.47504 13.2161C6.58051 14.1598 6.55467 15.6408 7.44666 16.5869V16.5869C8.37653 17.5731 9.93744 17.5961 10.8959 16.6376L12.1452 15.3883"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M17.7802 15.1032L16.597 14.9422C16.0109 14.8624 15.4841 15.3059 15.4627 15.8969L15.4199 17.0818"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6.39064 9.03238L7.58432 9.06668C8.17551 9.08366 8.6522 8.58665 8.61056 7.99669L8.5271 6.81397"/><line x1="12.1142" x2="11.7" y1="12.2" y2="11.7858" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg>', fa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/><line x1="12" x2="12" y1="9" y2="12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 15.02V15.01"/></svg>', ga = "__", ma = "--";
 function he(o) {
-  return (e, t) => [[o, e].filter((r) => !!r).join(pa), t].filter((r) => !!r).join(fa);
+  return (e, t) => [[o, e].filter((r) => !!r).join(ga), t].filter((r) => !!r).join(ma);
 }
 const Ae = he("ce-hint"), Pe = {
   root: Ae(),
@@ -3618,7 +3618,7 @@ const Ae = he("ce-hint"), Pe = {
   title: Ae("title"),
   description: Ae("description")
 };
-class ga {
+class va {
   /**
    * Constructs the hint content instance
    *
@@ -3687,7 +3687,7 @@ let no = class {
    * @param hintData - hint data
    */
   addHint(e, t) {
-    const r = new ga(t);
+    const r = new va(t);
     ht(e, r.getElement(), {
       placement: t.position,
       hidingDelay: 100
@@ -3740,7 +3740,7 @@ let no = class {
     return this.params === void 0 || !("isActive" in this.params) ? !1 : typeof this.params.isActive == "function" ? this.params.isActive() : this.params.isActive === !0;
   }
 };
-const q = he("ce-popover-item"), H = {
+const q = he("ce-popover-item"), F = {
   container: q(),
   active: q(null, "active"),
   disabled: q(null, "disabled"),
@@ -3770,13 +3770,13 @@ let fe = class extends no {
       icon: null
     }, this.confirmationState = null, this.removeSpecialFocusBehavior = () => {
       var r;
-      (r = this.nodes.root) == null || r.classList.remove(H.noFocus);
+      (r = this.nodes.root) == null || r.classList.remove(F.noFocus);
     }, this.removeSpecialHoverBehavior = () => {
       var r;
-      (r = this.nodes.root) == null || r.classList.remove(H.noHover);
+      (r = this.nodes.root) == null || r.classList.remove(F.noHover);
     }, this.onErrorAnimationEnd = () => {
       var r, n;
-      (r = this.nodes.icon) == null || r.classList.remove(H.wobbleAnimation), (n = this.nodes.icon) == null || n.removeEventListener("animationend", this.onErrorAnimationEnd);
+      (r = this.nodes.icon) == null || r.classList.remove(F.wobbleAnimation), (n = this.nodes.icon) == null || n.removeEventListener("animationend", this.onErrorAnimationEnd);
     }, this.nodes.root = this.make(e, t);
   }
   /**
@@ -3807,7 +3807,7 @@ let fe = class extends no {
    * True if item is focused in keyboard navigation process
    */
   get isFocused() {
-    return this.nodes.root === null ? !1 : this.nodes.root.classList.contains(H.focused);
+    return this.nodes.root === null ? !1 : this.nodes.root.classList.contains(F.focused);
   }
   /**
    * Returns popover item root element
@@ -3832,7 +3832,7 @@ let fe = class extends no {
    */
   toggleActive(e) {
     var t;
-    (t = this.nodes.root) == null || t.classList.toggle(H.active, e);
+    (t = this.nodes.root) == null || t.classList.toggle(F.active, e);
   }
   /**
    * Toggles item hidden state
@@ -3841,7 +3841,7 @@ let fe = class extends no {
    */
   toggleHidden(e) {
     var t;
-    (t = this.nodes.root) == null || t.classList.toggle(H.hidden, e);
+    (t = this.nodes.root) == null || t.classList.toggle(F.hidden, e);
   }
   /**
    * Resets popover item to its original state
@@ -3863,18 +3863,18 @@ let fe = class extends no {
    */
   make(e, t) {
     var r, n;
-    const i = (t == null ? void 0 : t.wrapperTag) || "div", s = g.make(i, H.container, {
+    const i = (t == null ? void 0 : t.wrapperTag) || "div", s = g.make(i, F.container, {
       type: i === "button" ? "button" : void 0
     });
-    return e.name && (s.dataset.itemName = e.name), this.nodes.icon = g.make("div", [H.icon, H.iconTool], {
-      innerHTML: e.icon || sa
-    }), s.appendChild(this.nodes.icon), e.title !== void 0 && s.appendChild(g.make("div", H.title, {
+    return e.name && (s.dataset.itemName = e.name), this.nodes.icon = g.make("div", [F.icon, F.iconTool], {
+      innerHTML: e.icon || la
+    }), s.appendChild(this.nodes.icon), e.title !== void 0 && s.appendChild(g.make("div", F.title, {
       innerHTML: e.title || ""
-    })), e.secondaryLabel && s.appendChild(g.make("div", H.secondaryTitle, {
+    })), e.secondaryLabel && s.appendChild(g.make("div", F.secondaryTitle, {
       textContent: e.secondaryLabel
-    })), this.hasChildren && s.appendChild(g.make("div", [H.icon, H.iconChevronRight], {
-      innerHTML: ra
-    })), this.isActive && s.classList.add(H.active), e.isDisabled && s.classList.add(H.disabled), e.hint !== void 0 && ((r = t == null ? void 0 : t.hint) == null ? void 0 : r.enabled) !== !1 && this.addHint(s, {
+    })), this.hasChildren && s.appendChild(g.make("div", [F.icon, F.iconChevronRight], {
+      innerHTML: ia
+    })), this.isActive && s.classList.add(F.active), e.isDisabled && s.classList.add(F.disabled), e.hint !== void 0 && ((r = t == null ? void 0 : t.hint) == null ? void 0 : r.enabled) !== !1 && this.addHint(s, {
       ...e.hint,
       position: ((n = t == null ? void 0 : t.hint) == null ? void 0 : n.position) || "right"
     }), s;
@@ -3892,7 +3892,7 @@ let fe = class extends no {
       ...e,
       confirmation: "confirmation" in e ? e.confirmation : void 0
     }, r = this.make(t);
-    this.nodes.root.innerHTML = r.innerHTML, this.nodes.root.classList.add(H.confirmationState), this.confirmationState = e, this.enableSpecialHoverAndFocusBehavior();
+    this.nodes.root.innerHTML = r.innerHTML, this.nodes.root.classList.add(F.confirmationState), this.confirmationState = e, this.enableSpecialHoverAndFocusBehavior();
   }
   /**
    * Returns item to its original state
@@ -3901,7 +3901,7 @@ let fe = class extends no {
     if (this.nodes.root === null)
       return;
     const e = this.make(this.params);
-    this.nodes.root.innerHTML = e.innerHTML, this.nodes.root.classList.remove(H.confirmationState), this.confirmationState = null, this.disableSpecialHoverAndFocusBehavior();
+    this.nodes.root.innerHTML = e.innerHTML, this.nodes.root.classList.remove(F.confirmationState), this.confirmationState = null, this.disableSpecialHoverAndFocusBehavior();
   }
   /**
    * Enables special focus and hover behavior for item in confirmation state.
@@ -3909,7 +3909,7 @@ let fe = class extends no {
    */
   enableSpecialHoverAndFocusBehavior() {
     var e, t, r;
-    (e = this.nodes.root) == null || e.classList.add(H.noHover), (t = this.nodes.root) == null || t.classList.add(H.noFocus), (r = this.nodes.root) == null || r.addEventListener("mouseleave", this.removeSpecialHoverBehavior, { once: !0 });
+    (e = this.nodes.root) == null || e.classList.add(F.noHover), (t = this.nodes.root) == null || t.classList.add(F.noFocus), (r = this.nodes.root) == null || r.addEventListener("mouseleave", this.removeSpecialHoverBehavior, { once: !0 });
   }
   /**
    * Disables special focus and hover behavior
@@ -3939,7 +3939,7 @@ let fe = class extends no {
    */
   animateError() {
     var e, t, r;
-    (e = this.nodes.icon) != null && e.classList.contains(H.wobbleAnimation) || ((t = this.nodes.icon) == null || t.classList.add(H.wobbleAnimation), (r = this.nodes.icon) == null || r.addEventListener("animationend", this.onErrorAnimationEnd));
+    (e = this.nodes.icon) != null && e.classList.contains(F.wobbleAnimation) || ((t = this.nodes.icon) == null || t.classList.add(F.wobbleAnimation), (r = this.nodes.icon) == null || r.addEventListener("animationend", this.onErrorAnimationEnd));
   }
 };
 const It = he("ce-popover-item-separator"), Ot = {
@@ -3974,7 +3974,7 @@ class _n extends no {
   }
 }
 var Q = /* @__PURE__ */ ((o) => (o.Closed = "closed", o.ClosedOnActivate = "closed-on-activate", o))(Q || {});
-const z = he("ce-popover"), F = {
+const z = he("ce-popover"), $ = {
   popover: z(),
   popoverContainer: z("container"),
   popoverOpenTop: z(null, "open-top"),
@@ -4053,13 +4053,13 @@ class Ln extends Ye {
     }, this.items = this.buildItems(e.items), e.messages && (this.messages = {
       ...this.messages,
       ...e.messages
-    }), this.nodes = {}, this.nodes.popoverContainer = g.make("div", [F.popoverContainer]), this.nodes.nothingFoundMessage = g.make("div", [F.nothingFoundMessage], {
+    }), this.nodes = {}, this.nodes.popoverContainer = g.make("div", [$.popoverContainer]), this.nodes.nothingFoundMessage = g.make("div", [$.nothingFoundMessage], {
       textContent: this.messages.nothingFound
-    }), this.nodes.popoverContainer.appendChild(this.nodes.nothingFoundMessage), this.nodes.items = g.make("div", [F.items]), this.items.forEach((r) => {
+    }), this.nodes.popoverContainer.appendChild(this.nodes.nothingFoundMessage), this.nodes.items = g.make("div", [$.items]), this.items.forEach((r) => {
       const n = r.getElement();
       n !== null && this.nodes.items.appendChild(n);
     }), this.nodes.popoverContainer.appendChild(this.nodes.items), this.listeners.on(this.nodes.popoverContainer, "click", (r) => this.handleClick(r)), this.nodes.popover = g.make("div", [
-      F.popover,
+      $.popover,
       this.params.class
     ]), this.nodes.popover.appendChild(this.nodes.popoverContainer);
   }
@@ -4079,13 +4079,13 @@ class Ln extends Ye {
    * Open popover
    */
   show() {
-    this.nodes.popover.classList.add(F.popoverOpened), this.search !== void 0 && this.search.focus();
+    this.nodes.popover.classList.add($.popoverOpened), this.search !== void 0 && this.search.focus();
   }
   /**
    * Closes popover
    */
   hide() {
-    this.nodes.popover.classList.remove(F.popoverOpened), this.nodes.popover.classList.remove(F.popoverOpenTop), this.itemsDefault.forEach((e) => e.reset()), this.search !== void 0 && this.search.clear(), this.emit(Q.Closed);
+    this.nodes.popover.classList.remove($.popoverOpened), this.nodes.popover.classList.remove($.popoverOpenTop), this.itemsDefault.forEach((e) => e.reset()), this.search !== void 0 && this.search.clear(), this.emit(Q.Closed);
   }
   /**
    * Clears memory
@@ -4111,12 +4111,12 @@ class Ln extends Ye {
   buildItems(e) {
     return e.map((t) => {
       switch (t.type) {
-        case D.Separator:
+        case R.Separator:
           return new _n();
-        case D.Html:
-          return new qe(t, this.itemsRenderParams[D.Html]);
+        case R.Html:
+          return new qe(t, this.itemsRenderParams[R.Html]);
         default:
-          return new fe(t, this.itemsRenderParams[D.Default]);
+          return new fe(t, this.itemsRenderParams[R.Default]);
       }
     });
   }
@@ -4181,7 +4181,7 @@ const At = he("cdx-search-field"), Pt = {
   icon: At("icon"),
   input: At("input")
 };
-class ma extends Ye {
+class ba extends Ye {
   /**
    * @param options - available config
    * @param options.items - searchable items list
@@ -4190,7 +4190,7 @@ class ma extends Ye {
   constructor({ items: e, placeholder: t }) {
     super(), this.listeners = new Xe(), this.items = e, this.wrapper = g.make("div", Pt.wrapper);
     const r = g.make("div", Pt.icon, {
-      innerHTML: da
+      innerHTML: ua
     });
     this.input = g.make("input", Pt.input, {
       placeholder: t,
@@ -4251,10 +4251,10 @@ class ma extends Ye {
     return i !== void 0 ? n.includes(i) : !1;
   }
 }
-var va = Object.defineProperty, ba = Object.getOwnPropertyDescriptor, ka = (o, e, t, r) => {
-  for (var n = ba(e, t), i = o.length - 1, s; i >= 0; i--)
+var ka = Object.defineProperty, wa = Object.getOwnPropertyDescriptor, ya = (o, e, t, r) => {
+  for (var n = wa(e, t), i = o.length - 1, s; i >= 0; i--)
     (s = o[i]) && (n = s(e, t, n) || n);
-  return n && va(e, t, n), n;
+  return n && ka(e, t, n), n;
 };
 const In = class On extends Ln {
   /**
@@ -4280,9 +4280,9 @@ const In = class On extends Ln {
       }), this.toggleNothingFoundMessage(s);
       const a = r.query === "" ? this.flippableElements : r.items.map((l) => l.getElement());
       (n = this.flipper) != null && n.isActivated && (this.flipper.deactivate(), this.flipper.activate(a));
-    }, e.nestingLevel !== void 0 && (this.nestingLevel = e.nestingLevel), this.nestingLevel > 0 && this.nodes.popover.classList.add(F.popoverNested), e.scopeElement !== void 0 && (this.scopeElement = e.scopeElement), this.nodes.popoverContainer !== null && this.listeners.on(this.nodes.popoverContainer, "mouseover", (r) => this.handleHover(r)), e.searchable && this.addSearch(), e.flippable !== !1 && (this.flipper = new ut({
+    }, e.nestingLevel !== void 0 && (this.nestingLevel = e.nestingLevel), this.nestingLevel > 0 && this.nodes.popover.classList.add($.popoverNested), e.scopeElement !== void 0 && (this.scopeElement = e.scopeElement), this.nodes.popoverContainer !== null && this.listeners.on(this.nodes.popoverContainer, "mouseover", (r) => this.handleHover(r)), e.searchable && this.addSearch(), e.flippable !== !1 && (this.flipper = new ut({
       items: this.flippableElements,
-      focusedItemClass: H.focused,
+      focusedItemClass: F.focused,
       allowedKeys: [
         A.TAB,
         A.UP,
@@ -4314,7 +4314,7 @@ const In = class On extends Ln {
    */
   show() {
     var e;
-    this.nodes.popover.style.setProperty(Te.PopoverHeight, this.size.height + "px"), this.shouldOpenBottom || this.nodes.popover.classList.add(F.popoverOpenTop), this.shouldOpenRight || this.nodes.popover.classList.add(F.popoverOpenLeft), super.show(), (e = this.flipper) == null || e.activate(this.flippableElements);
+    this.nodes.popover.style.setProperty(Te.PopoverHeight, this.size.height + "px"), this.shouldOpenBottom || this.nodes.popover.classList.add($.popoverOpenTop), this.shouldOpenRight || this.nodes.popover.classList.add($.popoverOpenLeft), super.show(), (e = this.flipper) == null || e.activate(this.flippableElements);
   }
   /**
    * Clears memory
@@ -4404,8 +4404,8 @@ const In = class On extends Ln {
     if (this.nodes.popover === null)
       return t;
     const r = this.nodes.popover.cloneNode(!0);
-    r.style.visibility = "hidden", r.style.position = "absolute", r.style.top = "-1000px", r.classList.add(F.popoverOpened), (e = r.querySelector("." + F.popoverNested)) == null || e.remove(), document.body.appendChild(r);
-    const n = r.querySelector("." + F.popoverContainer);
+    r.style.visibility = "hidden", r.style.position = "absolute", r.style.top = "-1000px", r.classList.add($.popoverOpened), (e = r.querySelector("." + $.popoverNested)) == null || e.remove(), document.body.appendChild(r);
+    const n = r.querySelector("." + $.popoverContainer);
     return t.height = n.offsetHeight, t.width = n.offsetWidth, r.remove(), t;
   }
   /**
@@ -4423,12 +4423,12 @@ const In = class On extends Ln {
    * Adds search to the popover
    */
   addSearch() {
-    this.search = new ma({
+    this.search = new ba({
       items: this.itemsDefault,
       placeholder: this.messages.search
     }), this.search.on(pt.Search, this.onSearch);
     const e = this.search.getElement();
-    e.classList.add(F.search), this.nodes.popoverContainer.insertBefore(e, this.nodes.popoverContainer.firstChild);
+    e.classList.add($.search), this.nodes.popoverContainer.insertBefore(e, this.nodes.popoverContainer.firstChild);
   }
   /**
    * Toggles nothing found message visibility
@@ -4436,14 +4436,14 @@ const In = class On extends Ln {
    * @param isDisplayed - true if the message should be displayed
    */
   toggleNothingFoundMessage(e) {
-    this.nodes.nothingFoundMessage.classList.toggle(F.nothingFoundMessageDisplayed, e);
+    this.nodes.nothingFoundMessage.classList.toggle($.nothingFoundMessageDisplayed, e);
   }
 };
-ka([
+ya([
   Me
 ], In.prototype, "size");
 let io = In;
-class wa extends io {
+class xa extends io {
   /**
    * Constructs the instance
    *
@@ -4454,10 +4454,10 @@ class wa extends io {
     super(
       {
         ...e,
-        class: F.popoverInline
+        class: $.popoverInline
       },
       {
-        [D.Default]: {
+        [R.Default]: {
           /**
            * We use button instead of div here to fix bug associated with focus loss (which leads to selection change) on click in safari
            *
@@ -4470,7 +4470,7 @@ class wa extends io {
             enabled: t
           }
         },
-        [D.Html]: {
+        [R.Html]: {
           hint: {
             position: "top",
             alignment: "center",
@@ -4538,7 +4538,7 @@ class wa extends io {
    */
   showNestedPopoverForItem(e) {
     const t = super.showNestedPopoverForItem(e);
-    return t.getElement().classList.add(F.getPopoverNestedClass(t.nestingLevel)), t;
+    return t.getElement().classList.add($.getPopoverNestedClass(t.nestingLevel)), t;
   }
   /**
    * Overrides default item click handling.
@@ -4587,13 +4587,13 @@ An.CSS = {
   scrollLocked: "ce-scroll-locked",
   scrollLockedHard: "ce-scroll-locked--hard"
 };
-let ya = An;
+let Ca = An;
 const Nt = he("ce-popover-header"), jt = {
   root: Nt(),
   text: Nt("text"),
   backButton: Nt("back-button")
 };
-class xa {
+class Ea {
   /**
    * Constructs the instance
    *
@@ -4604,7 +4604,7 @@ class xa {
       root: g.make("div", [jt.root]),
       backButton: g.make("button", [jt.backButton]),
       text: g.make("div", [jt.text])
-    }, this.nodes.backButton.innerHTML = oa, this.nodes.root.appendChild(this.nodes.backButton), this.listeners.on(this.nodes.backButton, "click", this.onBackButtonClick), this.nodes.text.innerText = this.text, this.nodes.root.appendChild(this.nodes.text);
+    }, this.nodes.backButton.innerHTML = na, this.nodes.root.appendChild(this.nodes.backButton), this.listeners.on(this.nodes.backButton, "click", this.onBackButtonClick), this.nodes.text.innerText = this.text, this.nodes.root.appendChild(this.nodes.text);
   }
   /**
    * Returns popover header root html element
@@ -4619,7 +4619,7 @@ class xa {
     this.nodes.root.remove(), this.listeners.destroy();
   }
 }
-class Ca {
+class Ta {
   constructor() {
     this.history = [];
   }
@@ -4665,17 +4665,17 @@ class Pn extends Ln {
    */
   constructor(e) {
     super(e, {
-      [D.Default]: {
+      [R.Default]: {
         hint: {
           enabled: !1
         }
       },
-      [D.Html]: {
+      [R.Html]: {
         hint: {
           enabled: !1
         }
       }
-    }), this.scrollLocker = new ya(), this.history = new Ca(), this.isHidden = !0, this.nodes.overlay = g.make("div", [F.overlay, F.overlayHidden]), this.nodes.popover.insertBefore(this.nodes.overlay, this.nodes.popover.firstChild), this.listeners.on(this.nodes.overlay, "click", () => {
+    }), this.scrollLocker = new Ca(), this.history = new Ta(), this.isHidden = !0, this.nodes.overlay = g.make("div", [$.overlay, $.overlayHidden]), this.nodes.popover.insertBefore(this.nodes.overlay, this.nodes.popover.firstChild), this.listeners.on(this.nodes.overlay, "click", () => {
       this.hide();
     }), this.history.push({ items: e.items });
   }
@@ -4683,13 +4683,13 @@ class Pn extends Ln {
    * Open popover
    */
   show() {
-    this.nodes.overlay.classList.remove(F.overlayHidden), super.show(), this.scrollLocker.lock(), this.isHidden = !1;
+    this.nodes.overlay.classList.remove($.overlayHidden), super.show(), this.scrollLocker.lock(), this.isHidden = !1;
   }
   /**
    * Closes popover
    */
   hide() {
-    this.isHidden || (super.hide(), this.nodes.overlay.classList.add(F.overlayHidden), this.scrollLocker.unlock(), this.history.reset(), this.isHidden = !0);
+    this.isHidden || (super.hide(), this.nodes.overlay.classList.add($.overlayHidden), this.scrollLocker.unlock(), this.history.reset(), this.isHidden = !0);
   }
   /**
    * Clears memory
@@ -4716,7 +4716,7 @@ class Pn extends Ln {
    */
   updateItemsAndHeader(e, t) {
     if (this.header !== null && this.header !== void 0 && (this.header.destroy(), this.header = null), t !== void 0) {
-      this.header = new xa({
+      this.header = new Ea({
         text: t,
         onBackButtonClick: () => {
           this.history.pop(), this.updateItemsAndHeader(this.history.currentItems, this.history.currentTitle);
@@ -4735,10 +4735,10 @@ class Pn extends Ln {
     });
   }
 }
-class Ea extends N {
+class Sa extends N {
   constructor() {
-    super(...arguments), this.opened = !1, this.hasMobileLayoutToggleListener = !1, this.selection = new L(), this.popover = null, this.close = () => {
-      this.opened && (this.opened = !1, L.isAtEditor || this.selection.restore(), this.selection.clearSaved(), !this.Editor.CrossBlockSelection.isCrossBlockSelectionStarted && this.Editor.BlockManager.currentBlock && this.Editor.BlockSelection.unselectBlock(this.Editor.BlockManager.currentBlock), this.eventsDispatcher.emit(this.events.closed), this.popover && (this.popover.off(Q.Closed, this.onPopoverClose), this.popover.destroy(), this.popover.getElement().remove(), this.popover = null));
+    super(...arguments), this.opened = !1, this.hasMobileLayoutToggleListener = !1, this.selection = new I(), this.popover = null, this.close = () => {
+      this.opened && (this.opened = !1, I.isAtEditor || this.selection.restore(), this.selection.clearSaved(), !this.Editor.CrossBlockSelection.isCrossBlockSelectionStarted && this.Editor.BlockManager.currentBlock && this.Editor.BlockSelection.unselectBlock(this.Editor.BlockManager.currentBlock), this.eventsDispatcher.emit(this.events.closed), this.popover && (this.popover.off(Q.Closed, this.onPopoverClose), this.popover.destroy(), this.popover.getElement().remove(), this.popover = null));
     }, this.onPopoverClose = () => {
       this.close();
     };
@@ -4822,7 +4822,7 @@ class Ea extends N {
   async getTunesItems(e, t, r) {
     const n = [];
     r !== void 0 && r.length > 0 && (n.push(...r), n.push({
-      type: D.Separator
+      type: R.Separator
     }));
     const i = Array.from(this.Editor.Tools.blockTools.values()), s = (await yn(e, i)).reduce((a, l) => (l.toolbox.forEach((c) => {
       a.push({
@@ -4845,7 +4845,7 @@ class Ea extends N {
         items: s
       }
     }), n.push({
-      type: D.Separator
+      type: R.Separator
     })), n.push(...t), n.map((a) => this.resolveTuneAliases(a));
   }
   /**
@@ -4854,9 +4854,9 @@ class Ea extends N {
    * @param item - item with resolved aliases
    */
   resolveTuneAliases(e) {
-    if (e.type === D.Separator || e.type === D.Html)
+    if (e.type === R.Separator || e.type === R.Html)
       return e;
-    const t = Qs(e, { label: "title" });
+    const t = ta(e, { label: "title" });
     return e.confirmation && (t.confirmation = this.resolveTuneAliases(e.confirmation)), t;
   }
 }
@@ -4959,9 +4959,9 @@ var Nn = { exports: {} };
     }]).default;
   });
 })(Nn);
-var Ta = Nn.exports;
-const Sa = /* @__PURE__ */ vt(Ta);
-class Ba {
+var Ba = Nn.exports;
+const Ma = /* @__PURE__ */ vt(Ba);
+class _a {
   constructor() {
     this.registeredShortcuts = /* @__PURE__ */ new Map();
   }
@@ -4975,7 +4975,7 @@ class Ba {
       throw Error(
         `Shortcut ${e.name} is already registered for ${e.on}. Please remove it before add a new handler.`
       );
-    const t = new Sa({
+    const t = new Ma({
       name: e.name,
       on: e.on,
       callback: e.handler
@@ -5011,11 +5011,11 @@ class Ba {
     return (this.registeredShortcuts.get(e) || []).find(({ name: r }) => r === t);
   }
 }
-const Be = new Ba();
-var Ma = Object.defineProperty, _a = Object.getOwnPropertyDescriptor, jn = (o, e, t, r) => {
-  for (var n = _a(e, t), i = o.length - 1, s; i >= 0; i--)
+const Be = new _a();
+var La = Object.defineProperty, Ia = Object.getOwnPropertyDescriptor, jn = (o, e, t, r) => {
+  for (var n = Ia(e, t), i = o.length - 1, s; i >= 0; i--)
     (s = o[i]) && (n = s(e, t, n) || n);
-  return n && Ma(e, t, n), n;
+  return n && La(e, t, n), n;
 }, Qe = /* @__PURE__ */ ((o) => (o.Opened = "toolbox-opened", o.Closed = "toolbox-closed", o.BlockAdded = "toolbox-block-added", o))(Qe || {});
 const so = class Dn extends Ye {
   /**
@@ -5229,9 +5229,9 @@ jn([
 jn([
   Me
 ], so.prototype, "toolboxItemsToBeDisplayed");
-let La = so;
+let Oa = so;
 const Rn = "block hovered";
-async function Ia(o, e) {
+async function Aa(o, e) {
   const t = navigator.keyboard;
   if (!t)
     return e;
@@ -5241,7 +5241,7 @@ async function Ia(o, e) {
     return console.error(r), e;
   }
 }
-class Oa extends N {
+class Pa extends N {
   /**
    * @class
    * @param moduleConfiguration - Module Configuration
@@ -5366,7 +5366,7 @@ class Oa extends N {
       const h = parseInt(window.getComputedStyle(e.pluginsContent).paddingTop);
       n = t.offsetTop + h;
     } else {
-      const h = gs(s), u = parseInt(window.getComputedStyle(this.nodes.plusButton).height, 10);
+      const h = vs(s), u = parseInt(window.getComputedStyle(this.nodes.plusButton).height, 10);
       n = t.offsetTop + h - u + 8 + c;
     }
     this.nodes.wrapper.style.top = `${Math.floor(n)}px`, this.Editor.BlockManager.blocks.length === 1 && e.isEmpty ? this.blockTunesToggler.hide() : this.blockTunesToggler.show(), this.open();
@@ -5400,7 +5400,7 @@ class Oa extends N {
     this.nodes.wrapper = g.make("div", this.CSS.toolbar), ["content", "actions"].forEach((i) => {
       this.nodes[i] = g.make("div", this.CSS[i]);
     }), g.append(this.nodes.wrapper, this.nodes.content), g.append(this.nodes.content, this.nodes.actions), this.nodes.plusButton = g.make("div", this.CSS.plusButton, {
-      innerHTML: ca
+      innerHTML: ha
     }), g.append(this.nodes.actions, this.nodes.plusButton), this.readOnlyMutableListeners.on(this.nodes.plusButton, "click", () => {
       dt(!0), this.plusButtonClicked();
     }, !1);
@@ -5410,9 +5410,9 @@ class Oa extends N {
     })), ht(this.nodes.plusButton, e, {
       hidingDelay: 400
     }), this.nodes.settingsToggler = g.make("span", this.CSS.settingsToggler, {
-      innerHTML: la
+      innerHTML: da
     }), g.append(this.nodes.actions, this.nodes.settingsToggler);
-    const t = g.make("div"), r = g.text(W.ui(K.ui.blockTunes.toggler, "Click to tune")), n = await Ia("Slash", "/");
+    const t = g.make("div"), r = g.text(W.ui(K.ui.blockTunes.toggler, "Click to tune")), n = await Aa("Slash", "/");
     t.appendChild(r), t.appendChild(g.make("div", this.CSS.plusButtonShortcut, {
       textContent: eo(`CMD + ${n}`)
     })), ht(this.nodes.settingsToggler, t, {
@@ -5423,7 +5423,7 @@ class Oa extends N {
    * Creates the Toolbox instance and return it's rendered element
    */
   makeToolbox() {
-    return this.toolboxInstance = new La({
+    return this.toolboxInstance = new Oa({
       api: this.Editor.API.methods,
       tools: this.Editor.Tools.blockTools,
       i18nLabels: {
@@ -5520,14 +5520,14 @@ let ao = class {
    * Calls Tool's reset method
    */
   reset() {
-    if (R(this.constructable.reset))
+    if (H(this.constructable.reset))
       return this.constructable.reset();
   }
   /**
    * Calls Tool's prepare method
    */
   prepare() {
-    if (R(this.constructable.prepare))
+    if (H(this.constructable.prepare))
       return this.constructable.prepare({
         toolName: this.name,
         config: this.settings
@@ -5565,7 +5565,7 @@ let ao = class {
     return this.type === ge.Tune;
   }
 };
-class Aa extends N {
+class Na extends N {
   /**
    * @param moduleConfiguration - Module Configuration
    * @param moduleConfiguration.config - Editor's config
@@ -5602,7 +5602,7 @@ class Aa extends N {
     if (this.opened) {
       for (const [r, n] of this.tools) {
         const i = this.getToolShortcut(r.name);
-        i !== void 0 && Be.remove(this.Editor.UI.nodes.redactor, i), R(n.clear) && n.clear();
+        i !== void 0 && Be.remove(this.Editor.UI.nodes.redactor, i), H(n.clear) && n.clear();
       }
       this.tools = /* @__PURE__ */ new Map(), this.reset(), this.opened = !1, (e = this.popover) == null || e.hide(), (t = this.popover) == null || t.destroy(), this.popover = null;
     }
@@ -5640,7 +5640,7 @@ class Aa extends N {
       return;
     this.opened = !0, this.popover !== null && this.popover.destroy(), this.createToolsInstances();
     const t = await this.getPopoverItems();
-    this.popover = new wa({
+    this.popover = new xa({
       items: t,
       scopeElement: this.Editor.API.methods.ui.nodes.redactor,
       messages: {
@@ -5655,7 +5655,7 @@ class Aa extends N {
    * @param popoverWidth - width of the toolbar popover
    */
   move(e) {
-    const t = L.rect, r = this.Editor.UI.nodes.wrapper.getBoundingClientRect(), n = {
+    const t = I.rect, r = this.Editor.UI.nodes.wrapper.getBoundingClientRect(), n = {
       x: t.x - r.x,
       y: t.y + t.height - // + window.scrollY
       r.top + this.toolbarVerticalMargin
@@ -5672,7 +5672,7 @@ class Aa extends N {
    * Need to show Inline Toolbar or not
    */
   allowedToShow() {
-    const e = ["IMG", "INPUT"], t = L.get(), r = L.text;
+    const e = ["IMG", "INPUT"], t = I.get(), r = I.text;
     if (!t || !t.anchorNode || t.isCollapsed || r.length < 1)
       return !1;
     const n = g.isElement(t.anchorNode) ? t.anchorNode : t.anchorNode.parentElement;
@@ -5737,44 +5737,44 @@ class Aa extends N {
           const f = {
             ...u,
             element: c,
-            type: D.Html
+            type: R.Html
           };
-          if (R(n.renderActions)) {
+          if (H(n.renderActions)) {
             const p = n.renderActions();
             f.children = {
-              isOpen: (d = n.checkState) == null ? void 0 : d.call(n, L.get()),
+              isOpen: (d = n.checkState) == null ? void 0 : d.call(n, I.get()),
               /** Disable keyboard navigation in actions, as it might conflict with enter press handling */
               isFlippable: !1,
               items: [
                 {
-                  type: D.Html,
+                  type: R.Html,
                   element: p
                 }
               ]
             };
           } else
-            (h = n.checkState) == null || h.call(n, L.get());
+            (h = n.checkState) == null || h.call(n, I.get());
           e.push(f);
-        } else if (c.type === D.Html)
+        } else if (c.type === R.Html)
           e.push({
             ...u,
             ...c,
-            type: D.Html
+            type: R.Html
           });
-        else if (c.type === D.Separator)
+        else if (c.type === R.Separator)
           e.push({
-            type: D.Separator
+            type: R.Separator
           });
         else {
           const f = {
             ...u,
             ...c,
-            type: D.Default
+            type: R.Default
           };
           "children" in f && t !== 0 && e.push({
-            type: D.Separator
+            type: R.Separator
           }), e.push(f), "children" in f && t < this.tools.size - 1 && e.push({
-            type: D.Separator
+            type: R.Separator
           });
         }
       }), t++;
@@ -5817,7 +5817,7 @@ class Aa extends N {
    */
   toolClicked(e) {
     var t;
-    const r = L.range;
+    const r = I.range;
     (t = e.surround) == null || t.call(e, r), this.checkToolsState();
   }
   /**
@@ -5827,7 +5827,7 @@ class Aa extends N {
     var e;
     (e = this.tools) == null || e.forEach((t) => {
       var r;
-      (r = t.checkState) == null || r.call(t, L.get());
+      (r = t.checkState) == null || r.call(t, I.get());
     });
   }
   /**
@@ -5854,7 +5854,7 @@ function $n(o, e, t, r) {
   const i = n.cloneContents(), s = document.createElement("div");
   s.appendChild(i);
   const a = s.textContent || "";
-  return fs(a);
+  return ms(a);
 }
 function tt(o) {
   const e = g.getDeepestNode(o);
@@ -5878,8 +5878,8 @@ function ot(o) {
 }
 var Un = {}, lo = {}, bt = {}, ve = {}, co = {}, ho = {};
 Object.defineProperty(ho, "__esModule", { value: !0 });
-ho.allInputsSelector = Pa;
-function Pa() {
+ho.allInputsSelector = ja;
+function ja() {
   var o = ["text", "password", "email", "number", "search", "tel", "url"];
   return "[contenteditable=true], textarea, input:not([type]), " + o.map(function(e) {
     return 'input[type="'.concat(e, '"]');
@@ -5894,8 +5894,8 @@ function Pa() {
 })(co);
 var be = {}, uo = {};
 Object.defineProperty(uo, "__esModule", { value: !0 });
-uo.isNativeInput = Na;
-function Na(o) {
+uo.isNativeInput = Da;
+function Da(o) {
   var e = [
     "INPUT",
     "TEXTAREA"
@@ -5911,8 +5911,8 @@ function Na(o) {
 })(be);
 var zn = {}, po = {};
 Object.defineProperty(po, "__esModule", { value: !0 });
-po.append = ja;
-function ja(o, e) {
+po.append = Ra;
+function Ra(o, e) {
   Array.isArray(e) ? e.forEach(function(t) {
     o.appendChild(t);
   }) : o.appendChild(e);
@@ -5926,8 +5926,8 @@ function ja(o, e) {
 })(zn);
 var fo = {}, go = {};
 Object.defineProperty(go, "__esModule", { value: !0 });
-go.blockElements = Da;
-function Da() {
+go.blockElements = Ha;
+function Ha() {
   return [
     "address",
     "article",
@@ -5979,8 +5979,8 @@ function Da() {
 })(fo);
 var Vn = {}, mo = {};
 Object.defineProperty(mo, "__esModule", { value: !0 });
-mo.calculateBaseline = Ra;
-function Ra(o) {
+mo.calculateBaseline = Fa;
+function Fa(o) {
   var e = window.getComputedStyle(o), t = parseFloat(e.fontSize), r = parseFloat(e.lineHeight) || t * 1.2, n = parseFloat(e.paddingTop), i = parseFloat(e.borderTopWidth), s = parseFloat(e.marginTop), a = t * 0.8, l = (r - t) / 2, c = s + i + n + l + a;
   return c;
 }
@@ -5993,8 +5993,8 @@ function Ra(o) {
 })(Vn);
 var Wn = {}, vo = {}, bo = {}, ko = {};
 Object.defineProperty(ko, "__esModule", { value: !0 });
-ko.isContentEditable = Ha;
-function Ha(o) {
+ko.isContentEditable = $a;
+function $a(o) {
   return o.contentEditable === "true";
 }
 (function(o) {
@@ -6005,11 +6005,11 @@ function Ha(o) {
   } });
 })(bo);
 Object.defineProperty(vo, "__esModule", { value: !0 });
-vo.canSetCaret = Ua;
-var Fa = be, $a = bo;
-function Ua(o) {
+vo.canSetCaret = Va;
+var Ua = be, za = bo;
+function Va(o) {
   var e = !0;
-  if ((0, Fa.isNativeInput)(o))
+  if ((0, Ua.isNativeInput)(o))
     switch (o.type) {
       case "file":
       case "checkbox":
@@ -6023,7 +6023,7 @@ function Ua(o) {
         break;
     }
   else
-    e = (0, $a.isContentEditable)(o);
+    e = (0, za.isContentEditable)(o);
   return e;
 }
 (function(o) {
@@ -6034,7 +6034,7 @@ function Ua(o) {
   } });
 })(Wn);
 var kt = {}, wo = {};
-function za(o, e, t) {
+function Wa(o, e, t) {
   const r = t.value !== void 0 ? "value" : "get", n = t[r], i = `#${e}Cache`;
   if (t[r] = function(...s) {
     return this[i] === void 0 && (this[i] = n.apply(this, s)), this[i];
@@ -6058,18 +6058,18 @@ function qn() {
 function yo(o) {
   return o != null && o !== "" && (typeof o != "object" || Object.keys(o).length > 0);
 }
-function Va(o) {
+function qa(o) {
   return !yo(o);
 }
-const Wa = () => typeof window < "u" && window.navigator !== null && yo(window.navigator.platform) && (/iP(ad|hone|od)/.test(window.navigator.platform) || window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
-function qa(o) {
+const Ka = () => typeof window < "u" && window.navigator !== null && yo(window.navigator.platform) && (/iP(ad|hone|od)/.test(window.navigator.platform) || window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+function Ya(o) {
   const e = qn();
   return o = o.replace(/shift/gi, "⇧").replace(/backspace/gi, "⌫").replace(/enter/gi, "⏎").replace(/up/gi, "↑").replace(/left/gi, "→").replace(/down/gi, "↓").replace(/right/gi, "←").replace(/escape/gi, "⎋").replace(/insert/gi, "Ins").replace(/delete/gi, "␡").replace(/\+/gi, "+"), e.mac ? o = o.replace(/ctrl|cmd/gi, "⌘").replace(/alt/gi, "⌥") : o = o.replace(/cmd/gi, "Ctrl").replace(/windows/gi, "WIN"), o;
 }
-function Ka(o) {
+function Xa(o) {
   return o[0].toUpperCase() + o.slice(1);
 }
-function Ya(o) {
+function Za(o) {
   const e = document.createElement("div");
   e.style.position = "absolute", e.style.left = "-999px", e.style.bottom = "-999px", e.innerHTML = o, document.body.appendChild(e);
   const t = window.getSelection(), r = document.createRange();
@@ -6077,7 +6077,7 @@ function Ya(o) {
     throw new Error("Cannot copy text to clipboard");
   t.removeAllRanges(), t.addRange(r), document.execCommand("copy"), document.body.removeChild(e);
 }
-function Xa(o, e, t) {
+function Ga(o, e, t) {
   let r;
   return (...n) => {
     const i = this, s = () => {
@@ -6089,28 +6089,28 @@ function Xa(o, e, t) {
 function ce(o) {
   return Object.prototype.toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 }
-function Za(o) {
+function Ja(o) {
   return ce(o) === "boolean";
 }
 function Kn(o) {
   return ce(o) === "function" || ce(o) === "asyncfunction";
 }
-function Ga(o) {
+function Qa(o) {
   return Kn(o) && /^\s*class\s+/.test(o.toString());
 }
-function Ja(o) {
+function el(o) {
   return ce(o) === "number";
 }
 function rt(o) {
   return ce(o) === "object";
 }
-function Qa(o) {
+function tl(o) {
   return Promise.resolve(o) === o;
 }
-function el(o) {
+function ol(o) {
   return ce(o) === "string";
 }
-function tl(o) {
+function rl(o) {
   return ce(o) === "undefined";
 }
 function Xt(o, ...e) {
@@ -6122,21 +6122,21 @@ function Xt(o, ...e) {
       rt(t[r]) ? (o[r] === void 0 && Object.assign(o, { [r]: {} }), Xt(o[r], t[r])) : Object.assign(o, { [r]: t[r] });
   return Xt(o, ...e);
 }
-function ol(o, e, t) {
+function nl(o, e, t) {
   const r = `«${e}» is deprecated and will be removed in the next major release. Please use the «${t}» instead.`;
   o && console.warn(r);
 }
-function rl(o) {
+function il(o) {
   try {
     return new URL(o).href;
   } catch {
   }
   return o.substring(0, 2) === "//" ? window.location.protocol + o : window.location.origin + o;
 }
-function nl(o) {
+function sl(o) {
   return o > 47 && o < 58 || o === 32 || o === 13 || o === 229 || o > 64 && o < 91 || o > 95 && o < 112 || o > 185 && o < 193 || o > 218 && o < 223;
 }
-const il = {
+const al = {
   BACKSPACE: 8,
   TAB: 9,
   ENTER: 13,
@@ -6152,14 +6152,14 @@ const il = {
   DELETE: 46,
   META: 91,
   SLASH: 191
-}, sl = {
+}, ll = {
   LEFT: 0,
   WHEEL: 1,
   RIGHT: 2,
   BACKWARD: 3,
   FORWARD: 4
 };
-let al = class {
+let cl = class {
   constructor() {
     this.completed = Promise.resolve();
   }
@@ -6173,7 +6173,7 @@ let al = class {
     });
   }
 };
-function ll(o, e, t = void 0) {
+function dl(o, e, t = void 0) {
   let r, n, i, s = null, a = 0;
   t || (t = {});
   const l = function() {
@@ -6186,43 +6186,43 @@ function ll(o, e, t = void 0) {
     return r = this, n = arguments, d <= 0 || d > e ? (s && (clearTimeout(s), s = null), a = c, i = o.apply(r, n), s === null && (r = n = null)) : !s && t.trailing !== !1 && (s = setTimeout(l, d)), i;
   };
 }
-const cl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const hl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  PromiseQueue: al,
-  beautifyShortcut: qa,
-  cacheable: za,
-  capitalize: Ka,
-  copyTextToClipboard: Ya,
-  debounce: Xa,
+  PromiseQueue: cl,
+  beautifyShortcut: Ya,
+  cacheable: Wa,
+  capitalize: Xa,
+  copyTextToClipboard: Za,
+  debounce: Ga,
   deepMerge: Xt,
-  deprecationAssert: ol,
+  deprecationAssert: nl,
   getUserOS: qn,
-  getValidUrl: rl,
-  isBoolean: Za,
-  isClass: Ga,
-  isEmpty: Va,
+  getValidUrl: il,
+  isBoolean: Ja,
+  isClass: Qa,
+  isEmpty: qa,
   isFunction: Kn,
-  isIosDevice: Wa,
-  isNumber: Ja,
+  isIosDevice: Ka,
+  isNumber: el,
   isObject: rt,
-  isPrintableKey: nl,
-  isPromise: Qa,
-  isString: el,
-  isUndefined: tl,
-  keyCodes: il,
-  mouseButtons: sl,
+  isPrintableKey: sl,
+  isPromise: tl,
+  isString: ol,
+  isUndefined: rl,
+  keyCodes: al,
+  mouseButtons: ll,
   notEmpty: yo,
-  throttle: ll,
+  throttle: dl,
   typeOf: ce
-}, Symbol.toStringTag, { value: "Module" })), xo = /* @__PURE__ */ es(cl);
+}, Symbol.toStringTag, { value: "Module" })), xo = /* @__PURE__ */ os(hl);
 Object.defineProperty(wo, "__esModule", { value: !0 });
-wo.containsOnlyInlineElements = ul;
-var dl = xo, hl = fo;
-function ul(o) {
+wo.containsOnlyInlineElements = fl;
+var ul = xo, pl = fo;
+function fl(o) {
   var e;
-  (0, dl.isString)(o) ? (e = document.createElement("div"), e.innerHTML = o) : e = o;
+  (0, ul.isString)(o) ? (e = document.createElement("div"), e.innerHTML = o) : e = o;
   var t = function(r) {
-    return !(0, hl.blockElements)().includes(r.tagName.toLowerCase()) && Array.from(r.children).every(t);
+    return !(0, pl.blockElements)().includes(r.tagName.toLowerCase()) && Array.from(r.children).every(t);
   };
   return Array.from(e.children).every(t);
 }
@@ -6235,8 +6235,8 @@ function ul(o) {
 })(kt);
 var Yn = {}, Co = {}, wt = {}, Eo = {};
 Object.defineProperty(Eo, "__esModule", { value: !0 });
-Eo.make = pl;
-function pl(o, e, t) {
+Eo.make = gl;
+function gl(o, e, t) {
   var r;
   e === void 0 && (e = null), t === void 0 && (t = {});
   var n = document.createElement(o);
@@ -6259,10 +6259,10 @@ function pl(o, e, t) {
   } });
 })(wt);
 Object.defineProperty(Co, "__esModule", { value: !0 });
-Co.fragmentToString = gl;
-var fl = wt;
-function gl(o) {
-  var e = (0, fl.make)("div");
+Co.fragmentToString = vl;
+var ml = wt;
+function vl(o) {
+  var e = (0, ml.make)("div");
   return e.appendChild(o), e.innerHTML;
 }
 (function(o) {
@@ -6274,11 +6274,11 @@ function gl(o) {
 })(Yn);
 var Xn = {}, To = {};
 Object.defineProperty(To, "__esModule", { value: !0 });
-To.getContentLength = vl;
-var ml = be;
-function vl(o) {
+To.getContentLength = kl;
+var bl = be;
+function kl(o) {
   var e, t;
-  return (0, ml.isNativeInput)(o) ? o.value.length : o.nodeType === Node.TEXT_NODE ? o.length : (t = (e = o.textContent) === null || e === void 0 ? void 0 : e.length) !== null && t !== void 0 ? t : 0;
+  return (0, bl.isNativeInput)(o) ? o.value.length : o.nodeType === Node.TEXT_NODE ? o.length : (t = (e = o.textContent) === null || e === void 0 ? void 0 : e.length) !== null && t !== void 0 ? t : 0;
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.getContentLength = void 0;
@@ -6295,9 +6295,9 @@ var So = {}, Bo = {}, Yr = Ve && Ve.__spreadArray || function(o, e, t) {
 };
 Object.defineProperty(Bo, "__esModule", { value: !0 });
 Bo.getDeepestBlockElements = Zn;
-var bl = kt;
+var wl = kt;
 function Zn(o) {
-  return (0, bl.containsOnlyInlineElements)(o) ? [o] : Array.from(o.children).reduce(function(e, t) {
+  return (0, wl.containsOnlyInlineElements)(o) ? [o] : Array.from(o.children).reduce(function(e, t) {
     return Yr(Yr([], e, !0), Zn(t), !0);
   }, []);
 }
@@ -6310,8 +6310,8 @@ function Zn(o) {
 })(So);
 var Gn = {}, Mo = {}, yt = {}, _o = {};
 Object.defineProperty(_o, "__esModule", { value: !0 });
-_o.isLineBreakTag = kl;
-function kl(o) {
+_o.isLineBreakTag = yl;
+function yl(o) {
   return [
     "BR",
     "WBR"
@@ -6326,8 +6326,8 @@ function kl(o) {
 })(yt);
 var xt = {}, Lo = {};
 Object.defineProperty(Lo, "__esModule", { value: !0 });
-Lo.isSingleTag = wl;
-function wl(o) {
+Lo.isSingleTag = xl;
+function xl(o) {
   return [
     "AREA",
     "BASE",
@@ -6356,13 +6356,13 @@ function wl(o) {
 })(xt);
 Object.defineProperty(Mo, "__esModule", { value: !0 });
 Mo.getDeepestNode = Jn;
-var yl = be, xl = yt, Cl = xt;
+var Cl = be, El = yt, Tl = xt;
 function Jn(o, e) {
   e === void 0 && (e = !1);
   var t = e ? "lastChild" : "firstChild", r = e ? "previousSibling" : "nextSibling";
   if (o.nodeType === Node.ELEMENT_NODE && o[t]) {
     var n = o[t];
-    if ((0, Cl.isSingleTag)(n) && !(0, yl.isNativeInput)(n) && !(0, xl.isLineBreakTag)(n))
+    if ((0, Tl.isSingleTag)(n) && !(0, Cl.isNativeInput)(n) && !(0, El.isLineBreakTag)(n))
       if (n[r])
         n = n[r];
       else if (n.parentNode !== null && n.parentNode[r])
@@ -6387,11 +6387,11 @@ var Qn = {}, Io = {}, Ze = Ve && Ve.__spreadArray || function(o, e, t) {
   return o.concat(i || Array.prototype.slice.call(e));
 };
 Object.defineProperty(Io, "__esModule", { value: !0 });
-Io.findAllInputs = Ml;
-var El = kt, Tl = So, Sl = co, Bl = be;
-function Ml(o) {
-  return Array.from(o.querySelectorAll((0, Sl.allInputsSelector)())).reduce(function(e, t) {
-    return (0, Bl.isNativeInput)(t) || (0, El.containsOnlyInlineElements)(t) ? Ze(Ze([], e, !0), [t], !1) : Ze(Ze([], e, !0), (0, Tl.getDeepestBlockElements)(t), !0);
+Io.findAllInputs = Ll;
+var Sl = kt, Bl = So, Ml = co, _l = be;
+function Ll(o) {
+  return Array.from(o.querySelectorAll((0, Ml.allInputsSelector)())).reduce(function(e, t) {
+    return (0, _l.isNativeInput)(t) || (0, Sl.containsOnlyInlineElements)(t) ? Ze(Ze([], e, !0), [t], !1) : Ze(Ze([], e, !0), (0, Bl.getDeepestBlockElements)(t), !0);
   }, []);
 }
 (function(o) {
@@ -6403,8 +6403,8 @@ function Ml(o) {
 })(Qn);
 var ei = {}, Oo = {};
 Object.defineProperty(Oo, "__esModule", { value: !0 });
-Oo.isCollapsedWhitespaces = _l;
-function _l(o) {
+Oo.isCollapsedWhitespaces = Il;
+function Il(o) {
   return !/[^\t\n\r ]/.test(o);
 }
 (function(o) {
@@ -6416,10 +6416,10 @@ function _l(o) {
 })(ei);
 var Ao = {}, Po = {};
 Object.defineProperty(Po, "__esModule", { value: !0 });
-Po.isElement = Il;
-var Ll = xo;
-function Il(o) {
-  return (0, Ll.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.ELEMENT_NODE;
+Po.isElement = Al;
+var Ol = xo;
+function Al(o) {
+  return (0, Ol.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.ELEMENT_NODE;
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isElement = void 0;
@@ -6430,8 +6430,8 @@ function Il(o) {
 })(Ao);
 var ti = {}, No = {}, jo = {}, Do = {};
 Object.defineProperty(Do, "__esModule", { value: !0 });
-Do.isLeaf = Ol;
-function Ol(o) {
+Do.isLeaf = Pl;
+function Pl(o) {
   return o === null ? !1 : o.childNodes.length === 0;
 }
 (function(o) {
@@ -6443,11 +6443,11 @@ function Ol(o) {
 })(jo);
 var Ro = {}, Ho = {};
 Object.defineProperty(Ho, "__esModule", { value: !0 });
-Ho.isNodeEmpty = Dl;
-var Al = yt, Pl = Ao, Nl = be, jl = xt;
-function Dl(o, e) {
+Ho.isNodeEmpty = Hl;
+var Nl = yt, jl = Ao, Dl = be, Rl = xt;
+function Hl(o, e) {
   var t = "";
-  return (0, jl.isSingleTag)(o) && !(0, Al.isLineBreakTag)(o) ? !1 : ((0, Pl.isElement)(o) && (0, Nl.isNativeInput)(o) ? t = o.value : o.textContent !== null && (t = o.textContent.replace("​", "")), e !== void 0 && (t = t.replace(new RegExp(e, "g"), "")), t.trim().length === 0);
+  return (0, Rl.isSingleTag)(o) && !(0, Nl.isLineBreakTag)(o) ? !1 : ((0, jl.isElement)(o) && (0, Dl.isNativeInput)(o) ? t = o.value : o.textContent !== null && (t = o.textContent.replace("​", "")), e !== void 0 && (t = t.replace(new RegExp(e, "g"), "")), t.trim().length === 0);
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isNodeEmpty = void 0;
@@ -6457,14 +6457,14 @@ function Dl(o, e) {
   } });
 })(Ro);
 Object.defineProperty(No, "__esModule", { value: !0 });
-No.isEmpty = Fl;
-var Rl = jo, Hl = Ro;
-function Fl(o, e) {
+No.isEmpty = Ul;
+var Fl = jo, $l = Ro;
+function Ul(o, e) {
   o.normalize();
   for (var t = [o]; t.length > 0; ) {
     var r = t.shift();
     if (r) {
-      if (o = r, (0, Rl.isLeaf)(o) && !(0, Hl.isNodeEmpty)(o, e))
+      if (o = r, (0, Fl.isLeaf)(o) && !(0, $l.isNodeEmpty)(o, e))
         return !1;
       t.push.apply(t, Array.from(o.childNodes));
     }
@@ -6480,10 +6480,10 @@ function Fl(o, e) {
 })(ti);
 var oi = {}, Fo = {};
 Object.defineProperty(Fo, "__esModule", { value: !0 });
-Fo.isFragment = Ul;
-var $l = xo;
-function Ul(o) {
-  return (0, $l.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.DOCUMENT_FRAGMENT_NODE;
+Fo.isFragment = Vl;
+var zl = xo;
+function Vl(o) {
+  return (0, zl.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.DOCUMENT_FRAGMENT_NODE;
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isFragment = void 0;
@@ -6494,10 +6494,10 @@ function Ul(o) {
 })(oi);
 var ri = {}, $o = {};
 Object.defineProperty($o, "__esModule", { value: !0 });
-$o.isHTMLString = Vl;
-var zl = wt;
-function Vl(o) {
-  var e = (0, zl.make)("div");
+$o.isHTMLString = ql;
+var Wl = wt;
+function ql(o) {
+  var e = (0, Wl.make)("div");
   return e.innerHTML = o, e.childElementCount > 0;
 }
 (function(o) {
@@ -6509,8 +6509,8 @@ function Vl(o) {
 })(ri);
 var ni = {}, Uo = {};
 Object.defineProperty(Uo, "__esModule", { value: !0 });
-Uo.offset = Wl;
-function Wl(o) {
+Uo.offset = Kl;
+function Kl(o) {
   var e = o.getBoundingClientRect(), t = window.pageXOffset || document.documentElement.scrollLeft, r = window.pageYOffset || document.documentElement.scrollTop, n = e.top + r, i = e.left + t;
   return {
     top: n,
@@ -6528,8 +6528,8 @@ function Wl(o) {
 })(ni);
 var ii = {}, zo = {};
 Object.defineProperty(zo, "__esModule", { value: !0 });
-zo.prepend = ql;
-function ql(o, e) {
+zo.prepend = Yl;
+function Yl(o, e) {
   Array.isArray(e) ? (e = e.reverse(), e.forEach(function(t) {
     return o.prepend(t);
   })) : o.prepend(e);
@@ -6615,25 +6615,25 @@ function ql(o, e) {
   Object.defineProperty(o, "isHTMLString", { enumerable: !0, get: function() {
     return m.isHTMLString;
   } });
-  var C = jo;
+  var E = jo;
   Object.defineProperty(o, "isLeaf", { enumerable: !0, get: function() {
-    return C.isLeaf;
+    return E.isLeaf;
   } });
   var S = Ro;
   Object.defineProperty(o, "isNodeEmpty", { enumerable: !0, get: function() {
     return S.isNodeEmpty;
   } });
-  var _ = yt;
+  var L = yt;
   Object.defineProperty(o, "isLineBreakTag", { enumerable: !0, get: function() {
-    return _.isLineBreakTag;
+    return L.isLineBreakTag;
   } });
   var x = xt;
   Object.defineProperty(o, "isSingleTag", { enumerable: !0, get: function() {
     return x.isSingleTag;
   } });
-  var I = wt;
+  var O = wt;
   Object.defineProperty(o, "make", { enumerable: !0, get: function() {
-    return I.make;
+    return O.make;
   } });
   var w = ni;
   Object.defineProperty(o, "offset", { enumerable: !0, get: function() {
@@ -6646,15 +6646,15 @@ function ql(o, e) {
 })(ve);
 var Ct = {};
 Object.defineProperty(Ct, "__esModule", { value: !0 });
-Ct.getContenteditableSlice = Yl;
-var Kl = ve;
-function Yl(o, e, t, r, n) {
+Ct.getContenteditableSlice = Zl;
+var Xl = ve;
+function Zl(o, e, t, r, n) {
   var i;
   n === void 0 && (n = !1);
   var s = document.createRange();
   if (r === "left" ? (s.setStart(o, 0), s.setEnd(e, t)) : (s.setStart(e, t), s.setEnd(o, o.childNodes.length)), n === !0) {
     var a = s.extractContents();
-    return (0, Kl.fragmentToString)(a);
+    return (0, Xl.fragmentToString)(a);
   }
   var l = s.cloneContents(), c = document.createElement("div");
   c.appendChild(l);
@@ -6662,11 +6662,11 @@ function Yl(o, e, t, r, n) {
   return d;
 }
 Object.defineProperty(bt, "__esModule", { value: !0 });
-bt.checkContenteditableSliceForEmptiness = Gl;
-var Xl = ve, Zl = Ct;
-function Gl(o, e, t, r) {
-  var n = (0, Zl.getContenteditableSlice)(o, e, t, r);
-  return (0, Xl.isCollapsedWhitespaces)(n);
+bt.checkContenteditableSliceForEmptiness = Ql;
+var Gl = ve, Jl = Ct;
+function Ql(o, e, t, r) {
+  var n = (0, Jl.getContenteditableSlice)(o, e, t, r);
+  return (0, Gl.isCollapsedWhitespaces)(n);
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.checkContenteditableSliceForEmptiness = void 0;
@@ -6685,11 +6685,11 @@ var si = {};
 })(si);
 var ai = {}, Vo = {};
 Object.defineProperty(Vo, "__esModule", { value: !0 });
-Vo.focus = Ql;
-var Jl = ve;
-function Ql(o, e) {
+Vo.focus = tc;
+var ec = ve;
+function tc(o, e) {
   var t, r;
-  if (e === void 0 && (e = !0), (0, Jl.isNativeInput)(o)) {
+  if (e === void 0 && (e = !0), (0, ec.isNativeInput)(o)) {
     o.focus();
     var n = e ? 0 : o.value.length;
     o.setSelectionRange(n, n);
@@ -6725,8 +6725,8 @@ function Ql(o, e) {
 })(ai);
 var Wo = {}, Et = {};
 Object.defineProperty(Et, "__esModule", { value: !0 });
-Et.getCaretNodeAndOffset = ec;
-function ec() {
+Et.getCaretNodeAndOffset = oc;
+function oc() {
   var o = window.getSelection();
   if (o === null)
     return [null, 0];
@@ -6742,8 +6742,8 @@ function ec() {
 })(Wo);
 var li = {}, Tt = {};
 Object.defineProperty(Tt, "__esModule", { value: !0 });
-Tt.getRange = tc;
-function tc() {
+Tt.getRange = rc;
+function rc() {
   var o = window.getSelection();
   return o && o.rangeCount ? o.getRangeAt(0) : null;
 }
@@ -6756,16 +6756,16 @@ function tc() {
 })(li);
 var ci = {}, qo = {};
 Object.defineProperty(qo, "__esModule", { value: !0 });
-qo.isCaretAtEndOfInput = nc;
-var Xr = ve, oc = Wo, rc = lo;
-function nc(o) {
+qo.isCaretAtEndOfInput = sc;
+var Xr = ve, nc = Wo, ic = lo;
+function sc(o) {
   var e = (0, Xr.getDeepestNode)(o, !0);
   if (e === null)
     return !0;
   if ((0, Xr.isNativeInput)(e))
     return e.selectionEnd === e.value.length;
-  var t = (0, oc.getCaretNodeAndOffset)(), r = t[0], n = t[1];
-  return r === null ? !1 : (0, rc.checkContenteditableSliceForEmptiness)(o, r, n, "right");
+  var t = (0, nc.getCaretNodeAndOffset)(), r = t[0], n = t[1];
+  return r === null ? !1 : (0, ic.checkContenteditableSliceForEmptiness)(o, r, n, "right");
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isCaretAtEndOfInput = void 0;
@@ -6776,9 +6776,9 @@ function nc(o) {
 })(ci);
 var di = {}, Ko = {};
 Object.defineProperty(Ko, "__esModule", { value: !0 });
-Ko.isCaretAtStartOfInput = ac;
-var Ge = ve, ic = Et, sc = bt;
-function ac(o) {
+Ko.isCaretAtStartOfInput = cc;
+var Ge = ve, ac = Et, lc = bt;
+function cc(o) {
   var e = (0, Ge.getDeepestNode)(o);
   if (e === null || (0, Ge.isEmpty)(o))
     return !0;
@@ -6786,8 +6786,8 @@ function ac(o) {
     return e.selectionEnd === 0;
   if ((0, Ge.isEmpty)(o))
     return !0;
-  var t = (0, ic.getCaretNodeAndOffset)(), r = t[0], n = t[1];
-  return r === null ? !1 : (0, sc.checkContenteditableSliceForEmptiness)(o, r, n, "left");
+  var t = (0, ac.getCaretNodeAndOffset)(), r = t[0], n = t[1];
+  return r === null ? !1 : (0, lc.checkContenteditableSliceForEmptiness)(o, r, n, "left");
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isCaretAtStartOfInput = void 0;
@@ -6798,10 +6798,10 @@ function ac(o) {
 })(di);
 var hi = {}, Yo = {};
 Object.defineProperty(Yo, "__esModule", { value: !0 });
-Yo.save = dc;
-var lc = ve, cc = Tt;
-function dc() {
-  var o = (0, cc.getRange)(), e = (0, lc.make)("span");
+Yo.save = uc;
+var dc = ve, hc = Tt;
+function uc() {
+  var o = (0, hc.getRange)(), e = (0, dc.make)("span");
   if (e.id = "cursor", e.hidden = !0, !!o)
     return o.insertNode(e), function() {
       var t = window.getSelection();
@@ -6852,7 +6852,7 @@ function dc() {
     return l.save;
   } });
 })(Un);
-class hc extends N {
+class pc extends N {
   /**
    * All keydowns on Block
    *
@@ -6983,7 +6983,7 @@ class hc extends N {
    */
   backspace(e) {
     const { BlockManager: t, Caret: r } = this.Editor, { currentBlock: n, previousBlock: i } = t;
-    if (!(n === void 0 || !L.isCollapsed || !n.currentInput || !tt(n.currentInput))) {
+    if (!(n === void 0 || !I.isCollapsed || !n.currentInput || !tt(n.currentInput))) {
       if (e.preventDefault(), this.Editor.Toolbar.close(), n.currentInput !== n.firstInput) {
         r.navigatePrevious();
         return;
@@ -7012,7 +7012,7 @@ class hc extends N {
    */
   delete(e) {
     const { BlockManager: t, Caret: r } = this.Editor, { currentBlock: n, nextBlock: i } = t;
-    if (!(!L.isCollapsed || !ot(n.currentInput))) {
+    if (!(!I.isCollapsed || !ot(n.currentInput))) {
       if (e.preventDefault(), this.Editor.Toolbar.close(), n.currentInput !== n.lastInput) {
         r.navigateNext();
         return;
@@ -7320,8 +7320,8 @@ let Dt = class {
     });
   }
 };
-const Zr = "block-removed", Gr = "block-added", uc = "block-moved", Jr = "block-changed";
-class pc {
+const Zr = "block-removed", Gr = "block-added", fc = "block-moved", Jr = "block-changed";
+class gc {
   constructor() {
     this.completed = Promise.resolve();
   }
@@ -7336,7 +7336,7 @@ class pc {
     });
   }
 }
-class fc extends N {
+class mc extends N {
   constructor() {
     super(...arguments), this._currentBlockIndex = -1, this._blocks = null;
   }
@@ -7788,7 +7788,7 @@ class fc extends N {
       j("Warning during 'move' call: indices cannot be lower than 0 or greater than the amount of blocks.", "warn");
       return;
     }
-    this._blocks.move(e, t), this.currentBlockIndex = e, this.blockDidMutated(uc, this.currentBlock, {
+    this._blocks.move(e, t), this.currentBlockIndex = e, this.blockDidMutated(fc, this.currentBlock, {
       fromIndex: t,
       toIndex: e
     });
@@ -7829,7 +7829,7 @@ class fc extends N {
    *                                        2) in api.blocks.clear we should add empty block
    */
   async clear(e = !1) {
-    const t = new pc();
+    const t = new gc();
     [...this.blocks].forEach((r) => {
       t.add(async () => {
         await this.removeBlock(r, !1);
@@ -7908,7 +7908,7 @@ class fc extends N {
     }), t;
   }
 }
-class gc extends N {
+class vc extends N {
   constructor() {
     super(...arguments), this.anyBlockSelectedCache = null, this.needToSelectAll = !1, this.nativeInputSelected = !1, this.readyToBlockSelection = !1;
   }
@@ -7986,7 +7986,7 @@ class gc extends N {
    * to select all and copy them
    */
   prepare() {
-    this.selection = new L(), Be.add({
+    this.selection = new I(), Be.add({
       name: "CMD+A",
       handler: (e) => {
         const { BlockManager: t, ReadOnly: r } = this.Editor;
@@ -8006,7 +8006,7 @@ class gc extends N {
    *  - Unselect all Blocks
    */
   toggleReadOnly() {
-    L.get().removeAllRanges(), this.allBlocksSelected = !1;
+    I.get().removeAllRanges(), this.allBlocksSelected = !1;
   }
   /**
    * Remove selection of Block
@@ -8028,7 +8028,7 @@ class gc extends N {
     const { BlockManager: r, Caret: n, RectangleSelection: i } = this.Editor;
     this.needToSelectAll = !1, this.nativeInputSelected = !1, this.readyToBlockSelection = !1;
     const s = e && e instanceof KeyboardEvent, a = s && cn(e.keyCode);
-    if (this.anyBlockSelected && s && a && !L.isSelectionExists) {
+    if (this.anyBlockSelected && s && a && !I.isSelectionExists) {
       const l = r.removeSelectedBlocks();
       r.insertDefaultBlockAtIndex(l, !0), n.setToBlock(r.currentBlock), at(() => {
         const c = e.key;
@@ -8079,7 +8079,7 @@ class gc extends N {
    * @param {Block} block - Block to select
    */
   selectBlock(e) {
-    this.selection.save(), L.get().removeAllRanges(), e.selected = !0, this.clearCache(), this.Editor.InlineToolbar.close();
+    this.selection.save(), I.get().removeAllRanges(), e.selected = !0, this.clearCache(), this.Editor.InlineToolbar.close();
   }
   /**
    * Remove selection from passed Block
@@ -8129,10 +8129,10 @@ class gc extends N {
    * Each Block has selected setter that makes Block copyable
    */
   selectAllBlocks() {
-    this.selection.save(), L.get().removeAllRanges(), this.allBlocksSelected = !0, this.Editor.InlineToolbar.close();
+    this.selection.save(), I.get().removeAllRanges(), this.allBlocksSelected = !0, this.Editor.InlineToolbar.close();
   }
 }
-let mc = class Zt extends N {
+let bc = class Zt extends N {
   /**
    * Allowed caret positions in input
    *
@@ -8225,7 +8225,7 @@ let mc = class Zt extends N {
    * @param {number} offset - offset
    */
   set(e, t = 0) {
-    const { top: r, bottom: n } = L.setCursor(e, t), { innerHeight: i } = window;
+    const { top: r, bottom: n } = I.setCursor(e, t), { innerHeight: i } = window;
     r < 0 ? window.scrollBy(0, r - 30) : n > i && window.scrollBy(0, n - i + 30);
   }
   /**
@@ -8246,7 +8246,7 @@ let mc = class Zt extends N {
    * Extract content fragment of current Block from Caret position to the end of the Block
    */
   extractFragmentFromCaretPosition() {
-    const e = L.get();
+    const e = I.get();
     if (e.rangeCount) {
       const t = e.getRangeAt(0), r = this.Editor.BlockManager.currentBlock.currentInput;
       if (t.deleteContents(), r)
@@ -8314,7 +8314,7 @@ let mc = class Zt extends N {
     const t = e.querySelector(`.${Zt.CSS.shadowCaret}`);
     if (!t)
       return;
-    new L().expandToTag(t);
+    new I().expandToTag(t);
     const r = document.createRange();
     r.selectNode(t), r.extractContents();
   }
@@ -8324,7 +8324,7 @@ let mc = class Zt extends N {
    * @param {string} content - content to insert
    */
   insertContentAtCaretPosition(e) {
-    const t = document.createDocumentFragment(), r = document.createElement("div"), n = L.get(), i = L.range;
+    const t = document.createDocumentFragment(), r = document.createElement("div"), n = I.get(), i = I.range;
     r.innerHTML = e, Array.from(r.childNodes).forEach((c) => t.appendChild(c)), t.childNodes.length === 0 && t.appendChild(new Text());
     const s = t.lastChild;
     i.deleteContents(), i.insertNode(t);
@@ -8332,7 +8332,7 @@ let mc = class Zt extends N {
     l !== null && l.textContent !== null && a.setStart(l, l.textContent.length), n.removeAllRanges(), n.addRange(a);
   }
 };
-class vc extends N {
+class kc extends N {
   constructor() {
     super(...arguments), this.onMouseUp = () => {
       this.listeners.off(document, "mouseover", this.onMouseOver), this.listeners.off(document, "mouseup", this.onMouseUp);
@@ -8343,7 +8343,7 @@ class vc extends N {
       const n = t.getBlockByChildNode(e.relatedTarget) || this.lastSelectedBlock, i = t.getBlockByChildNode(e.target);
       if (!(!n || !i) && i !== n) {
         if (n === this.firstSelectedBlock) {
-          L.get().removeAllRanges(), n.selected = !0, i.selected = !0, r.clearCache();
+          I.get().removeAllRanges(), n.selected = !0, i.selected = !0, r.clearCache();
           return;
         }
         if (i === this.firstSelectedBlock) {
@@ -8370,7 +8370,7 @@ class vc extends N {
    * @param {MouseEvent} event - mouse down event
    */
   watchSelection(e) {
-    if (e.button !== os.LEFT)
+    if (e.button !== ns.LEFT)
       return;
     const { BlockManager: t } = this.Editor;
     this.firstSelectedBlock = t.getBlock(e.target), this.lastSelectedBlock = this.firstSelectedBlock, this.listeners.on(document, "mouseover", this.onMouseOver), this.listeners.on(document, "mouseup", this.onMouseUp);
@@ -8390,7 +8390,7 @@ class vc extends N {
    */
   toggleBlockSelectedState(e = !0) {
     const { BlockManager: t, BlockSelection: r } = this.Editor;
-    this.lastSelectedBlock || (this.lastSelectedBlock = this.firstSelectedBlock = t.currentBlock), this.firstSelectedBlock === this.lastSelectedBlock && (this.firstSelectedBlock.selected = !0, r.clearCache(), L.get().removeAllRanges());
+    this.lastSelectedBlock || (this.lastSelectedBlock = this.firstSelectedBlock = t.currentBlock), this.firstSelectedBlock === this.lastSelectedBlock && (this.firstSelectedBlock.selected = !0, r.clearCache(), I.get().removeAllRanges());
     const n = t.blocks.indexOf(this.lastSelectedBlock) + (e ? 1 : -1), i = t.blocks[n];
     i && (this.lastSelectedBlock.selected !== i.selected ? (i.selected = !0, r.clearCache()) : (this.lastSelectedBlock.selected = !1, r.clearCache()), this.lastSelectedBlock = i, this.Editor.InlineToolbar.close(), i.holder.scrollIntoView({
       block: "nearest"
@@ -8425,7 +8425,7 @@ class vc extends N {
    */
   enableCrossBlockSelection(e) {
     const { UI: t } = this.Editor;
-    L.isCollapsed || this.Editor.BlockSelection.clearSelection(e), t.nodes.redactor.contains(e.target) ? this.watchSelection(e) : this.Editor.BlockSelection.clearSelection(e);
+    I.isCollapsed || this.Editor.BlockSelection.clearSelection(e), t.nodes.redactor.contains(e.target) ? this.watchSelection(e) : this.Editor.BlockSelection.clearSelection(e);
   }
   /**
    * Change blocks selection state between passed two blocks.
@@ -8441,7 +8441,7 @@ class vc extends N {
     }
   }
 }
-class bc extends N {
+class wc extends N {
   constructor() {
     super(...arguments), this.isStartedAtEditor = !1;
   }
@@ -8491,7 +8491,7 @@ class bc extends N {
     } = this.Editor;
     e.preventDefault(), t.blocks.forEach((s) => {
       s.dropTarget = !1;
-    }), L.isAtEditor && !L.isCollapsed && this.isStartedAtEditor && document.execCommand("delete"), this.isStartedAtEditor = !1;
+    }), I.isAtEditor && !I.isCollapsed && this.isStartedAtEditor && document.execCommand("delete"), this.isStartedAtEditor = !1;
     const i = t.setCurrentBlockByChildNode(e.target);
     if (i)
       this.Editor.Caret.setToBlock(i, n.positions.END);
@@ -8505,7 +8505,7 @@ class bc extends N {
    * Handle drag start event
    */
   processDragStart() {
-    L.isAtEditor && !L.isCollapsed && (this.isStartedAtEditor = !0), this.Editor.InlineToolbar.close();
+    I.isAtEditor && !I.isCollapsed && (this.isStartedAtEditor = !0), this.Editor.InlineToolbar.close();
   }
   /**
    * @param {DragEvent} dragEvent - drag event
@@ -8514,8 +8514,8 @@ class bc extends N {
     e.preventDefault();
   }
 }
-const kc = 180, wc = 400;
-class yc extends N {
+const yc = 180, xc = 400;
+class Cc extends N {
   /**
    * Prepare the module
    *
@@ -8527,7 +8527,7 @@ class yc extends N {
     super({
       config: e,
       eventsDispatcher: t
-    }), this.disabled = !1, this.batchingTimeout = null, this.batchingOnChangeQueue = /* @__PURE__ */ new Map(), this.batchTime = wc, this.mutationObserver = new MutationObserver((r) => {
+    }), this.disabled = !1, this.batchingTimeout = null, this.batchingOnChangeQueue = /* @__PURE__ */ new Map(), this.batchTime = xc, this.mutationObserver = new MutationObserver((r) => {
       this.redactorChanged(r);
     }), this.eventsDispatcher.on(vn, (r) => {
       this.particularBlockChanged(r.event);
@@ -8563,7 +8563,7 @@ class yc extends N {
    * @param event - some of our custom change events
    */
   particularBlockChanged(e) {
-    this.disabled || !R(this.config.onChange) || (this.batchingOnChangeQueue.set(`block:${e.detail.target.id}:event:${e.type}`, e), this.batchingTimeout && clearTimeout(this.batchingTimeout), this.batchingTimeout = setTimeout(() => {
+    this.disabled || !H(this.config.onChange) || (this.batchingOnChangeQueue.set(`block:${e.detail.target.id}:event:${e.type}`, e), this.batchingTimeout && clearTimeout(this.batchingTimeout), this.batchingTimeout = setTimeout(() => {
       let t;
       this.batchingOnChangeQueue.size === 1 ? t = this.batchingOnChangeQueue.values().next().value : t = Array.from(this.batchingOnChangeQueue.values()), this.config.onChange && this.config.onChange(this.Editor.API.methods, t), this.batchingOnChangeQueue.clear();
     }, this.batchTime));
@@ -8588,7 +8588,7 @@ const ui = class pi extends N {
           this.exceptionList.push(e.name);
           return;
         }
-        if (!R(t.onPaste))
+        if (!H(t.onPaste))
           return;
         this.getTagsConfig(e), this.getFilesConfig(e), this.getPatternsConfig(e);
       } catch (t) {
@@ -8725,7 +8725,7 @@ const ui = class pi extends N {
       return;
     const { files: t = {} } = e.pasteConfig;
     let { extensions: r, mimeTypes: n } = t;
-    !r && !n || (r && !Array.isArray(r) && (j(`«extensions» property of the onDrop config for «${e.name}» Tool should be an array`), r = []), n && !Array.isArray(n) && (j(`«mimeTypes» property of the onDrop config for «${e.name}» Tool should be an array`), n = []), n && (n = n.filter((i) => as(i) ? !0 : (j(`MIME type value «${i}» for the «${e.name}» Tool is not a valid MIME type`, "warn"), !1))), this.toolsFiles[e.name] = {
+    !r && !n || (r && !Array.isArray(r) && (j(`«extensions» property of the onDrop config for «${e.name}» Tool should be an array`), r = []), n && !Array.isArray(n) && (j(`«mimeTypes» property of the onDrop config for «${e.name}» Tool should be an array`), n = []), n && (n = n.filter((i) => cs(i) ? !0 : (j(`MIME type value «${i}» for the «${e.name}» Tool is not a valid MIME type`, "warn"), !1))), this.toolsFiles[e.name] = {
       extensions: r || [],
       mimeTypes: n || []
     });
@@ -8780,7 +8780,7 @@ const ui = class pi extends N {
    * @param {File} file - file to process
    */
   async processFile(e) {
-    const t = ss(e), r = Object.entries(this.toolsFiles).find(([i, { mimeTypes: s, extensions: a }]) => {
+    const t = ls(e), r = Object.entries(this.toolsFiles).find(([i, { mimeTypes: s, extensions: a }]) => {
       const [l, c] = e.type.split("/"), d = a.find((u) => u.toLowerCase() === t.toLowerCase()), h = s.find((u) => {
         const [f, p] = u.split("/");
         return f === l && (p === c || p === "*");
@@ -9024,8 +9024,8 @@ const ui = class pi extends N {
   }
 };
 ui.PATTERN_PROCESSING_MAX_LENGTH = 450;
-let xc = ui;
-class Cc extends N {
+let Ec = ui;
+class Tc extends N {
   constructor() {
     super(...arguments), this.toolsDontSupportReadOnly = [], this.readOnlyEnabled = !1;
   }
@@ -9235,7 +9235,7 @@ class Ue extends N {
       return;
     e.pageY !== void 0 && (this.mouseX = e.pageX, this.mouseY = e.pageY);
     const { rightPos: t, leftPos: r, index: n } = this.genInfoForMouseSelection(), i = this.startX > t && this.mouseX > t, s = this.startX < r && this.mouseX < r;
-    this.rectCrossesBlocks = !(i || s), this.isRectSelectionActivated || (this.rectCrossesBlocks = !1, this.isRectSelectionActivated = !0, this.shrinkRectangleToPoint(), this.overlayRectangle.style.display = "block"), this.updateRectangleSize(), this.Editor.Toolbar.close(), n !== void 0 && (this.trySelectNextBlock(n), this.inverseSelection(), L.get().removeAllRanges());
+    this.rectCrossesBlocks = !(i || s), this.isRectSelectionActivated || (this.rectCrossesBlocks = !1, this.isRectSelectionActivated = !0, this.shrinkRectangleToPoint(), this.overlayRectangle.style.display = "block"), this.updateRectangleSize(), this.Editor.Toolbar.close(), n !== void 0 && (this.trySelectNextBlock(n), this.inverseSelection(), I.get().removeAllRanges());
   }
   /**
    * Shrink rect to singular point
@@ -9316,7 +9316,7 @@ class Ue extends N {
       this.rectCrossesBlocks && this.Editor.BlockSelection.unSelectBlockByIndex(this.stackOfSelected[u]), this.stackOfSelected.pop(), u--;
   }
 }
-class Ec extends N {
+class Sc extends N {
   /**
    * Renders passed blocks as one batch
    *
@@ -9382,7 +9382,7 @@ class Ec extends N {
     };
   }
 }
-class Tc extends N {
+class Bc extends N {
   /**
    * Composes new chain of Promises to fire them alternatelly
    *
@@ -9456,8 +9456,8 @@ class Tc extends N {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const Sc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 9V7.2C8 7.08954 8.08954 7 8.2 7L12 7M16 9V7.2C16 7.08954 15.9105 7 15.8 7L12 7M12 7L12 17M12 17H10M12 17H14"/></svg>';
-function Bc(o) {
+const Mc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 9V7.2C8 7.08954 8.08954 7 8.2 7L12 7M16 9V7.2C16 7.08954 15.9105 7 15.8 7L12 7M12 7L12 17M12 17H10M12 17H14"/></svg>';
+function _c(o) {
   const e = document.createElement("div");
   e.innerHTML = o.trim();
   const t = document.createDocumentFragment();
@@ -9537,7 +9537,7 @@ class Xo {
     if (!this._element)
       return;
     this._data.text += e.text;
-    const t = Bc(e.text);
+    const t = _c(e.text);
     this._element.appendChild(t), this._element.normalize();
   }
   /**
@@ -9625,7 +9625,7 @@ class Xo {
    */
   static get toolbox() {
     return {
-      icon: Sc,
+      icon: Mc,
       title: "Text"
     };
   }
@@ -9650,7 +9650,7 @@ class Zo {
    */
   render() {
     return {
-      icon: ea,
+      icon: oa,
       name: "bold",
       onActivate: () => {
         document.execCommand(this.commandName);
@@ -9694,7 +9694,7 @@ class Go {
    * Create button for Inline Toolbar
    */
   render() {
-    return this.nodes.button = document.createElement("button"), this.nodes.button.type = "button", this.nodes.button.classList.add(this.CSS.button, this.CSS.buttonModifier), this.nodes.button.innerHTML = aa, this.nodes.button;
+    return this.nodes.button = document.createElement("button"), this.nodes.button.type = "button", this.nodes.button.classList.add(this.CSS.button, this.CSS.buttonModifier), this.nodes.button.innerHTML = ca, this.nodes.button;
   }
   /**
    * Wrap range with <i> tag
@@ -9733,7 +9733,7 @@ class Jo {
     }, this.nodes = {
       button: null,
       input: null
-    }, this.inputOpened = !1, this.toolbar = e.toolbar, this.inlineToolbar = e.inlineToolbar, this.notifier = e.notifier, this.i18n = e.i18n, this.selection = new L();
+    }, this.inputOpened = !1, this.toolbar = e.toolbar, this.inlineToolbar = e.inlineToolbar, this.notifier = e.notifier, this.i18n = e.i18n, this.selection = new I();
   }
   /**
    * Sanitizer Rule
@@ -9786,7 +9786,7 @@ class Jo {
   checkState() {
     const e = this.selection.findParentTag("A");
     if (e) {
-      this.nodes.button.innerHTML = ha, this.nodes.button.classList.add(this.CSS.buttonUnlink), this.nodes.button.classList.add(this.CSS.buttonActive), this.openActions();
+      this.nodes.button.innerHTML = pa, this.nodes.button.classList.add(this.CSS.buttonUnlink), this.nodes.button.classList.add(this.CSS.buttonActive), this.openActions();
       const t = e.getAttribute("href");
       this.nodes.input.defaultValue = t !== "null" ? t : "", this.selection.save();
     } else
@@ -9825,7 +9825,7 @@ class Jo {
    */
   closeActions(e = !0) {
     if (this.selection.isFakeBackgroundEnabled) {
-      const t = new L();
+      const t = new I();
       t.save(), this.selection.restore(), this.selection.removeFakeBackground(), t.restore();
     }
     this.nodes.input.classList.remove(this.CSS.inputShowed), this.nodes.input.value = "", e && this.selection.clearSaved(), this.inputOpened = !1;
@@ -9909,7 +9909,7 @@ class fi {
    * Returns tool's UI config
    */
   async render() {
-    const e = L.get(), t = this.blocksAPI.getBlockByElement(e.anchorNode);
+    const e = I.get(), t = this.blocksAPI.getBlockByElement(e.anchorNode);
     if (t === void 0)
       return [];
     const r = this.toolsAPI.getBlockTools(), n = await yn(t, r);
@@ -9986,7 +9986,7 @@ class gi {
    * @returns {HTMLElement}
    */
   make() {
-    const e = g.make("div", this.CSS.wrapper), t = ua, r = g.make("div", this.CSS.info), n = g.make("div", this.CSS.title, {
+    const e = g.make("div", this.CSS.wrapper), t = fa, r = g.make("div", this.CSS.info), n = g.make("div", this.CSS.title, {
       textContent: this.title
     }), i = g.make("div", this.CSS.subtitle, {
       textContent: this.subtitle
@@ -9995,7 +9995,7 @@ class gi {
   }
 }
 gi.isReadOnlySupported = !0;
-class Mc extends ao {
+class Lc extends ao {
   constructor() {
     super(...arguments), this.type = ge.Inline;
   }
@@ -10022,7 +10022,7 @@ class Mc extends ao {
     return this.constructable[ft.IsReadOnlySupported] ?? !1;
   }
 }
-class _c extends ao {
+class Ic extends ao {
   constructor() {
     super(...arguments), this.type = ge.Tune;
   }
@@ -10078,10 +10078,10 @@ let G = class Ce extends Map {
     return new Ce(e);
   }
 };
-var Lc = Object.defineProperty, Ic = Object.getOwnPropertyDescriptor, mi = (o, e, t, r) => {
-  for (var n = Ic(e, t), i = o.length - 1, s; i >= 0; i--)
+var Oc = Object.defineProperty, Ac = Object.getOwnPropertyDescriptor, mi = (o, e, t, r) => {
+  for (var n = Ac(e, t), i = o.length - 1, s; i >= 0; i--)
     (s = o[i]) && (n = s(e, t, n) || n);
-  return n && Lc(e, t, n), n;
+  return n && Oc(e, t, n), n;
 };
 class Qo extends ao {
   constructor() {
@@ -10191,7 +10191,7 @@ mi([
 mi([
   Me
 ], Qo.prototype, "baseSanitizeConfig");
-class Oc {
+class Pc {
   /**
    * @class
    * @param config - tools config
@@ -10226,9 +10226,9 @@ class Oc {
   getConstructor(e) {
     switch (!0) {
       case e[ft.IsInline]:
-        return Mc;
+        return Lc;
       case e[Yt.IsTune]:
-        return _c;
+        return Ic;
       default:
         return Qo;
     }
@@ -10250,7 +10250,7 @@ class vi {
    */
   render() {
     return {
-      icon: ta,
+      icon: ra,
       title: this.api.i18n.t("Move down"),
       onActivate: () => this.handleClick(),
       name: "move-down"
@@ -10283,7 +10283,7 @@ class bi {
    */
   render() {
     return {
-      icon: ia,
+      icon: aa,
       title: this.api.i18n.t("Delete"),
       name: "delete",
       confirmation: {
@@ -10316,7 +10316,7 @@ class ki {
    */
   render() {
     return {
-      icon: na,
+      icon: sa,
       title: this.api.i18n.t("Move up"),
       onActivate: () => this.handleClick(),
       name: "move-up"
@@ -10335,10 +10335,10 @@ class ki {
   }
 }
 ki.isTune = !0;
-var Ac = Object.defineProperty, Pc = Object.getOwnPropertyDescriptor, Nc = (o, e, t, r) => {
-  for (var n = Pc(e, t), i = o.length - 1, s; i >= 0; i--)
+var Nc = Object.defineProperty, jc = Object.getOwnPropertyDescriptor, Dc = (o, e, t, r) => {
+  for (var n = jc(e, t), i = o.length - 1, s; i >= 0; i--)
     (s = o[i]) && (n = s(e, t, n) || n);
-  return n && Ac(e, t, n), n;
+  return n && Nc(e, t, n), n;
 };
 class wi extends N {
   constructor() {
@@ -10397,11 +10397,11 @@ class wi extends N {
     if (this.validateTools(), this.config.tools = Ut({}, this.internalTools, this.config.tools), !Object.prototype.hasOwnProperty.call(this.config, "tools") || Object.keys(this.config.tools).length === 0)
       throw Error("Can't start without tools");
     const e = this.prepareConfig();
-    this.factory = new Oc(e, this.config, this.Editor.API);
+    this.factory = new Pc(e, this.config, this.Editor.API);
     const t = this.getListOfPrepareFunctions(e);
     if (t.length === 0)
       return Promise.resolve();
-    await is(t, (r) => {
+    await as(t, (r) => {
       this.toolPrepareMethodSuccess(r);
     }, (r) => {
       this.toolPrepareMethodFallback(r);
@@ -10418,7 +10418,7 @@ class wi extends N {
    */
   destroy() {
     Object.values(this.available).forEach(async (e) => {
-      R(e.reset) && await e.reset();
+      H(e.reset) && await e.reset();
     });
   }
   /**
@@ -10505,7 +10505,7 @@ class wi extends N {
     return Object.entries(e).forEach(([r, n]) => {
       t.push({
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        function: R(n.class.prepare) ? n.class.prepare : () => {
+        function: H(n.class.prepare) ? n.class.prepare : () => {
         },
         data: {
           toolName: r,
@@ -10574,7 +10574,7 @@ class wi extends N {
         if (e in this.internalTools)
           return;
         const t = this.config.tools[e];
-        if (!R(t) && !R(t.class))
+        if (!H(t) && !H(t.class))
           throw Error(
             `Tool «${e}» must be a constructor function or an object with function in the «class» property`
           );
@@ -10590,18 +10590,18 @@ class wi extends N {
     return e;
   }
 }
-Nc([
+Dc([
   Me
 ], wi.prototype, "getAllInlineToolsSanitizeConfig");
-const jc = `:root{--selectionColor: #e1f2ff;--inlineSelectionColor: #d4ecff;--bg-light: #eff2f5;--grayText: #707684;--color-dark: #1D202B;--color-active-icon: #388AE5;--color-gray-border: rgba(201, 201, 204, .48);--content-width: 650px;--narrow-mode-right-padding: 50px;--toolbox-buttons-size: 26px;--toolbox-buttons-size--mobile: 36px;--icon-size: 20px;--icon-size--mobile: 28px;--block-padding-vertical: .4em;--color-line-gray: #EFF0F1 }.codex-editor{position:relative;-webkit-box-sizing:border-box;box-sizing:border-box;z-index:1}.codex-editor .hide{display:none}.codex-editor__redactor [contenteditable]:empty:after{content:"\\feff"}@media (min-width: 651px){.codex-editor--narrow .codex-editor__redactor{margin-right:50px}}@media (min-width: 651px){.codex-editor--narrow.codex-editor--rtl .codex-editor__redactor{margin-left:50px;margin-right:0}}@media (min-width: 651px){.codex-editor--narrow .ce-toolbar__actions{right:-5px}}.codex-editor-copyable{position:absolute;height:1px;width:1px;top:-400%;opacity:.001}.codex-editor-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;pointer-events:none;overflow:hidden}.codex-editor-overlay__container{position:relative;pointer-events:auto;z-index:0}.codex-editor-overlay__rectangle{position:absolute;pointer-events:none;background-color:#2eaadc33;border:1px solid transparent}.codex-editor svg{max-height:100%}.codex-editor path{stroke:currentColor}.codex-editor ::-moz-selection{background-color:#d4ecff}.codex-editor ::selection{background-color:#d4ecff}.codex-editor--toolbox-opened [contentEditable=true][data-placeholder]:focus:before{opacity:0!important}.ce-scroll-locked{overflow:hidden}.ce-scroll-locked--hard{overflow:hidden;top:calc(-1 * var(--window-scroll-offset));position:fixed;width:100%}.ce-toolbar{position:absolute;left:0;right:0;top:0;-webkit-transition:opacity .1s ease;transition:opacity .1s ease;will-change:opacity,top;display:none}.ce-toolbar--opened{display:block}.ce-toolbar__content{max-width:650px;margin:0 auto;position:relative}.ce-toolbar__plus{color:#1d202b;cursor:pointer;width:26px;height:26px;border-radius:7px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-ms-flex-negative:0;flex-shrink:0}@media (max-width: 650px){.ce-toolbar__plus{width:36px;height:36px}}@media (hover: hover){.ce-toolbar__plus:hover{background-color:#eff2f5}}.ce-toolbar__plus--active{background-color:#eff2f5;-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-toolbar__plus-shortcut{opacity:.6;word-spacing:-2px;margin-top:5px}@media (max-width: 650px){.ce-toolbar__plus{position:absolute;background-color:#fff;border:1px solid #E8E8EB;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px #0d142121;border-radius:6px;z-index:2;position:static}.ce-toolbar__plus--left-oriented:before{left:15px;margin-left:0}.ce-toolbar__plus--right-oriented:before{left:auto;right:15px;margin-left:0}}.ce-toolbar__actions{position:absolute;right:100%;opacity:0;display:-webkit-box;display:-ms-flexbox;display:flex;padding-right:5px}.ce-toolbar__actions--opened{opacity:1}@media (max-width: 650px){.ce-toolbar__actions{right:auto}}.ce-toolbar__settings-btn{color:#1d202b;width:26px;height:26px;border-radius:7px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;margin-left:3px;cursor:pointer;user-select:none}@media (max-width: 650px){.ce-toolbar__settings-btn{width:36px;height:36px}}@media (hover: hover){.ce-toolbar__settings-btn:hover{background-color:#eff2f5}}.ce-toolbar__settings-btn--active{background-color:#eff2f5;-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}@media (min-width: 651px){.ce-toolbar__settings-btn{width:24px}}.ce-toolbar__settings-btn--hidden{display:none}@media (max-width: 650px){.ce-toolbar__settings-btn{position:absolute;background-color:#fff;border:1px solid #E8E8EB;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px #0d142121;border-radius:6px;z-index:2;position:static}.ce-toolbar__settings-btn--left-oriented:before{left:15px;margin-left:0}.ce-toolbar__settings-btn--right-oriented:before{left:auto;right:15px;margin-left:0}}.ce-toolbar__plus svg,.ce-toolbar__settings-btn svg{width:24px;height:24px}@media (min-width: 651px){.codex-editor--narrow .ce-toolbar__plus{left:5px}}@media (min-width: 651px){.codex-editor--narrow .ce-toolbox .ce-popover{right:0;left:auto;left:initial}}.ce-inline-toolbar{--y-offset: 8px;--color-background-icon-active: rgba(56, 138, 229, .1);--color-text-icon-active: #388AE5;--color-text-primary: black;position:absolute;visibility:hidden;-webkit-transition:opacity .25s ease;transition:opacity .25s ease;will-change:opacity,left,top;top:0;left:0;z-index:3;opacity:1;visibility:visible}.ce-inline-toolbar [hidden]{display:none!important}.ce-inline-toolbar__toggler-and-button-wrapper{display:-webkit-box;display:-ms-flexbox;display:flex;width:100%;padding:0 6px}.ce-inline-toolbar__buttons{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-inline-toolbar__dropdown{display:-webkit-box;display:-ms-flexbox;display:flex;padding:6px;margin:0 6px 0 -6px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:pointer;border-right:1px solid rgba(201,201,204,.48);-webkit-box-sizing:border-box;box-sizing:border-box}@media (hover: hover){.ce-inline-toolbar__dropdown:hover{background:#eff2f5}}.ce-inline-toolbar__dropdown--hidden{display:none}.ce-inline-toolbar__dropdown-content,.ce-inline-toolbar__dropdown-arrow{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-inline-toolbar__dropdown-content svg,.ce-inline-toolbar__dropdown-arrow svg{width:20px;height:20px}.ce-inline-toolbar__shortcut{opacity:.6;word-spacing:-3px;margin-top:3px}.ce-inline-tool{color:var(--color-text-primary);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;border:0;border-radius:4px;line-height:normal;height:100%;padding:0;width:28px;background-color:transparent;cursor:pointer}@media (max-width: 650px){.ce-inline-tool{width:36px;height:36px}}@media (hover: hover){.ce-inline-tool:hover{background-color:#f8f8f8}}.ce-inline-tool svg{display:block;width:20px;height:20px}@media (max-width: 650px){.ce-inline-tool svg{width:28px;height:28px}}.ce-inline-tool--link .icon--unlink,.ce-inline-tool--unlink .icon--link{display:none}.ce-inline-tool--unlink .icon--unlink{display:inline-block;margin-bottom:-1px}.ce-inline-tool-input{background:#F8F8F8;border:1px solid rgba(226,226,229,.2);border-radius:6px;padding:4px 8px;font-size:14px;line-height:22px;outline:none;margin:0;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box;display:none;font-weight:500;-webkit-appearance:none;font-family:inherit}@media (max-width: 650px){.ce-inline-tool-input{font-size:15px;font-weight:500}}.ce-inline-tool-input::-webkit-input-placeholder{color:#707684}.ce-inline-tool-input::-moz-placeholder{color:#707684}.ce-inline-tool-input:-ms-input-placeholder{color:#707684}.ce-inline-tool-input::-ms-input-placeholder{color:#707684}.ce-inline-tool-input::placeholder{color:#707684}.ce-inline-tool-input--showed{display:block}.ce-inline-tool--active{background:var(--color-background-icon-active);color:var(--color-text-icon-active)}@-webkit-keyframes fade-in{0%{opacity:0}to{opacity:1}}@keyframes fade-in{0%{opacity:0}to{opacity:1}}.ce-block{-webkit-animation:fade-in .3s ease;animation:fade-in .3s ease;-webkit-animation-fill-mode:none;animation-fill-mode:none;-webkit-animation-fill-mode:initial;animation-fill-mode:initial}.ce-block:first-of-type{margin-top:0}.ce-block--selected .ce-block__content{background:#e1f2ff}.ce-block--selected .ce-block__content [contenteditable]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-block--selected .ce-block__content img,.ce-block--selected .ce-block__content .ce-stub{opacity:.55}.ce-block--stretched .ce-block__content{max-width:none}.ce-block__content{position:relative;max-width:650px;margin:0 auto;-webkit-transition:background-color .15s ease;transition:background-color .15s ease}.ce-block--drop-target .ce-block__content:before{content:"";position:absolute;top:100%;left:-20px;margin-top:-1px;height:8px;width:8px;border:solid #388AE5;border-width:1px 1px 0 0;-webkit-transform-origin:right;transform-origin:right;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.ce-block--drop-target .ce-block__content:after{content:"";position:absolute;top:100%;height:1px;width:100%;color:#388ae5;background:repeating-linear-gradient(90deg,#388AE5,#388AE5 1px,#fff 1px,#fff 6px)}.ce-block a{cursor:pointer;-webkit-text-decoration:underline;text-decoration:underline}.ce-block b{font-weight:700}.ce-block i{font-style:italic}@-webkit-keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@-webkit-keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@-webkit-keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}.cdx-block{padding:.4em 0}.cdx-block::-webkit-input-placeholder{line-height:normal!important}.cdx-input{border:1px solid rgba(201,201,204,.48);-webkit-box-shadow:inset 0 1px 2px 0 rgba(35,44,72,.06);box-shadow:inset 0 1px 2px #232c480f;border-radius:3px;padding:10px 12px;outline:none;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box}.cdx-input[data-placeholder]:before{position:static!important}.cdx-input[data-placeholder]:before{display:inline-block;width:0;white-space:nowrap;pointer-events:none}.cdx-settings-button{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:inherit;margin:0;min-width:26px;min-height:26px}.cdx-settings-button--focused{background:rgba(34,186,255,.08)!important}.cdx-settings-button--focused{-webkit-box-shadow:inset 0 0 0px 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px #07a1e314}.cdx-settings-button--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.cdx-settings-button--active{color:#388ae5}.cdx-settings-button svg{width:auto;height:auto}@media (max-width: 650px){.cdx-settings-button svg{width:28px;height:28px}}@media (max-width: 650px){.cdx-settings-button{width:36px;height:36px;border-radius:8px}}@media (hover: hover){.cdx-settings-button:hover{background-color:#eff2f5}}.cdx-loader{position:relative;border:1px solid rgba(201,201,204,.48)}.cdx-loader:before{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-11px 0 0 -11px;border:2px solid rgba(201,201,204,.48);border-left-color:#388ae5;border-radius:50%;-webkit-animation:cdxRotation 1.2s infinite linear;animation:cdxRotation 1.2s infinite linear}@-webkit-keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.cdx-button{padding:13px;border-radius:3px;border:1px solid rgba(201,201,204,.48);font-size:14.9px;background:#fff;-webkit-box-shadow:0 2px 2px 0 rgba(18,30,57,.04);box-shadow:0 2px 2px #121e390a;color:#707684;text-align:center;cursor:pointer}@media (hover: hover){.cdx-button:hover{background:#FBFCFE;-webkit-box-shadow:0 1px 3px 0 rgba(18,30,57,.08);box-shadow:0 1px 3px #121e3914}}.cdx-button svg{height:20px;margin-right:.2em;margin-top:-2px}.ce-stub{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:12px 18px;margin:10px 0;border-radius:10px;background:#eff2f5;border:1px solid #EFF0F1;color:#707684;font-size:14px}.ce-stub svg{width:20px;height:20px}.ce-stub__info{margin-left:14px}.ce-stub__title{font-weight:500;text-transform:capitalize}.codex-editor.codex-editor--rtl{direction:rtl}.codex-editor.codex-editor--rtl .cdx-list{padding-left:0;padding-right:40px}.codex-editor.codex-editor--rtl .ce-toolbar__plus{right:-26px;left:auto}.codex-editor.codex-editor--rtl .ce-toolbar__actions{right:auto;left:-26px}@media (max-width: 650px){.codex-editor.codex-editor--rtl .ce-toolbar__actions{margin-left:0;margin-right:auto;padding-right:0;padding-left:10px}}.codex-editor.codex-editor--rtl .ce-settings{left:5px;right:auto}.codex-editor.codex-editor--rtl .ce-settings:before{right:auto;left:25px}.codex-editor.codex-editor--rtl .ce-settings__button:not(:nth-child(3n+3)){margin-left:3px;margin-right:0}.codex-editor.codex-editor--rtl .ce-conversion-tool__icon{margin-right:0;margin-left:10px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown{border-right:0px solid transparent;border-left:1px solid rgba(201,201,204,.48);margin:0 -6px 0 6px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown .icon--toggler-down{margin-left:0;margin-right:4px}@media (min-width: 651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__plus{left:0;right:5px}}@media (min-width: 651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__actions{left:-5px}}.cdx-search-field{--icon-margin-right: 10px;background:#F8F8F8;border:1px solid rgba(226,226,229,.2);border-radius:6px;padding:2px;display:grid;grid-template-columns:auto auto 1fr;grid-template-rows:auto}.cdx-search-field__icon{width:26px;height:26px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-right:var(--icon-margin-right)}.cdx-search-field__icon svg{width:20px;height:20px;color:#707684}.cdx-search-field__input{font-size:14px;outline:none;font-weight:500;font-family:inherit;border:0;background:transparent;margin:0;padding:0;line-height:22px;min-width:calc(100% - 26px - var(--icon-margin-right))}.cdx-search-field__input::-webkit-input-placeholder{color:#707684;font-weight:500}.cdx-search-field__input::-moz-placeholder{color:#707684;font-weight:500}.cdx-search-field__input:-ms-input-placeholder{color:#707684;font-weight:500}.cdx-search-field__input::-ms-input-placeholder{color:#707684;font-weight:500}.cdx-search-field__input::placeholder{color:#707684;font-weight:500}.ce-popover{--border-radius: 6px;--width: 200px;--max-height: 270px;--padding: 6px;--offset-from-target: 8px;--color-border: #EFF0F1;--color-shadow: rgba(13, 20, 33, .1);--color-background: white;--color-text-primary: black;--color-text-secondary: #707684;--color-border-icon: rgba(201, 201, 204, .48);--color-border-icon-disabled: #EFF0F1;--color-text-icon-active: #388AE5;--color-background-icon-active: rgba(56, 138, 229, .1);--color-background-item-focus: rgba(34, 186, 255, .08);--color-shadow-item-focus: rgba(7, 161, 227, .08);--color-background-item-hover: #F8F8F8;--color-background-item-confirm: #E24A4A;--color-background-item-confirm-hover: #CE4343;--popover-top: calc(100% + var(--offset-from-target));--popover-left: 0;--nested-popover-overlap: 4px;--icon-size: 20px;--item-padding: 3px;--item-height: calc(var(--icon-size) + 2 * var(--item-padding))}.ce-popover__container{min-width:var(--width);width:var(--width);max-height:var(--max-height);border-radius:var(--border-radius);overflow:hidden;-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-box-shadow:0px 3px 15px -3px var(--color-shadow);box-shadow:0 3px 15px -3px var(--color-shadow);position:absolute;left:var(--popover-left);top:var(--popover-top);background:var(--color-background);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;z-index:4;opacity:0;max-height:0;pointer-events:none;padding:0;border:none}.ce-popover--opened>.ce-popover__container{opacity:1;padding:var(--padding);max-height:var(--max-height);pointer-events:auto;-webkit-animation:panelShowing .1s ease;animation:panelShowing .1s ease;border:1px solid var(--color-border)}@media (max-width: 650px){.ce-popover--opened>.ce-popover__container{-webkit-animation:panelShowingMobile .25s ease;animation:panelShowingMobile .25s ease}}.ce-popover--open-top .ce-popover__container{--popover-top: calc(-1 * (var(--offset-from-target) + var(--popover-height)))}.ce-popover--open-left .ce-popover__container{--popover-left: calc(-1 * var(--width) + 100%)}.ce-popover__items{overflow-y:auto;-ms-scroll-chaining:none;overscroll-behavior:contain}@media (max-width: 650px){.ce-popover__overlay{position:fixed;top:0;bottom:0;left:0;right:0;background:#1D202B;z-index:3;opacity:.5;-webkit-transition:opacity .12s ease-in;transition:opacity .12s ease-in;will-change:opacity;visibility:visible}}.ce-popover__overlay--hidden{display:none}@media (max-width: 650px){.ce-popover .ce-popover__container{--offset: 5px;position:fixed;max-width:none;min-width:calc(100% - var(--offset) * 2);left:var(--offset);right:var(--offset);bottom:calc(var(--offset) + env(safe-area-inset-bottom));top:auto;border-radius:10px}}.ce-popover__search{margin-bottom:5px}.ce-popover__nothing-found-message{color:#707684;display:none;cursor:default;padding:3px;font-size:14px;line-height:20px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ce-popover__nothing-found-message--displayed{display:block}.ce-popover--nested .ce-popover__container{--popover-left: calc(var(--nesting-level) * (var(--width) - var(--nested-popover-overlap)));top:calc(var(--trigger-item-top) - var(--nested-popover-overlap));position:absolute}.ce-popover--open-top.ce-popover--nested .ce-popover__container{top:calc(var(--trigger-item-top) - var(--popover-height) + var(--item-height) + var(--offset-from-target) + var(--nested-popover-overlap))}.ce-popover--open-left .ce-popover--nested .ce-popover__container{--popover-left: calc(-1 * (var(--nesting-level) + 1) * var(--width) + 100%)}.ce-popover-item-separator{padding:4px 3px}.ce-popover-item-separator--hidden{display:none}.ce-popover-item-separator__line{height:1px;background:var(--color-border);width:100%}.ce-popover-item-html--hidden{display:none}.ce-popover-item{--border-radius: 6px;border-radius:var(--border-radius);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:var(--item-padding);color:var(--color-text-primary);-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:none;background:transparent}@media (max-width: 650px){.ce-popover-item{padding:4px}}.ce-popover-item:not(:last-of-type){margin-bottom:1px}.ce-popover-item__icon{width:26px;height:26px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.ce-popover-item__icon svg{width:20px;height:20px}@media (max-width: 650px){.ce-popover-item__icon{width:36px;height:36px;border-radius:8px}.ce-popover-item__icon svg{width:28px;height:28px}}.ce-popover-item__icon--tool{margin-right:4px}.ce-popover-item__title{font-size:14px;line-height:20px;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-right:auto}@media (max-width: 650px){.ce-popover-item__title{font-size:16px}}.ce-popover-item__secondary-title{color:var(--color-text-secondary);font-size:12px;white-space:nowrap;letter-spacing:-.1em;padding-right:5px;opacity:.6}@media (max-width: 650px){.ce-popover-item__secondary-title{display:none}}.ce-popover-item--active{background:var(--color-background-icon-active);color:var(--color-text-icon-active)}.ce-popover-item--disabled{color:var(--color-text-secondary);cursor:default;pointer-events:none}.ce-popover-item--focused:not(.ce-popover-item--no-focus){background:var(--color-background-item-focus)!important}.ce-popover-item--hidden{display:none}@media (hover: hover){.ce-popover-item:hover{cursor:pointer}.ce-popover-item:hover:not(.ce-popover-item--no-hover){background-color:var(--color-background-item-hover)}}.ce-popover-item--confirmation{background:var(--color-background-item-confirm)}.ce-popover-item--confirmation .ce-popover-item__title,.ce-popover-item--confirmation .ce-popover-item__icon{color:#fff}@media (hover: hover){.ce-popover-item--confirmation:not(.ce-popover-item--no-hover):hover{background:var(--color-background-item-confirm-hover)}}.ce-popover-item--confirmation:not(.ce-popover-item--no-focus).ce-popover-item--focused{background:var(--color-background-item-confirm-hover)!important}@-webkit-keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@-webkit-keyframes panelShowingMobile{0%{opacity:0;-webkit-transform:translateY(14px) scale(.98);transform:translateY(14px) scale(.98)}70%{opacity:1;-webkit-transform:translateY(-4px);transform:translateY(-4px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes panelShowingMobile{0%{opacity:0;-webkit-transform:translateY(14px) scale(.98);transform:translateY(14px) scale(.98)}70%{opacity:1;-webkit-transform:translateY(-4px);transform:translateY(-4px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}.wobble{-webkit-animation-name:wobble;animation-name:wobble;-webkit-animation-duration:.4s;animation-duration:.4s}@-webkit-keyframes wobble{0%{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-9%,0,0);transform:translate3d(-9%,0,0)}30%{-webkit-transform:translate3d(9%,0,0);transform:translate3d(9%,0,0)}45%{-webkit-transform:translate3d(-4%,0,0);transform:translate3d(-4%,0,0)}60%{-webkit-transform:translate3d(4%,0,0);transform:translate3d(4%,0,0)}75%{-webkit-transform:translate3d(-1%,0,0);transform:translate3d(-1%,0,0)}to{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}}@keyframes wobble{0%{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-9%,0,0);transform:translate3d(-9%,0,0)}30%{-webkit-transform:translate3d(9%,0,0);transform:translate3d(9%,0,0)}45%{-webkit-transform:translate3d(-4%,0,0);transform:translate3d(-4%,0,0)}60%{-webkit-transform:translate3d(4%,0,0);transform:translate3d(4%,0,0)}75%{-webkit-transform:translate3d(-1%,0,0);transform:translate3d(-1%,0,0)}to{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}}.ce-popover-header{margin-bottom:8px;margin-top:4px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-popover-header__text{font-size:18px;font-weight:600}.ce-popover-header__back-button{border:0;background:transparent;width:36px;height:36px;color:var(--color-text-primary)}.ce-popover-header__back-button svg{display:block;width:28px;height:28px}.ce-popover--inline{--height: 38px;--height-mobile: 46px;--container-padding: 4px;position:relative}.ce-popover--inline .ce-popover__custom-content{margin-bottom:0}.ce-popover--inline .ce-popover__items{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-popover--inline .ce-popover__container{-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;padding:var(--container-padding);height:var(--height);top:0;min-width:-webkit-max-content;min-width:-moz-max-content;min-width:max-content;width:-webkit-max-content;width:-moz-max-content;width:max-content;-webkit-animation:none;animation:none}@media (max-width: 650px){.ce-popover--inline .ce-popover__container{height:var(--height-mobile);position:absolute}}.ce-popover--inline .ce-popover-item-separator{padding:0 4px}.ce-popover--inline .ce-popover-item-separator__line{height:100%;width:1px}.ce-popover--inline .ce-popover-item{border-radius:4px;padding:4px}.ce-popover--inline .ce-popover-item__icon--tool{-webkit-box-shadow:none;box-shadow:none;background:transparent;margin-right:0}.ce-popover--inline .ce-popover-item__icon{width:auto;width:initial;height:auto;height:initial}.ce-popover--inline .ce-popover-item__icon svg{width:20px;height:20px}@media (max-width: 650px){.ce-popover--inline .ce-popover-item__icon svg{width:28px;height:28px}}.ce-popover--inline .ce-popover-item:not(:last-of-type){margin-bottom:0;margin-bottom:initial}.ce-popover--inline .ce-popover-item-html{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-popover--inline .ce-popover-item__icon--chevron-right{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.ce-popover--inline .ce-popover--nested-level-1 .ce-popover__container{--offset: 3px;left:0;top:calc(var(--height) + var(--offset))}@media (max-width: 650px){.ce-popover--inline .ce-popover--nested-level-1 .ce-popover__container{top:calc(var(--height-mobile) + var(--offset))}}.ce-popover--inline .ce-popover--nested .ce-popover__container{min-width:var(--width);width:var(--width);height:-webkit-fit-content;height:-moz-fit-content;height:fit-content;padding:6px;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.ce-popover--inline .ce-popover--nested .ce-popover__items{display:block;width:100%}.ce-popover--inline .ce-popover--nested .ce-popover-item{border-radius:6px;padding:3px}@media (max-width: 650px){.ce-popover--inline .ce-popover--nested .ce-popover-item{padding:4px}}.ce-popover--inline .ce-popover--nested .ce-popover-item__icon--tool{margin-right:4px}.ce-popover--inline .ce-popover--nested .ce-popover-item__icon{width:26px;height:26px}.ce-popover--inline .ce-popover--nested .ce-popover-item-separator{padding:4px 3px}.ce-popover--inline .ce-popover--nested .ce-popover-item-separator__line{width:100%;height:1px}.codex-editor [data-placeholder]:empty:before,.codex-editor [data-placeholder][data-empty=true]:before{pointer-events:none;color:#707684;cursor:text;content:attr(data-placeholder)}.codex-editor [data-placeholder-active]:empty:before,.codex-editor [data-placeholder-active][data-empty=true]:before{pointer-events:none;color:#707684;cursor:text}.codex-editor [data-placeholder-active]:empty:focus:before,.codex-editor [data-placeholder-active][data-empty=true]:focus:before{content:attr(data-placeholder-active)}
+const Rc = `:root{--selectionColor: #e1f2ff;--inlineSelectionColor: #d4ecff;--bg-light: #eff2f5;--grayText: #707684;--color-dark: #1D202B;--color-active-icon: #388AE5;--color-gray-border: rgba(201, 201, 204, .48);--content-width: 650px;--narrow-mode-right-padding: 50px;--toolbox-buttons-size: 26px;--toolbox-buttons-size--mobile: 36px;--icon-size: 20px;--icon-size--mobile: 28px;--block-padding-vertical: .4em;--color-line-gray: #EFF0F1 }.codex-editor{position:relative;-webkit-box-sizing:border-box;box-sizing:border-box;z-index:1}.codex-editor .hide{display:none}.codex-editor__redactor [contenteditable]:empty:after{content:"\\feff"}@media (min-width: 651px){.codex-editor--narrow .codex-editor__redactor{margin-right:50px}}@media (min-width: 651px){.codex-editor--narrow.codex-editor--rtl .codex-editor__redactor{margin-left:50px;margin-right:0}}@media (min-width: 651px){.codex-editor--narrow .ce-toolbar__actions{right:-5px}}.codex-editor-copyable{position:absolute;height:1px;width:1px;top:-400%;opacity:.001}.codex-editor-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;pointer-events:none;overflow:hidden}.codex-editor-overlay__container{position:relative;pointer-events:auto;z-index:0}.codex-editor-overlay__rectangle{position:absolute;pointer-events:none;background-color:#2eaadc33;border:1px solid transparent}.codex-editor svg{max-height:100%}.codex-editor path{stroke:currentColor}.codex-editor ::-moz-selection{background-color:#d4ecff}.codex-editor ::selection{background-color:#d4ecff}.codex-editor--toolbox-opened [contentEditable=true][data-placeholder]:focus:before{opacity:0!important}.ce-scroll-locked{overflow:hidden}.ce-scroll-locked--hard{overflow:hidden;top:calc(-1 * var(--window-scroll-offset));position:fixed;width:100%}.ce-toolbar{position:absolute;left:0;right:0;top:0;-webkit-transition:opacity .1s ease;transition:opacity .1s ease;will-change:opacity,top;display:none}.ce-toolbar--opened{display:block}.ce-toolbar__content{max-width:650px;margin:0 auto;position:relative}.ce-toolbar__plus{color:#1d202b;cursor:pointer;width:26px;height:26px;border-radius:7px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-ms-flex-negative:0;flex-shrink:0}@media (max-width: 650px){.ce-toolbar__plus{width:36px;height:36px}}@media (hover: hover){.ce-toolbar__plus:hover{background-color:#eff2f5}}.ce-toolbar__plus--active{background-color:#eff2f5;-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-toolbar__plus-shortcut{opacity:.6;word-spacing:-2px;margin-top:5px}@media (max-width: 650px){.ce-toolbar__plus{position:absolute;background-color:#fff;border:1px solid #E8E8EB;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px #0d142121;border-radius:6px;z-index:2;position:static}.ce-toolbar__plus--left-oriented:before{left:15px;margin-left:0}.ce-toolbar__plus--right-oriented:before{left:auto;right:15px;margin-left:0}}.ce-toolbar__actions{position:absolute;right:100%;opacity:0;display:-webkit-box;display:-ms-flexbox;display:flex;padding-right:5px}.ce-toolbar__actions--opened{opacity:1}@media (max-width: 650px){.ce-toolbar__actions{right:auto}}.ce-toolbar__settings-btn{color:#1d202b;width:26px;height:26px;border-radius:7px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;margin-left:3px;cursor:pointer;user-select:none}@media (max-width: 650px){.ce-toolbar__settings-btn{width:36px;height:36px}}@media (hover: hover){.ce-toolbar__settings-btn:hover{background-color:#eff2f5}}.ce-toolbar__settings-btn--active{background-color:#eff2f5;-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}@media (min-width: 651px){.ce-toolbar__settings-btn{width:24px}}.ce-toolbar__settings-btn--hidden{display:none}@media (max-width: 650px){.ce-toolbar__settings-btn{position:absolute;background-color:#fff;border:1px solid #E8E8EB;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px #0d142121;border-radius:6px;z-index:2;position:static}.ce-toolbar__settings-btn--left-oriented:before{left:15px;margin-left:0}.ce-toolbar__settings-btn--right-oriented:before{left:auto;right:15px;margin-left:0}}.ce-toolbar__plus svg,.ce-toolbar__settings-btn svg{width:24px;height:24px}@media (min-width: 651px){.codex-editor--narrow .ce-toolbar__plus{left:5px}}@media (min-width: 651px){.codex-editor--narrow .ce-toolbox .ce-popover{right:0;left:auto;left:initial}}.ce-inline-toolbar{--y-offset: 8px;--color-background-icon-active: rgba(56, 138, 229, .1);--color-text-icon-active: #388AE5;--color-text-primary: black;position:absolute;visibility:hidden;-webkit-transition:opacity .25s ease;transition:opacity .25s ease;will-change:opacity,left,top;top:0;left:0;z-index:3;opacity:1;visibility:visible}.ce-inline-toolbar [hidden]{display:none!important}.ce-inline-toolbar__toggler-and-button-wrapper{display:-webkit-box;display:-ms-flexbox;display:flex;width:100%;padding:0 6px}.ce-inline-toolbar__buttons{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-inline-toolbar__dropdown{display:-webkit-box;display:-ms-flexbox;display:flex;padding:6px;margin:0 6px 0 -6px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:pointer;border-right:1px solid rgba(201,201,204,.48);-webkit-box-sizing:border-box;box-sizing:border-box}@media (hover: hover){.ce-inline-toolbar__dropdown:hover{background:#eff2f5}}.ce-inline-toolbar__dropdown--hidden{display:none}.ce-inline-toolbar__dropdown-content,.ce-inline-toolbar__dropdown-arrow{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-inline-toolbar__dropdown-content svg,.ce-inline-toolbar__dropdown-arrow svg{width:20px;height:20px}.ce-inline-toolbar__shortcut{opacity:.6;word-spacing:-3px;margin-top:3px}.ce-inline-tool{color:var(--color-text-primary);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;border:0;border-radius:4px;line-height:normal;height:100%;padding:0;width:28px;background-color:transparent;cursor:pointer}@media (max-width: 650px){.ce-inline-tool{width:36px;height:36px}}@media (hover: hover){.ce-inline-tool:hover{background-color:#f8f8f8}}.ce-inline-tool svg{display:block;width:20px;height:20px}@media (max-width: 650px){.ce-inline-tool svg{width:28px;height:28px}}.ce-inline-tool--link .icon--unlink,.ce-inline-tool--unlink .icon--link{display:none}.ce-inline-tool--unlink .icon--unlink{display:inline-block;margin-bottom:-1px}.ce-inline-tool-input{background:#F8F8F8;border:1px solid rgba(226,226,229,.2);border-radius:6px;padding:4px 8px;font-size:14px;line-height:22px;outline:none;margin:0;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box;display:none;font-weight:500;-webkit-appearance:none;font-family:inherit}@media (max-width: 650px){.ce-inline-tool-input{font-size:15px;font-weight:500}}.ce-inline-tool-input::-webkit-input-placeholder{color:#707684}.ce-inline-tool-input::-moz-placeholder{color:#707684}.ce-inline-tool-input:-ms-input-placeholder{color:#707684}.ce-inline-tool-input::-ms-input-placeholder{color:#707684}.ce-inline-tool-input::placeholder{color:#707684}.ce-inline-tool-input--showed{display:block}.ce-inline-tool--active{background:var(--color-background-icon-active);color:var(--color-text-icon-active)}@-webkit-keyframes fade-in{0%{opacity:0}to{opacity:1}}@keyframes fade-in{0%{opacity:0}to{opacity:1}}.ce-block{-webkit-animation:fade-in .3s ease;animation:fade-in .3s ease;-webkit-animation-fill-mode:none;animation-fill-mode:none;-webkit-animation-fill-mode:initial;animation-fill-mode:initial}.ce-block:first-of-type{margin-top:0}.ce-block--selected .ce-block__content{background:#e1f2ff}.ce-block--selected .ce-block__content [contenteditable]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-block--selected .ce-block__content img,.ce-block--selected .ce-block__content .ce-stub{opacity:.55}.ce-block--stretched .ce-block__content{max-width:none}.ce-block__content{position:relative;max-width:650px;margin:0 auto;-webkit-transition:background-color .15s ease;transition:background-color .15s ease}.ce-block--drop-target .ce-block__content:before{content:"";position:absolute;top:100%;left:-20px;margin-top:-1px;height:8px;width:8px;border:solid #388AE5;border-width:1px 1px 0 0;-webkit-transform-origin:right;transform-origin:right;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.ce-block--drop-target .ce-block__content:after{content:"";position:absolute;top:100%;height:1px;width:100%;color:#388ae5;background:repeating-linear-gradient(90deg,#388AE5,#388AE5 1px,#fff 1px,#fff 6px)}.ce-block a{cursor:pointer;-webkit-text-decoration:underline;text-decoration:underline}.ce-block b{font-weight:700}.ce-block i{font-style:italic}@-webkit-keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@-webkit-keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@-webkit-keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}@keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scale3d(1,1,1);transform:scaleZ(1)}}.cdx-block{padding:.4em 0}.cdx-block::-webkit-input-placeholder{line-height:normal!important}.cdx-input{border:1px solid rgba(201,201,204,.48);-webkit-box-shadow:inset 0 1px 2px 0 rgba(35,44,72,.06);box-shadow:inset 0 1px 2px #232c480f;border-radius:3px;padding:10px 12px;outline:none;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box}.cdx-input[data-placeholder]:before{position:static!important}.cdx-input[data-placeholder]:before{display:inline-block;width:0;white-space:nowrap;pointer-events:none}.cdx-settings-button{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:inherit;margin:0;min-width:26px;min-height:26px}.cdx-settings-button--focused{background:rgba(34,186,255,.08)!important}.cdx-settings-button--focused{-webkit-box-shadow:inset 0 0 0px 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px #07a1e314}.cdx-settings-button--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.cdx-settings-button--active{color:#388ae5}.cdx-settings-button svg{width:auto;height:auto}@media (max-width: 650px){.cdx-settings-button svg{width:28px;height:28px}}@media (max-width: 650px){.cdx-settings-button{width:36px;height:36px;border-radius:8px}}@media (hover: hover){.cdx-settings-button:hover{background-color:#eff2f5}}.cdx-loader{position:relative;border:1px solid rgba(201,201,204,.48)}.cdx-loader:before{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-11px 0 0 -11px;border:2px solid rgba(201,201,204,.48);border-left-color:#388ae5;border-radius:50%;-webkit-animation:cdxRotation 1.2s infinite linear;animation:cdxRotation 1.2s infinite linear}@-webkit-keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.cdx-button{padding:13px;border-radius:3px;border:1px solid rgba(201,201,204,.48);font-size:14.9px;background:#fff;-webkit-box-shadow:0 2px 2px 0 rgba(18,30,57,.04);box-shadow:0 2px 2px #121e390a;color:#707684;text-align:center;cursor:pointer}@media (hover: hover){.cdx-button:hover{background:#FBFCFE;-webkit-box-shadow:0 1px 3px 0 rgba(18,30,57,.08);box-shadow:0 1px 3px #121e3914}}.cdx-button svg{height:20px;margin-right:.2em;margin-top:-2px}.ce-stub{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:12px 18px;margin:10px 0;border-radius:10px;background:#eff2f5;border:1px solid #EFF0F1;color:#707684;font-size:14px}.ce-stub svg{width:20px;height:20px}.ce-stub__info{margin-left:14px}.ce-stub__title{font-weight:500;text-transform:capitalize}.codex-editor.codex-editor--rtl{direction:rtl}.codex-editor.codex-editor--rtl .cdx-list{padding-left:0;padding-right:40px}.codex-editor.codex-editor--rtl .ce-toolbar__plus{right:-26px;left:auto}.codex-editor.codex-editor--rtl .ce-toolbar__actions{right:auto;left:-26px}@media (max-width: 650px){.codex-editor.codex-editor--rtl .ce-toolbar__actions{margin-left:0;margin-right:auto;padding-right:0;padding-left:10px}}.codex-editor.codex-editor--rtl .ce-settings{left:5px;right:auto}.codex-editor.codex-editor--rtl .ce-settings:before{right:auto;left:25px}.codex-editor.codex-editor--rtl .ce-settings__button:not(:nth-child(3n+3)){margin-left:3px;margin-right:0}.codex-editor.codex-editor--rtl .ce-conversion-tool__icon{margin-right:0;margin-left:10px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown{border-right:0px solid transparent;border-left:1px solid rgba(201,201,204,.48);margin:0 -6px 0 6px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown .icon--toggler-down{margin-left:0;margin-right:4px}@media (min-width: 651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__plus{left:0;right:5px}}@media (min-width: 651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__actions{left:-5px}}.cdx-search-field{--icon-margin-right: 10px;background:#F8F8F8;border:1px solid rgba(226,226,229,.2);border-radius:6px;padding:2px;display:grid;grid-template-columns:auto auto 1fr;grid-template-rows:auto}.cdx-search-field__icon{width:26px;height:26px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-right:var(--icon-margin-right)}.cdx-search-field__icon svg{width:20px;height:20px;color:#707684}.cdx-search-field__input{font-size:14px;outline:none;font-weight:500;font-family:inherit;border:0;background:transparent;margin:0;padding:0;line-height:22px;min-width:calc(100% - 26px - var(--icon-margin-right))}.cdx-search-field__input::-webkit-input-placeholder{color:#707684;font-weight:500}.cdx-search-field__input::-moz-placeholder{color:#707684;font-weight:500}.cdx-search-field__input:-ms-input-placeholder{color:#707684;font-weight:500}.cdx-search-field__input::-ms-input-placeholder{color:#707684;font-weight:500}.cdx-search-field__input::placeholder{color:#707684;font-weight:500}.ce-popover{--border-radius: 6px;--width: 200px;--max-height: 270px;--padding: 6px;--offset-from-target: 8px;--color-border: #EFF0F1;--color-shadow: rgba(13, 20, 33, .1);--color-background: white;--color-text-primary: black;--color-text-secondary: #707684;--color-border-icon: rgba(201, 201, 204, .48);--color-border-icon-disabled: #EFF0F1;--color-text-icon-active: #388AE5;--color-background-icon-active: rgba(56, 138, 229, .1);--color-background-item-focus: rgba(34, 186, 255, .08);--color-shadow-item-focus: rgba(7, 161, 227, .08);--color-background-item-hover: #F8F8F8;--color-background-item-confirm: #E24A4A;--color-background-item-confirm-hover: #CE4343;--popover-top: calc(100% + var(--offset-from-target));--popover-left: 0;--nested-popover-overlap: 4px;--icon-size: 20px;--item-padding: 3px;--item-height: calc(var(--icon-size) + 2 * var(--item-padding))}.ce-popover__container{min-width:var(--width);width:var(--width);max-height:var(--max-height);border-radius:var(--border-radius);overflow:hidden;-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-box-shadow:0px 3px 15px -3px var(--color-shadow);box-shadow:0 3px 15px -3px var(--color-shadow);position:absolute;left:var(--popover-left);top:var(--popover-top);background:var(--color-background);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;z-index:4;opacity:0;max-height:0;pointer-events:none;padding:0;border:none}.ce-popover--opened>.ce-popover__container{opacity:1;padding:var(--padding);max-height:var(--max-height);pointer-events:auto;-webkit-animation:panelShowing .1s ease;animation:panelShowing .1s ease;border:1px solid var(--color-border)}@media (max-width: 650px){.ce-popover--opened>.ce-popover__container{-webkit-animation:panelShowingMobile .25s ease;animation:panelShowingMobile .25s ease}}.ce-popover--open-top .ce-popover__container{--popover-top: calc(-1 * (var(--offset-from-target) + var(--popover-height)))}.ce-popover--open-left .ce-popover__container{--popover-left: calc(-1 * var(--width) + 100%)}.ce-popover__items{overflow-y:auto;-ms-scroll-chaining:none;overscroll-behavior:contain}@media (max-width: 650px){.ce-popover__overlay{position:fixed;top:0;bottom:0;left:0;right:0;background:#1D202B;z-index:3;opacity:.5;-webkit-transition:opacity .12s ease-in;transition:opacity .12s ease-in;will-change:opacity;visibility:visible}}.ce-popover__overlay--hidden{display:none}@media (max-width: 650px){.ce-popover .ce-popover__container{--offset: 5px;position:fixed;max-width:none;min-width:calc(100% - var(--offset) * 2);left:var(--offset);right:var(--offset);bottom:calc(var(--offset) + env(safe-area-inset-bottom));top:auto;border-radius:10px}}.ce-popover__search{margin-bottom:5px}.ce-popover__nothing-found-message{color:#707684;display:none;cursor:default;padding:3px;font-size:14px;line-height:20px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ce-popover__nothing-found-message--displayed{display:block}.ce-popover--nested .ce-popover__container{--popover-left: calc(var(--nesting-level) * (var(--width) - var(--nested-popover-overlap)));top:calc(var(--trigger-item-top) - var(--nested-popover-overlap));position:absolute}.ce-popover--open-top.ce-popover--nested .ce-popover__container{top:calc(var(--trigger-item-top) - var(--popover-height) + var(--item-height) + var(--offset-from-target) + var(--nested-popover-overlap))}.ce-popover--open-left .ce-popover--nested .ce-popover__container{--popover-left: calc(-1 * (var(--nesting-level) + 1) * var(--width) + 100%)}.ce-popover-item-separator{padding:4px 3px}.ce-popover-item-separator--hidden{display:none}.ce-popover-item-separator__line{height:1px;background:var(--color-border);width:100%}.ce-popover-item-html--hidden{display:none}.ce-popover-item{--border-radius: 6px;border-radius:var(--border-radius);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:var(--item-padding);color:var(--color-text-primary);-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:none;background:transparent}@media (max-width: 650px){.ce-popover-item{padding:4px}}.ce-popover-item:not(:last-of-type){margin-bottom:1px}.ce-popover-item__icon{width:26px;height:26px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.ce-popover-item__icon svg{width:20px;height:20px}@media (max-width: 650px){.ce-popover-item__icon{width:36px;height:36px;border-radius:8px}.ce-popover-item__icon svg{width:28px;height:28px}}.ce-popover-item__icon--tool{margin-right:4px}.ce-popover-item__title{font-size:14px;line-height:20px;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-right:auto}@media (max-width: 650px){.ce-popover-item__title{font-size:16px}}.ce-popover-item__secondary-title{color:var(--color-text-secondary);font-size:12px;white-space:nowrap;letter-spacing:-.1em;padding-right:5px;opacity:.6}@media (max-width: 650px){.ce-popover-item__secondary-title{display:none}}.ce-popover-item--active{background:var(--color-background-icon-active);color:var(--color-text-icon-active)}.ce-popover-item--disabled{color:var(--color-text-secondary);cursor:default;pointer-events:none}.ce-popover-item--focused:not(.ce-popover-item--no-focus){background:var(--color-background-item-focus)!important}.ce-popover-item--hidden{display:none}@media (hover: hover){.ce-popover-item:hover{cursor:pointer}.ce-popover-item:hover:not(.ce-popover-item--no-hover){background-color:var(--color-background-item-hover)}}.ce-popover-item--confirmation{background:var(--color-background-item-confirm)}.ce-popover-item--confirmation .ce-popover-item__title,.ce-popover-item--confirmation .ce-popover-item__icon{color:#fff}@media (hover: hover){.ce-popover-item--confirmation:not(.ce-popover-item--no-hover):hover{background:var(--color-background-item-confirm-hover)}}.ce-popover-item--confirmation:not(.ce-popover-item--no-focus).ce-popover-item--focused{background:var(--color-background-item-confirm-hover)!important}@-webkit-keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@-webkit-keyframes panelShowingMobile{0%{opacity:0;-webkit-transform:translateY(14px) scale(.98);transform:translateY(14px) scale(.98)}70%{opacity:1;-webkit-transform:translateY(-4px);transform:translateY(-4px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes panelShowingMobile{0%{opacity:0;-webkit-transform:translateY(14px) scale(.98);transform:translateY(14px) scale(.98)}70%{opacity:1;-webkit-transform:translateY(-4px);transform:translateY(-4px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}.wobble{-webkit-animation-name:wobble;animation-name:wobble;-webkit-animation-duration:.4s;animation-duration:.4s}@-webkit-keyframes wobble{0%{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-9%,0,0);transform:translate3d(-9%,0,0)}30%{-webkit-transform:translate3d(9%,0,0);transform:translate3d(9%,0,0)}45%{-webkit-transform:translate3d(-4%,0,0);transform:translate3d(-4%,0,0)}60%{-webkit-transform:translate3d(4%,0,0);transform:translate3d(4%,0,0)}75%{-webkit-transform:translate3d(-1%,0,0);transform:translate3d(-1%,0,0)}to{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}}@keyframes wobble{0%{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-9%,0,0);transform:translate3d(-9%,0,0)}30%{-webkit-transform:translate3d(9%,0,0);transform:translate3d(9%,0,0)}45%{-webkit-transform:translate3d(-4%,0,0);transform:translate3d(-4%,0,0)}60%{-webkit-transform:translate3d(4%,0,0);transform:translate3d(4%,0,0)}75%{-webkit-transform:translate3d(-1%,0,0);transform:translate3d(-1%,0,0)}to{-webkit-transform:translate3d(0,0,0);transform:translateZ(0)}}.ce-popover-header{margin-bottom:8px;margin-top:4px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-popover-header__text{font-size:18px;font-weight:600}.ce-popover-header__back-button{border:0;background:transparent;width:36px;height:36px;color:var(--color-text-primary)}.ce-popover-header__back-button svg{display:block;width:28px;height:28px}.ce-popover--inline{--height: 38px;--height-mobile: 46px;--container-padding: 4px;position:relative}.ce-popover--inline .ce-popover__custom-content{margin-bottom:0}.ce-popover--inline .ce-popover__items{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-popover--inline .ce-popover__container{-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;padding:var(--container-padding);height:var(--height);top:0;min-width:-webkit-max-content;min-width:-moz-max-content;min-width:max-content;width:-webkit-max-content;width:-moz-max-content;width:max-content;-webkit-animation:none;animation:none}@media (max-width: 650px){.ce-popover--inline .ce-popover__container{height:var(--height-mobile);position:absolute}}.ce-popover--inline .ce-popover-item-separator{padding:0 4px}.ce-popover--inline .ce-popover-item-separator__line{height:100%;width:1px}.ce-popover--inline .ce-popover-item{border-radius:4px;padding:4px}.ce-popover--inline .ce-popover-item__icon--tool{-webkit-box-shadow:none;box-shadow:none;background:transparent;margin-right:0}.ce-popover--inline .ce-popover-item__icon{width:auto;width:initial;height:auto;height:initial}.ce-popover--inline .ce-popover-item__icon svg{width:20px;height:20px}@media (max-width: 650px){.ce-popover--inline .ce-popover-item__icon svg{width:28px;height:28px}}.ce-popover--inline .ce-popover-item:not(:last-of-type){margin-bottom:0;margin-bottom:initial}.ce-popover--inline .ce-popover-item-html{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-popover--inline .ce-popover-item__icon--chevron-right{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.ce-popover--inline .ce-popover--nested-level-1 .ce-popover__container{--offset: 3px;left:0;top:calc(var(--height) + var(--offset))}@media (max-width: 650px){.ce-popover--inline .ce-popover--nested-level-1 .ce-popover__container{top:calc(var(--height-mobile) + var(--offset))}}.ce-popover--inline .ce-popover--nested .ce-popover__container{min-width:var(--width);width:var(--width);height:-webkit-fit-content;height:-moz-fit-content;height:fit-content;padding:6px;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.ce-popover--inline .ce-popover--nested .ce-popover__items{display:block;width:100%}.ce-popover--inline .ce-popover--nested .ce-popover-item{border-radius:6px;padding:3px}@media (max-width: 650px){.ce-popover--inline .ce-popover--nested .ce-popover-item{padding:4px}}.ce-popover--inline .ce-popover--nested .ce-popover-item__icon--tool{margin-right:4px}.ce-popover--inline .ce-popover--nested .ce-popover-item__icon{width:26px;height:26px}.ce-popover--inline .ce-popover--nested .ce-popover-item-separator{padding:4px 3px}.ce-popover--inline .ce-popover--nested .ce-popover-item-separator__line{width:100%;height:1px}.codex-editor [data-placeholder]:empty:before,.codex-editor [data-placeholder][data-empty=true]:before{pointer-events:none;color:#707684;cursor:text;content:attr(data-placeholder)}.codex-editor [data-placeholder-active]:empty:before,.codex-editor [data-placeholder-active][data-empty=true]:before{pointer-events:none;color:#707684;cursor:text}.codex-editor [data-placeholder-active]:empty:focus:before,.codex-editor [data-placeholder-active][data-empty=true]:focus:before{content:attr(data-placeholder-active)}
 `;
-class Dc extends N {
+class Hc extends N {
   constructor() {
     super(...arguments), this.isMobile = !1, this.contentRectCache = null, this.resizeDebouncer = Ur(() => {
       this.windowResize();
     }, 200), this.selectionChangeDebounced = Ur(() => {
       this.selectionChanged();
-    }, kc), this.documentTouchedListener = (e) => {
+    }, yc), this.documentTouchedListener = (e) => {
       this.documentTouched(e);
     };
   }
@@ -10722,7 +10722,7 @@ class Dc extends N {
       return;
     const t = g.make("style", null, {
       id: e,
-      textContent: jc.toString()
+      textContent: Rc.toString()
     });
     this.config.style && !X(this.config.style) && this.config.style.nonce && t.setAttribute("nonce", this.config.style.nonce), g.prepend(document.head, t);
   }
@@ -10824,7 +10824,7 @@ class Dc extends N {
    */
   backspacePressed(e) {
     const { BlockManager: t, BlockSelection: r, Caret: n } = this.Editor;
-    if (r.anyBlockSelected && !L.isSelectionExists) {
+    if (r.anyBlockSelected && !I.isSelectionExists) {
       const i = t.removeSelectedBlocks(), s = t.insertDefaultBlockAtIndex(i, !0);
       n.setToBlock(s, n.positions.START), r.clearSelection(e), e.preventDefault(), e.stopPropagation(), e.stopImmediatePropagation();
     }
@@ -10848,7 +10848,7 @@ class Dc extends N {
     if (this.someToolbarOpened)
       return;
     const n = t.currentBlockIndex >= 0;
-    if (r.anyBlockSelected && !L.isSelectionExists) {
+    if (r.anyBlockSelected && !I.isSelectionExists) {
       r.clearSelection(e), e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation();
       return;
     }
@@ -10868,7 +10868,7 @@ class Dc extends N {
     if (!e.isTrusted)
       return;
     const n = e.target;
-    this.nodes.holder.contains(n) || L.isAtEditor || (this.Editor.BlockManager.unsetCurrentBlock(), this.Editor.Toolbar.close());
+    this.nodes.holder.contains(n) || I.isAtEditor || (this.Editor.BlockManager.unsetCurrentBlock(), this.Editor.Toolbar.close());
     const i = (t = this.Editor.BlockSettings.nodes.wrapper) == null ? void 0 : t.contains(n), s = (r = this.Editor.Toolbar.nodes.settingsToggler) == null ? void 0 : r.contains(n), a = i || s;
     if (this.Editor.BlockSettings.opened && !a) {
       this.Editor.BlockSettings.close();
@@ -10911,13 +10911,13 @@ class Dc extends N {
    *      - otherwise, add a new empty Block and set a Caret to that
    */
   redactorClicked(e) {
-    if (!L.isCollapsed)
+    if (!I.isCollapsed)
       return;
     const t = e.target, r = e.metaKey || e.ctrlKey, n = g.getClosestAnchor(t);
     if (n && r) {
       e.stopImmediatePropagation(), e.stopPropagation();
-      const i = n.getAttribute("href"), s = cs(i);
-      hs(s);
+      const i = n.getAttribute("href"), s = hs(i);
+      ps(s);
       return;
     }
     this.processBottomZoneClick(e);
@@ -10948,13 +10948,13 @@ class Dc extends N {
    * Uses for showing the Inline Toolbar
    */
   selectionChanged() {
-    const { CrossBlockSelection: e, BlockSelection: t } = this.Editor, r = L.anchorElement;
-    if (e.isCrossBlockSelectionStarted && t.anyBlockSelected && L.get().removeAllRanges(), !r) {
-      L.range || this.Editor.InlineToolbar.close();
+    const { CrossBlockSelection: e, BlockSelection: t } = this.Editor, r = I.anchorElement;
+    if (e.isCrossBlockSelectionStarted && t.anyBlockSelected && I.get().removeAllRanges(), !r) {
+      I.range || this.Editor.InlineToolbar.close();
       return;
     }
     const n = r.closest(`.${ne.CSS.content}`);
-    (n === null || n.closest(`.${L.CSS.editorWrapper}`) !== this.nodes.wrapper) && (this.Editor.InlineToolbar.containsNode(r) || this.Editor.InlineToolbar.close(), r.dataset.inlineToolbar !== "true") || (this.Editor.BlockManager.currentBlock || this.Editor.BlockManager.setCurrentBlockByChildNode(r), this.Editor.InlineToolbar.tryToShow(!0));
+    (n === null || n.closest(`.${I.CSS.editorWrapper}`) !== this.nodes.wrapper) && (this.Editor.InlineToolbar.containsNode(r) || this.Editor.InlineToolbar.close(), r.dataset.inlineToolbar !== "true") || (this.Editor.BlockManager.currentBlock || this.Editor.BlockManager.setCurrentBlockByChildNode(r), this.Editor.InlineToolbar.tryToShow(!0));
   }
   /**
    * Editor.js provides and ability to show placeholders for empty contenteditable elements
@@ -10971,46 +10971,46 @@ class Dc extends N {
     this.readOnlyMutableListeners.on(this.nodes.wrapper, "input", e), this.readOnlyMutableListeners.on(this.nodes.wrapper, "focusin", e), this.readOnlyMutableListeners.on(this.nodes.wrapper, "focusout", e);
   }
 }
-const Rc = {
+const Fc = {
   // API Modules
-  BlocksAPI: xs,
-  CaretAPI: Es,
-  EventsAPI: Ts,
-  I18nAPI: Ss,
-  API: Bs,
-  InlineToolbarAPI: Ms,
-  ListenersAPI: _s,
-  NotifierAPI: As,
-  ReadOnlyAPI: Ps,
-  SanitizerAPI: $s,
-  SaverAPI: Us,
-  SelectionAPI: zs,
-  ToolsAPI: Vs,
-  StylesAPI: Ws,
-  ToolbarAPI: qs,
-  TooltipAPI: Gs,
-  UiAPI: Js,
+  BlocksAPI: Es,
+  CaretAPI: Ss,
+  EventsAPI: Bs,
+  I18nAPI: Ms,
+  API: _s,
+  InlineToolbarAPI: Ls,
+  ListenersAPI: Is,
+  NotifierAPI: Ns,
+  ReadOnlyAPI: js,
+  SanitizerAPI: zs,
+  SaverAPI: Vs,
+  SelectionAPI: Ws,
+  ToolsAPI: qs,
+  StylesAPI: Ks,
+  ToolbarAPI: Ys,
+  TooltipAPI: Qs,
+  UiAPI: ea,
   // Toolbar Modules
-  BlockSettings: Ea,
-  Toolbar: Oa,
-  InlineToolbar: Aa,
+  BlockSettings: Sa,
+  Toolbar: Pa,
+  InlineToolbar: Na,
   // Modules
-  BlockEvents: hc,
-  BlockManager: fc,
-  BlockSelection: gc,
-  Caret: mc,
-  CrossBlockSelection: vc,
-  DragNDrop: bc,
-  ModificationsObserver: yc,
-  Paste: xc,
-  ReadOnly: Cc,
+  BlockEvents: pc,
+  BlockManager: mc,
+  BlockSelection: vc,
+  Caret: bc,
+  CrossBlockSelection: kc,
+  DragNDrop: wc,
+  ModificationsObserver: Cc,
+  Paste: Ec,
+  ReadOnly: Tc,
   RectangleSelection: Ue,
-  Renderer: Ec,
-  Saver: Tc,
+  Renderer: Sc,
+  Saver: Bc,
   Tools: wi,
-  UI: Dc
+  UI: Hc
 };
-class Hc {
+class $c {
   /**
    * @param {EditorConfig} config - user configuration
    */
@@ -11038,7 +11038,7 @@ class Hc {
       ...e
     } : this.config = {
       holder: e
-    }, zt(!!this.config.holderId, "config.holderId", "config.holder"), this.config.holderId && !this.config.holder && (this.config.holder = this.config.holderId, this.config.holderId = null), this.config.holder == null && (this.config.holder = "editorjs"), this.config.logLevel || (this.config.logLevel = ln.VERBOSE), rs(this.config.logLevel), zt(!!this.config.initialBlock, "config.initialBlock", "config.defaultBlock"), this.config.defaultBlock = this.config.defaultBlock || this.config.initialBlock || "paragraph", this.config.minHeight = this.config.minHeight !== void 0 ? this.config.minHeight : 300;
+    }, zt(!!this.config.holderId, "config.holderId", "config.holder"), this.config.holderId && !this.config.holder && (this.config.holder = this.config.holderId, this.config.holderId = null), this.config.holder == null && (this.config.holder = "editorjs"), this.config.logLevel || (this.config.logLevel = ln.VERBOSE), is(this.config.logLevel), zt(!!this.config.initialBlock, "config.initialBlock", "config.defaultBlock"), this.config.defaultBlock = this.config.defaultBlock || this.config.initialBlock || "paragraph", this.config.minHeight = this.config.minHeight !== void 0 ? this.config.minHeight : 300;
     const n = {
       type: this.config.defaultBlock,
       data: {}
@@ -11119,7 +11119,7 @@ class Hc {
    * Make modules instances and save it to the @property this.moduleInstances
    */
   constructModules() {
-    Object.entries(Rc).forEach(([e, t]) => {
+    Object.entries(Fc).forEach(([e, t]) => {
       try {
         this.moduleInstances[e] = new t({
           config: this.configuration,
@@ -11158,7 +11158,7 @@ class Hc {
  * @see Editor.js <https://editorjs.io>
  * @author CodeX Team <https://codex.so>
  */
-class Fc {
+class Uc {
   /** Editor version */
   static get version() {
     return "2.31.6";
@@ -11169,8 +11169,8 @@ class Fc {
   constructor(e) {
     let t = () => {
     };
-    U(e) && R(e.onReady) && (t = e.onReady);
-    const r = new Hc(e);
+    U(e) && H(e.onReady) && (t = e.onReady);
+    const r = new $c(e);
     this.isReady = r.isReady.then(() => {
       this.exportAPI(r), t();
     });
@@ -11183,8 +11183,8 @@ class Fc {
   exportAPI(e) {
     const t = ["configuration"], r = () => {
       Object.values(e.moduleInstances).forEach((n) => {
-        R(n.destroy) && n.destroy(), n.listeners.removeAll();
-      }), Zs(), e = null;
+        H(n.destroy) && n.destroy(), n.listeners.removeAll();
+      }), Js(), e = null;
       for (const n in this)
         Object.prototype.hasOwnProperty.call(this, n) && delete this[n];
       Object.setPrototypeOf(this, null);
@@ -11224,7 +11224,7 @@ class Fc {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const $c = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M19 17V10.2135C19 10.1287 18.9011 10.0824 18.836 10.1367L16 12.5"/></svg>', Uc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 11C16 10 19 9.5 19 12C19 13.9771 16.0684 13.9997 16.0012 16.8981C15.9999 16.9533 16.0448 17 16.1 17L19.3 17"/></svg>', zc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 11C16 10.5 16.8323 10 17.6 10C18.3677 10 19.5 10.311 19.5 11.5C19.5 12.5315 18.7474 12.9022 18.548 12.9823C18.5378 12.9864 18.5395 13.0047 18.5503 13.0063C18.8115 13.0456 20 13.3065 20 14.8C20 16 19.5 17 17.8 17C17.8 17 16 17 16 16.3"/></svg>', Vc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 10L15.2834 14.8511C15.246 14.9178 15.294 15 15.3704 15C16.8489 15 18.7561 15 20.2 15M19 17C19 15.7187 19 14.8813 19 13.6"/></svg>', Wc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 15.9C16 15.9 16.3768 17 17.8 17C19.5 17 20 15.6199 20 14.7C20 12.7323 17.6745 12.0486 16.1635 12.9894C16.094 13.0327 16 12.9846 16 12.9027V10.1C16 10.0448 16.0448 10 16.1 10H19.8"/></svg>', qc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M19.5 10C16.5 10.5 16 13.3285 16 15M16 15V15C16 16.1046 16.8954 17 18 17H18.3246C19.3251 17 20.3191 16.3492 20.2522 15.3509C20.0612 12.4958 16 12.6611 16 15Z"/></svg>', Kc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 7L9 12M9 17V12M9 12L15 12M15 7V12M15 17L15 12"/></svg>';
+const zc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M19 17V10.2135C19 10.1287 18.9011 10.0824 18.836 10.1367L16 12.5"/></svg>', Vc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 11C16 10 19 9.5 19 12C19 13.9771 16.0684 13.9997 16.0012 16.8981C15.9999 16.9533 16.0448 17 16.1 17L19.3 17"/></svg>', Wc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 11C16 10.5 16.8323 10 17.6 10C18.3677 10 19.5 10.311 19.5 11.5C19.5 12.5315 18.7474 12.9022 18.548 12.9823C18.5378 12.9864 18.5395 13.0047 18.5503 13.0063C18.8115 13.0456 20 13.3065 20 14.8C20 16 19.5 17 17.8 17C17.8 17 16 17 16 16.3"/></svg>', qc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 10L15.2834 14.8511C15.246 14.9178 15.294 15 15.3704 15C16.8489 15 18.7561 15 20.2 15M19 17C19 15.7187 19 14.8813 19 13.6"/></svg>', Kc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 15.9C16 15.9 16.3768 17 17.8 17C19.5 17 20 15.6199 20 14.7C20 12.7323 17.6745 12.0486 16.1635 12.9894C16.094 13.0327 16 12.9846 16 12.9027V10.1C16 10.0448 16.0448 10 16.1 10H19.8"/></svg>', Yc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M19.5 10C16.5 10.5 16 13.3285 16 15M16 15V15C16 16.1046 16.8954 17 18 17H18.3246C19.3251 17 20.3191 16.3492 20.2522 15.3509C20.0612 12.4958 16 12.6611 16 15Z"/></svg>', Xc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 7L9 12M9 17V12M9 12L15 12M15 7V12M15 17L15 12"/></svg>';
 /**
  * Header block for the Editor.js.
  *
@@ -11233,7 +11233,7 @@ const $c = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill=
  * @license MIT
  * @version 2.0.0
  */
-let Yc = class {
+let Zc = class {
   constructor({ data: e, config: t, api: r, readOnly: n }) {
     this.api = r, this.readOnly = n, this._config = t ?? null, this._data = this.normalizeData(e), this._element = this.getTag();
   }
@@ -11444,32 +11444,32 @@ let Yc = class {
       {
         number: 1,
         tag: "H1",
-        svg: $c
+        svg: zc
       },
       {
         number: 2,
         tag: "H2",
-        svg: Uc
+        svg: Vc
       },
       {
         number: 3,
         tag: "H3",
-        svg: zc
+        svg: Wc
       },
       {
         number: 4,
         tag: "H4",
-        svg: Vc
+        svg: qc
       },
       {
         number: 5,
         tag: "H5",
-        svg: Wc
+        svg: Kc
       },
       {
         number: 6,
         tag: "H6",
-        svg: qc
+        svg: Yc
       }
     ];
     return (e = this._config) != null && e.levels ? t.filter(
@@ -11536,7 +11536,7 @@ let Yc = class {
    */
   static get toolbox() {
     return {
-      icon: Kc,
+      icon: Xc,
       title: "Heading"
     };
   }
@@ -11551,7 +11551,7 @@ let Yc = class {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const Xc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.6954 5C17.912 5 18.8468 6.07716 18.6755 7.28165L17.426 16.0659C17.3183 16.8229 16.7885 17.4522 16.061 17.6873L12.6151 18.8012C12.2152 18.9304 11.7848 18.9304 11.3849 18.8012L7.93898 17.6873C7.21148 17.4522 6.6817 16.8229 6.57403 16.0659L5.32454 7.28165C5.15322 6.07716 6.088 5 7.30461 5H16.6954Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8.4H9L9.42857 11.7939H14.5714L14.3571 13.2788L14.1429 14.7636L12 15.4L9.85714 14.7636L9.77143 14.3394"/></svg>';
+const Gc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.6954 5C17.912 5 18.8468 6.07716 18.6755 7.28165L17.426 16.0659C17.3183 16.8229 16.7885 17.4522 16.061 17.6873L12.6151 18.8012C12.2152 18.9304 11.7848 18.9304 11.3849 18.8012L7.93898 17.6873C7.21148 17.4522 6.6817 16.8229 6.57403 16.0659L5.32454 7.28165C5.15322 6.07716 6.088 5 7.30461 5H16.6954Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8.4H9L9.42857 11.7939H14.5714L14.3571 13.2788L14.1429 14.7636L12 15.4L9.85714 14.7636L9.77143 14.3394"/></svg>';
 /**
  * Raw HTML Tool for CodeX Editor
  *
@@ -11595,7 +11595,7 @@ class er {
    */
   static get toolbox() {
     return {
-      icon: Xc,
+      icon: Gc,
       title: "Raw HTML"
     };
   }
@@ -11695,12 +11695,12 @@ class er {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const Zc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7 12L10.4884 15.8372C10.5677 15.9245 10.705 15.9245 10.7844 15.8372L17 9"/></svg>', Gc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9.2 12L11.0586 13.8586C11.1367 13.9367 11.2633 13.9367 11.3414 13.8586L14.7 10.5"/><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/></svg>';
+const Jc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7 12L10.4884 15.8372C10.5677 15.9245 10.705 15.9245 10.7844 15.8372L17 9"/></svg>', Qc = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9.2 12L11.0586 13.8586C11.1367 13.9367 11.2633 13.9367 11.3414 13.8586L14.7 10.5"/><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/></svg>';
 function Qr() {
   const o = document.activeElement, e = window.getSelection().getRangeAt(0), t = e.cloneRange();
   return t.selectNodeContents(o), t.setStart(e.endContainer, e.endOffset), t.extractContents();
 }
-function Jc(o) {
+function ed(o) {
   const e = document.createElement("div");
   return e.appendChild(o), e.innerHTML;
 }
@@ -11730,7 +11730,7 @@ Element.prototype.closest || (Element.prototype.closest = function(o) {
   } while (e !== null && e.nodeType === 1);
   return null;
 });
-class Qc {
+class td {
   /**
    * Notify core that read-only mode is supported
    *
@@ -11757,7 +11757,7 @@ class Qc {
    */
   static get toolbox() {
     return {
-      icon: Gc,
+      icon: Qc,
       title: "Checklist"
     };
   }
@@ -11882,7 +11882,7 @@ class Qc {
       innerHTML: e.text ? e.text : "",
       contentEditable: !this.readOnly
     });
-    return e.checked && t.classList.add(this.CSS.itemChecked), r.innerHTML = Zc, n.appendChild(r), t.appendChild(n), t.appendChild(i), t;
+    return e.checked && t.classList.add(this.CSS.itemChecked), r.innerHTML = Jc, n.appendChild(r), t.appendChild(n), t.appendChild(i), t;
   }
   /**
    * Append new elements to the list by pressing Enter
@@ -11897,7 +11897,7 @@ class Qc {
       r.remove(), this.api.blocks.insert(), this.api.caret.setToBlock(a + 1);
       return;
     }
-    const n = Qr(), i = Jc(n), s = this.createChecklistItem({
+    const n = Qr(), i = ed(n), s = this.createChecklistItem({
       text: i,
       checked: !1
     });
@@ -11973,8 +11973,8 @@ class Qc {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const on = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><line x1="9" x2="19" y1="7" y2="7" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="9" x2="19" y1="12" y2="12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="9" x2="19" y1="17" y2="17" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5.00001 17H4.99002"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5.00001 12H4.99002"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5.00001 7H4.99002"/></svg>', ed = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><line x1="12" x2="19" y1="7" y2="7" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="12" x2="19" y1="12" y2="12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="12" x2="19" y1="17" y2="17" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7.79999 14L7.79999 7.2135C7.79999 7.12872 7.7011 7.0824 7.63597 7.13668L4.79999 9.5"/></svg>';
-let td = class {
+const on = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><line x1="9" x2="19" y1="7" y2="7" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="9" x2="19" y1="12" y2="12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="9" x2="19" y1="17" y2="17" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5.00001 17H4.99002"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5.00001 12H4.99002"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5.00001 7H4.99002"/></svg>', od = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><line x1="12" x2="19" y1="7" y2="7" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="12" x2="19" y1="12" y2="12" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><line x1="12" x2="19" y1="17" y2="17" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M7.79999 14L7.79999 7.2135C7.79999 7.12872 7.7011 7.0824 7.63597 7.13668L4.79999 9.5"/></svg>';
+let rd = class {
   /**
    * Notify core that read-only mode is supported
    *
@@ -12027,7 +12027,7 @@ let td = class {
       {
         name: "ordered",
         label: this.api.i18n.t("Ordered"),
-        icon: ed,
+        icon: od,
         default: t.defaultStyle === "ordered" || !0
       }
     ], this._data = {
@@ -12292,7 +12292,7 @@ let td = class {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const od = {
+const nd = {
   vimeo: {
     regex: /(?:http[s]?:\/\/)?(?:www.)?(?:player.)?vimeo\.co(?:.+\/([^\/]\d+)(?:#t=[\d]+)?s?$)/,
     embedUrl: "https://player.vimeo.com/video/<%= remote_id %>?title=0&byline=0",
@@ -12477,7 +12477,7 @@ function Gt(o, e, t) {
   }, c;
 }
 Gt.debounce = Gt;
-var rd = Gt;
+var id = Gt;
 let rn = class pe {
   /**
    * @param {{data: EmbedData, config: EmbedConfig, api: object}}
@@ -12598,7 +12598,7 @@ let rn = class pe {
    */
   static prepare({ config: e = {} }) {
     const { services: t = {} } = e;
-    let r = Object.entries(od);
+    let r = Object.entries(nd);
     const n = Object.entries(t).filter(([s, a]) => typeof a == "boolean" && a === !0).map(([s]) => s), i = Object.entries(t).filter(([s, a]) => typeof a == "object").filter(([s, a]) => pe.checkServiceConfig(a)).map(([s, a]) => {
       const { regex: l, embedUrl: c, html: d, height: h, width: u, id: f } = a;
       return [s, {
@@ -12650,7 +12650,7 @@ let rn = class pe {
   embedIsReady(e) {
     let t;
     return new Promise((r, n) => {
-      t = new MutationObserver(rd.debounce(r, 450)), t.observe(e, {
+      t = new MutationObserver(id.debounce(r, 450)), t.observe(e, {
         childList: !0,
         subtree: !0
       });
@@ -12669,9 +12669,9 @@ let rn = class pe {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const nd = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 7L6 7"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 17H6"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 12L8 12"/></svg>', id = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M17 7L5 7"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M17 17H5"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M13 12L5 12"/></svg>', sd = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 10.8182L9 10.8182C8.80222 10.8182 8.60888 10.7649 8.44443 10.665C8.27998 10.5651 8.15181 10.4231 8.07612 10.257C8.00043 10.0909 7.98063 9.90808 8.01922 9.73174C8.0578 9.55539 8.15304 9.39341 8.29289 9.26627C8.43275 9.13913 8.61093 9.05255 8.80491 9.01747C8.99889 8.98239 9.19996 9.00039 9.38268 9.0692C9.56541 9.13801 9.72159 9.25453 9.83147 9.40403C9.94135 9.55353 10 9.72929 10 9.90909L10 12.1818C10 12.664 9.78929 13.1265 9.41421 13.4675C9.03914 13.8084 8.53043 14 8 14"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 10.8182L15 10.8182C14.8022 10.8182 14.6089 10.7649 14.4444 10.665C14.28 10.5651 14.1518 10.4231 14.0761 10.257C14.0004 10.0909 13.9806 9.90808 14.0192 9.73174C14.0578 9.55539 14.153 9.39341 14.2929 9.26627C14.4327 9.13913 14.6109 9.05255 14.8049 9.01747C14.9989 8.98239 15.2 9.00039 15.3827 9.0692C15.5654 9.13801 15.7216 9.25453 15.8315 9.40403C15.9414 9.55353 16 9.72929 16 9.90909L16 12.1818C16 12.664 15.7893 13.1265 15.4142 13.4675C15.0391 13.8084 14.5304 14 14 14"/></svg>';
+const sd = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 7L6 7"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 17H6"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 12L8 12"/></svg>', ad = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M17 7L5 7"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M17 17H5"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M13 12L5 12"/></svg>', ld = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 10.8182L9 10.8182C8.80222 10.8182 8.60888 10.7649 8.44443 10.665C8.27998 10.5651 8.15181 10.4231 8.07612 10.257C8.00043 10.0909 7.98063 9.90808 8.01922 9.73174C8.0578 9.55539 8.15304 9.39341 8.29289 9.26627C8.43275 9.13913 8.61093 9.05255 8.80491 9.01747C8.99889 8.98239 9.19996 9.00039 9.38268 9.0692C9.56541 9.13801 9.72159 9.25453 9.83147 9.40403C9.94135 9.55353 10 9.72929 10 9.90909L10 12.1818C10 12.664 9.78929 13.1265 9.41421 13.4675C9.03914 13.8084 8.53043 14 8 14"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 10.8182L15 10.8182C14.8022 10.8182 14.6089 10.7649 14.4444 10.665C14.28 10.5651 14.1518 10.4231 14.0761 10.257C14.0004 10.0909 13.9806 9.90808 14.0192 9.73174C14.0578 9.55539 14.153 9.39341 14.2929 9.26627C14.4327 9.13913 14.6109 9.05255 14.8049 9.01747C14.9989 8.98239 15.2 9.00039 15.3827 9.0692C15.5654 9.13801 15.7216 9.25453 15.8315 9.40403C15.9414 9.55353 16 9.72929 16 9.90909L16 12.1818C16 12.664 15.7893 13.1265 15.4142 13.4675C15.0391 13.8084 14.5304 14 14 14"/></svg>';
 var gt = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
-function ad(o) {
+function cd(o) {
   if (o.__esModule)
     return o;
   var e = o.default;
@@ -12694,8 +12694,8 @@ function ad(o) {
 }
 var nt = {}, tr = {}, or = {};
 Object.defineProperty(or, "__esModule", { value: !0 });
-or.allInputsSelector = ld;
-function ld() {
+or.allInputsSelector = dd;
+function dd() {
   var o = ["text", "password", "email", "number", "search", "tel", "url"];
   return "[contenteditable=true], textarea, input:not([type]), " + o.map(function(e) {
     return 'input[type="'.concat(e, '"]');
@@ -12710,8 +12710,8 @@ function ld() {
 })(tr);
 var ke = {}, rr = {};
 Object.defineProperty(rr, "__esModule", { value: !0 });
-rr.isNativeInput = cd;
-function cd(o) {
+rr.isNativeInput = hd;
+function hd(o) {
   var e = [
     "INPUT",
     "TEXTAREA"
@@ -12727,8 +12727,8 @@ function cd(o) {
 })(ke);
 var yi = {}, nr = {};
 Object.defineProperty(nr, "__esModule", { value: !0 });
-nr.append = dd;
-function dd(o, e) {
+nr.append = ud;
+function ud(o, e) {
   Array.isArray(e) ? e.forEach(function(t) {
     o.appendChild(t);
   }) : o.appendChild(e);
@@ -12742,8 +12742,8 @@ function dd(o, e) {
 })(yi);
 var ir = {}, sr = {};
 Object.defineProperty(sr, "__esModule", { value: !0 });
-sr.blockElements = hd;
-function hd() {
+sr.blockElements = pd;
+function pd() {
   return [
     "address",
     "article",
@@ -12795,8 +12795,8 @@ function hd() {
 })(ir);
 var xi = {}, ar = {};
 Object.defineProperty(ar, "__esModule", { value: !0 });
-ar.calculateBaseline = ud;
-function ud(o) {
+ar.calculateBaseline = fd;
+function fd(o) {
   var e = window.getComputedStyle(o), t = parseFloat(e.fontSize), r = parseFloat(e.lineHeight) || t * 1.2, n = parseFloat(e.paddingTop), i = parseFloat(e.borderTopWidth), s = parseFloat(e.marginTop), a = t * 0.8, l = (r - t) / 2, c = s + i + n + l + a;
   return c;
 }
@@ -12809,8 +12809,8 @@ function ud(o) {
 })(xi);
 var Ci = {}, lr = {}, cr = {}, dr = {};
 Object.defineProperty(dr, "__esModule", { value: !0 });
-dr.isContentEditable = pd;
-function pd(o) {
+dr.isContentEditable = gd;
+function gd(o) {
   return o.contentEditable === "true";
 }
 (function(o) {
@@ -12821,11 +12821,11 @@ function pd(o) {
   } });
 })(cr);
 Object.defineProperty(lr, "__esModule", { value: !0 });
-lr.canSetCaret = md;
-var fd = ke, gd = cr;
-function md(o) {
+lr.canSetCaret = bd;
+var md = ke, vd = cr;
+function bd(o) {
   var e = !0;
-  if ((0, fd.isNativeInput)(o))
+  if ((0, md.isNativeInput)(o))
     switch (o.type) {
       case "file":
       case "checkbox":
@@ -12839,7 +12839,7 @@ function md(o) {
         break;
     }
   else
-    e = (0, gd.isContentEditable)(o);
+    e = (0, vd.isContentEditable)(o);
   return e;
 }
 (function(o) {
@@ -12850,7 +12850,7 @@ function md(o) {
   } });
 })(Ci);
 var St = {}, hr = {};
-function vd(o, e, t) {
+function kd(o, e, t) {
   const r = t.value !== void 0 ? "value" : "get", n = t[r], i = `#${e}Cache`;
   if (t[r] = function(...s) {
     return this[i] === void 0 && (this[i] = n.apply(this, s)), this[i];
@@ -12874,18 +12874,18 @@ function Ei() {
 function ur(o) {
   return o != null && o !== "" && (typeof o != "object" || Object.keys(o).length > 0);
 }
-function bd(o) {
+function wd(o) {
   return !ur(o);
 }
-const kd = () => typeof window < "u" && window.navigator !== null && ur(window.navigator.platform) && (/iP(ad|hone|od)/.test(window.navigator.platform) || window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
-function wd(o) {
+const yd = () => typeof window < "u" && window.navigator !== null && ur(window.navigator.platform) && (/iP(ad|hone|od)/.test(window.navigator.platform) || window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+function xd(o) {
   const e = Ei();
   return o = o.replace(/shift/gi, "⇧").replace(/backspace/gi, "⌫").replace(/enter/gi, "⏎").replace(/up/gi, "↑").replace(/left/gi, "→").replace(/down/gi, "↓").replace(/right/gi, "←").replace(/escape/gi, "⎋").replace(/insert/gi, "Ins").replace(/delete/gi, "␡").replace(/\+/gi, "+"), e.mac ? o = o.replace(/ctrl|cmd/gi, "⌘").replace(/alt/gi, "⌥") : o = o.replace(/cmd/gi, "Ctrl").replace(/windows/gi, "WIN"), o;
 }
-function yd(o) {
+function Cd(o) {
   return o[0].toUpperCase() + o.slice(1);
 }
-function xd(o) {
+function Ed(o) {
   const e = document.createElement("div");
   e.style.position = "absolute", e.style.left = "-999px", e.style.bottom = "-999px", e.innerHTML = o, document.body.appendChild(e);
   const t = window.getSelection(), r = document.createRange();
@@ -12893,7 +12893,7 @@ function xd(o) {
     throw new Error("Cannot copy text to clipboard");
   t.removeAllRanges(), t.addRange(r), document.execCommand("copy"), document.body.removeChild(e);
 }
-function Cd(o, e, t) {
+function Td(o, e, t) {
   let r;
   return (...n) => {
     const i = this, s = () => {
@@ -12905,28 +12905,28 @@ function Cd(o, e, t) {
 function de(o) {
   return Object.prototype.toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 }
-function Ed(o) {
+function Sd(o) {
   return de(o) === "boolean";
 }
 function Ti(o) {
   return de(o) === "function" || de(o) === "asyncfunction";
 }
-function Td(o) {
+function Bd(o) {
   return Ti(o) && /^\s*class\s+/.test(o.toString());
 }
-function Sd(o) {
+function Md(o) {
   return de(o) === "number";
 }
 function it(o) {
   return de(o) === "object";
 }
-function Bd(o) {
+function _d(o) {
   return Promise.resolve(o) === o;
 }
-function Md(o) {
+function Ld(o) {
   return de(o) === "string";
 }
-function _d(o) {
+function Id(o) {
   return de(o) === "undefined";
 }
 function Jt(o, ...e) {
@@ -12938,21 +12938,21 @@ function Jt(o, ...e) {
       it(t[r]) ? (o[r] === void 0 && Object.assign(o, { [r]: {} }), Jt(o[r], t[r])) : Object.assign(o, { [r]: t[r] });
   return Jt(o, ...e);
 }
-function Ld(o, e, t) {
+function Od(o, e, t) {
   const r = `«${e}» is deprecated and will be removed in the next major release. Please use the «${t}» instead.`;
   o && console.warn(r);
 }
-function Id(o) {
+function Ad(o) {
   try {
     return new URL(o).href;
   } catch {
   }
   return o.substring(0, 2) === "//" ? window.location.protocol + o : window.location.origin + o;
 }
-function Od(o) {
+function Pd(o) {
   return o > 47 && o < 58 || o === 32 || o === 13 || o === 229 || o > 64 && o < 91 || o > 95 && o < 112 || o > 185 && o < 193 || o > 218 && o < 223;
 }
-const Ad = {
+const Nd = {
   BACKSPACE: 8,
   TAB: 9,
   ENTER: 13,
@@ -12968,14 +12968,14 @@ const Ad = {
   DELETE: 46,
   META: 91,
   SLASH: 191
-}, Pd = {
+}, jd = {
   LEFT: 0,
   WHEEL: 1,
   RIGHT: 2,
   BACKWARD: 3,
   FORWARD: 4
 };
-class Nd {
+class Dd {
   constructor() {
     this.completed = Promise.resolve();
   }
@@ -12989,7 +12989,7 @@ class Nd {
     });
   }
 }
-function jd(o, e, t = void 0) {
+function Rd(o, e, t = void 0) {
   let r, n, i, s = null, a = 0;
   t || (t = {});
   const l = function() {
@@ -13002,43 +13002,43 @@ function jd(o, e, t = void 0) {
     return r = this, n = arguments, d <= 0 || d > e ? (s && (clearTimeout(s), s = null), a = c, i = o.apply(r, n), s === null && (r = n = null)) : !s && t.trailing !== !1 && (s = setTimeout(l, d)), i;
   };
 }
-const Dd = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const Hd = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  PromiseQueue: Nd,
-  beautifyShortcut: wd,
-  cacheable: vd,
-  capitalize: yd,
-  copyTextToClipboard: xd,
-  debounce: Cd,
+  PromiseQueue: Dd,
+  beautifyShortcut: xd,
+  cacheable: kd,
+  capitalize: Cd,
+  copyTextToClipboard: Ed,
+  debounce: Td,
   deepMerge: Jt,
-  deprecationAssert: Ld,
+  deprecationAssert: Od,
   getUserOS: Ei,
-  getValidUrl: Id,
-  isBoolean: Ed,
-  isClass: Td,
-  isEmpty: bd,
+  getValidUrl: Ad,
+  isBoolean: Sd,
+  isClass: Bd,
+  isEmpty: wd,
   isFunction: Ti,
-  isIosDevice: kd,
-  isNumber: Sd,
+  isIosDevice: yd,
+  isNumber: Md,
   isObject: it,
-  isPrintableKey: Od,
-  isPromise: Bd,
-  isString: Md,
-  isUndefined: _d,
-  keyCodes: Ad,
-  mouseButtons: Pd,
+  isPrintableKey: Pd,
+  isPromise: _d,
+  isString: Ld,
+  isUndefined: Id,
+  keyCodes: Nd,
+  mouseButtons: jd,
   notEmpty: ur,
-  throttle: jd,
+  throttle: Rd,
   typeOf: de
-}, Symbol.toStringTag, { value: "Module" })), pr = /* @__PURE__ */ ad(Dd);
+}, Symbol.toStringTag, { value: "Module" })), pr = /* @__PURE__ */ cd(Hd);
 Object.defineProperty(hr, "__esModule", { value: !0 });
-hr.containsOnlyInlineElements = Fd;
-var Rd = pr, Hd = ir;
-function Fd(o) {
+hr.containsOnlyInlineElements = Ud;
+var Fd = pr, $d = ir;
+function Ud(o) {
   var e;
-  (0, Rd.isString)(o) ? (e = document.createElement("div"), e.innerHTML = o) : e = o;
+  (0, Fd.isString)(o) ? (e = document.createElement("div"), e.innerHTML = o) : e = o;
   var t = function(r) {
-    return !(0, Hd.blockElements)().includes(r.tagName.toLowerCase()) && Array.from(r.children).every(t);
+    return !(0, $d.blockElements)().includes(r.tagName.toLowerCase()) && Array.from(r.children).every(t);
   };
   return Array.from(e.children).every(t);
 }
@@ -13051,8 +13051,8 @@ function Fd(o) {
 })(St);
 var Si = {}, fr = {}, Bt = {}, gr = {};
 Object.defineProperty(gr, "__esModule", { value: !0 });
-gr.make = $d;
-function $d(o, e, t) {
+gr.make = zd;
+function zd(o, e, t) {
   var r;
   e === void 0 && (e = null), t === void 0 && (t = {});
   var n = document.createElement(o);
@@ -13075,10 +13075,10 @@ function $d(o, e, t) {
   } });
 })(Bt);
 Object.defineProperty(fr, "__esModule", { value: !0 });
-fr.fragmentToString = zd;
-var Ud = Bt;
-function zd(o) {
-  var e = (0, Ud.make)("div");
+fr.fragmentToString = Wd;
+var Vd = Bt;
+function Wd(o) {
+  var e = (0, Vd.make)("div");
   return e.appendChild(o), e.innerHTML;
 }
 (function(o) {
@@ -13090,11 +13090,11 @@ function zd(o) {
 })(Si);
 var Bi = {}, mr = {};
 Object.defineProperty(mr, "__esModule", { value: !0 });
-mr.getContentLength = Wd;
-var Vd = ke;
-function Wd(o) {
+mr.getContentLength = Kd;
+var qd = ke;
+function Kd(o) {
   var e, t;
-  return (0, Vd.isNativeInput)(o) ? o.value.length : o.nodeType === Node.TEXT_NODE ? o.length : (t = (e = o.textContent) === null || e === void 0 ? void 0 : e.length) !== null && t !== void 0 ? t : 0;
+  return (0, qd.isNativeInput)(o) ? o.value.length : o.nodeType === Node.TEXT_NODE ? o.length : (t = (e = o.textContent) === null || e === void 0 ? void 0 : e.length) !== null && t !== void 0 ? t : 0;
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.getContentLength = void 0;
@@ -13111,9 +13111,9 @@ var vr = {}, br = {}, nn = gt && gt.__spreadArray || function(o, e, t) {
 };
 Object.defineProperty(br, "__esModule", { value: !0 });
 br.getDeepestBlockElements = Mi;
-var qd = St;
+var Yd = St;
 function Mi(o) {
-  return (0, qd.containsOnlyInlineElements)(o) ? [o] : Array.from(o.children).reduce(function(e, t) {
+  return (0, Yd.containsOnlyInlineElements)(o) ? [o] : Array.from(o.children).reduce(function(e, t) {
     return nn(nn([], e, !0), Mi(t), !0);
   }, []);
 }
@@ -13126,8 +13126,8 @@ function Mi(o) {
 })(vr);
 var _i = {}, kr = {}, Mt = {}, wr = {};
 Object.defineProperty(wr, "__esModule", { value: !0 });
-wr.isLineBreakTag = Kd;
-function Kd(o) {
+wr.isLineBreakTag = Xd;
+function Xd(o) {
   return [
     "BR",
     "WBR"
@@ -13142,8 +13142,8 @@ function Kd(o) {
 })(Mt);
 var _t = {}, yr = {};
 Object.defineProperty(yr, "__esModule", { value: !0 });
-yr.isSingleTag = Yd;
-function Yd(o) {
+yr.isSingleTag = Zd;
+function Zd(o) {
   return [
     "AREA",
     "BASE",
@@ -13172,13 +13172,13 @@ function Yd(o) {
 })(_t);
 Object.defineProperty(kr, "__esModule", { value: !0 });
 kr.getDeepestNode = Li;
-var Xd = ke, Zd = Mt, Gd = _t;
+var Gd = ke, Jd = Mt, Qd = _t;
 function Li(o, e) {
   e === void 0 && (e = !1);
   var t = e ? "lastChild" : "firstChild", r = e ? "previousSibling" : "nextSibling";
   if (o.nodeType === Node.ELEMENT_NODE && o[t]) {
     var n = o[t];
-    if ((0, Gd.isSingleTag)(n) && !(0, Xd.isNativeInput)(n) && !(0, Zd.isLineBreakTag)(n))
+    if ((0, Qd.isSingleTag)(n) && !(0, Gd.isNativeInput)(n) && !(0, Jd.isLineBreakTag)(n))
       if (n[r])
         n = n[r];
       else if (n.parentNode !== null && n.parentNode[r])
@@ -13203,11 +13203,11 @@ var Ii = {}, xr = {}, Je = gt && gt.__spreadArray || function(o, e, t) {
   return o.concat(i || Array.prototype.slice.call(e));
 };
 Object.defineProperty(xr, "__esModule", { value: !0 });
-xr.findAllInputs = oh;
-var Jd = St, Qd = vr, eh = tr, th = ke;
-function oh(o) {
-  return Array.from(o.querySelectorAll((0, eh.allInputsSelector)())).reduce(function(e, t) {
-    return (0, th.isNativeInput)(t) || (0, Jd.containsOnlyInlineElements)(t) ? Je(Je([], e, !0), [t], !1) : Je(Je([], e, !0), (0, Qd.getDeepestBlockElements)(t), !0);
+xr.findAllInputs = nh;
+var eh = St, th = vr, oh = tr, rh = ke;
+function nh(o) {
+  return Array.from(o.querySelectorAll((0, oh.allInputsSelector)())).reduce(function(e, t) {
+    return (0, rh.isNativeInput)(t) || (0, eh.containsOnlyInlineElements)(t) ? Je(Je([], e, !0), [t], !1) : Je(Je([], e, !0), (0, th.getDeepestBlockElements)(t), !0);
   }, []);
 }
 (function(o) {
@@ -13219,8 +13219,8 @@ function oh(o) {
 })(Ii);
 var Oi = {}, Cr = {};
 Object.defineProperty(Cr, "__esModule", { value: !0 });
-Cr.isCollapsedWhitespaces = rh;
-function rh(o) {
+Cr.isCollapsedWhitespaces = ih;
+function ih(o) {
   return !/[^\t\n\r ]/.test(o);
 }
 (function(o) {
@@ -13232,10 +13232,10 @@ function rh(o) {
 })(Oi);
 var Er = {}, Tr = {};
 Object.defineProperty(Tr, "__esModule", { value: !0 });
-Tr.isElement = ih;
-var nh = pr;
-function ih(o) {
-  return (0, nh.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.ELEMENT_NODE;
+Tr.isElement = ah;
+var sh = pr;
+function ah(o) {
+  return (0, sh.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.ELEMENT_NODE;
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isElement = void 0;
@@ -13246,8 +13246,8 @@ function ih(o) {
 })(Er);
 var Ai = {}, Sr = {}, Br = {}, Mr = {};
 Object.defineProperty(Mr, "__esModule", { value: !0 });
-Mr.isLeaf = sh;
-function sh(o) {
+Mr.isLeaf = lh;
+function lh(o) {
   return o === null ? !1 : o.childNodes.length === 0;
 }
 (function(o) {
@@ -13259,11 +13259,11 @@ function sh(o) {
 })(Br);
 var _r = {}, Lr = {};
 Object.defineProperty(Lr, "__esModule", { value: !0 });
-Lr.isNodeEmpty = hh;
-var ah = Mt, lh = Er, ch = ke, dh = _t;
-function hh(o, e) {
+Lr.isNodeEmpty = ph;
+var ch = Mt, dh = Er, hh = ke, uh = _t;
+function ph(o, e) {
   var t = "";
-  return (0, dh.isSingleTag)(o) && !(0, ah.isLineBreakTag)(o) ? !1 : ((0, lh.isElement)(o) && (0, ch.isNativeInput)(o) ? t = o.value : o.textContent !== null && (t = o.textContent.replace("​", "")), e !== void 0 && (t = t.replace(new RegExp(e, "g"), "")), t.trim().length === 0);
+  return (0, uh.isSingleTag)(o) && !(0, ch.isLineBreakTag)(o) ? !1 : ((0, dh.isElement)(o) && (0, hh.isNativeInput)(o) ? t = o.value : o.textContent !== null && (t = o.textContent.replace("​", "")), e !== void 0 && (t = t.replace(new RegExp(e, "g"), "")), t.trim().length === 0);
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isNodeEmpty = void 0;
@@ -13273,14 +13273,14 @@ function hh(o, e) {
   } });
 })(_r);
 Object.defineProperty(Sr, "__esModule", { value: !0 });
-Sr.isEmpty = fh;
-var uh = Br, ph = _r;
-function fh(o, e) {
+Sr.isEmpty = mh;
+var fh = Br, gh = _r;
+function mh(o, e) {
   o.normalize();
   for (var t = [o]; t.length > 0; ) {
     var r = t.shift();
     if (r) {
-      if (o = r, (0, uh.isLeaf)(o) && !(0, ph.isNodeEmpty)(o, e))
+      if (o = r, (0, fh.isLeaf)(o) && !(0, gh.isNodeEmpty)(o, e))
         return !1;
       t.push.apply(t, Array.from(o.childNodes));
     }
@@ -13296,10 +13296,10 @@ function fh(o, e) {
 })(Ai);
 var Pi = {}, Ir = {};
 Object.defineProperty(Ir, "__esModule", { value: !0 });
-Ir.isFragment = mh;
-var gh = pr;
-function mh(o) {
-  return (0, gh.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.DOCUMENT_FRAGMENT_NODE;
+Ir.isFragment = bh;
+var vh = pr;
+function bh(o) {
+  return (0, vh.isNumber)(o) ? !1 : !!o && !!o.nodeType && o.nodeType === Node.DOCUMENT_FRAGMENT_NODE;
 }
 (function(o) {
   Object.defineProperty(o, "__esModule", { value: !0 }), o.isFragment = void 0;
@@ -13310,10 +13310,10 @@ function mh(o) {
 })(Pi);
 var Ni = {}, Or = {};
 Object.defineProperty(Or, "__esModule", { value: !0 });
-Or.isHTMLString = bh;
-var vh = Bt;
-function bh(o) {
-  var e = (0, vh.make)("div");
+Or.isHTMLString = wh;
+var kh = Bt;
+function wh(o) {
+  var e = (0, kh.make)("div");
   return e.innerHTML = o, e.childElementCount > 0;
 }
 (function(o) {
@@ -13325,8 +13325,8 @@ function bh(o) {
 })(Ni);
 var ji = {}, Ar = {};
 Object.defineProperty(Ar, "__esModule", { value: !0 });
-Ar.offset = kh;
-function kh(o) {
+Ar.offset = yh;
+function yh(o) {
   var e = o.getBoundingClientRect(), t = window.pageXOffset || document.documentElement.scrollLeft, r = window.pageYOffset || document.documentElement.scrollTop, n = e.top + r, i = e.left + t;
   return {
     top: n,
@@ -13344,8 +13344,8 @@ function kh(o) {
 })(ji);
 var Di = {}, Pr = {};
 Object.defineProperty(Pr, "__esModule", { value: !0 });
-Pr.prepend = wh;
-function wh(o, e) {
+Pr.prepend = xh;
+function xh(o, e) {
   Array.isArray(e) ? (e = e.reverse(), e.forEach(function(t) {
     return o.prepend(t);
   })) : o.prepend(e);
@@ -13431,25 +13431,25 @@ function wh(o, e) {
   Object.defineProperty(o, "isHTMLString", { enumerable: !0, get: function() {
     return m.isHTMLString;
   } });
-  var C = Br;
+  var E = Br;
   Object.defineProperty(o, "isLeaf", { enumerable: !0, get: function() {
-    return C.isLeaf;
+    return E.isLeaf;
   } });
   var S = _r;
   Object.defineProperty(o, "isNodeEmpty", { enumerable: !0, get: function() {
     return S.isNodeEmpty;
   } });
-  var _ = Mt;
+  var L = Mt;
   Object.defineProperty(o, "isLineBreakTag", { enumerable: !0, get: function() {
-    return _.isLineBreakTag;
+    return L.isLineBreakTag;
   } });
   var x = _t;
   Object.defineProperty(o, "isSingleTag", { enumerable: !0, get: function() {
     return x.isSingleTag;
   } });
-  var I = Bt;
+  var O = Bt;
   Object.defineProperty(o, "make", { enumerable: !0, get: function() {
-    return I.make;
+    return O.make;
   } });
   var w = ji;
   Object.defineProperty(o, "offset", { enumerable: !0, get: function() {
@@ -13499,7 +13499,7 @@ class ze {
    */
   static get toolbox() {
     return {
-      icon: sd,
+      icon: ld,
       title: "Quote"
     };
   }
@@ -13579,11 +13579,11 @@ class ze {
     return [
       {
         name: "left",
-        icon: id
+        icon: ad
       },
       {
         name: "center",
-        icon: nd
+        icon: sd
       }
     ];
   }
@@ -13665,7 +13665,7 @@ class ze {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-function yh(o, e) {
+function Ch(o, e) {
   let t = "";
   for (; t !== `
 ` && e > 0; )
@@ -13673,7 +13673,7 @@ function yh(o, e) {
   return t === `
 ` && (e += 1), e;
 }
-const xh = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8L5 12L9 16"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8L19 12L15 16"/></svg>';
+const Eh = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8L5 12L9 16"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8L19 12L15 16"/></svg>';
 /**
  * CodeTool for Editor.js
  * @version 2.0.0
@@ -13769,7 +13769,7 @@ class Nr {
    */
   static get toolbox() {
     return {
-      icon: xh,
+      icon: Eh,
       title: "Code"
     };
   }
@@ -13811,7 +13811,7 @@ class Nr {
     if (!r)
       a = n + s.length, t.value = i.substring(0, n) + s + i.substring(n);
     else {
-      const l = yh(i, n);
+      const l = Ch(i, n);
       if (i.substr(l, s.length) !== s)
         return;
       t.value = i.substring(0, l) + i.substring(l + s.length), a = n - s.length;
@@ -13852,8 +13852,8 @@ class Nr {
     console.error("vite-plugin-css-injected-by-js", e);
   }
 })();
-const Ch = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 9V7.2C8 7.08954 8.08954 7 8.2 7L12 7M16 9V7.2C16 7.08954 15.9105 7 15.8 7L12 7M12 7L12 17M12 17H10M12 17H14"/></svg>';
-function Eh(o) {
+const Th = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 9V7.2C8 7.08954 8.08954 7 8.2 7L12 7M16 9V7.2C16 7.08954 15.9105 7 15.8 7L12 7M12 7L12 17M12 17H10M12 17H14"/></svg>';
+function Sh(o) {
   const e = document.createElement("div");
   e.innerHTML = o.trim();
   const t = document.createDocumentFragment();
@@ -13933,7 +13933,7 @@ class jr {
     if (!this._element)
       return;
     this._data.text += e.text;
-    const t = Eh(e.text);
+    const t = Sh(e.text);
     this._element.appendChild(t), this._element.normalize();
   }
   /**
@@ -14021,7 +14021,7 @@ class jr {
    */
   static get toolbox() {
     return {
-      icon: Ch,
+      icon: Th,
       title: "Text"
     };
   }
@@ -14030,7 +14030,7 @@ function Hi(o) {
   return o && o.__esModule && Object.prototype.hasOwnProperty.call(o, "default") ? o.default : o;
 }
 var Rt = { exports: {} }, sn;
-function Th() {
+function Bh() {
   return sn || (sn = 1, (function(o, e) {
     (function(t, r) {
       o.exports = r();
@@ -14095,15 +14095,15 @@ function Th() {
         }
         function c(h, u) {
           for (var f = {}, p = [], k = 0; k < h.length; k++) {
-            var T = h[k], v = u.base ? T[0] + u.base : T[0], m = f[v] || 0, C = "".concat(v, " ").concat(m);
+            var T = h[k], v = u.base ? T[0] + u.base : T[0], m = f[v] || 0, E = "".concat(v, " ").concat(m);
             f[v] = m + 1;
-            var S = l(C), _ = { css: T[1], media: T[2], sourceMap: T[3], supports: T[4], layer: T[5] };
-            if (S !== -1) a[S].references++, a[S].updater(_);
+            var S = l(E), L = { css: T[1], media: T[2], sourceMap: T[3], supports: T[4], layer: T[5] };
+            if (S !== -1) a[S].references++, a[S].updater(L);
             else {
-              var x = d(_, u);
-              u.byIndex = k, a.splice(k, 0, { identifier: C, updater: x, references: 1 });
+              var x = d(L, u);
+              u.byIndex = k, a.splice(k, 0, { identifier: E, updater: x, references: 1 });
             }
-            p.push(C);
+            p.push(E);
           }
           return p;
         }
@@ -14125,8 +14125,8 @@ function Th() {
               a[T].references--;
             }
             for (var v = c(p, u), m = 0; m < f.length; m++) {
-              var C = l(f[m]);
-              a[C].references === 0 && (a[C].updater(), a.splice(C, 1));
+              var E = l(f[m]);
+              a[E].references === 0 && (a[E].updater(), a.splice(E, 1));
             }
             f = v;
           };
@@ -14205,8 +14205,8 @@ function Th() {
       }, n.o = (s, a) => Object.prototype.hasOwnProperty.call(s, a), n.nc = void 0;
       var i = {};
       return (() => {
-        n.d(i, { default: () => I });
-        var s = n(72), a = n.n(s), l = n(825), c = n.n(l), d = n(659), h = n.n(d), u = n(56), f = n.n(u), p = n(540), k = n.n(p), T = n(113), v = n.n(T), m = n(523), C = {};
+        n.d(i, { default: () => O });
+        var s = n(72), a = n.n(s), l = n(825), c = n.n(l), d = n(659), h = n.n(d), u = n(56), f = n.n(u), p = n(540), k = n.n(p), T = n(113), v = n.n(T), m = n(523), E = {};
         function S(w) {
           return S = typeof Symbol == "function" && typeof Symbol.iterator == "symbol" ? function(b) {
             return typeof b;
@@ -14214,33 +14214,33 @@ function Th() {
             return b && typeof Symbol == "function" && b.constructor === Symbol && b !== Symbol.prototype ? "symbol" : typeof b;
           }, S(w);
         }
-        function _(w, b) {
-          for (var E = 0; E < b.length; E++) {
-            var y = b[E];
+        function L(w, b) {
+          for (var C = 0; C < b.length; C++) {
+            var y = b[C];
             y.enumerable = y.enumerable || !1, y.configurable = !0, "value" in y && (y.writable = !0), Object.defineProperty(w, x(y.key), y);
           }
         }
         function x(w) {
-          var b = (function(E, y) {
-            if (S(E) != "object" || !E) return E;
-            var B = E[Symbol.toPrimitive];
+          var b = (function(C, y) {
+            if (S(C) != "object" || !C) return C;
+            var B = C[Symbol.toPrimitive];
             if (B !== void 0) {
-              var M = B.call(E, "string");
+              var M = B.call(C, "string");
               if (S(M) != "object") return M;
               throw new TypeError("@@toPrimitive must return a primitive value.");
             }
-            return String(E);
+            return String(C);
           })(w);
           return S(b) == "symbol" ? b : b + "";
         }
-        C.styleTagTransform = v(), C.setAttributes = f(), C.insert = h().bind(null, "head"), C.domAPI = c(), C.insertStyleElement = k(), a()(m.A, C), m.A && m.A.locals && m.A.locals;
-        var I = (function() {
+        E.styleTagTransform = v(), E.setAttributes = f(), E.insert = h().bind(null, "head"), E.domAPI = c(), E.insertStyleElement = k(), a()(m.A, E), m.A && m.A.locals && m.A.locals;
+        var O = (function() {
           return w = function y(B, M) {
-            var P = B.configuration, O = B.blocks, $ = B.toolbar, ue = B.save;
+            var P = B.configuration, _ = B.blocks, D = B.toolbar, ue = B.save;
             (function(ee, Le) {
               if (!(ee instanceof Le)) throw new TypeError("Cannot call a class as a function");
-            })(this, y), this.toolbar = $, this.borderStyle = M || "1px dashed #aaa", this.api = O, this.holder = typeof P.holder == "string" ? document.getElementById(P.holder) : P.holder, this.readOnly = P.readOnly, this.startBlock = null, this.endBlock = null, this.save = ue, this.setDragListener(), this.setDropListener();
-          }, E = [{ key: "isReadOnlySupported", get: function() {
+            })(this, y), this.toolbar = D, this.borderStyle = M || "1px dashed #aaa", this.api = _, this.holder = typeof P.holder == "string" ? document.getElementById(P.holder) : P.holder, this.readOnly = P.readOnly, this.startBlock = null, this.endBlock = null, this.save = ue, this.setDragListener(), this.setDropListener();
+          }, C = [{ key: "isReadOnlySupported", get: function() {
             return !0;
           } }], (b = [{ key: "setElementCursor", value: function(y) {
             if (y) {
@@ -14253,9 +14253,9 @@ function Th() {
               var B = this.holder.querySelector(".ce-toolbar__settings-btn");
               if (B) this.initializeDragListener(B);
               else {
-                var M = new MutationObserver((function(P, O) {
-                  var $ = y.holder.querySelector(".ce-toolbar__settings-btn");
-                  $ && (y.initializeDragListener($), O.disconnect());
+                var M = new MutationObserver((function(P, _) {
+                  var D = y.holder.querySelector(".ce-toolbar__settings-btn");
+                  D && (y.initializeDragListener(D), _.disconnect());
                 }));
                 M.observe(this.holder, { childList: !0, subtree: !0 });
               }
@@ -14273,10 +14273,10 @@ function Th() {
           } }, { key: "setBorderBlocks", value: function(y, B) {
             var M = this;
             Object.values(y).forEach((function(P) {
-              var O = P.querySelector(".ce-block__content");
-              P !== B ? (O.style.removeProperty("border-top"), O.style.removeProperty("border-bottom")) : Object.keys(y).find((function($) {
-                return y[$] === B;
-              })) > M.startBlock ? O.style.borderBottom = M.borderStyle : O.style.borderTop = M.borderStyle;
+              var _ = P.querySelector(".ce-block__content");
+              P !== B ? (_.style.removeProperty("border-top"), _.style.removeProperty("border-bottom")) : Object.keys(y).find((function(D) {
+                return y[D] === B;
+              })) > M.startBlock ? _.style.borderBottom = M.borderStyle : _.style.borderTop = M.borderStyle;
             }));
           } }, { key: "setDropListener", value: function() {
             var y = this;
@@ -14285,8 +14285,8 @@ function Th() {
               if (y.holder.contains(M) && y.startBlock !== null) {
                 var P = y.getDropTarget(M);
                 if (P) {
-                  var O = P.querySelector(".ce-block__content");
-                  O.style.removeProperty("border-top"), O.style.removeProperty("border-bottom"), y.endBlock = y.getTargetPosition(P), y.moveBlocks();
+                  var _ = P.querySelector(".ce-block__content");
+                  _.style.removeProperty("border-top"), _.style.removeProperty("border-bottom"), y.endBlock = y.getTargetPosition(P), y.moveBlocks();
                 }
               }
               y.startBlock = null;
@@ -14299,17 +14299,17 @@ function Th() {
             return this.api.getBlocksCount() === 1;
           } }, { key: "moveBlocks", value: function() {
             this.isTheOnlyBlock() || this.api.move(this.endBlock, this.startBlock);
-          } }]) && _(w.prototype, b), E && _(w, E), Object.defineProperty(w, "prototype", { writable: !1 }), w;
-          var w, b, E;
+          } }]) && L(w.prototype, b), C && L(w, C), Object.defineProperty(w, "prototype", { writable: !1 }), w;
+          var w, b, C;
         })();
       })(), i.default;
     })()));
   })(Rt)), Rt.exports;
 }
-var Sh = Th();
-const Bh = /* @__PURE__ */ Hi(Sh);
+var Mh = Bh();
+const _h = /* @__PURE__ */ Hi(Mh);
 var Ht = { exports: {} }, an;
-function Mh() {
+function Lh() {
   return an || (an = 1, (function(o, e) {
     (function(t, r) {
       o.exports = r();
@@ -14350,8 +14350,8 @@ function Mh() {
         };
       }, 259: (i, s, a) => {
         a.r(s), a.d(s, { default: () => x });
-        var l = a(72), c = a.n(l), d = a(825), h = a.n(d), u = a(659), f = a.n(u), p = a(56), k = a.n(p), T = a(540), v = a.n(T), m = a(113), C = a.n(m), S = a(664), _ = {};
-        _.styleTagTransform = C(), _.setAttributes = k(), _.insert = f().bind(null, "head"), _.domAPI = h(), _.insertStyleElement = v(), c()(S.A, _);
+        var l = a(72), c = a.n(l), d = a(825), h = a.n(d), u = a(659), f = a.n(u), p = a(56), k = a.n(p), T = a(540), v = a.n(T), m = a(113), E = a.n(m), S = a(664), L = {};
+        L.styleTagTransform = E(), L.setAttributes = k(), L.insert = f().bind(null, "head"), L.domAPI = h(), L.insertStyleElement = v(), c()(S.A, L);
         const x = S.A && S.A.locals ? S.A.locals : void 0;
       }, 72: (i) => {
         var s = [];
@@ -14366,11 +14366,11 @@ function Mh() {
           for (var u = {}, f = [], p = 0; p < d.length; p++) {
             var k = d[p], T = h.base ? k[0] + h.base : k[0], v = u[T] || 0, m = "".concat(T, " ").concat(v);
             u[T] = v + 1;
-            var C = a(m), S = { css: k[1], media: k[2], sourceMap: k[3], supports: k[4], layer: k[5] };
-            if (C !== -1) s[C].references++, s[C].updater(S);
+            var E = a(m), S = { css: k[1], media: k[2], sourceMap: k[3], supports: k[4], layer: k[5] };
+            if (E !== -1) s[E].references++, s[E].updater(S);
             else {
-              var _ = c(S, h);
-              h.byIndex = p, s.splice(p, 0, { identifier: m, updater: _, references: 1 });
+              var L = c(S, h);
+              h.byIndex = p, s.splice(p, 0, { identifier: m, updater: L, references: 1 });
             }
             f.push(m);
           }
@@ -14460,10 +14460,10 @@ function Mh() {
           }
         };
       }, 156: function(i, s, a) {
-        var l, c, d = this && this.__classPrivateFieldGet || function(T, v, m, C) {
-          if (m === "a" && !C) throw new TypeError("Private accessor was defined without a getter");
-          if (typeof v == "function" ? T !== v || !C : !v.has(T)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-          return m === "m" ? C : m === "a" ? C.call(T) : C ? C.value : v.get(T);
+        var l, c, d = this && this.__classPrivateFieldGet || function(T, v, m, E) {
+          if (m === "a" && !E) throw new TypeError("Private accessor was defined without a getter");
+          if (typeof v == "function" ? T !== v || !E : !v.has(T)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+          return m === "m" ? E : m === "a" ? E.call(T) : E ? E.value : v.get(T);
         };
         Object.defineProperty(s, "__esModule", { value: !0 });
         const h = a(31), u = a(31), f = a(31), p = a(31);
@@ -14479,13 +14479,13 @@ function Mh() {
           getAvailableBlockAlignments() {
             const v = [{ name: "left", icon: h.IconAlignLeft }, { name: "center", icon: u.IconAlignCenter }, { name: "right", icon: f.IconAlignRight }, { name: "justify", icon: p.IconAlignJustify }], m = this.getCurrentBlockSettings();
             if (m && m.availableAlignments) {
-              const C = [];
+              const E = [];
               return m.availableAlignments.forEach(((S) => {
                 if (d(this, l, "m", c).call(this, S)) {
-                  const _ = v.find(((x) => x.name === S));
-                  _ && C.push(_);
+                  const L = v.find(((x) => x.name === S));
+                  L && E.push(L);
                 }
-              })), C.length > 0 ? C : v;
+              })), E.length > 0 ? E : v;
             }
             return v;
           }
@@ -14496,20 +14496,20 @@ function Mh() {
             }
             return null;
           }
-          constructor({ api: v, data: m, config: C, block: S }) {
-            l.add(this), this.api = v, this.block = S, this.config = C, this.data = m ?? { alignment: this.getDefaultAlignment() }, this.alignments = this.getAvailableBlockAlignments(), this.styles = { base: "cdx-alignment-tune", alignment: { left: "cdx-alignment-tune--left", center: "cdx-alignment-tune--center", right: "cdx-alignment-tune--right", justify: "cdx-alignment-tune--justify" } }, this.wrapper = document.createElement("div");
+          constructor({ api: v, data: m, config: E, block: S }) {
+            l.add(this), this.api = v, this.block = S, this.config = E, this.data = m ?? { alignment: this.getDefaultAlignment() }, this.alignments = this.getAvailableBlockAlignments(), this.styles = { base: "cdx-alignment-tune", alignment: { left: "cdx-alignment-tune--left", center: "cdx-alignment-tune--center", right: "cdx-alignment-tune--right", justify: "cdx-alignment-tune--justify" } }, this.wrapper = document.createElement("div");
           }
           wrap(v) {
             return this.wrapper.classList.add(this.styles.base), this.wrapper.classList.add(this.styles.alignment[this.data.alignment]), this.wrapper.append(v), this.wrapper;
           }
           render() {
             const v = document.createElement("div");
-            return this.alignments.forEach(((m, C) => {
+            return this.alignments.forEach(((m, E) => {
               const S = document.createElement("button");
               S.classList.add(this.api.styles.settingsButton), S.innerHTML = m.icon, S.type = "button", m.name === this.data.alignment && S.classList.add(this.api.styles.settingsButtonActive), S.addEventListener("click", (() => {
-                var _;
-                const x = this.data.alignment, I = this.alignments[C].name;
-                this.data = { alignment: I }, this.block.dispatchChange(), (_ = v.querySelector(`button.${this.api.styles.settingsButton}.${this.api.styles.settingsButtonActive}`)) === null || _ === void 0 || _.classList.remove(this.api.styles.settingsButtonActive), S.classList.add(this.api.styles.settingsButtonActive), this.wrapper.classList.remove(this.styles.alignment[x]), this.wrapper.classList.add(this.styles.alignment[I]);
+                var L;
+                const x = this.data.alignment, O = this.alignments[E].name;
+                this.data = { alignment: O }, this.block.dispatchChange(), (L = v.querySelector(`button.${this.api.styles.settingsButton}.${this.api.styles.settingsButtonActive}`)) === null || L === void 0 || L.classList.remove(this.api.styles.settingsButtonActive), S.classList.add(this.api.styles.settingsButtonActive), this.wrapper.classList.remove(this.styles.alignment[x]), this.wrapper.classList.add(this.styles.alignment[O]);
               })), v.appendChild(S);
             })), v;
           }
@@ -14539,8 +14539,8 @@ function Mh() {
     })()));
   })(Ht)), Ht.exports;
 }
-var _h = Mh();
-const Lh = /* @__PURE__ */ Hi(_h);
+var Ih = Lh();
+const Oh = /* @__PURE__ */ Hi(Ih);
 function Fi() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(o) {
     const e = Math.random() * 16 | 0;
@@ -14560,7 +14560,7 @@ class je {
     return i.setAttribute("type", n), t && i.setAttribute("value", t), r && i.setAttribute("placeholder", r), i.setAttribute("id", e), i.classList.add("cdx-input"), i;
   }
 }
-function Ih({ value: o, bridge: e, onChange: t }) {
+function Ah({ value: o, bridge: e, onChange: t }) {
   const r = we(null), n = we(null), i = we(o), s = we(t), a = we(e);
   i.current = o, s.current = t, a.current = e;
   const l = we("skrivlet-editor-" + Fi());
@@ -14575,8 +14575,8 @@ function Ih({ value: o, bridge: e, onChange: t }) {
         if (typeof m == "string")
           try {
             return JSON.parse(m);
-          } catch (C) {
-            return console.error("Error parsing SkrivLet initial data JSON:", C), {};
+          } catch (E) {
+            return console.error("Error parsing SkrivLet initial data JSON:", E), {};
           }
         else
           return m ?? {};
@@ -14585,37 +14585,54 @@ function Ih({ value: o, bridge: e, onChange: t }) {
       const m = r.current;
       if (!m)
         return;
-      const C = m.querySelectorAll(
+      const E = m.querySelectorAll(
         '.cdx-block:not([disable-hotkeys="true"]),.ce-header:not([disable-hotkeys="true"]),.cdx-input:not([disable-hotkeys="true"]),.cdx-checklist__item-text:not([disable-hotkeys="true"])'
       );
-      for (let S = 0; S < C.length; S++)
-        C[S].setAttribute("disable-hotkeys", "true");
+      for (let S = 0; S < E.length; S++)
+        E[S].setAttribute("disable-hotkeys", "true");
     }, f = async (m) => {
-      const { host: C, modalManager: S } = a.current;
+      var x, O, w;
+      const { host: E, modalManager: S } = a.current;
       if (!S)
         return;
-      const _ = S.open(C, Gi, {
+      const L = S.open(E, Gi, {
         data: {
           multiple: !1
         }
       });
       try {
-        const x = await _.onSubmit(), I = (x == null ? void 0 : x.selection) ?? [];
-        I.length && m.applyMediaSelection(I[0]);
+        const b = await L.onSubmit(), C = ((x = b == null ? void 0 : b.selection) == null ? void 0 : x.find((M) => M != null)) ?? null;
+        if (!C)
+          return;
+        const y = new Ji(E), B = new Qi(E);
+        try {
+          const [M, P] = await Promise.all([
+            y.requestItems([C]),
+            B.requestItems([C])
+          ]), _ = (O = M.data) == null ? void 0 : O[0], D = (w = P.data) == null ? void 0 : w[0];
+          m.applyMediaSelection({
+            url: (_ == null ? void 0 : _.url) ?? "",
+            name: (D == null ? void 0 : D.name) ?? "",
+            unique: C,
+            udi: C
+          });
+        } finally {
+          y.destroy(), B.destroy();
+        }
       } catch {
       }
-    }, p = async (m, C) => {
-      const { host: S, modalManager: _ } = a.current;
-      if (!_)
+    }, p = async (m, E) => {
+      const { host: S, modalManager: L } = a.current;
+      if (!L)
         return;
-      const x = _.open(S, Ji, {
+      const x = L.open(S, es, {
         data: {
           config: {}
         }
       });
       try {
-        const I = await x.onSubmit(), w = I == null ? void 0 : I.link;
-        w && m.wrap(C, w.url ?? w.unique ?? "");
+        const O = await x.onSubmit(), w = O == null ? void 0 : O.link;
+        w && m.wrap(E, w.url ?? w.unique ?? "");
       } catch {
       }
     }, k = () => {
@@ -14630,8 +14647,8 @@ function Ih({ value: o, bridge: e, onChange: t }) {
           return this._state;
         }
         set state(x) {
-          var I;
-          this._state = x, (I = this.button) == null || I.classList.toggle(this.api.styles.inlineToolButtonActive, x);
+          var O;
+          this._state = x, (O = this.button) == null || O.classList.toggle(this.api.styles.inlineToolButtonActive, x);
         }
         static get sanitize() {
           return {
@@ -14650,38 +14667,38 @@ function Ih({ value: o, bridge: e, onChange: t }) {
           }
           p(this, x);
         }
-        wrap(x, I) {
+        wrap(x, O) {
           const w = x.extractContents(), b = document.createElement(this.tag);
-          b.classList.add(this.class), b.setAttribute("href", I), b.appendChild(w), x.insertNode(b), this.api.selection.expandToTag(b), this.element = b;
+          b.classList.add(this.class), b.setAttribute("href", O), b.appendChild(w), x.insertNode(b), this.api.selection.expandToTag(b), this.element = b;
         }
         unwrap(x) {
-          const I = this.api.selection.findParentTag(this.tag, this.class), w = x.extractContents();
-          I == null || I.remove(), x.insertNode(w);
+          const O = this.api.selection.findParentTag(this.tag, this.class), w = x.extractContents();
+          O == null || O.remove(), x.insertNode(w);
         }
         checkState() {
           const x = this.api.selection.findParentTag(this.tag);
           this.state = !!x;
         }
       }
-      class C {
+      class E {
         static get toolbox() {
           return {
             title: "Image",
             icon: '<svg width="17" height="15" viewBox="0 0 336 276" xmlns="http://www.w3.org/2000/svg"><path d="M291 150V79c0-19-15-34-34-34H79c-19 0-34 15-34 34v42l67-44 81 72 56-29 42 30zm0 52l-43-30-56 30-81-67-66 39v23c0 19 15 34 34 34h178c17 0 31-13 34-29zM79 0h178c44 0 79 35 79 79v118c0 44-35 79-79 79H79c-44 0-79-35-79-79V79C0 35 35 0 79 0z"/></svg>'
           };
         }
-        constructor({ data: x, api: I, config: w }) {
-          this.api = I, this.config = w || {}, this.data = {
+        constructor({ data: x, api: O, config: w }) {
+          this.api = O, this.config = w || {}, this.data = {
             url: x.url || "",
             alt: x.alt || "",
             udi: x.udi || ""
           };
         }
         render() {
-          var I, w;
+          var O, w;
           this.wrapper = document.createElement("div"), this.input = document.createElement("input"), this.input.setAttribute("type", "hidden");
           const x = je.randomUUID();
-          return this.altTextLabel = je.createLabel(x, "sr-only", "Alt text"), this.altTextInput = je.createInput(x, this.data.alt, "Enter alt text", "text"), this.wrapper.classList.add("simple-image"), this._createImage(this.data.url), this.button = document.createElement("button"), this.button.type = "button", this.button.classList.add("umb-group-builder__group-add-property"), this.button.classList.add("skriv-let__add-image-button"), this.button.textContent = (I = this.data) != null && I.url ? "Change image" : "Select an image", this.button.addEventListener("click", () => {
+          return this.altTextLabel = je.createLabel(x, "sr-only", "Alt text"), this.altTextInput = je.createInput(x, this.data.alt, "Enter alt text", "text"), this.wrapper.classList.add("simple-image"), this._createImage(this.data.url), this.button = document.createElement("button"), this.button.type = "button", this.button.classList.add("umb-group-builder__group-add-property"), this.button.classList.add("skriv-let__add-image-button"), this.button.textContent = (O = this.data) != null && O.url ? "Change image" : "Select an image", this.button.addEventListener("click", () => {
             f(this);
           }), (w = this.image) == null || w.addEventListener("click", () => {
             f(this);
@@ -14689,15 +14706,15 @@ function Ih({ value: o, bridge: e, onChange: t }) {
         }
         applyMediaSelection(x) {
           var b;
-          const I = x.url ?? x.image ?? "", w = x.name ?? "";
-          this.data.url = I, this.data.alt = w, this.data.udi = x.unique ?? x.udi ?? "", this.data.width = parseInt(String(x.width)), this.data.height = parseInt(String(x.height)), this.input && (this.input.value = I), this.image && (this.image.src = I, this.image.alt = w), this.altTextInput && (this.altTextInput.value = w), this.button && (this.button.textContent = (b = this.data) != null && b.url ? "Change image" : "Select an image"), this.save(), setTimeout(() => {
-            var E;
-            (E = this.image) == null || E.scrollIntoView();
+          const O = x.url ?? "", w = x.name ?? "";
+          this.data.url = O, this.data.alt = w, this.data.udi = x.unique ?? x.udi ?? "", this.data.width = parseInt(String(x.width)), this.data.height = parseInt(String(x.height)), this.input && (this.input.value = O), this.image && (this.image.src = O, this.image.alt = w), this.altTextInput && (this.altTextInput.value = w), this.button && (this.button.textContent = (b = this.data) != null && b.url ? "Change image" : "Select an image"), this.save(), setTimeout(() => {
+            var C;
+            (C = this.image) == null || C.scrollIntoView();
           }, 200);
         }
         _createImage(x) {
-          var I;
-          this.image = document.createElement("img"), this.image.src = x, this.image.alt = this.data.alt, (I = this.wrapper) == null || I.appendChild(this.image);
+          var O;
+          this.image = document.createElement("img"), this.image.src = x, this.image.alt = this.data.alt, (O = this.wrapper) == null || O.appendChild(this.image);
         }
         save() {
           var x;
@@ -14724,22 +14741,22 @@ function Ih({ value: o, bridge: e, onChange: t }) {
         render() {
           var x;
           if (!((x = this.data) != null && x.service)) {
-            const I = document.createElement("div");
-            this.element = I;
+            const O = document.createElement("div");
+            this.element = O;
             const w = je.createLabel(
               "embed-input",
               "cdx-label",
               "Enter a URL to embed a video from YouTube or Vimeo"
             );
-            I.appendChild(w);
+            O.appendChild(w);
             const b = je.createInput("embed-input", "", "", "url");
-            return b.addEventListener("paste", (E) => {
+            return b.addEventListener("paste", (C) => {
               var P;
-              const y = ((P = E.clipboardData) == null ? void 0 : P.getData("text")) ?? "", B = rn, M = Object.keys(B.services).find(
-                (O) => B.services[O].regex.test(y)
+              const y = ((P = C.clipboardData) == null ? void 0 : P.getData("text")) ?? "", B = rn, M = Object.keys(B.services).find(
+                (_) => B.services[_].regex.test(y)
               );
               M && this.onPaste({ detail: { key: M, data: y } });
-            }), I.appendChild(b), I;
+            }), O.appendChild(b), O;
           }
           return super.render.call(this);
         }
@@ -14754,10 +14771,10 @@ function Ih({ value: o, bridge: e, onChange: t }) {
           tunes: ["alignmentTune"]
         },
         header: {
-          class: Yc,
+          class: Zc,
           tunes: ["alignmentTune"]
         },
-        image: C,
+        image: E,
         quote: ze,
         embed: {
           class: S,
@@ -14771,20 +14788,20 @@ function Ih({ value: o, bridge: e, onChange: t }) {
         code: Nr,
         raw: er,
         list: {
-          class: td,
+          class: rd,
           inlineToolbar: !0
         },
-        checklist: Qc,
+        checklist: td,
         link: m,
         // override link with Umbraco link picker
         alignmentTune: {
-          class: Lh,
+          class: Oh,
           config: {
             default: "left"
           }
         }
       };
-    }, T = new Fc({
+    }, T = new Uc({
       holder: d,
       placeholder: "Type '/' to insert a block or just start typing something super...",
       data: h(),
@@ -14796,14 +14813,14 @@ function Ih({ value: o, bridge: e, onChange: t }) {
       tools: k(),
       onChange: () => {
         var m;
-        u(), (m = n.current) == null || m.save().then((C) => {
-          s.current(JSON.stringify(C));
-        }).catch((C) => {
-          console.log("Saving failed: ", C);
+        u(), (m = n.current) == null || m.save().then((E) => {
+          s.current(JSON.stringify(E));
+        }).catch((E) => {
+          console.log("Saving failed: ", E);
         });
       },
       onReady: () => {
-        new Bh(n.current), u();
+        new _h(n.current), u();
       }
     });
     return n.current = T, () => {
@@ -14832,17 +14849,17 @@ function Ih({ value: o, bridge: e, onChange: t }) {
       ),
       /* @__PURE__ */ Ie("span", { className: "sr-only", children: "Open editor in fullscreen" })
     ] }),
-    /* @__PURE__ */ Ie("style", { children: Qi })
+    /* @__PURE__ */ Ie("style", { children: ts })
   ] });
 }
-var Oh = Object.getOwnPropertyDescriptor, $i = (o) => {
+var Ph = Object.getOwnPropertyDescriptor, $i = (o) => {
   throw TypeError(o);
-}, Ah = (o, e, t, r) => {
-  for (var n = r > 1 ? void 0 : r ? Oh(e, t) : e, i = o.length - 1, s; i >= 0; i--)
+}, Nh = (o, e, t, r) => {
+  for (var n = r > 1 ? void 0 : r ? Ph(e, t) : e, i = o.length - 1, s; i >= 0; i--)
     (s = o[i]) && (n = s(n) || n);
   return n;
 }, Dr = (o, e, t) => e.has(o) || $i("Cannot " + t), re = (o, e, t) => (Dr(o, e, "read from private field"), t ? t.call(o) : e.get(o)), De = (o, e, t) => e.has(o) ? $i("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), Ee = (o, e, t, r) => (Dr(o, e, "write to private field"), e.set(o, t), t), Ft = (o, e, t) => (Dr(o, e, "access private method"), t), le, Fe, Se, mt, $e, st;
-const Ph = "n3o-editor-js";
+const jh = "n3o-editor-js";
 let Qt = class extends Wi(HTMLElement) {
   constructor() {
     super(), De(this, $e), De(this, le), De(this, Fe), De(this, Se), De(this, mt);
@@ -14878,7 +14895,7 @@ st = function() {
     modalManager: re(this, mt)
   };
   re(this, le).render(
-    Xi(Ih, {
+    Xi(Ah, {
       value: re(this, Se),
       bridge: o,
       onChange: (e) => {
@@ -14887,12 +14904,12 @@ st = function() {
     })
   );
 };
-Qt = Ah([
-  Vi(Ph)
+Qt = Nh([
+  Vi(jh)
 ], Qt);
-const Gh = Qt;
+const Qh = Qt;
 export {
   Qt as N3oEditorJsElement,
-  Gh as default
+  Qh as default
 };
 //# sourceMappingURL=editor-js.js.map

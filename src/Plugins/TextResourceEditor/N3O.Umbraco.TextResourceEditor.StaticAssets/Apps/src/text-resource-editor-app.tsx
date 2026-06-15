@@ -44,14 +44,14 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
                             ] <span className="text">{entry.source}</span>
                         </div>
                         <div className="row-2">
-                            <uui-input
+                            <input
                                 type="text"
-                                class="custom"
+                                className="custom"
                                 value={entry.custom ?? ''}
-                                onInput={(e: Event) =>
-                                    updateCustom(index, (e.target as HTMLInputElement).value)
+                                onChange={(e) =>
+                                    updateCustom(index, e.currentTarget.value)
                                 }
-                            ></uui-input>
+                            />
                         </div>
                     </div>
                 ))}

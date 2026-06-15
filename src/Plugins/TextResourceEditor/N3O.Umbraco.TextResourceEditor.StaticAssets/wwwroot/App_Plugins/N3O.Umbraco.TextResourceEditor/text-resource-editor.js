@@ -8,10 +8,10 @@ function A({ value: e, onChange: t }) {
   if (!e.length)
     return null;
   function r(o) {
-    confirm("Are you sure you wish to delete this entry?") && t(e.filter((s, i) => i !== o));
+    confirm("Are you sure you wish to delete this entry?") && t(e.filter((s, a) => a !== o));
   }
   function l(o, s) {
-    t(e.map((i, g) => g === o ? { ...i, custom: s } : i));
+    t(e.map((a, g) => g === o ? { ...a, custom: s } : a));
   }
   return /* @__PURE__ */ v("uui-box", { headline: "Text resources", children: [
     /* @__PURE__ */ c("div", { className: "n3o-text-resource-editor", children: e.map((o, s) => /* @__PURE__ */ v("div", { className: "row-wrapper", children: [
@@ -22,12 +22,12 @@ function A({ value: e, onChange: t }) {
         /* @__PURE__ */ c("span", { className: "text", children: o.source })
       ] }),
       /* @__PURE__ */ c("div", { className: "row-2", children: /* @__PURE__ */ c(
-        "uui-input",
+        "input",
         {
           type: "text",
-          class: "custom",
+          className: "custom",
           value: o.custom ?? "",
-          onInput: (i) => l(s, i.target.value)
+          onChange: (a) => l(s, a.currentTarget.value)
         }
       ) })
     ] }, `${o.source}-${s}`)) }),
@@ -37,19 +37,19 @@ function A({ value: e, onChange: t }) {
 var M = Object.getOwnPropertyDescriptor, E = (e) => {
   throw TypeError(e);
 }, R = (e, t, r, l) => {
-  for (var o = l > 1 ? void 0 : l ? M(t, r) : t, s = e.length - 1, i; s >= 0; s--)
-    (i = e[s]) && (o = i(o) || o);
+  for (var o = l > 1 ? void 0 : l ? M(t, r) : t, s = e.length - 1, a; s >= 0; s--)
+    (a = e[s]) && (o = a(o) || o);
   return o;
-}, w = (e, t, r) => t.has(e) || E("Cannot " + r), a = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), p = (e, t, r) => t.has(e) ? E("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), h = (e, t, r, l) => (w(e, t, "write to private field"), t.set(e, r), r), x = (e, t, r) => (w(e, t, "access private method"), r), n, u, d, m, f;
+}, w = (e, t, r) => t.has(e) || E("Cannot " + r), i = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), p = (e, t, r) => t.has(e) ? E("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), h = (e, t, r, l) => (w(e, t, "write to private field"), t.set(e, r), r), x = (e, t, r) => (w(e, t, "access private method"), r), n, u, d, m, f;
 const W = "n3o-text-resource-editor";
 let _ = class extends HTMLElement {
   constructor() {
     super(), p(this, m), p(this, n), p(this, u), p(this, d, []);
     const e = this.attachShadow({ mode: "open" });
-    h(this, u, document.createElement("div")), e.appendChild(a(this, u));
+    h(this, u, document.createElement("div")), e.appendChild(i(this, u));
   }
   get value() {
-    return a(this, d);
+    return i(this, d);
   }
   set value(e) {
     h(this, d, Array.isArray(e) ? e : []), x(this, m, f).call(this);
@@ -58,11 +58,11 @@ let _ = class extends HTMLElement {
   set config(e) {
   }
   connectedCallback() {
-    a(this, n) ?? h(this, n, k(a(this, u))), x(this, m, f).call(this);
+    i(this, n) ?? h(this, n, k(i(this, u))), x(this, m, f).call(this);
   }
   disconnectedCallback() {
     var e;
-    (e = a(this, n)) == null || e.unmount(), h(this, n, void 0);
+    (e = i(this, n)) == null || e.unmount(), h(this, n, void 0);
   }
 };
 n = /* @__PURE__ */ new WeakMap();
@@ -71,9 +71,9 @@ d = /* @__PURE__ */ new WeakMap();
 m = /* @__PURE__ */ new WeakSet();
 f = function() {
   var e;
-  (e = a(this, n)) == null || e.render(
+  (e = i(this, n)) == null || e.render(
     N(A, {
-      value: a(this, d),
+      value: i(this, d),
       onChange: (t) => {
         h(this, d, t), this.dispatchEvent(new C());
       }

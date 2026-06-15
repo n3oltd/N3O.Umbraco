@@ -5,6 +5,29 @@
     "version": "17.0.0",
     "extensions": [
         {
+            "type": "propertyEditorSchema",
+            "alias": "N3O.Umbraco.Cropper",
+            "name": "N3O Cropper",
+            "meta": {
+                "defaultPropertyEditorUiAlias": "N3O.Umbraco.Cropper",
+                "settings": {
+                    "properties": [
+                        {
+                            "alias": "altText",
+                            "label": "Alt Text",
+                            "description": "Allow editors to enter alt text for the image.",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+                        },
+                        {
+                            "alias": "cropDefinitions",
+                            "label": "Crop Definitions",
+                            "propertyEditorUiAlias": "N3O.PropertyEditorUi.CropperCropDefinitions"
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "type": "propertyEditorUi",
             "alias": "N3O.Umbraco.Cropper",
             "name": "N3O Cropper",

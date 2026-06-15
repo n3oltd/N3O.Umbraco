@@ -5,6 +5,59 @@
     "version": "17.0.0",
     "extensions": [
         {
+            "type": "propertyEditorSchema",
+            "alias": "N3O.Umbraco.Uploader",
+            "name": "N3O Uploader",
+            "meta": {
+                "defaultPropertyEditorUiAlias": "N3O.Umbraco.Uploader",
+                "settings": {
+                    "properties": [
+                        {
+                            "alias": "allowedExtensions",
+                            "label": "Allowed Extensions",
+                            "description": "Comma-separated list of allowed file extensions (e.g. jpg,png,pdf).",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+                        },
+                        {
+                            "alias": "altTextRequired",
+                            "label": "Alt Text Required",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+                        },
+                        {
+                            "alias": "imagesOnly",
+                            "label": "Images Only",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+                        },
+                        {
+                            "alias": "maxFileSizeMb",
+                            "label": "Max File Size (MB)",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+                        },
+                        {
+                            "alias": "maxImageHeight",
+                            "label": "Max Image Height (px)",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+                        },
+                        {
+                            "alias": "maxImageWidth",
+                            "label": "Max Image Width (px)",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+                        },
+                        {
+                            "alias": "minImageHeight",
+                            "label": "Min Image Height (px)",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+                        },
+                        {
+                            "alias": "minImageWidth",
+                            "label": "Min Image Width (px)",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "type": "propertyEditorUi",
             "alias": "N3O.Umbraco.Uploader",
             "name": "N3O Uploader",

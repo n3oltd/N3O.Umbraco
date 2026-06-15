@@ -5,6 +5,23 @@
     "version": "17.0.0",
     "extensions": [
         {
+            "type": "propertyEditorSchema",
+            "alias": "N3O.Umbraco.Cells",
+            "name": "N3O Cells",
+            "meta": {
+                "defaultPropertyEditorUiAlias": "N3O.Umbraco.Cells",
+                "settings": {
+                    "properties": [
+                        {
+                            "alias": "gridConfiguration",
+                            "label": "Grid Configuration",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextArea"
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "type": "propertyEditorUi",
             "alias": "N3O.Umbraco.Cells",
             "name": "N3O Cells",

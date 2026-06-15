@@ -10,6 +10,9 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud;
 
+// GetSettings/GetAllAvailableCultures are synchronous interface members that block on the async
+// ILanguageService / CDN APIs with GetAwaiter().GetResult(). That is safe here: ASP.NET Core has no
+// SynchronizationContext, so the awaited continuations never need the calling thread (no deadlock).
 public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccessor {
     private readonly ICdnClient _cdnClient;
     private readonly ILookups _lookups;
