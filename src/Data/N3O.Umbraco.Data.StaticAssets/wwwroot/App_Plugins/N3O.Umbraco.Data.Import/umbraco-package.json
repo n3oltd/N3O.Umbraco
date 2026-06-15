@@ -21,7 +21,7 @@
                 },
                 {
                     "alias": "N3O.Condition.WorkspaceVisibility",
-                    "endpoint": "/umbraco/backoffice/api/Imports/visibility"
+                    "endpoint": "/umbraco/backoffice/api/ImportVisibility"
                 }
             ]
         }

@@ -5,7 +5,6 @@ using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
-using N3O.Umbraco.Data.Security;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;

@@ -7,14 +7,9 @@ using System.Linq;
 using Umbraco.Cms.Core.Security;
 using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
-namespace N3O.Umbraco.Data.Security;
+namespace N3O.Umbraco.Attributes;
 
-// BLOCKER-10 fix: restores the server-side user-group gating that the AngularJS ContentApp
-// (ExportApp/ImportApp) used to enforce before the Bellissima migration. Members of the Umbraco
-// admin group are always allowed; otherwise the user must belong to one of the supplied groups.
-// Applied to the Exports/Imports controllers so the gating is enforced at the API boundary rather
-// than only by hiding the back-office tab.
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequireUserGroupAttribute : Attribute, IAuthorizationFilter {
     private readonly string[] _allowedGroupAliases;
 
