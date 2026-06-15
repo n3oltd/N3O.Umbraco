@@ -48,7 +48,7 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 - Export memory (`ProcessExportHandler` buffers whole file) — no safe in-scope fix; needs a multi-project streaming change.
 - ✅ **CS0618 `IDataTypeService.GetDataType(int)`** — replaced with `GetAsync(propertyType.DataTypeKey)` (2026-06-14).
 - ✅ **CS0618 `IAuditService.GetLogs(int)`** — replaced with `GetItemsByEntityAsync(...).Items.FirstOrDefault()` (2026-06-14).
-- `EPPlus 8.5.4` commercial-license review.
+- `EPPlus 8.6.0` (tracker previously said 8.5.4) commercial-license review. **⚠️ Compliance:** `DataComposer.cs:28` currently asserts `SetNonCommercialOrganization("N3O")`, which does NOT cover for-profit company use — non-compliant as-is. Footprint is tiny (1 project, 4 files, export-only). Fix = buy a commercial license (one-line) **or** swap to ClosedXML/MIT (~1–5 days). See [`BACKLOG_SCOPING.md`](BACKLOG_SCOPING.md) §6.
 
 ## ⏳ In progress — remaining known issues (Cloud.Platforms)
 
@@ -71,14 +71,16 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 
 ## ⏳ Backlog — remaining migration work (pending / not yet scheduled)
 
+> **Scoped (2026-06-15):** every item below was researched for achievability — scope, verdicts, file refs, and cited licensing sources are in [`BACKLOG_SCOPING.md`](BACKLOG_SCOPING.md). Corrections from that research are folded into the items below.
+
 - **N3O Image Cropper → Umbraco Image Cropper + Uploader** — replace the custom Cropper/Uploader plugins with Umbraco's built-in image cropper + upload editors.
 - **Perplex Content Blocks** — finish / validate the Perplex ContentBlocks migration (Perplex rc.3; the `ContentHelper` Perplex-block parser).
 - **JS calls + authentication header** — generalize the authenticated bearer-token fetch across all backoffice JS calls / plugins (ties into the deferred `@n3o/auth-fetch` shared runtime).
 - **`.targets` in build** — remove the remaining per-project `build/*.targets`. `Blazor.BackOffice` was the last RCL-conversion leftover and is now converted (2026-06-15, session 17: `build/*.targets` deleted, assets → `wwwroot/App_Plugins/`). Only the intentional **wrapper** StaticAssets pass-throughs (`Forms`/`Maps.Google`/`Marketing`/`UIBuilder`/`Workflows`) remain to review.
 - ✅ **Rename `ClientApp` → `Apps` across all backoffice projects (done 2026-06-13).** The root `src/package.json` npm-workspaces list is now a glob (`"**/Apps/**"`, `"N3O.Umbraco.Cms/N3O.Umbraco.ReactRuntime"`, `"!**/bin/**"`, `"!**/obj/**"`) so new frontend projects are auto-discovered — the glob keys off a folder named **`Apps`**. The 12 leaf frontend folders were `git mv`'d `ClientApp`→`Apps` (Blazor.BackOffice, Blocks, Cloud.Platforms, Data, Cells, Cropper, EditorJs, SerpEditor, TextResourceEditor, Uploader, WelcomeDashboard, Scheduler `.StaticAssets`). The **only** functional reference was the shared `BuildClientApp` target in repo-root `Directory.Build.targets` (`Exists(...\ClientApp\package.json)` → `...\Apps\...`); the per-project `.csproj` files and vite/tsconfig use relative paths (same depth) so needed no change, and `N3O.Umbraco.Cms` already used `Apps/*`. `src/package-lock.json` regenerated via `npm install`; `npm query .workspace` lists **14** (12 apps + DynamicListViews + ReactRuntime); `dotnet build N3O.Umbraco.sln` → **0 errors**. Committed on `v17-Talha` (`e89ee591e`); ships in the solution-wide PR (not the per-project branches — see the deferred list above).
-- **Deprecated-dependency audit** — Newtonsoft `Json.NET`, `build.targets`, and other deprecated packages/mechanisms — find and replace.
+- **Deprecated-dependency audit** — Newtonsoft `Json.NET` and other deprecated packages/mechanisms — find and replace. **`build.targets` sub-item is ✅ done** (zero hand-authored `build/*.targets` remain). Newtonsoft is the big one: 🔴 ~3–5 eng-weeks (301 files; `IJsonProvider` is Newtonsoft-typed at its interface; NSwag-generated `N3O.Umbraco.Clients`; Umbraco 17 itself keeps Newtonsoft transitively). See [`BACKLOG_SCOPING.md`](BACKLOG_SCOPING.md) §1.
 - **Move remaining UIs to React** — migrate the remaining Lit / legacy backoffice UIs to React.
-- **Package upgrades blocked by licenses** — Mediator (evaluating **Wolverine**) not upgraded due to licensing.
+- **Package upgrades — Mediator (evaluating **Wolverine**).** *Not actually blocked today:* the pinned `MediatR 12.5.0` is the last MIT/Apache version (only a v13+ upgrade triggers the commercial license). Coupling is ~5 files behind the N3O `IMediator` abstraction; Wolverine core is MIT (but a distributed bus, overkill). ⚠️ Not urgent — proactive-upgrade timing is the decision. See [`BACKLOG_SCOPING.md`](BACKLOG_SCOPING.md) §3.
 - **Lifetime-scope hacks** — fix the workarounds introduced for DI lifetime scopes (around `HttpContextAccessor` / `IUmbracoContextAccessor`).
 - **Cloud project de-duplication** — remove duplication in the `Cloud.Platforms` project.
 - **`checkout` / `accounts` etc. deletion in the `v17` branch** — *to discuss* (whether these projects should be dropped in v17).
