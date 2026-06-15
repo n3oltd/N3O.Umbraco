@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Data.Lookups;
+using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,30 +7,30 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Data.Models;
 
-public class NestedValueResMapping : IMapDefinition {
+public class BlockListValueResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<PublishedContentProperty, NestedValueRes>((_, _) => new NestedValueRes(), Map);
+        mapper.Define<PublishedContentProperty, BlockListValueRes>((_, _) => new BlockListValueRes(), Map);
     }
 
-    private void Map(PublishedContentProperty src, NestedValueRes dest, MapperContext ctx) {
+    private void Map(PublishedContentProperty src, BlockListValueRes dest, MapperContext ctx) {
         var elements = src.Property.GetValue() as IEnumerable<IPublishedElement>;
-        var items = new List<NestedItemRes>();
+        var items = new List<BlockListItemRes>();
         
         foreach (var element in elements.OrEmpty()) {
-            items.Add(PopulateNestedItem(ctx, element));
+            items.Add(PopulateBlockListItem(ctx, element));
         }
         
         dest.Items = items;
-        dest.Schema = ctx.Map<PublishedContentProperty, NestedSchemaRes>(src);
-        dest.Configuration = (NestedConfigurationRes) PropertyTypes.Nested.GetConfigurationRes(ctx, src.ContentTypeAlias, src.Property.Alias);
+        dest.Schema = ctx.Map<PublishedContentProperty, BlockListSchemaRes>(src);
+        dest.Configuration = (BlockListConfigurationRes) PropertyTypes.BlockList.GetConfigurationRes(ctx, src.ContentTypeAlias, src.Property.Alias);
     }
 
-    private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {
+    private BlockListItemRes PopulateBlockListItem(MapperContext ctx, IPublishedElement element) {
         var publishedContentProperties = element.Properties.Select(x => new PublishedContentProperty(element.ContentType.Alias, x));
         
         var properties = publishedContentProperties.Select(ctx.Map<PublishedContentProperty, ContentPropertyValueRes>);
         
-        var res = new NestedItemRes();
+        var res = new BlockListItemRes();
         res.ContentTypeAlias = element.ContentType.Alias;
         res.Properties = properties;
 

@@ -149,14 +149,12 @@ public class DataComponent : IAsyncComponent {
     private async Task EnsureDataTypeExistsAsync(DataEditor dataEditor, string name) {
         var key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
 
-        // Look up by the deterministic Key (not GetDataType(alias), which matches by Name and
-        // misses the existing row on restart/upgrade -> duplicate-key crash). See BLOCKER-11.
         var existing = await _dataTypeService.GetAsync(key);
 
         if (existing != null) {
-            // Fix data types created with the wrong name (alias instead of display name).
             if (!existing.Name.EqualsInvariant(name)) {
                 existing.Name = name;
+                
                 await _dataTypeService.UpdateAsync(existing, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
             }
 
@@ -166,8 +164,6 @@ public class DataComponent : IAsyncComponent {
         var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
         dataType.Name = name;
         dataType.Key = key;
-        // The UI editor alias (propertyEditorUi) equals the [DataEditor] alias for these editors; setting
-        // it stops the v17 data-type screen showing an empty property-editor picker. See DL-09 / BLOCKER-11.
         dataType.EditorUiAlias = dataEditor.Alias;
 
         await _dataTypeService.CreateAsync(dataType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);

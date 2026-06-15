@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,7 @@ public class ContentLocator : Locator, IContentLocator {
 
     protected override IPublishedCache PublishedCache => _contentCache;
 
-    protected override IEnumerable<Guid> GetRootKeys() {
-        _navigationQueryService.TryGetRootKeys(out var rootKeys);
-        
-        return rootKeys;
+    protected override IEnumerable<IPublishedContent> GetRootContents() {
+        return _navigationQueryService.GetPublishedRootContents(_contentCache);
     }
 }

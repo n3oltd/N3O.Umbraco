@@ -4,12 +4,12 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Models;
 
-public class NestedConfigurationResMapping : ContentPropertyConfigurationMapping<NestedConfigurationRes> {
-    public NestedConfigurationResMapping(IContentTypeService contentTypeService,
+public class BlockListConfigurationResMapping : ContentPropertyConfigurationMapping<BlockListConfigurationRes> {
+    public BlockListConfigurationResMapping(IContentTypeService contentTypeService,
                                          IEnumerable<IContentPropertyValidator> validators) 
         : base(contentTypeService, validators) { }
 
-    public override void Map(ContentPropertyConfiguration src, NestedConfigurationRes dest, MapperContext ctx) {
+    public override void Map(ContentPropertyConfiguration src, BlockListConfigurationRes dest, MapperContext ctx) {
         MapConfiguration(src.ContentTypeAlias, src.PropertyAlias, dest);
     }
 }

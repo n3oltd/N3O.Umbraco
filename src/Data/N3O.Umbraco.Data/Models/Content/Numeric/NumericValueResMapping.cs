@@ -10,7 +10,7 @@ public class NumericValueResMapping : IMapDefinition {
 
     private void Map(PublishedContentProperty src, NumericValueRes dest, MapperContext ctx) {
         dest.Value = (decimal?) src.Property.GetValue();
-        dest.Configuration = (NumericConfigurationRes) PropertyTypes.Nested.GetConfigurationRes(ctx,
+        dest.Configuration = (NumericConfigurationRes) PropertyTypes.BlockList.GetConfigurationRes(ctx,
                                                                                                  src.ContentTypeAlias,
                                                                                                  src.Property.Alias);
     }

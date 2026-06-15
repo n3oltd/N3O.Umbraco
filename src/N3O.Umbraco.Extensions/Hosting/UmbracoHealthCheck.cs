@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
 using System.Threading;
@@ -29,9 +30,10 @@ public class UmbracoHealthCheck : IHealthCheck {
             // underlying database is reachable. A brand-new site with no published content
             // will return an empty list which is still Healthy; only an exception (cache
             // not built, DB unreachable, Umbraco still starting) flips us to Unhealthy.
-            _navigationQueryService.TryGetRootKeys(out var rootKeys);
             
-            _ = rootKeys.Select(_publishedContentCache.GetById).ToList();
+            // TODO not necessarily accurate, if cache is not found for a content, in newer versions the content is fetched from the
+            // database and converted to a PublishedContent and returned which is not correct for this purpose
+            _ = _navigationQueryService.GetPublishedRootContents(_publishedContentCache);;
 
             return Task.FromResult(HealthCheckResult.Healthy());
         } catch (Exception ex) {

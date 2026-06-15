@@ -46,7 +46,7 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.FormContent = src.FormContent.ToDonationFormContentReq(_mediaUrl);
 
         dest.Order = new CampaignOrderReq();
-        dest.Order.Order = src.Content().Parent<IPublishedContent>().Children().FindIndex(x => x.Id == src.Content().Id);
+        dest.Order.Order = src.Content().Parent().Children().FindIndex(x => x.Id == src.Content().Id);
 
         try {
             ctx.Map<CampaignContent, IEnumerable<string>>(src);

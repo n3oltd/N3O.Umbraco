@@ -61,9 +61,7 @@ public abstract class Locator : ILocator {
     private IReadOnlyList<IPublishedContent> GetAllContent(string contentTypeAlias) {
         var allContent = new List<IPublishedContent>();
 
-        foreach (var rootKey in GetRootKeys()) {
-            var rootContent = PublishedCache.GetById(rootKey);
-
+        foreach (var rootContent in GetRootContents()) {
             if (rootContent == null) {
                 continue;
             }
@@ -83,5 +81,5 @@ public abstract class Locator : ILocator {
     }
 
     protected abstract IPublishedCache PublishedCache { get; }
-    protected abstract IEnumerable<Guid> GetRootKeys();
+    protected abstract IEnumerable<IPublishedContent> GetRootContents();
 }

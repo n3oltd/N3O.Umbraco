@@ -11,12 +11,6 @@ using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.Data.Controllers;
 
-// Restores the server-side visibility gating the AngularJS ExportApp content app used to enforce via
-// IContentAppFactory.GetContentAppFor before the Bellissima migration. The Export workspace view calls
-// this endpoint (via the N3O.Condition.WorkspaceVisibility frontend condition) to decide whether to show.
-// Reachable by any authenticated back-office user so non-export users receive { permitted: false } rather
-// than a 403; the group/filter gating is done in code below.
-// No explicit [Route] — inherits the base /umbraco/backoffice/api/[controller] (=> .../ExportVisibility).
 public class ExportVisibilityController : BackofficeAuthorizedApiController {
     private readonly IEnumerable<IExportContentFilter> _contentFilters;
     private readonly IContentService _contentService;
