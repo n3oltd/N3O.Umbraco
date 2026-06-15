@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Data.Controllers;
 // this endpoint (via the N3O.Condition.WorkspaceVisibility frontend condition) to decide whether to show.
 // Reachable by any authenticated back-office user so non-import users receive { permitted: false } rather
 // than a 403; the group/filter gating is done in code below.
-[Route("/umbraco/backoffice/api/Imports")]
+// No explicit [Route] — inherits the base /umbraco/backoffice/api/[controller] (=> .../ImportVisibility).
 public class ImportVisibilityController : BackofficeAuthorizedApiController {
     private readonly IEnumerable<IImportContentFilter> _contentFilters;
     private readonly IContentService _contentService;
@@ -30,7 +30,7 @@ public class ImportVisibilityController : BackofficeAuthorizedApiController {
         _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
     }
 
-    [HttpGet("visibility/{contentId:guid}")]
+    [HttpGet("{contentId:guid}")]
     public IActionResult GetVisibility([FromRoute] Guid contentId) {
         return Ok(new { permitted = IsPermitted(contentId) });
     }
@@ -42,7 +42,6 @@ public class ImportVisibilityController : BackofficeAuthorizedApiController {
             return false;
         }
 
-        // User must be an Umbraco admin OR a member of the Import Users group
         if (userGroups.All(x => !x.Alias.EqualsInvariant(UmbracoSecurity.AdminGroupAlias) &&
                                 !x.Alias.EqualsInvariant(DataConstants.SecurityGroups.ImportUsers.Alias))) {
             return false;
@@ -50,7 +49,7 @@ public class ImportVisibilityController : BackofficeAuthorizedApiController {
 
         var content = _contentService.GetById(contentId);
 
-        if (content == null || content.Id == default) {
+        if (content == null || content.Id == 0) {
             return false;
         }
 
