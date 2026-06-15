@@ -55,7 +55,6 @@ public abstract class PropertyType<TReq> : PropertyType {
 
 public class PropertyTypes : StaticLookupsCollection<PropertyType> {
     public static readonly PropertyType Boolean = new BooleanPropertyType();
-    public static readonly PropertyType Cropper = new CropperPropertyType();
     public static readonly PropertyType DateTime = new DateTimePropertyType();
     public static readonly PropertyType BlockList = new BlockListPropertyType();
     public static readonly PropertyType Numeric = new NumericPropertyType();

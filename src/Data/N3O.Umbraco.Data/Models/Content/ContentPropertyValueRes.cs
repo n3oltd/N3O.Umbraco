@@ -6,7 +6,6 @@ public class ContentPropertyValueRes {
     public string Alias { get; set; }
     public PropertyType Type { get; set; }
     public BooleanValueRes Boolean { get; set; }
-    public CropperValueRes Cropper { get; set; }
     public DateTimeValueRes DateTime { get; set; }
     public BlockListValueRes BlockList { get; set; }
     public NumericValueRes Numeric { get; set; }
