@@ -1,4 +1,4 @@
 {
-    "extends": "../../../tsconfig.base.json",
+    "extends": "@n3o/build/tsconfig",
     "include": ["src"]
 }

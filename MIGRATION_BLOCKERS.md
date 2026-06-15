@@ -10,7 +10,17 @@
 > Preview gating) + Export/Import content-app gating RESTORED (2026-06-11) via `N3O.Condition.WorkspaceVisibility`.**
 > Defer to the audit doc for current status.
 
-*Last updated: 2026-06-02 (session 7)*
+> **Session 18 update (2026-06-15):** every remaining **code-actionable** item in this doc is now resolved.
+> RR-10 Bundling → **deleted** (orphaned; build-time Vite is the v17 pattern). Cropper/Uploader → **switched to
+> native `Umbraco.MediaPicker3`** framework-side (6 plugin projects deleted, consumers on `MediaWithCrops`; build 0
+> errors). BLOCKER-02 action #3 (dead `GetOrCreateDataTypeContainer`) → confirmed already removed. BLOCKER-11
+> follow-up (`EditorUiAlias`) → confirmed already set. **The only genuinely-open items left are EXTERNAL or
+> per-site OPERATIONAL, none fixable in this repo's code:** BLOCKER-02 (await Perplex stable v4 *upstream release*),
+> BLOCKER-08 (purchase Umbraco Forms *subscription license*), BLOCKER-06 (per-site NC→BlockList *offline CLI run*),
+> Cropper/Uploader per-site data migration (*offline CLI*, runbook `CROPPER_UPLOADER_NATIVE_MIGRATION.md`), and the
+> BLOCKER-05 uSync-Publisher *remote-server E2E test*.
+
+*Last updated: 2026-06-15 (session 18)*
 
 > **Session 7:** Merged **`origin/main`** (latest stable, DonationFormState-aligned) into `v17-Talha` — bringing Sentry/health-checks/telemetry/CI — and ran a codebase-wide CS0618 deprecated-API sweep (76→5 warnings). `origin/v17` was NOT merged (it is `main` + 6 unfinished WIP commits). All pending items now carry a searchable **`TODO Migration Review`** code comment (`git grep "TODO Migration Review"`). Build 0 errors; pushed to `origin/v17-Talha`. Details: `SESSION_HANDOFF.md`. **Newly relevant to blockers below:** BLOCKER-10 (Hangfire auth) is marked in `SchedulerComposer.cs`; RR-10 Bundling marked in `Bundler.cs`; 5 CS0618 flags remain (no safe v17 replacement — all "removal in v18/19", harmless on v17).
 
@@ -62,9 +72,9 @@ RC releases should not be used in production. A stable v4.x release is needed.
 **Note:** Data types that were previously created by code (via `CreateDataTypes`) must now be managed via the Umbraco backoffice or uSync. Communicate this to all site teams.
 
 #### Action required
-1. Monitor https://github.com/PerplexDigital/Perplex.ContentBlocks for stable v4 release
+1. Monitor https://github.com/PerplexDigital/Perplex.ContentBlocks for stable v4 release **(EXTERNAL — upstream; cannot be resolved in code. rc.3 is functional.)**
 2. When available: upgrade from rc.3 to stable; verify API compatibility
-3. Delete dead `GetOrCreateDataTypeContainer` method from `PerplexBlockTypesService.cs`
+3. ~~Delete dead `GetOrCreateDataTypeContainer` method from `PerplexBlockTypesService.cs`~~ **DONE (already removed; verified gone 2026-06-15)**
 4. Document for site teams: Perplex data types are no longer auto-created; manage via backoffice/uSync
 
 ---
@@ -299,6 +309,7 @@ Three server-side gating losses from the AngularJS→Bellissima move:
 | ~~09~~ | ~~Assembly version `13.0.0`~~ | **DONE (placeholder)** (2026-06-02) — bulk-set to `17.0.0` across 114 csproj; re-stamp CalVer at publish | Low |
 | ~~10~~ | Access-control regressions (Hangfire / Export / Import / Preview) | **RESOLVED** — Hangfire→`SectionAccessSettings` ✅ (s8); Export/Import→server-side `[RequireUserGroup]` ✅ (s8) + client-side content-app gating ✅ (2026-06-11, verified); Preview content-type condition ✅ (2026-06-11, compile-verified) — all via shared `N3O.Condition.WorkspaceVisibility` | — |
 | ~~11~~ | ~~`DataComposer.EnsureDataTypeExists` lookup-by-alias~~ | **RESOLVED** (2026-06-02, session 6) — lookup by deterministic Key via `GetAsync`; verified live (no dup data types, app boots). Minor follow-up: also set `EditorUiAlias`. | — |
-| — | Bundling throws at render (RR-10) | **Decision** — delete orphaned project or no-op the tag-helpers; see `REVIEW_FINDINGS.md` | Medium |
+| — | Bundling throws at render (RR-10) | **RESOLVED (2026-06-15, session 18)** — orphaned `N3O.Umbraco.Bundling` deleted (sln + dir + 2 inert `Layout.cshtml` literals). Smidge has no v17 runtime replacement; build-time Vite is the v17 pattern (already used repo-wide). Build 0 errors | — |
+| — | Cropper/Uploader → native pickers | **DONE framework-side (2026-06-15, session 18)** — 6 plugin projects deleted; consumers on native `MediaWithCrops`; DemoSite data types → `Umbraco.MediaPicker3`; build 0 errors. Per-site data migration = offline CLI (`CROPPER_UPLOADER_NATIVE_MIGRATION.md`) | — |
 
 *Session-5 fixed defects (build 0 errors, boot clean) and the full review finding list live in `REVIEW_FINDINGS.md`.*

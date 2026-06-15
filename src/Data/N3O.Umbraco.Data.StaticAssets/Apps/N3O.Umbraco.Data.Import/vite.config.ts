@@ -1,4 +1,4 @@
-import { n3oPluginConfig } from '../../../../build/vite-config';
+import { n3oPluginConfig } from '@n3o/build';
 
 export default n3oPluginConfig({
     entries: {

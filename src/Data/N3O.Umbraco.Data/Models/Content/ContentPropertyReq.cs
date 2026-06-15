@@ -15,9 +15,6 @@ public class ContentPropertyReq {
     [Name("Boolean")]
     public BooleanValueReq Boolean { get; set; }
     
-    [Name("Cropper")]
-    public CropperValueReq Cropper { get; set; }
-    
     [Name("DateTime")]
     public DateTimeValueReq DateTime { get; set; }
 

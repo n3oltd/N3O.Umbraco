@@ -55,6 +55,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("file")]
-		public virtual global::N3O.Umbraco.Uploader.Models.FileUpload File => this.Value<global::N3O.Umbraco.Uploader.Models.FileUpload>(_publishedValueFallback, "file");
+		public virtual global::Umbraco.Cms.Core.Models.MediaWithCrops File => this.Value<global::Umbraco.Cms.Core.Models.MediaWithCrops>(_publishedValueFallback, "file");
 	}
 }

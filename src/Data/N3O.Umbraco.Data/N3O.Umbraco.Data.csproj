@@ -33,7 +33,6 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder\N3O.Umbraco.UIBuilder.csproj" />
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />

@@ -2,6 +2,8 @@
 
 > 🔎 **Migration follow-ups:** run **`git grep "TODO Migration Review"`** to find every migration follow-up in the code — deferred work, deprecated-API flags, stubs, and decisions a reviewer should verify (31 markers as of session 7).
 
+> **Session 18 summary (2026-06-15) — closed the two open code decisions in this doc + `MIGRATION_BLOCKERS.md`:** (1) **RR-10 Bundling** — deleted the orphaned `N3O.Umbraco.Bundling` project (Smidge has no v17 runtime replacement; the v17 pattern is build-time Vite, already used repo-wide). (2) **Cropper/Uploader → native** (decision: Talha) — hard-replaced both custom editors with native `Umbraco.MediaPicker3`/`MediaWithCrops`: deleted the 6 plugin projects, refactored all in-repo consumers, removed Cropper from the `N3O.Umbraco.Data` import/export pipeline, switched DemoSite Uploader data types to native. **Full solution build 0 errors (verified).** The per-site existing-data migration is an **offline CLI** (media-node creation needs the Umbraco runtime) — runbook in `CROPPER_UPLOADER_NATIVE_MIGRATION.md`, same model as NC→BlockList. Remaining open items in these docs are now **all external/operational**, not code: BLOCKER-02 (await Perplex stable v4 upstream release), BLOCKER-08 (purchase Forms subscription license), and the per-site offline data migrations (NC→BlockList, Cropper/Uploader) + uSync-Publisher remote-server E2E.
+
 > 📋 **Evaluation findings (session 10, read-only audit — nothing changed):** a 12-agent codebase sweep produced three companion documents for later evaluation:
 > - **`NOT_REQUIRED_TO_RUN.md`** — optional / removable / dead items (orphaned projects, stubs, committed build outputs, dev-only tools like Diplo.GodMode) classified by whether they're needed to run.
 > - **`TECH_DEBT_AND_MODERNIZATION.md`** — legacy patterns & better-approach opportunities: confirmed bugs (incl. a verified ContentPicker crash + v17 Block List export crash), security gaps (CORS wildcard, committed HMAC key, unauth'd upload), ~15 sync-over-async hot paths, deprecated APIs, dependency hygiene, the zero-tests/.NET-8-CI gaps, and U17/.NET10 modernization.
@@ -88,7 +90,7 @@ N3O.Umbraco is a **shared Umbraco package framework** (120 projects) consumed by
 | Content app registration (Import/Export/Preview) | **Done (migrated)** | Now `workspaceView` extensions (Data.Import, Data.Export, Cloud.Platforms.Preview); not yet live-rendered (need a content node) |
 | Dashboard registration (Scheduler, Welcome) | **Done + verified live** | `dashboard` extensions; both render in the backoffice (Welcome=Content, Scheduler=Settings/Hangfire iframe) |
 | Property editor UI alias = backend `[DataEditor]` alias | **Done** | Critical fix: data types store `editorUiAlias`; all 8 custom editors re-aliased to backend alias (TextResourceEditor → `N3O.Umbraco.TemplateTextEditor`) |
-| Cropper / Uploader native-picker migration | **PENDING DECISION** | Ported 1:1 (cropperjs/Formstone need global jQuery); may switch to Umbraco native media/image picker — awaiting Talha. Header comment added in `cropper.js`/`uploader.js` |
+| Cropper / Uploader native-picker migration | **Done (framework side, 2026-06-15 session 18)** | Decision (Talha): switch to native, hard-replace types, adopt native behavior. Deleted the 6 Cropper/Uploader plugin projects; in-repo consumers now use native `MediaWithCrops`; Cropper removed from the `N3O.Umbraco.Data` import/export pipeline; DemoSite Uploader data types → `Umbraco.MediaPicker3`. Build 0 errors. **Per-site existing-data migration = offline CLI** (runbook: `CROPPER_UPLOADER_NATIVE_MIGRATION.md`) |
 | Campaign/Offering backoffice notifications | **Not started** | `SendingContentNotification` stubs; Bellissima workspace views needed |
 | TelethonOnAir Cockpit factory | **Done (2026-06-02)** | `TelethonOnAirCockpitSegmentRuleFactory` implemented + registrations re-enabled; v17.2.2 API verified by reflection. AngularJS telethon UI still blocked. |
 | `GetNestedPropertySchemaHandler` | **Done — removed (2026-06-02)** | Was dead (zero callers); handler + query deleted. `NestedSchemaRes`/mapping kept (still live). |
@@ -185,11 +187,8 @@ All `package.manifest` files and AngularJS controllers must be replaced. In Umbr
 - `src/N3O.Umbraco.Extensions/Extensions/ContentServiceExtensions.cs` — throws bare `Exception` discarding `PublishResult` detail.
 - **Fix:** Surface `EventMessages`/`StatusType` in the exception.
 
-### RR-10 — ⚠️ DECISION NEEDED (2026-06-02 analysis) — `Bundling` service is entirely non-functional
-*Investigated: `N3O.Umbraco.Bundling` is fully orphaned — zero consumers anywhere (no ProjectReference/PackageReference, no `IAssetBundle` impls, no `@addTagHelper`). Only artifact: two inert `<n3o-css-bundle/>`/`<n3o-js-bundle/>` literals in DemoSite `Layout.cshtml` (lines 30, 52) that don't bind (tag helpers unregistered). Recommend **delete the project** (+ its 2 sln entries/GUIDs `{C52E624B-...}`,`{9D94C90F-...}` + the 2 cshtml lines), OR build a Vite/ESM replacement. Not actioned — awaiting decision.*
-- `src/Bundling/N3O.Umbraco.Bundling/Services/Bundler.cs` — all methods throw `NotSupportedException("Smidge bundling was removed in Umbraco 14")`.
-- `src/Bundling/N3O.Umbraco.Bundling/AssetBundle.I.cs` — stub interface.
-- **Fix:** If bundling is still needed by any consumer, implement via Vite/esbuild/native ES modules. If no consumers remain, delete both files.
+### RR-10 — ✅ DONE (2026-06-15, session 18) — `Bundling` orphaned project deleted
+*Decision (research-backed): Smidge was removed in Umbraco 14 and **has no runtime replacement** — the v17 pattern is **build-time bundling via Vite** with static `<link>`/`<script>` references (the exact pattern this repo already uses for every backoffice ClientApp; see [Umbraco docs](https://docs.umbraco.com/umbraco-cms/get-started/upgrading-and-migrating/version-specific)). `N3O.Umbraco.Bundling` was fully orphaned (zero ProjectReferences anywhere, no `IAssetBundle` impls, tag helpers never `@addTagHelper`-registered), so there was nothing to reimplement. **Actioned:** deleted the project via `dotnet sln remove` (cleaned the GUID/config/folder entries) + removed the directory; removed the two inert `<n3o-css-bundle/>`/`<n3o-js-bundle/>` literals from DemoSite `Layout.cshtml`. Build 0 errors. Any consuming site needing front-end bundling does it at build time with Vite — no runtime service required.
 
 ---
 
@@ -304,15 +303,15 @@ Migration is complete when:
 - [x] All Bellissima plugins converted to **TypeScript + Vite** (session 6) — build 0 errors; `BuildClientApp` MSBuild target wires npm into `dotnet build`
 - [~] Content apps (Import, Export, Platforms Preview) registered as `workspaceView` — **migrated; live-render test pending (needs content node)**
 - [x] Dashboards (Scheduler, WelcomeDashboard) registered and **verified rendering** in backoffice
-- [~] Property editors — **registered & selectable in the live backoffice (6 referenced UIs verified session 6)**; render *inside a content workspace* still pending content/data-type fixtures (Cells, Cropper, EditorJs, SerpEditor, TextResourceEditor, Uploader)
-- [ ] **Decision:** Cropper/Uploader — keep bundled cropperjs/Formstone (needs jQuery) or switch to Umbraco native media/image picker
+- [~] Property editors — **registered & selectable in the live backoffice (6 referenced UIs verified session 6)**; render *inside a content workspace* still pending content/data-type fixtures (Cells, EditorJs, SerpEditor, TextResourceEditor). **Cropper & Uploader removed (session 18)** — replaced by native `Umbraco.MediaPicker3`
+- [x] **Decision:** Cropper/Uploader — **switch to Umbraco native pickers** (Talha, 2026-06-15). Framework-side editor removal done + build-verified; per-site data migration is an offline CLI (`CROPPER_UPLOADER_NATIVE_MIGRATION.md`)
 - [ ] Campaign/Offering workspace views implemented
 - [ ] `TelethonOnAirCockpitSegmentRuleFactory` implemented and registered
 - [ ] `GetNestedPropertySchemaHandler` implemented or removed
 - [ ] `GetPreviewUrlAsync` implemented for all URL provider subclasses
 - [x] Data controllers authenticated (RR-08)
 - [~] Access-control gating restored (BLOCKER-10) — Hangfire (`SectionAccessSettings`) + Export/Import (`[RequireUserGroup]`, server-side) **done**; Platforms-Preview content-type condition **deferred** (display-only, needs custom Bellissima condition)
-- [ ] Bundling service implemented or removed
+- [x] Bundling service implemented or removed — **removed** (orphaned `N3O.Umbraco.Bundling` deleted; v17 = build-time Vite, no runtime service)
 - [ ] `SaveAndPublish` has production-grade error handling
 - [ ] All `<Version>` tags updated from `13.0.0` to `17.x`
 - [ ] `uSync.Publisher` `SyncContentHandler` reimplemented (when Jumoo docs available)
