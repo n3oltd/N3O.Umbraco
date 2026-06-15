@@ -7,15 +7,8 @@
         "build": "tsc --noEmit && vite build",
         "watch": "vite build --watch"
     },
-    "dependencies": {},
     "devDependencies": {
         "@n3o/backoffice-core": "*",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
-        "@umbraco-cms/backoffice": "17.3.5",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0",
-        "typescript": "~5.7.0",
-        "vite": "^6.0.0"
+        "@n3o/build": "*"
     }
 }

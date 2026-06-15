@@ -1,4 +1,4 @@
-import { n3oPluginConfig } from '../../../build/vite-config';
+import { n3oPluginConfig } from '@n3o/build';
 
 // Builds the Platforms Preview as a web-component shell that mounts a React app, into the shipped
 // App_Plugins folder. @umbraco-cms/* AND react/react-dom are kept external — resolved at runtime

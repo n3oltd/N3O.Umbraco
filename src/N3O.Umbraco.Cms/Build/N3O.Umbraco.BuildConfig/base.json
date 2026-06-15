@@ -1,4 +1,6 @@
 {
+    // Shared TypeScript base for all N3O backoffice client apps. Apps reference this BY NAME via
+    // "extends": "@n3o/build/tsconfig" (resolved through the workspace symlink — no relative paths).
     "compilerOptions": {
         "target": "ES2022",
         "module": "ESNext",
@@ -15,5 +17,9 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "types": ["@umbraco-cms/backoffice/extension-types"]
-    }
+    },
+    // Shared ambient types extension point: this propagates to every app through `extends`, so apps
+    // need no local vite-env.d.ts. WARNING: an app that declares its OWN tsconfig "files" key would
+    // silently suppress this inherited entry.
+    "files": ["vite-env.d.ts"]
 }

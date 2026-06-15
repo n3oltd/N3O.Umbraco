@@ -47,3 +47,4 @@ export {
   B as WorkspaceVisibilityCondition,
   B as default
 };
+//# sourceMappingURL=workspace-visibility-condition.js.map

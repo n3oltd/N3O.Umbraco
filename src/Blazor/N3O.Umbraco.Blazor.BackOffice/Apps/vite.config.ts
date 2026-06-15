@@ -1,4 +1,4 @@
-import { n3oPluginConfig } from '../../../build/vite-config';
+import { n3oPluginConfig } from '@n3o/build';
 
 // Builds the Blazor BackOffice loader script into the shipped App_Plugins folder.
 // This is a non-Lit bundle/script entry — it is a plain loader, not a custom element.

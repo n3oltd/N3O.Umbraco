@@ -19,3 +19,4 @@ export {
   l as UmbElementMixin,
   c as createAuthFetch
 };
+//# sourceMappingURL=auth-fetch.js.map

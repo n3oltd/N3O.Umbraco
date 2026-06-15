@@ -1,4 +1,4 @@
-import { n3oPluginConfig } from '../../../build/vite-config';
+import { n3oPluginConfig } from '@n3o/build';
 
 // Builds both DynamicListViews Lit components into the shipped App_Plugins folder.
 // @umbraco-cms/* imports are kept external (resolved at runtime by Umbraco's import map).
