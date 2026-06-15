@@ -34,8 +34,8 @@ public static class ContentTypeExtensions {
                                                        IPropertyType propertyType,
                                                        PropertyGroup group = null) {
         // IPropertyType.DataTypeKey (Guid) is available in v17. GetAsync(Guid) is the non-deprecated
-        // replacement. GetAwaiter().GetResult() is safe here: ASP.NET Core thread pool has no
-        // SynchronizationContext, and data type lookups are backed by HybridCache (fast in-memory).
+        // replacement for the old synchronous overload. GetAwaiter().GetResult() is safe here:
+        // ASP.NET Core thread pool has no SynchronizationContext, so there is no deadlock risk.
         var dataType = dataTypeService.GetAsync(propertyType.DataTypeKey).GetAwaiter().GetResult();
         var elements = new List<ElementInfo>();
         

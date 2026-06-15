@@ -40,7 +40,7 @@ export function ImportDataEditorApp({ value, onTextChange, onFileSelected }: Imp
                             className="custom"
                             value={field.value ?? ''}
                             placeholder={field.sourceValue ?? ''}
-                            onInput={(e) => onTextChange(index, (e.target as HTMLInputElement).value)}
+                            onChange={(e) => onTextChange(index, e.currentTarget.value)}
                         />
 
                         {field.isFile ? (

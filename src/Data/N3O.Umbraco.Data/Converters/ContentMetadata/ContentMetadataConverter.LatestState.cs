@@ -16,10 +16,10 @@ public class LatestStateContentMetadataConverter : ContentMetadataConverter<stri
     }
 
     public override object GetValue(IContent content) {
-        // GetItemsByEntityAsync replaces the deprecated GetLogs(int) (removed in Umbraco 19).
-        // skip=0, take=1, Descending returns the most recent entry directly.
+        // GetItemsByKeyAsync is the non-obsolete Guid-keyed overload (GetItemsByEntityAsync(int) is
+        // [Obsolete] in v17). skip=0, take=1, Descending returns the most recent entry directly.
         // GetAwaiter().GetResult() is safe: no SynchronizationContext on ASP.NET Core thread pool.
-        var latestAuditLog = _auditService.GetItemsByEntityAsync(content.Id, 0, 1, Direction.Descending, null, null)
+        var latestAuditLog = _auditService.GetItemsByKeyAsync(content.Key, UmbracoObjectTypes.Document, 0, 1, Direction.Descending)
                                            .GetAwaiter()
                                            .GetResult()
                                            .Items

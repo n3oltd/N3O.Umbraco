@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Services.Navigation;
 using OurDataType = N3O.Umbraco.Data.Lookups.DataType;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
@@ -16,14 +15,11 @@ namespace N3O.Umbraco.Data.Parsing;
 public class ContentParser : DataTypeParser<IContent>, IContentParser {
     private readonly IContentService _contentService;
     private readonly IContentHelper _contentHelper;
-    private readonly IDocumentNavigationQueryService _navigationQueryService;
 
     public ContentParser(IContentService contentService,
-                         IContentHelper contentHelper,
-                         IDocumentNavigationQueryService navigationQueryService) {
+                         IContentHelper contentHelper) {
         _contentService = contentService;
         _contentHelper = contentHelper;
-        _navigationQueryService = navigationQueryService;
     }
     
     public override bool CanParse(OurDataType dataType) {
@@ -48,15 +44,7 @@ public class ContentParser : DataTypeParser<IContent>, IContentParser {
                     if (parentId != null) {
                         searchRoots.Add(_contentService.GetById(parentId.Value));
                     } else {
-                        _navigationQueryService.TryGetRootKeys(out var rootKeys);
-                        
-                        foreach (var rootKey in rootKeys) {
-                            var root = _contentService.GetById(rootKey);
-
-                            if (root != null) {
-                                searchRoots.Add(root);
-                            }
-                        }
+                        searchRoots.AddRange(_contentService.GetRootContent());
                     }
 
                     var matches = searchRoots.SelectMany(r => _contentHelper.GetDescendants(r)

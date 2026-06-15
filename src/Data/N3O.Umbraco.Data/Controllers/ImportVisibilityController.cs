@@ -44,7 +44,7 @@ public class ImportVisibilityController : BackofficeAuthorizedApiController {
 
         // User must be an Umbraco admin OR a member of the Import Users group
         if (userGroups.All(x => !x.Alias.EqualsInvariant(UmbracoSecurity.AdminGroupAlias) &&
-                                x.Name != DataConstants.SecurityGroups.ImportUsers.Name)) {
+                                !x.Alias.EqualsInvariant(DataConstants.SecurityGroups.ImportUsers.Alias))) {
             return false;
         }
 
