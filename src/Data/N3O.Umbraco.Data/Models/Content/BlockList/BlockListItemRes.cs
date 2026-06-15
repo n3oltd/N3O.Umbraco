@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Models;
 
-public class NestedItemRes {
+public class BlockListItemRes {
     public string ContentTypeAlias { get; set; }
     public IEnumerable<ContentPropertyValueRes> Properties { get; set; }
 }

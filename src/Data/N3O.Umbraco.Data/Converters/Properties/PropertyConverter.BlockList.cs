@@ -161,12 +161,11 @@ public class BlockListPropertyConverter : IPropertyConverter {
 
     private int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
         var configuration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
-        var maxItems = configuration.ValidationLimit?.Max;
 
-        if (maxItems == null || maxItems == 0) {
+        if (configuration.ValidationLimit.Min == null || configuration.ValidationLimit.Max == 0) {
             return DataConstants.Limits.Columns.MaxValues;
         } else {
-            return maxItems.GetValueOrThrow();
+            return configuration.ValidationLimit.Max.GetValueOrThrow();
         }
     }
     

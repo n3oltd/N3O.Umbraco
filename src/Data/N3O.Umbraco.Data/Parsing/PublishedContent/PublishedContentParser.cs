@@ -45,11 +45,9 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
                 if (parentId != null) {
                     searchRoots.Add(_publishedContentCache.GetById(parentId.Value));
                 } else {
-                    _navigationQueryService.TryGetRootKeys(out var rootKeys);
-                    foreach (var rootKey in rootKeys ?? Enumerable.Empty<Guid>()) {
-                        var root = _publishedContentCache.GetById(rootKey);
-                        if (root != null) searchRoots.Add(root);
-                    }
+                    var rootContents = _navigationQueryService.GetPublishedRootContents(_publishedContentCache);
+                    
+                    searchRoots.AddRange(rootContents);
                 }
 
                 IReadOnlyList<IPublishedContent> matches;
@@ -101,7 +99,7 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
         while (true) {
             path.Add(content.Name);
 
-            content = content.Parent<IPublishedContent>();
+            content = content.Parent();
 
             if (content == root) {
                 break;

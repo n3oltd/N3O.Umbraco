@@ -72,15 +72,6 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
     }
 
     public async Task<None> Handle(ProcessImportCommand req, CancellationToken cancellationToken) {
-        // The Import status row is read and written over its own short-lived NPoco connection
-        // (IUmbracoDatabaseFactory.CreateDatabase()), DISTINCT from the ambient Umbraco scope/connection
-        // that IContentService uses for the content operations. This separation is intentional: the status
-        // write must persist on its OWN connection regardless of whether the content publish succeeds or
-        // fails (see the catch blocks below), so that a failed import is durably recorded as Error rather
-        // than rolled back with the content transaction. To avoid two connections being held open at once
-        // (the contention/deadlock risk), the read connection is opened and disposed BEFORE any
-        // IContentService work runs, and a fresh connection is opened only for the final status write AFTER
-        // that work has completed. No raw NPoco connection is alive while the content scope is doing work.
         Import import;
 
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
@@ -114,9 +105,6 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                 import.Error(_jsonProvider, ex);
             }
 
-            // Incremental status write on its own connection, after all content work has finished. This
-            // persists the final status (SavedAndPublished / Saved / Error) independently of the content
-            // transaction, preserving the partial-state-on-failure behaviour described above.
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
                 await db.UpdateAsync(import);
             }

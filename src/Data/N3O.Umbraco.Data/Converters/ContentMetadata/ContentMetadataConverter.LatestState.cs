@@ -16,10 +16,7 @@ public class LatestStateContentMetadataConverter : ContentMetadataConverter<stri
     }
 
     public override object GetValue(IContent content) {
-        // GetItemsByKeyAsync is the non-obsolete Guid-keyed overload (GetItemsByEntityAsync(int) is
-        // [Obsolete] in v17). skip=0, take=1, Descending returns the most recent entry directly.
-        // GetAwaiter().GetResult() is safe: no SynchronizationContext on ASP.NET Core thread pool.
-        var latestAuditLog = _auditService.GetItemsByKeyAsync(content.Key, UmbracoObjectTypes.Document, 0, 1, Direction.Descending)
+        var latestAuditLog = _auditService.GetItemsByKeyAsync(content.Key, UmbracoObjectTypes.Document, 0, 1)
                                            .GetAwaiter()
                                            .GetResult()
                                            .Items

@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Validation;
 using Newtonsoft.Json;
@@ -21,8 +21,8 @@ public class ContentPropertyReq {
     [Name("DateTime")]
     public DateTimeValueReq DateTime { get; set; }
 
-    [Name("Nested")]
-    public NestedValueReq Nested { get; set; }
+    [Name("BlockList")]
+    public BlockListValueReq BlockList { get; set; }
     
     [Name("Numeric")]
     public NumericValueReq Numeric { get; set; }

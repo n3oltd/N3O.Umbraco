@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,23 +10,23 @@ using PropertyType = N3O.Umbraco.Data.Lookups.PropertyType;
 
 namespace N3O.Umbraco.Data.Models;
 
-public class NestedSchemaResMapping : IMapDefinition {
+public class BlockListSchemaResMapping : IMapDefinition {
     private readonly IContentTypeService _contentTypeService;
     private readonly IEnumerable<PropertyType> _propertyTypes;
 
-    public NestedSchemaResMapping(IContentTypeService contentTypeService, ILookups lookups) {
+    public BlockListSchemaResMapping(IContentTypeService contentTypeService, ILookups lookups) {
         _contentTypeService = contentTypeService;
         _propertyTypes = lookups.GetAll<PropertyType>();
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<PublishedContentProperty, NestedSchemaRes>((_, _) => new NestedSchemaRes(), Map);
+        mapper.Define<PublishedContentProperty, BlockListSchemaRes>((_, _) => new BlockListSchemaRes(), Map);
     }
 
-    private void Map(PublishedContentProperty src, NestedSchemaRes dest, MapperContext ctx) {
+    private void Map(PublishedContentProperty src, BlockListSchemaRes dest, MapperContext ctx) {
         var blockListConfiguration = src.Property.PropertyType.DataType.ConfigurationAs<BlockListConfiguration>();
 
-        var items = new List<NestedSchemaItemRes>();
+        var items = new List<BlockListSchemaItemRes>();
 
         foreach (var block in blockListConfiguration?.Blocks.OrEmpty()) {
             var contentType = _contentTypeService.Get(block.ContentElementTypeKey);
@@ -39,28 +39,28 @@ public class NestedSchemaResMapping : IMapDefinition {
         dest.Items = items;
     }
 
-    private NestedSchemaItemRes PopulateContentTypes(MapperContext ctx, string contentTypeAlias) {
+    private BlockListSchemaItemRes PopulateContentTypes(MapperContext ctx, string contentTypeAlias) {
         var contentType = _contentTypeService.Get(contentTypeAlias);
         
-        var properties = new List<NestedSchemaPropertyRes>();
+        var properties = new List<BlockListSchemaPropertyRes>();
 
         foreach (var propertyType in contentType.CompositionPropertyTypes.OrEmpty()) {
-            properties.Add(GetNestedSchemaPropertyRes(ctx, contentTypeAlias, propertyType));
+            properties.Add(GetBlockListSchemaPropertyRes(ctx, contentTypeAlias, propertyType));
         }
         
-        var res = new NestedSchemaItemRes();
+        var res = new BlockListSchemaItemRes();
         res.ContentTypeAlias = contentType.Alias;
         res.Properties = properties;
 
         return res;
     }
 
-    private NestedSchemaPropertyRes GetNestedSchemaPropertyRes(MapperContext ctx,
+    private BlockListSchemaPropertyRes GetBlockListSchemaPropertyRes(MapperContext ctx,
                                                                string contentTypeAlias,
                                                                IPropertyType propertyType)  {
         var type = _propertyTypes.SingleOrDefault(x => x.EditorAliases.Contains(propertyType.PropertyEditorAlias));
             
-        var res = new NestedSchemaPropertyRes();
+        var res = new BlockListSchemaPropertyRes();
         res.Type = type;
         res.Alias = propertyType.Alias;
         

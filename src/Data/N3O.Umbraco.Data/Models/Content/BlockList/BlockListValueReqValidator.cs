@@ -1,11 +1,11 @@
-﻿using FluentValidation;
+using FluentValidation;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Data.Models;
 
-public class NestedValueReqValidator : ModelValidator<NestedValueReq> {
-    public NestedValueReqValidator(IFormatter formatter) : base(formatter) {
+public class BlockListValueReqValidator : ModelValidator<BlockListValueReq> {
+    public BlockListValueReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Items)
            .NotEmpty()
            .WithMessage(Get<Strings>(x => x.SpecifyItems));
