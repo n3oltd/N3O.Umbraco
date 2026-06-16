@@ -36,21 +36,14 @@ interface DataExportAppProps {
     authFetch: AuthFetch | null;
 }
 
-// React UI for the content-export workspace view. Exports a document's descendants of a chosen content
-// type to Excel/CSV. Ported from the Lit component; reuses the same backend endpoints verbatim. The
-// current document key is supplied by the host shell (from the document workspace context) as a prop.
-export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
+// Task 3: custom hook that fetches server-side reference data (content types + metadata).
+// Returns stable-empty arrays until both contentKey and authFetch are available.
+function useExportServerData(
+    contentKey: string | null,
+    authFetch: AuthFetch | null,
+): { contentTypes: ContentType[]; metadatas: ContentMetadata[] } {
     const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
-    const [contentType, setContentType] = useState<ContentType | null>(null);
-    const [format, setFormat] = useState<string>('excel');
-    const [includeUnpublished, setIncludeUnpublished] = useState<boolean>(false);
     const [metadatas, setMetadatas] = useState<ContentMetadata[]>([]);
-    const [exportableProperties, setExportableProperties] = useState<ExportableProperty[]>([]);
-    const [processing, setProcessing] = useState<boolean>(false);
-    const [progress, setProgress] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-    const cancelledRef = useRef<boolean>(false);
 
     useEffect(() => {
         if (!contentKey || !authFetch) {
@@ -59,12 +52,18 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
 
         let active = true;
 
-        const init = async (): Promise<void> => {
-            const types = await getContentTypes(contentKey);
+        const load = async (): Promise<void> => {
+            const [typesRes, metaRes] = await Promise.all([
+                authFetch(`/umbraco/backoffice/api/ContentTypes/${contentKey}/relations?type=descendant`, {
+                    headers: { Accept: 'application/json' },
+                }),
+                authFetch('/umbraco/backoffice/api/Exports/lookups/contentMetadata', {
+                    headers: { Accept: 'application/json' },
+                }),
+            ]);
 
-            const metadata = (await authFetch('/umbraco/backoffice/api/Exports/lookups/contentMetadata', {
-                headers: { Accept: 'application/json' },
-            }).then((r) => r.json())) as ContentMetadata[];
+            const types = (await typesRes.json()) as ContentType[];
+            const metadata = (await metaRes.json()) as ContentMetadata[];
 
             for (const m of metadata) {
                 m.selected = m.autoSelected;
@@ -78,29 +77,59 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
             }
         };
 
-        void init();
+        void load();
 
         return () => {
             active = false;
-            cancelledRef.current = true;
         };
     }, [contentKey, authFetch]);
 
-    const getContentTypes = async (contentId: string): Promise<ContentType[]> => {
-        const response = await authFetch!(`/umbraco/backoffice/api/ContentTypes/${contentId}/relations?type=descendant`, {
-            headers: { Accept: 'application/json' },
-        });
+    return { contentTypes, metadatas };
+}
 
-        return (await response.json()) as ContentType[];
-    };
+// React UI for the content-export workspace view. Exports a document's descendants of a chosen content
+// type to Excel/CSV. Ported from the Lit component; reuses the same backend endpoints verbatim. The
+// current document key is supplied by the host shell (from the document workspace context) as a prop.
+export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
+    // Task 3: server reference data lives in the custom hook; local state covers only UI / export flow.
+    const { contentTypes, metadatas: initialMetadatas } = useExportServerData(contentKey, authFetch);
+
+    const [contentType, setContentType] = useState<ContentType | null>(null);
+    const [format, setFormat] = useState<string>('excel');
+    const [includeUnpublished, setIncludeUnpublished] = useState<boolean>(false);
+    const [metadatas, setMetadatas] = useState<ContentMetadata[]>([]);
+    const [exportableProperties, setExportableProperties] = useState<ExportableProperty[]>([]);
+    const [processing, setProcessing] = useState<boolean>(false);
+    const [progress, setProgress] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    // Task 1: generation counter replaces the shared/reset cancelledRef pattern.
+    // Each new doExport() increments the counter; the poll closure captures the value at call-time
+    // and bails out if a newer generation has started. The setTimeout id is captured so the
+    // pending tick is cancelled immediately when a new export starts or the component unmounts.
+    const generationRef = useRef<number>(0);
+    const pollTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    // Cancel any pending poll tick when the component unmounts.
+    useEffect(() => {
+        return () => {
+            clearTimeout(pollTimerRef.current);
+            generationRef.current += 1;
+        };
+    }, []);
+
+    // Sync initialMetadatas from the hook into local state so the user can toggle selections.
+    useEffect(() => {
+        setMetadatas(initialMetadatas);
+    }, [initialMetadatas]);
 
     const refreshProperties = async (selected: ContentType | null): Promise<void> => {
-        if (!selected) {
+        if (!selected || !authFetch) {
             setExportableProperties([]);
             return;
         }
 
-        const res = (await authFetch!(`/umbraco/backoffice/api/Exports/exportableProperties/${selected.alias}`, {
+        const res = (await authFetch(`/umbraco/backoffice/api/Exports/exportableProperties/${selected.alias}`, {
             headers: { Accept: 'application/json' },
         }).then((r) => r.json())) as ExportableProperty[];
 
@@ -124,36 +153,43 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
         setErrorMessage(message);
     };
 
+    // Task 1: poll() captures the current generation at call time (incremented by doExport before calling
+    // poll). Stale ticks from a previous export are discarded when generationRef.current !== gen.
+    // The setTimeout id is captured in pollTimerRef so doExport can clearTimeout on the next invocation.
     const poll = (exportId: string): Promise<ExportProgressResponse> => {
-        cancelledRef.current = false;
+        const gen = generationRef.current;
 
         const executePoll = async (
             resolve: (value: ExportProgressResponse) => void,
             reject: (reason?: unknown) => void
         ): Promise<void> => {
-            if (cancelledRef.current) {
+            if (generationRef.current !== gen) {
                 reject(new Error('poll cancelled'));
                 return;
             }
 
+            // Task 2: authFetch is guarded by canExport before doExport() is called; safe to use directly.
             const getProgress = await authFetch!(`/umbraco/backoffice/api/Exports/export/${exportId}/progress`, {
                 headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                 method: 'GET',
             });
 
-            const progressRes = (await getProgress.json()) as ExportProgressResponse;
-
-            if (getProgress.status !== 200) {
+            // Task 4: use response.ok instead of comparing === 200.
+            if (!getProgress.ok) {
+                const progressRes = (await getProgress.json()) as ExportProgressResponse;
                 processingError(String(progressRes));
                 reject(progressRes);
                 return;
             }
 
+            const progressRes = (await getProgress.json()) as ExportProgressResponse;
+
             if (progressRes.isComplete === true) {
                 resolve(progressRes);
             } else {
                 setProgress(progressRes.text);
-                setTimeout(() => void executePoll(resolve, reject), 2500);
+                // Task 1: capture the timer id so it can be cleared on cancel.
+                pollTimerRef.current = setTimeout(() => void executePoll(resolve, reject), 2500);
             }
         };
 
@@ -161,6 +197,10 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
     };
 
     const doExport = async (): Promise<void> => {
+        // Task 1: cancel any in-flight poll timer before starting a new export.
+        clearTimeout(pollTimerRef.current);
+        generationRef.current += 1;
+
         setProcessing(true);
         setProgress('');
         setErrorMessage(null);
@@ -185,6 +225,7 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
             properties: selectedPropertyAliases,
         };
 
+        // Task 2: authFetch is guarded by canExport (!! authFetch check); non-null assertion is safe here.
         const createExport = await authFetch!(
             `/umbraco/backoffice/api/Exports/export/${contentKey}/${contentType.alias}`,
             {
@@ -194,12 +235,14 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
             }
         );
 
-        const createRes = (await createExport.json()) as CreateExportResponse;
-
-        if (createExport.status !== 200) {
+        // Task 4: use response.ok instead of comparing === 200.
+        if (!createExport.ok) {
+            const createRes = (await createExport.json()) as CreateExportResponse;
             processingError(String(createRes));
             return;
         }
+
+        const createRes = (await createExport.json()) as CreateExportResponse;
 
         poll(createRes.id)
             .then(async (res) => {
@@ -208,7 +251,8 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
                     method: 'GET',
                 });
 
-                if (exportFile.status !== 200) {
+                // Task 4: use response.ok instead of comparing === 200.
+                if (!exportFile.ok) {
                     processingError(String(await exportFile.json()));
                     return;
                 }
@@ -250,7 +294,8 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
     const selectedMetadataCount = metadatas.filter((m) => m.selected).length;
     const selectedPropertyCount = exportableProperties.filter((p) => p.selected).length;
     const hasSelection = selectedMetadataCount > 0 || selectedPropertyCount > 0;
-    const canExport = !!contentType && hasSelection && !processing;
+    // Task 2: guard canExport with !! authFetch so the Export button is disabled until auth is ready.
+    const canExport = !!contentType && hasSelection && !processing && !!authFetch;
 
     return (
         <div className="n3o-data-export">

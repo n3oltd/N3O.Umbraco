@@ -27,7 +27,7 @@ export function ImportNoticesViewerApp({ value }: ImportNoticesViewerAppProps) {
                         <em className="text-error">Errors</em>
                     </p>
                     {errors!.map((error, index) => (
-                        <div className="row-wrapper" key={`error-${index}`}>
+                        <div className="row-wrapper" key={`error-${error}-${index}`}>
                             <div className="row">{error}</div>
                         </div>
                     ))}
@@ -40,7 +40,7 @@ export function ImportNoticesViewerApp({ value }: ImportNoticesViewerAppProps) {
                         <em className="text-warning">Warnings</em>
                     </p>
                     {warnings!.map((warning, index) => (
-                        <div className="row-wrapper" key={`warning-${index}`}>
+                        <div className="row-wrapper" key={`warning-${warning}-${index}`}>
                             <div className="row">{warning}</div>
                         </div>
                     ))}
