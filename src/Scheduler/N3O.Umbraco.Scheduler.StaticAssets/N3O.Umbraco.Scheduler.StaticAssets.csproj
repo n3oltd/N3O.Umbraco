@@ -39,12 +39,6 @@
         <ProjectReference Include="..\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Apps\package.json" />
-    </ItemGroup>
-    <Target Name="BuildClientApps" BeforeTargets="BeforeBuild" DependsOnTargets="ResolveProjectReferences">
-        <Exec Command="npm run build" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" />
-    </Target>
-    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>

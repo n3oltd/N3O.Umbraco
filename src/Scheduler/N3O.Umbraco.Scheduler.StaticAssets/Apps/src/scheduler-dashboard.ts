@@ -10,6 +10,7 @@ import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { SchedulerDashboardApp } from './scheduler-dashboard-app';
+import cssText from './scheduler-dashboard-app.css?inline';
 
 const elementName = 'n3o-scheduler-dashboard';
 
@@ -21,6 +22,9 @@ export class N3oSchedulerDashboardElement extends HTMLElement {
     constructor() {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(cssText);
+        shadow.adoptedStyleSheets = [sheet];
         this.#mount = document.createElement('div');
         shadow.appendChild(this.#mount);
     }

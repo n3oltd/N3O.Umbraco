@@ -8,4 +8,5 @@ export default n3oPluginConfig({
         'N3O.Umbraco.DynamicListViews/dynamic-list-view-condition': 'src/dynamic-list-view-condition.ts',
     },
     outDir: '../../wwwroot/App_Plugins',
+    additionalExternals: ['@n3o/backoffice-core'],
 });

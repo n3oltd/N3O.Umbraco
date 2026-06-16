@@ -19,7 +19,7 @@
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Description>TODO</Description>
+        <Description>Blazor Server backoffice integration for Umbraco 17. Registers a JavaScript bundle that injects the Blazor Server script and starts the SignalR circuit, enabling Blazor Server components to run inside the Umbraco backoffice.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>

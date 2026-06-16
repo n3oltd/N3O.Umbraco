@@ -1,33 +1,33 @@
 import { customElement as S } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as D } from "@umbraco-cms/backoffice/element-api";
-import { UMB_BLOCK_ENTRY_CONTEXT as L, UMB_BLOCK_MANAGER_CONTEXT as A } from "@umbraco-cms/backoffice/block";
-import { UMB_DOCUMENT_WORKSPACE_CONTEXT as R } from "@umbraco-cms/backoffice/document";
+import { UMB_BLOCK_ENTRY_CONTEXT as D, UMB_BLOCK_MANAGER_CONTEXT as A } from "@umbraco-cms/backoffice/block";
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT as F } from "@umbraco-cms/backoffice/document";
+import { UmbAuthFetchMixin as L, UmbElementMixin as R } from "@n3o/backoffice-core";
 import { createElement as $ } from "react";
 import { createRoot as G } from "react-dom/client";
-import { jsxs as K, Fragment as H, jsx as M } from "react/jsx-runtime";
+import { jsxs as K, Fragment as H, jsx as E } from "react/jsx-runtime";
 const X = ":host{display:block}.block-preview-frame{display:block;width:100%;border:none;transform:scale(.9);transform-origin:top left}.preview-alert{background-color:#f0ac00;border:1px solid transparent;border-radius:0;margin-bottom:20px;padding:8px 35px 8px 14px;position:relative}.preview-alert uui-loader{margin-right:16px}.preview-alert,.preview-alert a,.preview-alert h4{color:#fff}.preview-alert pre{white-space:normal}.preview-alert-warning{background-color:#f0ac00;border-color:transparent;color:#fff}.preview-alert-info{background-color:#3544b1;border-color:transparent;color:#fff}.preview-alert-danger,.preview-alert-error{background-color:#d42054;border-color:transparent;color:#fff}";
 function q({ loaded: e, markup: t }) {
   return /* @__PURE__ */ K(H, { children: [
-    e ? /* @__PURE__ */ M("div", { className: "block-preview-frame", dangerouslySetInnerHTML: { __html: t } }) : /* @__PURE__ */ K("div", { className: "preview-alert preview-alert-info", children: [
-      /* @__PURE__ */ M("uui-loader", { style: { color: "#fff" } }),
+    e ? /* @__PURE__ */ E("div", { className: "block-preview-frame", dangerouslySetInnerHTML: { __html: t } }) : /* @__PURE__ */ K("div", { className: "preview-alert preview-alert-info", children: [
+      /* @__PURE__ */ E("uui-loader", { style: { color: "#fff" } }),
       "Loading preview..."
     ] }),
-    /* @__PURE__ */ M("style", { children: X })
+    /* @__PURE__ */ E("style", { children: X })
   ] });
 }
 var I = Object.getOwnPropertyDescriptor, N = (e) => {
   throw TypeError(e);
 }, V = (e, t, r, n) => {
-  for (var h = n > 1 ? void 0 : n ? I(t, r) : t, c = e.length - 1, _; c >= 0; c--)
-    (_ = e[c]) && (h = _(h) || h);
+  for (var h = n > 1 ? void 0 : n ? I(t, r) : t, l = e.length - 1, _; l >= 0; l--)
+    (_ = e[l]) && (h = _(h) || h);
   return h;
-}, x = (e, t, r) => t.has(e) || N("Cannot " + r), i = (e, t, r) => (x(e, t, "read from private field"), r ? r.call(e) : t.get(e)), s = (e, t, r) => t.has(e) ? N("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), o = (e, t, r, n) => (x(e, t, "write to private field"), t.set(e, r), r), l = (e, t, r) => (x(e, t, "access private method"), r), w, k, u, f, m, C, b, v, g, y, d, p, a, E, W, O, P, U, B;
-const F = "n3o-block-preview";
-let T = class extends D(HTMLElement) {
+}, W = (e, t, r) => t.has(e) || N("Cannot " + r), i = (e, t, r) => (W(e, t, "read from private field"), r ? r.call(e) : t.get(e)), a = (e, t, r) => t.has(e) ? N("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), o = (e, t, r, n) => (W(e, t, "write to private field"), t.set(e, r), r), c = (e, t, r) => (W(e, t, "access private method"), r), w, k, u, f, m, M, b, v, g, y, d, p, s, T, C, O, U, P, B;
+const J = "n3o-block-preview";
+let x = class extends L(R(HTMLElement)) {
   constructor() {
-    super(), s(this, a), s(this, w), s(this, k), s(this, u), s(this, f), s(this, m, !1), s(this, C, ""), s(this, b), s(this, v), s(this, g, ""), s(this, y), s(this, d), s(this, p);
+    super(), a(this, s), a(this, w), a(this, k), a(this, u), a(this, f), a(this, m, !1), a(this, M, ""), a(this, b), a(this, v), a(this, g, ""), a(this, y), a(this, d), a(this, p);
     const e = this.attachShadow({ mode: "open" });
-    o(this, f, document.createElement("div")), e.appendChild(i(this, f)), this.consumeContext(R, (t) => {
+    o(this, f, document.createElement("div")), e.appendChild(i(this, f)), this.consumeContext(F, (t) => {
       if (!t)
         return;
       const r = t;
@@ -36,13 +36,13 @@ let T = class extends D(HTMLElement) {
       }, "_observeUnique"), this.observe(
         r.splitView.activeVariantsInfo,
         (n) => {
-          var c;
-          const h = (c = n == null ? void 0 : n[0]) == null ? void 0 : c.culture;
+          var l;
+          const h = (l = n == null ? void 0 : n[0]) == null ? void 0 : l.culture;
           o(this, g, h ?? "");
         },
         "_observeCulture"
       );
-    }), this.consumeContext(L, (t) => {
+    }), this.consumeContext(D, (t) => {
       t && (this.observe(t.contentKey, (r) => {
         o(this, y, r);
       }, "_observeContentKey"), this.observe(t.contentElementTypeKey, (r) => {
@@ -56,16 +56,20 @@ let T = class extends D(HTMLElement) {
     return i(this, w);
   }
   set content(e) {
-    o(this, w, e), l(this, a, E).call(this);
+    o(this, w, e), c(this, s, T).call(this);
   }
   get settings() {
     return i(this, k);
   }
   set settings(e) {
-    o(this, k, e), l(this, a, E).call(this);
+    o(this, k, e), c(this, s, T).call(this);
+  }
+  // Re-render the preview when the shared authenticated fetch becomes available (mixin hook).
+  authFetchChanged(e) {
+    c(this, s, C).call(this, 0);
   }
   connectedCallback() {
-    super.connectedCallback(), i(this, u) ?? o(this, u, G(i(this, f))), l(this, a, B).call(this), l(this, a, W).call(this, 0);
+    super.connectedCallback(), i(this, u) ?? o(this, u, G(i(this, f))), c(this, s, B).call(this), c(this, s, C).call(this, 0);
   }
   disconnectedCallback() {
     var e;
@@ -77,20 +81,20 @@ k = /* @__PURE__ */ new WeakMap();
 u = /* @__PURE__ */ new WeakMap();
 f = /* @__PURE__ */ new WeakMap();
 m = /* @__PURE__ */ new WeakMap();
-C = /* @__PURE__ */ new WeakMap();
+M = /* @__PURE__ */ new WeakMap();
 b = /* @__PURE__ */ new WeakMap();
 v = /* @__PURE__ */ new WeakMap();
 g = /* @__PURE__ */ new WeakMap();
 y = /* @__PURE__ */ new WeakMap();
 d = /* @__PURE__ */ new WeakMap();
 p = /* @__PURE__ */ new WeakMap();
-a = /* @__PURE__ */ new WeakSet();
-E = function() {
-  i(this, m) && l(this, a, W).call(this, 500);
+s = /* @__PURE__ */ new WeakSet();
+T = function() {
+  i(this, m) && c(this, s, C).call(this, 500);
 };
-W = function(e) {
+C = function(e) {
   i(this, d) !== void 0 && clearTimeout(i(this, d)), o(this, d, setTimeout(() => {
-    l(this, a, U).call(this);
+    c(this, s, P).call(this);
   }, e));
 };
 O = function() {
@@ -106,38 +110,38 @@ O = function() {
     expose: n
   };
 };
-P = function(e) {
+U = function(e) {
   return e ? `umb://element/${e.replace(/-/g, "")}` : "";
 };
-U = async function() {
-  const e = l(this, a, O).call(this);
-  if (!e || !i(this, v))
+P = async function() {
+  const e = c(this, s, O).call(this);
+  if (!e || !i(this, v) || !this.authFetch)
     return;
-  const t = i(this, b) ?? "", r = l(this, a, P).call(this, i(this, y)), n = i(this, g) ?? "", h = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${t}&documentTypeKey=${i(this, v)}&contentUdi=${r}&culture=${n}`, c = await fetch(h, {
+  const t = i(this, b) ?? "", r = c(this, s, U).call(this, i(this, y)), n = i(this, g) ?? "", h = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${t}&documentTypeKey=${i(this, v)}&contentUdi=${r}&culture=${n}`, l = await this.authFetch(h, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(e)
   });
-  if (!c.ok)
+  if (!l.ok)
     return;
-  const _ = await c.json();
-  o(this, C, _), o(this, m, !0), l(this, a, B).call(this);
+  const _ = await l.json();
+  o(this, M, _), o(this, m, !0), c(this, s, B).call(this);
 };
 B = function() {
   var e;
   (e = i(this, u)) == null || e.render(
     $(q, {
       loaded: i(this, m),
-      markup: i(this, C)
+      markup: i(this, M)
     })
   );
 };
-T = V([
-  S(F)
-], T);
-const te = T;
+x = V([
+  S(J)
+], x);
+const re = x;
 export {
-  T as N3oBlockPreviewElement,
-  te as default
+  x as N3oBlockPreviewElement,
+  re as default
 };
 //# sourceMappingURL=block-preview.js.map

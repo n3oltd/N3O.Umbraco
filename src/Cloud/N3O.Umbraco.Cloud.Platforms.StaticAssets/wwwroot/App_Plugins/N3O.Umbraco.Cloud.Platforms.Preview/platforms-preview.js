@@ -1,121 +1,129 @@
-import { LitElement as U, html as B, nothing as $, css as H, customElement as L } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
+import { LitElement as B, html as $, nothing as x, css as F, customElement as H } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as L } from "@umbraco-cms/backoffice/element-api";
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT as z } from "@umbraco-cms/backoffice/document";
-import { useRef as S, useEffect as G, createElement as J } from "react";
-import { createRoot as K } from "react-dom/client";
-import { jsx as X } from "react/jsx-runtime";
-function F(e, t) {
+import { UmbAuthFetchMixin as G } from "@n3o/backoffice-core";
+import { useRef as S, useEffect as J, createElement as K } from "react";
+import { createRoot as X } from "react-dom/client";
+import { jsx as Q } from "react/jsx-runtime";
+function V(e, t) {
   const n = {};
-  return e.forEach((a) => {
-    n[a.alias] = a.value;
+  return e.forEach((i) => {
+    n[i.alias] = i.value;
   }), n.contentTypeAlias = t, n;
 }
-function Q({ unique: e, getContent: t }) {
-  const n = S(null), a = S(null);
-  return G(() => {
-    let i = !0;
-    const l = async () => {
+function Y({ unique: e, getContent: t, authFetch: n }) {
+  const i = S(null), a = S(null);
+  return J(() => {
+    let o = !0;
+    const h = async () => {
       var W, N;
+      if (!n)
+        return;
       const p = t();
       if (!p)
         return;
-      const O = (W = p.documentType) == null ? void 0 : W.unique, q = p, M = p.variants ?? [], E = M.find((I) => I.culture == null || I.segment == null) ?? M[0], j = p.values ?? [], v = F(j, O);
-      v.name = E == null ? void 0 : E.name, v.key = p.unique, v.parentId = ((N = q.parent) == null ? void 0 : N.unique) ?? q.parentId;
-      const D = await (await fetch("/umbraco/backoffice/api/cloudBackOffice/subscription/code")).json(), g = await (await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${O}`, {
+      const M = (W = p.documentType) == null ? void 0 : W.unique, O = p, q = p.variants ?? [], g = q.find((A) => A.culture == null || A.segment == null) ?? q[0], j = p.values ?? [], w = V(j, M);
+      w.name = g == null ? void 0 : g.name, w.key = p.unique, w.parentId = ((N = O.parent) == null ? void 0 : N.unique) ?? O.parentId;
+      const D = await (await n("/umbraco/backoffice/api/cloudBackOffice/subscription/code")).json(), b = await (await n(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${M}`, {
         method: "POST",
         headers: {
           accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(v)
+        body: JSON.stringify(w)
       })).json();
-      if (g.eTag === a.current)
+      if (b.eTag === a.current)
         return;
-      a.current = g.eTag;
-      const w = n.current;
-      if (!w || !i)
+      a.current = b.eTag;
+      const _ = i.current;
+      if (!_ || !o)
         return;
-      w.innerHTML = "";
+      _.innerHTML = "";
       const r = document.createElement("iframe");
-      r.style.width = "100%", r.style.aspectRatio = "16 / 9", r.style.border = "0", r.style.transform = "scale(0.9)", r.style.transformOrigin = "0 0", r.style.display = "none", w.appendChild(r);
-      const u = r.contentWindow.document;
-      u.open(), u.write(g.html), u.close();
-      const P = u.createElement("script");
-      P.src = `https://cdn.n3o.cloud/connect-${D}/platforms-js/platforms.js`, P.type = "module", u.body.appendChild(P), window.setInterval(() => {
-        r.style.display = "block", w.style.display = "block";
+      r.style.width = "100%", r.style.aspectRatio = "16 / 9", r.style.border = "0", r.style.transform = "scale(0.9)", r.style.transformOrigin = "0 0", r.style.display = "none", _.appendChild(r);
+      const f = r.contentWindow.document;
+      f.open(), f.write(b.html), f.close();
+      const P = f.createElement("script");
+      P.src = `https://cdn.n3o.cloud/connect-${D}/platforms-js/platforms.js`, P.type = "module", f.body.appendChild(P), window.setTimeout(() => {
+        o && (r.style.display = "block", _.style.display = "block");
       }, 2e3);
     };
-    l();
-    const m = window.setInterval(() => {
-      l();
+    h();
+    const U = window.setInterval(() => {
+      h();
     }, 1e4);
     return () => {
-      i = !1, window.clearInterval(m);
+      o = !1, window.clearInterval(U);
     };
-  }, [e, t]), /* @__PURE__ */ X("div", { ref: n, id: "platformsPreviewContainer", style: { display: "none" } });
+  }, [e, t, n]), /* @__PURE__ */ Q("div", { ref: i, id: "platformsPreviewContainer", style: { display: "none" } });
 }
-var V = Object.getOwnPropertyDescriptor, A = (e) => {
+var Z = Object.getOwnPropertyDescriptor, I = (e) => {
   throw TypeError(e);
-}, Y = (e, t, n, a) => {
-  for (var i = a > 1 ? void 0 : a ? V(t, n) : t, l = e.length - 1, m; l >= 0; l--)
-    (m = e[l]) && (i = m(i) || i);
-  return i;
-}, T = (e, t, n) => t.has(e) || A("Cannot " + n), s = (e, t, n) => (T(e, t, "read from private field"), t.get(e)), d = (e, t, n) => t.has(e) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, n), f = (e, t, n, a) => (T(e, t, "write to private field"), t.set(e, n), n), b = (e, t, n) => (T(e, t, "access private method"), n), y, C, c, o, R, h, _;
-const Z = "n3o-platforms-preview";
-let k = class extends x(U) {
+}, ee = (e, t, n, i) => {
+  for (var a = i > 1 ? void 0 : i ? Z(t, n) : t, o = e.length - 1, h; o >= 0; o--)
+    (h = e[o]) && (a = h(a) || a);
+  return a;
+}, T = (e, t, n) => t.has(e) || I("Cannot " + n), s = (e, t, n) => (T(e, t, "read from private field"), t.get(e)), u = (e, t, n) => t.has(e) ? I("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, n), m = (e, t, n, i) => (T(e, t, "write to private field"), t.set(e, n), n), y = (e, t, n) => (T(e, t, "access private method"), n), C, k, l, c, R, d, v;
+const te = "n3o-platforms-preview";
+let E = class extends G(L(B)) {
   constructor() {
-    super(), d(this, h), d(this, y), d(this, C), d(this, c), d(this, o), d(this, R, () => {
+    super(), u(this, d), u(this, C), u(this, k), u(this, l), u(this, c), u(this, R, () => {
       var e;
-      return (e = s(this, y)) == null ? void 0 : e.getData();
-    }), f(this, o, document.createElement("div")), this.consumeContext(z, (e) => {
-      f(this, y, e), this.observe(e == null ? void 0 : e.unique, (t) => {
-        f(this, C, t), b(this, h, _).call(this);
+      return (e = s(this, C)) == null ? void 0 : e.getData();
+    }), m(this, c, document.createElement("div")), this.consumeContext(z, (e) => {
+      m(this, C, e), this.observe(e == null ? void 0 : e.unique, (t) => {
+        m(this, k, t), y(this, d, v).call(this);
       });
     });
   }
   connectedCallback() {
-    super.connectedCallback(), b(this, h, _).call(this);
+    super.connectedCallback(), y(this, d, v).call(this);
   }
   disconnectedCallback() {
     var e;
-    super.disconnectedCallback(), (e = s(this, c)) == null || e.unmount(), f(this, c, void 0);
+    super.disconnectedCallback(), (e = s(this, l)) == null || e.unmount(), m(this, l, void 0);
   }
   // Lit owns the shadow root; we host a single mount div in it and let React render into that.
   render() {
-    return s(this, o).parentNode == null ? B`${s(this, o)}` : $;
+    return s(this, c).parentNode == null ? $`${s(this, c)}` : x;
   }
   updated() {
-    !s(this, c) && s(this, o).isConnected && (f(this, c, K(s(this, o))), b(this, h, _).call(this));
+    !s(this, l) && s(this, c).isConnected && (m(this, l, X(s(this, c))), y(this, d, v).call(this));
+  }
+  // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+  authFetchChanged(e) {
+    y(this, d, v).call(this);
   }
 };
-y = /* @__PURE__ */ new WeakMap();
 C = /* @__PURE__ */ new WeakMap();
+k = /* @__PURE__ */ new WeakMap();
+l = /* @__PURE__ */ new WeakMap();
 c = /* @__PURE__ */ new WeakMap();
-o = /* @__PURE__ */ new WeakMap();
 R = /* @__PURE__ */ new WeakMap();
-h = /* @__PURE__ */ new WeakSet();
-_ = function() {
+d = /* @__PURE__ */ new WeakSet();
+v = function() {
   var e;
-  (e = s(this, c)) == null || e.render(
-    J(Q, {
-      unique: s(this, C),
-      getContent: s(this, R)
+  (e = s(this, l)) == null || e.render(
+    K(Y, {
+      unique: s(this, k),
+      getContent: s(this, R),
+      authFetch: this.authFetch
     })
   );
 };
-k.styles = H`
+E.styles = F`
         :host {
             display: block;
             height: 100%;
             padding: var(--uui-size-layout-1);
         }
     `;
-k = Y([
-  L(Z)
-], k);
-const ce = k;
+E = ee([
+  H(te)
+], E);
+const ue = E;
 export {
-  k as N3oPlatformsPreviewElement,
-  ce as default
+  E as N3oPlatformsPreviewElement,
+  ue as default
 };
 //# sourceMappingURL=platforms-preview.js.map

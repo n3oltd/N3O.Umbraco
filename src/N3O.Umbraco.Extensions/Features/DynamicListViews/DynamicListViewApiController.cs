@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Features.DynamicListViews;
 
-public class DynamicListViewApiController : ApiController {
+public class DynamicListViewApiController : BackofficeAuthorizedApiController {
     private readonly IContentService _contentService;
     private readonly IDataTypeService _dataTypeService;
 

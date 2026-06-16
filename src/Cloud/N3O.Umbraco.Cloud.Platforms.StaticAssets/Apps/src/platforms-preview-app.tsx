@@ -4,6 +4,7 @@ import type {
     UmbDocumentVariantModel,
     UmbDocumentValueModel,
 } from '@umbraco-cms/backoffice/document';
+import type { AuthFetch } from '@n3o/backoffice-core';
 
 // Response shape from /umbraco/backoffice/api/platformsBackOffice/previewHtml/...
 export interface PreviewHtmlResponse {
@@ -16,6 +17,8 @@ interface PlatformsPreviewAppProps {
     unique: string | null | undefined;
     // Reads the current in-memory document on each poll (mirrors the original getData() call).
     getContent: () => UmbDocumentDetailModel | undefined;
+    // Authenticated fetch from UMB_AUTH_CONTEXT; null until the auth context resolves.
+    authFetch: AuthFetch | null;
 }
 
 function getApiReq(
@@ -38,7 +41,7 @@ function getApiReq(
 // endpoint, and renders the returned HTML in an iframe loading the tenant's platforms.js. Refreshed
 // every 10 seconds; unchanged responses (same eTag) are skipped. The iframe DOM is built imperatively
 // inside the container ref, preserving the original Lit behaviour exactly.
-export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppProps) {
+export function PlatformsPreviewApp({ unique, getContent, authFetch }: PlatformsPreviewAppProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const previousETagRef = useRef<string | null>(null);
 
@@ -46,6 +49,10 @@ export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppP
         let active = true;
 
         const loadPreview = async (): Promise<void> => {
+            if (!authFetch) {
+                return;
+            }
+
             const content = getContent();
 
             if (!content) {
@@ -73,10 +80,10 @@ export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppP
             apiReq['key'] = content.unique;
             apiReq['parentId'] = rawContent.parent?.unique ?? rawContent.parentId;
 
-            const subscriptionCodeRes = await fetch('/umbraco/backoffice/api/cloudBackOffice/subscription/code');
+            const subscriptionCodeRes = await authFetch('/umbraco/backoffice/api/cloudBackOffice/subscription/code');
             const subscriptionCode = (await subscriptionCodeRes.json()) as string;
 
-            const apiRes = await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${documentTypeUnique}`, {
+            const apiRes = await authFetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${documentTypeUnique}`, {
                 method: 'POST',
                 headers: {
                     accept: 'application/json',
@@ -124,7 +131,11 @@ export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppP
 
             doc.body.appendChild(script);
 
-            window.setInterval(() => {
+            window.setTimeout(() => {
+                if (!active) {
+                    return;
+                }
+
                 iframe.style.display = 'block';
                 container.style.display = 'block';
             }, 2000);
@@ -140,7 +151,7 @@ export function PlatformsPreviewApp({ unique, getContent }: PlatformsPreviewAppP
             active = false;
             window.clearInterval(intervalId);
         };
-    }, [unique, getContent]);
+    }, [unique, getContent, authFetch]);
 
     return <div ref={containerRef} id="platformsPreviewContainer" style={{ display: 'none' }} />;
 }

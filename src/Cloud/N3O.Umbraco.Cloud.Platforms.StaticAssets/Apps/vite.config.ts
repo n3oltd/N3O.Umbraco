@@ -11,4 +11,5 @@ export default n3oPluginConfig({
     },
     outDir: '../wwwroot/App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview',
     react: true,
+    additionalExternals: ['@n3o/backoffice-core'],
 });

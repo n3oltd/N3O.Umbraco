@@ -17,7 +17,6 @@ export const {
     preloadModule,
     requestFormReset,
     unstable_batchedUpdates,
-    useFormState,
     useFormStatus,
     version,
 } = ReactDOM;

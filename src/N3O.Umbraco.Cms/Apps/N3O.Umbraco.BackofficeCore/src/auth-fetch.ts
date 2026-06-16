@@ -1,8 +1,8 @@
 // Shared backoffice authenticated-fetch runtime, self-hosted as a single ESM module and exposed to all
-// backoffice plugins via the import map (umbraco-package.json -> "@n3o/backoffice-core", with
-// "@n3o/auth-fetch" kept as a back-compat alias). Same sharing model as the React runtime: built once
-// here, consumed everywhere, never re-bundled per plugin. This file is also the canonical TYPE source:
-// consumers map the bare specifier to this file via tsconfig `paths` instead of copying a .d.ts.
+// backoffice plugins via the import map (umbraco-package.json -> "@n3o/backoffice-core"). Same sharing
+// model as the React runtime: built once here, consumed everywhere, never re-bundled per plugin. This
+// file is also the canonical TYPE source: consumers depend on "@n3o/backoffice-core" as a workspace
+// devDependency and TypeScript resolves types via the npm workspace symlink.
 //
 // WHY: in Umbraco 17 the backoffice authenticates to the server with an OAuth bearer token (not cookies).
 // Any custom backoffice fetch to an [Authorize] API controller (our /umbraco/api/... and

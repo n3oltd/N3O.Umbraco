@@ -1,14 +1,9 @@
-// TODO Migration Review (BLOCKER-10 #3): this Preview workspaceView is registered in
-// umbraco-package.json with only an `Umb.Condition.WorkspaceAlias = Umb.Workspace.Document`
-// condition, so the tab shows on ALL document types. The pre-Bellissima ContentApp only showed
-// it for content composing the `platformsOffering` composition. There is no built-in Bellissima
-// condition with OR/"composes composition X" semantics, so restoring that gating needs a custom
-// `condition` extension (cf. DynamicListViews). Display-only (offering preview URLs), so UX not a
-// privilege boundary — deferred.
 import { LitElement, css, customElement, html, nothing } from '@umbraco-cms/backoffice/external/lit';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
 import type { UmbDocumentDetailModel, UmbDocumentWorkspaceContext } from '@umbraco-cms/backoffice/document';
+import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
+import type { AuthFetch } from '@n3o/backoffice-core';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { PlatformsPreviewApp } from './platforms-preview-app';
@@ -22,7 +17,7 @@ const elementName = 'n3o-platforms-preview';
 // only for context plumbing; React renders the UI. React itself is NOT bundled here — it is external and
 // resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 @customElement(elementName)
-export class N3oPlatformsPreviewElement extends UmbElementMixin(LitElement) {
+export class N3oPlatformsPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(LitElement)) {
     #workspaceContext: UmbDocumentWorkspaceContext | undefined;
     #unique: string | null | undefined;
     #root?: Root;
@@ -73,6 +68,11 @@ export class N3oPlatformsPreviewElement extends UmbElementMixin(LitElement) {
         }
     }
 
+    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+    authFetchChanged(_authFetch: AuthFetch | null): void {
+        this.#render();
+    }
+
     #getContent = (): UmbDocumentDetailModel | undefined => {
         return this.#workspaceContext?.getData();
     };
@@ -82,6 +82,7 @@ export class N3oPlatformsPreviewElement extends UmbElementMixin(LitElement) {
             createElement(PlatformsPreviewApp, {
                 unique: this.#unique,
                 getContent: this.#getContent,
+                authFetch: this.authFetch,
             }),
         );
     }

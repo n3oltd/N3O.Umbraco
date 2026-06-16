@@ -1,9 +1,12 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
+import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import {
     UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
+import type { AuthFetch } from '@n3o/backoffice-core';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { SerpEditorApp, type SerpValue } from './serp-editor-app';
@@ -15,9 +18,11 @@ const elementName = 'n3o-serp-editor';
 // and mounts the React UI (SerpEditorApp) into its shadow root. React itself is NOT bundled here —
 // it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
 //
-// This is the reference bridge pattern for the React migration — mirror it for every property editor.
+// UmbAuthFetchMixin (from @n3o/backoffice-core) provides `this.authFetch`, rebuilt from
+// UMB_AUTH_CONTEXT whenever the auth context changes. It is forwarded to SerpEditorApp as a prop
+// so the React component can make authenticated requests to the [Authorize] templateOptions endpoint.
 @customElement(elementName)
-export class N3oSerpEditorElement extends HTMLElement implements UmbPropertyEditorUiElement {
+export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbPropertyEditorUiElement {
     #root?: Root;
     #mount: HTMLDivElement;
     #value: SerpValue = { title: '', description: '' };
@@ -56,12 +61,19 @@ export class N3oSerpEditorElement extends HTMLElement implements UmbPropertyEdit
         this.#render();
     }
 
+    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+    authFetchChanged(_authFetch: AuthFetch | null): void {
+        this.#render();
+    }
+
     connectedCallback(): void {
+        super.connectedCallback?.();
         this.#root ??= createRoot(this.#mount);
         this.#render();
     }
 
     disconnectedCallback(): void {
+        super.disconnectedCallback?.();
         this.#root?.unmount();
         this.#root = undefined;
     }
@@ -72,6 +84,7 @@ export class N3oSerpEditorElement extends HTMLElement implements UmbPropertyEdit
                 value: this.#value,
                 maxCharsTitle: this.#maxCharsTitle,
                 maxCharsDescription: this.#maxCharsDescription,
+                authFetch: this.authFetch,
                 onChange: (value: SerpValue) => {
                     this.#value = value;
                     this.dispatchEvent(new UmbPropertyValueChangeEvent());

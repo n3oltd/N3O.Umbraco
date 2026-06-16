@@ -1,91 +1,128 @@
-import { customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbPropertyValueChangeEvent as C } from "@umbraco-cms/backoffice/property-editor";
-import { createElement as N } from "react";
-import { createRoot as k } from "react-dom/client";
-import { jsxs as v, jsx as c } from "react/jsx-runtime";
-const T = ".n3o-text-resource-editor .row-wrapper{margin-bottom:40px;width:100%}.n3o-text-resource-editor .row-1,.n3o-text-resource-editor .row-2{display:block;width:90%}.n3o-text-resource-editor .delete{cursor:pointer}.n3o-text-resource-editor .text{font-weight:700}.n3o-text-resource-editor .custom{width:100%;margin-top:10px}";
-function A({ value: e, onChange: t }) {
+import { customElement as T } from "@umbraco-cms/backoffice/external/lit";
+import { UmbPropertyValueChangeEvent as b } from "@umbraco-cms/backoffice/property-editor";
+import { useState as y, createElement as M } from "react";
+import { createRoot as R } from "react-dom/client";
+import { jsxs as v, jsx as s, Fragment as N } from "react/jsx-runtime";
+const S = ".n3o-text-resource-editor .row-wrapper{margin-bottom:40px;width:100%}.n3o-text-resource-editor .row-1,.n3o-text-resource-editor .row-2{display:block;width:90%}.n3o-text-resource-editor .delete{cursor:pointer}.n3o-text-resource-editor .text{font-weight:700}.n3o-text-resource-editor .custom{width:100%;margin-top:10px}";
+function W({ value: e, onChange: t }) {
+  const [r, n] = y(null);
   if (!e.length)
     return null;
-  function r(o) {
-    confirm("Are you sure you wish to delete this entry?") && t(e.filter((s, a) => a !== o));
+  function c(o) {
+    n(o);
   }
-  function l(o, s) {
-    t(e.map((a, g) => g === o ? { ...a, custom: s } : a));
+  function d(o) {
+    n(null), t(e.filter((u) => u.source !== o));
+  }
+  function m() {
+    n(null);
+  }
+  function D(o, u) {
+    t(e.map((_) => _.source === o ? { ..._, custom: u } : _));
   }
   return /* @__PURE__ */ v("uui-box", { headline: "Text resources", children: [
-    /* @__PURE__ */ c("div", { className: "n3o-text-resource-editor", children: e.map((o, s) => /* @__PURE__ */ v("div", { className: "row-wrapper", children: [
-      /* @__PURE__ */ v("div", { className: "row-1", children: [
+    /* @__PURE__ */ s("div", { className: "n3o-text-resource-editor", children: e.map((o) => /* @__PURE__ */ v("div", { className: "row-wrapper", children: [
+      /* @__PURE__ */ s("div", { className: "row-1", children: r === o.source ? /* @__PURE__ */ v(N, { children: [
+        /* @__PURE__ */ s("span", { children: "Delete this entry? " }),
+        /* @__PURE__ */ s(
+          "button",
+          {
+            type: "button",
+            className: "delete-confirm",
+            onClick: () => d(o.source),
+            children: "Yes"
+          }
+        ),
+        " ",
+        /* @__PURE__ */ s(
+          "button",
+          {
+            type: "button",
+            className: "delete-cancel",
+            onClick: m,
+            children: "No"
+          }
+        )
+      ] }) : /* @__PURE__ */ v(N, { children: [
         "[",
-        /* @__PURE__ */ c("a", { className: "delete", onClick: () => r(s), children: "x" }),
+        /* @__PURE__ */ s(
+          "button",
+          {
+            type: "button",
+            className: "delete",
+            "aria-label": `Delete ${o.source}`,
+            onClick: () => c(o.source),
+            children: "x"
+          }
+        ),
         "] ",
-        /* @__PURE__ */ c("span", { className: "text", children: o.source })
-      ] }),
-      /* @__PURE__ */ c("div", { className: "row-2", children: /* @__PURE__ */ c(
+        /* @__PURE__ */ s("span", { className: "text", children: o.source })
+      ] }) }),
+      /* @__PURE__ */ s("div", { className: "row-2", children: /* @__PURE__ */ s(
         "input",
         {
           type: "text",
           className: "custom",
           value: o.custom ?? "",
-          onChange: (a) => l(s, a.currentTarget.value)
+          onChange: (u) => D(o.source, u.currentTarget.value)
         }
       ) })
-    ] }, `${o.source}-${s}`)) }),
-    /* @__PURE__ */ c("style", { children: T })
+    ] }, o.source)) }),
+    /* @__PURE__ */ s("style", { children: S })
   ] });
 }
-var M = Object.getOwnPropertyDescriptor, E = (e) => {
+var A = Object.getOwnPropertyDescriptor, k = (e) => {
   throw TypeError(e);
-}, R = (e, t, r, l) => {
-  for (var o = l > 1 ? void 0 : l ? M(t, r) : t, s = e.length - 1, a; s >= 0; s--)
-    (a = e[s]) && (o = a(o) || o);
-  return o;
-}, w = (e, t, r) => t.has(e) || E("Cannot " + r), i = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), p = (e, t, r) => t.has(e) ? E("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), h = (e, t, r, l) => (w(e, t, "write to private field"), t.set(e, r), r), x = (e, t, r) => (w(e, t, "access private method"), r), n, u, d, m, f;
-const W = "n3o-text-resource-editor";
-let _ = class extends HTMLElement {
+}, P = (e, t, r, n) => {
+  for (var c = n > 1 ? void 0 : n ? A(t, r) : t, d = e.length - 1, m; d >= 0; d--)
+    (m = e[d]) && (c = m(c) || c);
+  return c;
+}, E = (e, t, r) => t.has(e) || k("Cannot " + r), i = (e, t, r) => (E(e, t, "read from private field"), r ? r.call(e) : t.get(e)), f = (e, t, r) => t.has(e) ? k("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), h = (e, t, r, n) => (E(e, t, "write to private field"), t.set(e, r), r), C = (e, t, r) => (E(e, t, "access private method"), r), a, p, l, x, w;
+const O = "n3o-text-resource-editor";
+let g = class extends HTMLElement {
   constructor() {
-    super(), p(this, m), p(this, n), p(this, u), p(this, d, []);
+    super(), f(this, x), f(this, a), f(this, p), f(this, l, []);
     const e = this.attachShadow({ mode: "open" });
-    h(this, u, document.createElement("div")), e.appendChild(i(this, u));
+    h(this, p, document.createElement("div")), e.appendChild(i(this, p));
   }
   get value() {
-    return i(this, d);
+    return i(this, l);
   }
   set value(e) {
-    h(this, d, Array.isArray(e) ? e : []), x(this, m, f).call(this);
+    h(this, l, Array.isArray(e) ? e : []), C(this, x, w).call(this);
   }
   // config is set by Umbraco; not used by this editor but accepted to satisfy the contract.
   set config(e) {
   }
   connectedCallback() {
-    i(this, n) ?? h(this, n, k(i(this, u))), x(this, m, f).call(this);
+    i(this, a) ?? h(this, a, R(i(this, p))), C(this, x, w).call(this);
   }
   disconnectedCallback() {
     var e;
-    (e = i(this, n)) == null || e.unmount(), h(this, n, void 0);
+    (e = i(this, a)) == null || e.unmount(), h(this, a, void 0);
   }
 };
-n = /* @__PURE__ */ new WeakMap();
-u = /* @__PURE__ */ new WeakMap();
-d = /* @__PURE__ */ new WeakMap();
-m = /* @__PURE__ */ new WeakSet();
-f = function() {
+a = /* @__PURE__ */ new WeakMap();
+p = /* @__PURE__ */ new WeakMap();
+l = /* @__PURE__ */ new WeakMap();
+x = /* @__PURE__ */ new WeakSet();
+w = function() {
   var e;
-  (e = i(this, n)) == null || e.render(
-    N(A, {
-      value: i(this, d),
+  (e = i(this, a)) == null || e.render(
+    M(W, {
+      value: i(this, l),
       onChange: (t) => {
-        h(this, d, t), this.dispatchEvent(new C());
+        h(this, l, t), this.dispatchEvent(new b());
       }
     })
   );
 };
-_ = R([
-  y(W)
-], _);
-const G = _;
+g = P([
+  T(O)
+], g);
+const U = g;
 export {
-  _ as N3oTextResourceEditorElement,
-  G as default
+  g as N3oTextResourceEditorElement,
+  U as default
 };
 //# sourceMappingURL=text-resource-editor.js.map

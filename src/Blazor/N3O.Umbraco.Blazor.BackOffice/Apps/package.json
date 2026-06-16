@@ -1,6 +1,6 @@
 {
     "name": "n3o-umbraco-blazor-backoffice",
-    "version": "1.0.0",
+    "version": "17.0.0",
     "private": true,
     "type": "module",
     "scripts": {

@@ -1,11 +1,13 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UMB_BLOCK_ENTRY_CONTEXT, UMB_BLOCK_MANAGER_CONTEXT } from '@umbraco-cms/backoffice/block';
 import type { UmbBlockManagerContext, UmbBlockLayoutBaseModel, UmbBlockDataModel, UmbBlockExposeModel } from '@umbraco-cms/backoffice/block';
 import type { UmbBlockEditorCustomViewElement } from '@umbraco-cms/backoffice/block-custom-view';
 
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
 import type { UmbActiveVariant } from '@umbraco-cms/backoffice/workspace';
+
+import { UmbAuthFetchMixin, UmbElementMixin } from '@n3o/backoffice-core';
+import type { AuthFetch } from '@n3o/backoffice-core';
 
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
@@ -29,7 +31,7 @@ interface BlockGridValue {
 //
 // Ported from the AngularJS "N3O.Umbraco.Blocks.Preview" controller (previewGridBlock endpoint).
 @customElement(elementName)
-export class N3oBlockPreviewElement extends UmbElementMixin(HTMLElement) implements UmbBlockEditorCustomViewElement {
+export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbBlockEditorCustomViewElement {
     // Properties provided by the block editor custom-view contract (UmbBlockEditorCustomViewElement).
     // Setters re-render React so the preview reloads when the block's data or settings change.
     #content?: UmbBlockEditorCustomViewElement['content'];
@@ -111,6 +113,11 @@ export class N3oBlockPreviewElement extends UmbElementMixin(HTMLElement) impleme
         });
     }
 
+    // Re-render the preview when the shared authenticated fetch becomes available (mixin hook).
+    authFetchChanged(_authFetch: AuthFetch | null): void {
+        this.#scheduleReload(0);
+    }
+
     connectedCallback(): void {
         super.connectedCallback();
 
@@ -179,7 +186,7 @@ export class N3oBlockPreviewElement extends UmbElementMixin(HTMLElement) impleme
     async #loadPreview(): Promise<void> {
         const blockData = this.#buildBlockData();
 
-        if (!blockData || !this.#documentTypeKey) {
+        if (!blockData || !this.#documentTypeKey || !this.authFetch) {
             return;
         }
 
@@ -189,7 +196,9 @@ export class N3oBlockPreviewElement extends UmbElementMixin(HTMLElement) impleme
 
         const url = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${nodeKey}&documentTypeKey=${this.#documentTypeKey}&contentUdi=${contentUdi}&culture=${culture}`;
 
-        const response = await fetch(url, {
+        // blockPreviewBackoffice is protected by BackofficeAuthorizedApiController ([Authorize]).
+        // Plain fetch() would return 401 — use the shared authenticated fetch from UmbAuthFetchMixin.
+        const response = await this.authFetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(blockData),

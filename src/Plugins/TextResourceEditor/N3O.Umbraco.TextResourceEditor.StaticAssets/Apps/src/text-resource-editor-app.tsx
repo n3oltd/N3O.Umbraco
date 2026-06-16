@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from './text-resource-editor-app.css?inline';
 
 export interface TextResourceEntry {
@@ -15,33 +16,68 @@ interface TextResourceEditorAppProps {
 // truth — edits are pushed back out via `onChange` (the host then raises UmbPropertyValueChangeEvent).
 // Each entry shows the read-only source text, a delete affordance, and an input bound to `custom`.
 export function TextResourceEditorApp({ value, onChange }: TextResourceEditorAppProps) {
+    const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
     if (!value.length) {
         return null;
     }
 
-    function deleteEntry(index: number): void {
-        if (!confirm('Are you sure you wish to delete this entry?')) {
-            return;
-        }
-
-        onChange(value.filter((_, i) => i !== index));
+    function requestDelete(source: string): void {
+        setPendingDelete(source);
     }
 
-    function updateCustom(index: number, custom: string): void {
-        onChange(value.map((entry, i) => (i === index ? { ...entry, custom } : entry)));
+    function confirmDelete(source: string): void {
+        setPendingDelete(null);
+        onChange(value.filter((entry) => entry.source !== source));
+    }
+
+    function cancelDelete(): void {
+        setPendingDelete(null);
+    }
+
+    function updateCustom(source: string, custom: string): void {
+        onChange(value.map((entry) => (entry.source === source ? { ...entry, custom } : entry)));
     }
 
     return (
         <uui-box headline="Text resources">
             <div className="n3o-text-resource-editor">
-                {value.map((entry, index) => (
-                    <div className="row-wrapper" key={`${entry.source}-${index}`}>
+                {value.map((entry) => (
+                    <div className="row-wrapper" key={entry.source}>
                         <div className="row-1">
-                            [
-                            <a className="delete" onClick={() => deleteEntry(index)}>
-                                x
-                            </a>
-                            ] <span className="text">{entry.source}</span>
+                            {pendingDelete === entry.source ? (
+                                <>
+                                    <span>Delete this entry? </span>
+                                    <button
+                                        type="button"
+                                        className="delete-confirm"
+                                        onClick={() => confirmDelete(entry.source)}
+                                    >
+                                        Yes
+                                    </button>
+                                    {' '}
+                                    <button
+                                        type="button"
+                                        className="delete-cancel"
+                                        onClick={cancelDelete}
+                                    >
+                                        No
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    [
+                                    <button
+                                        type="button"
+                                        className="delete"
+                                        aria-label={`Delete ${entry.source}`}
+                                        onClick={() => requestDelete(entry.source)}
+                                    >
+                                        x
+                                    </button>
+                                    ] <span className="text">{entry.source}</span>
+                                </>
+                            )}
                         </div>
                         <div className="row-2">
                             <input
@@ -49,7 +85,7 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
                                 className="custom"
                                 value={entry.custom ?? ''}
                                 onChange={(e) =>
-                                    updateCustom(index, e.currentTarget.value)
+                                    updateCustom(entry.source, e.currentTarget.value)
                                 }
                             />
                         </div>

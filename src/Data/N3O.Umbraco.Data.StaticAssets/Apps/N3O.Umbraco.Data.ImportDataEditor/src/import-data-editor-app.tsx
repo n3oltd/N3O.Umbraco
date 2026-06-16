@@ -29,7 +29,7 @@ export function ImportDataEditorApp({ value, onTextChange, onFileSelected }: Imp
     return (
         <div className="n3o-import-fields-editor">
             {fields.map((field, index) => (
-                <div className="row-wrapper" key={index}>
+                <div className="row-wrapper" key={field.name}>
                     <div className="row-1">
                         <span className="text">{field.name}</span>
                     </div>

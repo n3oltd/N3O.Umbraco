@@ -1,0 +1,4 @@
+{
+    "extends": "@n3o/build/tsconfig",
+    "include": ["src", "vite.config.react.ts", "vite.config.rest.ts"]
+}
