@@ -8,24 +8,32 @@
 // condition restores it generically: a workspace view lists it in its `conditions` with an `endpoint`,
 // and the view is permitted only when `GET {endpoint}/{documentUnique}` returns `{ permitted: true }`.
 //
-// The call is authenticated (the gating often depends on the current user's groups), reusing the same
-// UMB_AUTH_CONTEXT bearer-token approach as @n3o/auth-fetch. `@umbraco-cms/*` stays external (resolved at
-// runtime via the import map); this file is loaded directly by Umbraco as the condition's `api`.
+// The call is authenticated (the gating often depends on the current user's groups), using createAuthFetch
+// from @n3o/backoffice-core. `@umbraco-cms/*` stays external (resolved at runtime via the import map);
+// this file is loaded directly by Umbraco as the condition's `api`.
 import { UmbConditionBase } from '@umbraco-cms/backoffice/extension-registry';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
 import { UMB_AUTH_CONTEXT } from '@umbraco-cms/backoffice/auth';
+import type { UmbControllerHost } from '@umbraco-cms/backoffice/controller-api';
+import type { UmbConditionConfigBase, UmbConditionControllerArguments } from '@umbraco-cms/backoffice/extension-api';
+import { createAuthFetch, type AuthFetch } from './auth-fetch.js';
 
-export class WorkspaceVisibilityCondition extends UmbConditionBase {
-    #args;
-    #authConfig = null;
-    #unique = null;
+export type WorkspaceVisibilityConditionConfig = UmbConditionConfigBase & {
+    /** Backoffice API endpoint returning `{ permitted: boolean }` for `GET {endpoint}/{documentUnique}`. */
+    endpoint?: string;
+};
 
-    constructor(host, args) {
+export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisibilityConditionConfig> {
+    #args: UmbConditionControllerArguments<WorkspaceVisibilityConditionConfig>;
+    #authFetch: AuthFetch | null = null;
+    #unique: string | null = null;
+
+    constructor(host: UmbControllerHost, args: UmbConditionControllerArguments<WorkspaceVisibilityConditionConfig>) {
         super(host, args);
         this.#args = args;
 
         this.consumeContext(UMB_AUTH_CONTEXT, (authContext) => {
-            this.#authConfig = authContext ? authContext.getOpenApiConfiguration() : null;
+            this.#authFetch = authContext ? createAuthFetch(authContext.getOpenApiConfiguration()) : null;
             void this.#evaluate();
         });
 
@@ -39,11 +47,11 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase {
         });
     }
 
-    async #evaluate() {
+    async #evaluate(): Promise<void> {
         const endpoint = this.#args.config?.endpoint;
 
-        // Wait until the document key, the auth config and the configured endpoint are all available.
-        if (!endpoint || !this.#unique || !this.#authConfig) {
+        // Wait until the document key, the auth fetch and the configured endpoint are all available.
+        if (!endpoint || !this.#unique || !this.#authFetch) {
             return;
         }
 
@@ -51,18 +59,10 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase {
         this.#args.onChange(this.permitted);
     }
 
-    async #isPermitted(endpoint, unique) {
+    async #isPermitted(endpoint: string, unique: string): Promise<boolean> {
         try {
-            const token = await this.#authConfig.token();
-            const headers = new Headers({ Accept: 'application/json' });
-
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`);
-            }
-
-            const response = await fetch(`${endpoint}/${unique}`, {
-                credentials: this.#authConfig.credentials,
-                headers,
+            const response = await this.#authFetch!(`${endpoint}/${unique}`, {
+                headers: { Accept: 'application/json' },
             });
 
             if (!response.ok) {

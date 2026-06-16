@@ -1,5 +1,5 @@
 {
-    "name": "n3o-umbraco-react-runtime",
+    "name": "@n3o/react-runtime",
     "version": "1.0.0",
     "private": true,
     "type": "module",

@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.BackofficeCore",
+    "name": "N3O Backoffice Core",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "condition",
+            "alias": "N3O.Condition.WorkspaceVisibility",
+            "name": "N3O Workspace Visibility Condition",
+            "api": "/App_Plugins/N3O.Umbraco.BackofficeCore/workspace-visibility-condition.js"
+        }
+    ],
+    "importmap": {
+        "imports": {
+            "@n3o/backoffice-core": "/App_Plugins/N3O.Umbraco.BackofficeCore/auth-fetch.js"
+        }
+    }
+}

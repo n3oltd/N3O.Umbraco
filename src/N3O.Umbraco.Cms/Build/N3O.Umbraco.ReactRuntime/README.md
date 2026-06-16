@@ -16,9 +16,9 @@ Built by the `BuildClientApps` MSBuild target in `N3O.Umbraco.Cms.csproj` (`npm 
 | `react`               | Single shared React instance.                                      |
 | `react/jsx-runtime`   | JSX automatic runtime.                                             |
 | `react-dom`, `react-dom/client` | React DOM (+ client `createRoot`/`hydrateRoot`).         |
-| `@n3o/auth-fetch`     | Shared **authenticated fetch** for calling `[Authorize]` APIs.     |
+| `@n3o/backoffice-core` | Shared **authenticated fetch** for calling `[Authorize]` APIs.    |
 
-## `@n3o/auth-fetch` — why it exists
+## `@n3o/backoffice-core` — why it exists
 
 In Umbraco 17 the backoffice authenticates to the server with an **OAuth bearer token, not cookies**. Any
 custom backoffice `fetch` to an `[Authorize]` API controller (our `/umbraco/api/...` and
@@ -32,17 +32,24 @@ This module centralises that wrapper so no plugin re-implements it. It exposes:
   (rebuilt whenever `UMB_AUTH_CONTEXT` changes), with an optional `authFetchChanged(fetch)` hook.
 - `AuthFetch` — the function type `(input: string, init?: RequestInit) => Promise<Response>`.
 
-## Adopting `@n3o/auth-fetch` in another plugin
+## Adopting `@n3o/backoffice-core` in another plugin
 
-1. **Mark it external** in the plugin's `ClientApp/vite.config.ts` `rollupOptions.external`:
+1. **Mark it external** in the plugin's `Apps/vite.config.ts` (or, with the shared `n3oPluginConfig`
+   preset, pass `additionalExternals: ['@n3o/backoffice-core']`):
    ```ts
-   external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', '@n3o/auth-fetch'],
+   external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', '@n3o/backoffice-core'],
    ```
-2. **Add the ambient types** so TypeScript can resolve the import: copy
-   `N3O.Umbraco.ReactRuntime/src/auth-fetch.d.ts` into the plugin's `ClientApp/src` (any `*.d.ts` name).
+2. **Declare the workspace dependency** so TypeScript resolves the types from the package itself (no `paths`,
+   no copied `.d.ts`) — add to the plugin's `Apps/package.json`:
+   ```json
+   "devDependencies": { "@n3o/backoffice-core": "*" }
+   ```
+   It resolves through the npm workspace (rooted at `src/`); the package's `types` field points at the
+   canonical source. It is externalized at build and resolved at runtime via the import map, so it is never
+   bundled into the plugin.
 3. **Use it.** Either the mixin (zero boilerplate):
    ```ts
-   import { UmbAuthFetchMixin } from '@n3o/auth-fetch';
+   import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
    import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 
    class MyElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) {
@@ -52,11 +59,11 @@ This module centralises that wrapper so no plugin re-implements it. It exposes:
    ```
    …or the helper directly when you already hold the auth context:
    ```ts
-   import { createAuthFetch } from '@n3o/auth-fetch';
+   import { createAuthFetch } from '@n3o/backoffice-core';
    this.consumeContext(UMB_AUTH_CONTEXT, (ctx) => {
        const authFetch = ctx ? createAuthFetch(ctx.getOpenApiConfiguration()) : null;
    });
    ```
 
-No import-map entry, npm dependency, or build wiring is needed in the consuming plugin — only the two
-lines above (external + ambient types).
+No import-map entry or build wiring is needed in the consuming plugin — only the workspace devDependency and
+marking it external.

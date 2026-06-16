@@ -10201,16 +10201,15 @@ const {
   preloadModule: th,
   requestFormReset: ah,
   unstable_batchedUpdates: uh,
-  useFormState: eh,
-  useFormStatus: nh,
-  version: fh
-} = Vd, ch = S1.createRoot, ih = S1.hydrateRoot;
+  useFormStatus: eh,
+  version: nh
+} = Vd, fh = S1.createRoot, ch = S1.hydrateRoot;
 export {
   wd as createPortal,
-  ch as createRoot,
+  fh as createRoot,
   Vd as default,
   $d as flushSync,
-  ih as hydrateRoot,
+  ch as hydrateRoot,
   Fd as preconnect,
   kd as prefetchDNS,
   Id as preinit,
@@ -10219,7 +10218,6 @@ export {
   th as preloadModule,
   ah as requestFormReset,
   uh as unstable_batchedUpdates,
-  eh as useFormState,
-  nh as useFormStatus,
-  fh as version
+  eh as useFormStatus,
+  nh as version
 };

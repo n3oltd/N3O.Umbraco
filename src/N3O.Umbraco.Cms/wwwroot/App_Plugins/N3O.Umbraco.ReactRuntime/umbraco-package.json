@@ -1,22 +1,14 @@
 {
     "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.ReactRuntime",
     "name": "N3O React Runtime",
-    "version": "1.0.0",
-    "extensions": [
-        {
-            "type": "condition",
-            "alias": "N3O.Condition.WorkspaceVisibility",
-            "name": "N3O Workspace Visibility Condition",
-            "api": "/App_Plugins/N3O.Umbraco.ReactRuntime/workspace-visibility-condition.js"
-        }
-    ],
+    "version": "17.0.0",
     "importmap": {
         "imports": {
             "react": "/App_Plugins/N3O.Umbraco.ReactRuntime/react.js",
             "react/jsx-runtime": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-jsx-runtime.js",
             "react-dom": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-dom.js",
-            "react-dom/client": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-dom.js",
-            "@n3o/auth-fetch": "/App_Plugins/N3O.Umbraco.ReactRuntime/auth-fetch.js"
+            "react-dom/client": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-dom.js"
         }
     }
 }

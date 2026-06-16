@@ -1,35 +1,43 @@
-var m = (t) => {
+var f = (t) => {
   throw TypeError(t);
 };
-var o = (t, e, i) => e.has(t) || m("Cannot " + i);
-var u = (t, e, i) => (o(t, e, "read from private field"), i ? i.call(t) : e.get(t)), c = (t, e, i) => e.has(t) ? m("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), f = (t, e, i, s) => (o(t, e, "write to private field"), s ? s.call(t, i) : e.set(t, i), i), d = (t, e, i) => (o(t, e, "access private method"), i);
-import { UmbConditionBase as C } from "@umbraco-cms/backoffice/extension-registry";
-import { UMB_DOCUMENT_WORKSPACE_CONTEXT as b } from "@umbraco-cms/backoffice/document";
-var n, a, p, l;
-class v extends C {
+var p = (t, e, i) => e.has(t) || f("Cannot " + i);
+var o = (t, e, i) => (p(t, e, "read from private field"), i ? i.call(t) : e.get(t)), h = (t, e, i) => e.has(t) ? f("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), l = (t, e, i, s) => (p(t, e, "write to private field"), s ? s.call(t, i) : e.set(t, i), i), m = (t, e, i) => (p(t, e, "access private method"), i);
+import { UmbConditionBase as A } from "@umbraco-cms/backoffice/extension-registry";
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT as T } from "@umbraco-cms/backoffice/document";
+import { UMB_AUTH_CONTEXT as w } from "@umbraco-cms/backoffice/auth";
+import { createAuthFetch as y } from "@n3o/backoffice-core";
+var c, r, u, n, d, C;
+class g extends A {
   constructor(i, s) {
     super(i, s);
-    c(this, a);
-    c(this, n);
-    f(this, n, s), this.consumeContext(b, (r) => {
-      r && this.observe(r.unique, (h) => {
-        h && d(this, a, p).call(this, h);
+    h(this, n);
+    h(this, c);
+    h(this, r, null);
+    h(this, u, null);
+    l(this, c, s), this.consumeContext(w, (a) => {
+      l(this, r, a ? y(a.getOpenApiConfiguration()) : null), m(this, n, d).call(this);
+    }), this.consumeContext(T, (a) => {
+      a && this.observe(a.unique, (b) => {
+        l(this, u, b ?? null), m(this, n, d).call(this);
       });
     });
   }
 }
-n = new WeakMap(), a = new WeakSet(), p = async function(i) {
-  this.permitted = await d(this, a, l).call(this, i), u(this, n).onChange(this.permitted);
-}, l = async function(i) {
+c = new WeakMap(), r = new WeakMap(), u = new WeakMap(), n = new WeakSet(), d = async function() {
+  !o(this, u) || !o(this, r) || (this.permitted = await m(this, n, C).call(this, o(this, u)), o(this, c).onChange(this.permitted));
+}, C = async function(i) {
   try {
-    const s = await fetch(`/umbraco/api/DynamicListViewApi/${i}`);
+    const s = await o(this, r).call(this, `/umbraco/backoffice/api/DynamicListViewApi/${i}`, {
+      headers: { Accept: "application/json" }
+    });
     return s.ok ? (await s.json()).enabled === !0 : !1;
   } catch {
     return !1;
   }
 };
 export {
-  v as DynamicListViewCondition,
-  v as default
+  g as DynamicListViewCondition,
+  g as default
 };
 //# sourceMappingURL=dynamic-list-view-condition.js.map

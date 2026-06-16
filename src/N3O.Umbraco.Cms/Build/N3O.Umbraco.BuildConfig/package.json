@@ -1,0 +1,13 @@
+{
+    "name": "@n3o/build",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./tsconfig": "./base.json",
+        "./vite-env": "./vite-env.d.ts",
+        ".": {
+            "types": "./vite-config.d.ts",
+            "import": "./vite-config.js"
+        }
+    }
+}
