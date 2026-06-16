@@ -1,17 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.Data.Controllers;
 
-public class ExportVisibilityController : BackofficeAuthorizedApiController {
+public class ExportVisibilityController : WorkspaceVisibilityController {
     private readonly IEnumerable<IExportContentFilter> _contentFilters;
     private readonly IContentService _contentService;
     private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
@@ -24,9 +24,8 @@ public class ExportVisibilityController : BackofficeAuthorizedApiController {
         _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
     }
 
-    [HttpGet("{contentId:guid}")]
-    public IActionResult GetVisibility([FromRoute] Guid contentId) {
-        return Ok(new { permitted = IsPermitted(contentId) });
+    protected override Task<bool> IsVisibleAsync(Guid contentId) {
+        return Task.FromResult(IsPermitted(contentId));
     }
 
     private bool IsPermitted(Guid contentId) {
