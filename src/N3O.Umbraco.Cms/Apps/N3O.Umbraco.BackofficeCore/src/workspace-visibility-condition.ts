@@ -1,16 +1,3 @@
-// Shared, configurable workspace-view visibility condition, self-hosted in the ReactRuntime and
-// registered once via this project's umbraco-package.json as `N3O.Condition.WorkspaceVisibility`.
-//
-// WHY: in Umbraco 13 a content app (IContentAppFactory.GetContentAppFor) could decide PER NODE / PER USER
-// whether to show — e.g. Data Export/Import ran IExportContentFilter/IImportContentFilter + a user-group
-// check, and Platforms Preview checked the document type's composition. Content apps are now manifest
-// `workspaceView` extensions and that server-side gating was lost (they show on every document). This
-// condition restores it generically: a workspace view lists it in its `conditions` with an `endpoint`,
-// and the view is permitted only when `GET {endpoint}/{documentUnique}` returns `{ permitted: true }`.
-//
-// The call is authenticated (the gating often depends on the current user's groups), using createAuthFetch
-// from @n3o/backoffice-core. `@umbraco-cms/*` stays external (resolved at runtime via the import map);
-// this file is loaded directly by Umbraco as the condition's `api`.
 import { UmbConditionBase } from '@umbraco-cms/backoffice/extension-registry';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
 import { UMB_AUTH_CONTEXT } from '@umbraco-cms/backoffice/auth';
@@ -18,8 +5,11 @@ import type { UmbControllerHost } from '@umbraco-cms/backoffice/controller-api';
 import type { UmbConditionConfigBase, UmbConditionControllerArguments } from '@umbraco-cms/backoffice/extension-api';
 import { createAuthFetch, type AuthFetch } from './auth-fetch.js';
 
+export interface WorkspaceVisibilityRes {
+    visible: boolean;
+}
+
 export type WorkspaceVisibilityConditionConfig = UmbConditionConfigBase & {
-    /** Backoffice API endpoint returning `{ permitted: boolean }` for `GET {endpoint}/{documentUnique}`. */
     endpoint?: string;
 };
 
@@ -50,7 +40,6 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisi
     async #evaluate(): Promise<void> {
         const endpoint = this.#args.config?.endpoint;
 
-        // Wait until the document key, the auth fetch and the configured endpoint are all available.
         if (!endpoint || !this.#unique || !this.#authFetch) {
             return;
         }
@@ -69,9 +58,14 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisi
                 return false;
             }
 
-            const data = await response.json();
+            const data = await response.json() as { visible?: boolean };
 
-            return data?.permitted === true;
+            if (typeof data.visible !== 'boolean') {
+                console.error('[WorkspaceVisibilityCondition] Unexpected response shape from', endpoint, '— expected { visible: boolean }, got', data);
+                return false;
+            }
+
+            return data.visible;
         } catch {
             return false;
         }

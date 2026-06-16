@@ -8,7 +8,6 @@
         "watch": "vite build --watch"
     },
     "devDependencies": {
-        "@n3o/backoffice-core": "*",
         "@n3o/build": "*"
     }
 }

@@ -21,8 +21,8 @@ public class PlatformsPreviewController : BackofficeAuthorizedApiController {
     }
 
     [HttpGet("visibility/{contentId:guid}")]
-    public ActionResult GetVisibility([FromRoute] Guid contentId) {
-        return Ok(new { permitted = IsPermitted(contentId) });
+    public ActionResult<WorkspaceVisibilityRes> GetVisibility([FromRoute] Guid contentId) {
+        return Ok(new WorkspaceVisibilityRes { Visible = IsPermitted(contentId) });
     }
 
     private bool IsPermitted(Guid contentId) {
