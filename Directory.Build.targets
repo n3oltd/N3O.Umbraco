@@ -1,11 +1,4 @@
 <Project>
-    <!--
-        Backoffice client-app workspace (npm workspace rooted at src/). The single `npm ci` runs during the
-        build of N3O.Umbraco.Extensions - the graph root that every client-app host (N3O.Umbraco.Cms and all
-        *.StaticAssets) transitively references - so it executes exactly once, before any host's `npm run build`:
-        race-free, no dedicated project. Lives here (build infrastructure) rather than inside the Extensions
-        domain library. Incremental: re-runs only when src/package-lock.json changes (tracked via the stamp).
-    -->
     <Target Name="RestoreClientWorkspace"
             Condition="'$(MSBuildProjectName)' == 'N3O.Umbraco.Extensions'"
             BeforeTargets="BeforeBuild"
@@ -15,12 +8,6 @@
         <Touch Files="$(MSBuildThisFileDirectory)src\node_modules\.n3o-restore-stamp" AlwaysCreate="true" />
     </Target>
 
-    <!--
-        Generalized backoffice client-app build. Any project with an Apps/package.json (the *.StaticAssets
-        plugins) builds its Vite client app into wwwroot - no per-csproj target needed. A project can override
-        $(ClientAppDir) before this is imported if its client app lives elsewhere. N3O.Umbraco.Cms is the
-        exception: it builds multiple apps (Apps/* + ReactRuntime) via its own BuildClientApps target.
-    -->
     <PropertyGroup Condition="'$(ClientAppDir)' == '' And Exists('$(MSBuildProjectDirectory)\Apps\package.json')">
         <ClientAppDir>$(MSBuildProjectDirectory)\Apps</ClientAppDir>
     </PropertyGroup>
@@ -31,13 +18,6 @@
         <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
     </Target>
 
-    <!--
-        Fail-fast guard. A client-app host is any project with a BuildClientApp/BuildClientApps target. In a full
-        build, ResolveProjectReferences builds Extensions first (above), creating src/node_modules. In a PARTIAL
-        build that does not build project references (e.g. BuildProjectReferences=false, or packing a single
-        package without building its references on a clean clone), Extensions is not built and node_modules is
-        absent - stop here with a clear message instead of a cryptic Vite "cannot find module" failure.
-    -->
     <Target Name="EnsureClientWorkspaceRestored"
             Condition="'$(ClientAppDir)' != '' Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
             BeforeTargets="BuildClientApp;BuildClientApps"
