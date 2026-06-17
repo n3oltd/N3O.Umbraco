@@ -20,13 +20,17 @@ public class YouTubeVideoTagHelper : TagHelper {
             return;
         }
 
+        var host = VideoUrl.InvariantContains("youtube-nocookie.com")
+                       ? "https://www.youtube-nocookie.com"
+                       : "https://www.youtube.com";
+
         var iframeTag = new TagBuilder("iframe");
 
         foreach (var attribute in output.Attributes) {
             iframeTag.Attributes[attribute.Name] = attribute.Value?.ToString();
         }
 
-        iframeTag.Attributes["src"] = $"https://www.youtube.com/embed/{videoId}?enablejsapi=1";
+        iframeTag.Attributes["src"] = $"{host}/embed/{videoId}?enablejsapi=1";
 
         if (!iframeTag.Attributes.ContainsKey("frameborder")) {
             iframeTag.Attributes["frameborder"] = "0";
