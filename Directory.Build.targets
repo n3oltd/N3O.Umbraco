@@ -16,19 +16,24 @@
     </Target>
 
     <!--
-        Generalized backoffice client-app build. Any project with an Apps/package.json (the *.StaticAssets
-        plugins) builds its Vite client app into wwwroot - no per-csproj target needed. A project can override
-        $(ClientAppDir) before this is imported if its client app lives elsewhere. N3O.Umbraco.Cms is the
-        exception: it builds multiple apps (Apps/* + ReactRuntime) via its own BuildClientApps target.
+        Generalized backoffice client-app build. Builds EVERY package.json found under a project's Apps/
+        folder at ANY depth - a single app at Apps/package.json, OR multiple apps in subfolders (e.g.
+        Data.StaticAssets/Apps/N3O.Umbraco.Data.*). Each builds its Vite output into wwwroot; no per-csproj
+        target needed. (node_modules is hoisted to src/ so it never appears under Apps/, but is excluded
+        defensively.) N3O.Umbraco.Cms is the exception: it ALSO builds the React runtime under Build/, so it
+        keeps its own BuildClientApps target and is excluded here to avoid building its Apps/* twice.
     -->
-    <PropertyGroup Condition="'$(ClientAppDir)' == '' And Exists('$(MSBuildProjectDirectory)\Apps\package.json')">
-        <ClientAppDir>$(MSBuildProjectDirectory)\Apps</ClientAppDir>
-    </PropertyGroup>
     <Target Name="BuildClientApp"
-            Condition="'$(ClientAppDir)' != ''"
+            Condition="Exists('$(MSBuildProjectDirectory)\Apps') And '$(MSBuildProjectName)' != 'N3O.Umbraco.Cms'"
             BeforeTargets="BeforeBuild"
             DependsOnTargets="ResolveProjectReferences">
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
+        <ItemGroup>
+            <_N3OClientAppPackage Include="$(MSBuildProjectDirectory)\Apps\**\package.json"
+                                  Exclude="$(MSBuildProjectDirectory)\Apps\**\node_modules\**" />
+        </ItemGroup>
+        <Exec Condition="'@(_N3OClientAppPackage)' != ''"
+              Command="npm run build"
+              WorkingDirectory="%(_N3OClientAppPackage.RootDir)%(_N3OClientAppPackage.Directory)" />
     </Target>
 
     <!--
@@ -39,22 +44,10 @@
         absent - stop here with a clear message instead of a cryptic Vite "cannot find module" failure.
     -->
     <Target Name="EnsureClientWorkspaceRestored"
-            Condition="'$(ClientAppDir)' != '' Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
+            Condition="Exists('$(MSBuildProjectDirectory)\Apps') Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
             BeforeTargets="BuildClientApp;BuildClientApps"
             DependsOnTargets="ResolveProjectReferences">
         <Error Condition="!Exists('$(MSBuildThisFileDirectory)src\node_modules')"
                Text="Backoffice client workspace is not restored ('$(MSBuildThisFileDirectory)src\node_modules' missing). Build the full solution (so N3O.Umbraco.Extensions restores it), or run 'npm ci' in 'src' before building this project." />
     </Target>
-
-    <!--
-        Packaging hygiene. The Web/Razor SDK auto-includes **/*.json as Content, and with ContentTargetFolders=.
-        these pack to the NuGet package root - leaking client-app SOURCE config (ClientApp/package.json,
-        tsconfig.json) into every *.StaticAssets package. Consumers only need the BUILT output, which ships via the
-        separate static-web-assets pipeline (staticwebassets/App_Plugins/...); the served `umbraco-package.json` is
-        a static asset (different filename, not matched here) and is unaffected. Strip the source config from packing.
-    -->
-    <ItemGroup>
-        <Content Remove="**\package.json" />
-        <Content Remove="**\tsconfig*.json" />
-    </ItemGroup>
 </Project>
