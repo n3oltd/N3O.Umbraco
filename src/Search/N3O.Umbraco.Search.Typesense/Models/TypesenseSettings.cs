@@ -2,6 +2,7 @@
 
 public class TypesenseSettings {
     public string ApiKey { get; set; }
+    public string SearchApiKey { get; set; }
     public string Node { get; set; }
     public int Port { get; set; }
 }
