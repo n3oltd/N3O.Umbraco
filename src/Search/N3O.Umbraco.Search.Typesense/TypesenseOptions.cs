@@ -19,6 +19,7 @@ public class TypesenseOptions : IConfigureOptions<Config> {
 
         if (typesenseSettings.ApiKey.HasValue() && typesenseSettings.Node.HasValue() && typesenseSettings.Port.HasValue()) {
             options.ApiKey = typesenseSettings.ApiKey;
+            options.SearchApiKey = typesenseSettings.SearchApiKey;
             options.Nodes = [
                 new Node(typesenseSettings.Node, typesenseSettings.Port.ToString(CultureInfo.InvariantCulture), "https")
             ];
