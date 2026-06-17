@@ -45,16 +45,4 @@
         <Error Condition="!Exists('$(MSBuildThisFileDirectory)src\node_modules')"
                Text="Backoffice client workspace is not restored ('$(MSBuildThisFileDirectory)src\node_modules' missing). Build the full solution (so N3O.Umbraco.Extensions restores it), or run 'npm ci' in 'src' before building this project." />
     </Target>
-
-    <!--
-        Packaging hygiene. The Web/Razor SDK auto-includes **/*.json as Content, and with ContentTargetFolders=.
-        these pack to the NuGet package root - leaking client-app SOURCE config (ClientApp/package.json,
-        tsconfig.json) into every *.StaticAssets package. Consumers only need the BUILT output, which ships via the
-        separate static-web-assets pipeline (staticwebassets/App_Plugins/...); the served `umbraco-package.json` is
-        a static asset (different filename, not matched here) and is unaffected. Strip the source config from packing.
-    -->
-    <ItemGroup>
-        <Content Remove="**\package.json" />
-        <Content Remove="**\tsconfig*.json" />
-    </ItemGroup>
 </Project>
