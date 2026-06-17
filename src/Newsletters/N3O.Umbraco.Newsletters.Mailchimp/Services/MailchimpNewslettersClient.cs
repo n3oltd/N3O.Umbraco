@@ -31,10 +31,15 @@ public class MailchimpNewslettersClient : INewslettersClient {
 
     public async Task<SubscribeResult> SubscribeAsync(IContact contact, CancellationToken cancellationToken = default) {
         try {
-            var mergeValues = new Dictionary<string, string> {
-                { "FNAME", contact.FirstName },
-                { "LNAME", contact.LastName }
-            };
+            var mergeValues = new Dictionary<string, string>();
+
+            if (contact.FirstName.HasValue()) {
+                mergeValues["FNAME"] = contact.FirstName;
+            }
+
+            if (contact.LastName.HasValue()) {
+                mergeValues["LNAME"] = contact.LastName;
+            }
 
             var member = CreateMember(contact.Email, mergeValues);
 
@@ -59,6 +64,7 @@ public class MailchimpNewslettersClient : INewslettersClient {
         var member = new Member();
         member.EmailAddress = email;
         member.Status = Status.Subscribed;
+        member.StatusIfNew = Status.Subscribed;
 
         if (mergeValues.HasAny()) {
             member.MergeFields = mergeValues.ToDictionary(x => x.Key, x => (object) x.Value);
