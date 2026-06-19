@@ -1,6 +1,3 @@
-# Dispatch PR status to n3oltd/work: on pull_request lifecycle events and on push
-# forwards PR status to n3oltd/work via the shared reusable workflow (shipping on
-# merge).
 name: Dispatch PR status to n3oltd/work
 
 on:
