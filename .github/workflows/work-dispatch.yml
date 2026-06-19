@@ -1,0 +1,16 @@
+# Dispatch PR status to n3oltd/work: on pull_request lifecycle events and on push
+# forwards PR status to n3oltd/work via the shared reusable workflow (shipping on
+# merge).
+name: Dispatch PR status to n3oltd/work
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, closed, reopened, ready_for_review, converted_to_draft]
+  push:
+
+jobs:
+  dispatch:
+    uses: n3oltd/actions/.github/workflows/n3o-work-dispatch.yml@main
+    with:
+      ship-on-merge: true
+    secrets: inherit
