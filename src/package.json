@@ -2,7 +2,7 @@
   "name": "n3o-umbraco-clientapps",
   "private": true,
   "workspaces": [
-    "**/Apps/**",
+    "**/Extensions/**",
     "N3O.Umbraco.Cms/Build/*",
     "!**/bin/**",
     "!**/obj/**"

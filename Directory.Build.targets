@@ -8,18 +8,21 @@
         <Touch Files="$(MSBuildThisFileDirectory)src\node_modules\.n3o-restore-stamp" AlwaysCreate="true" />
     </Target>
 
-    <PropertyGroup Condition="'$(ClientAppDir)' == '' And Exists('$(MSBuildProjectDirectory)\Apps\package.json')">
-        <ClientAppDir>$(MSBuildProjectDirectory)\Apps</ClientAppDir>
-    </PropertyGroup>
     <Target Name="BuildClientApp"
-            Condition="'$(ClientAppDir)' != ''"
+            Condition="Exists('$(MSBuildProjectDirectory)\Extensions') And '$(MSBuildProjectName)' != 'N3O.Umbraco.Cms'"
             BeforeTargets="BeforeBuild"
             DependsOnTargets="ResolveProjectReferences">
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
+        <ItemGroup>
+            <_N3OClientAppPackage Include="$(MSBuildProjectDirectory)\Extensions\**\package.json"
+                                  Exclude="$(MSBuildProjectDirectory)\Extensions\**\node_modules\**" />
+        </ItemGroup>
+        <Exec Condition="'@(_N3OClientAppPackage)' != ''"
+              Command="npm run build"
+              WorkingDirectory="%(_N3OClientAppPackage.RootDir)%(_N3OClientAppPackage.Directory)" />
     </Target>
 
     <Target Name="EnsureClientWorkspaceRestored"
-            Condition="'$(ClientAppDir)' != '' Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
+            Condition="Exists('$(MSBuildProjectDirectory)\Extensions') Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
             BeforeTargets="BuildClientApp;BuildClientApps"
             DependsOnTargets="ResolveProjectReferences">
         <Error Condition="!Exists('$(MSBuildThisFileDirectory)src\node_modules')"

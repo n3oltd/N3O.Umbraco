@@ -52,7 +52,9 @@
         <!-- Build/ holds the shared @n3o/build config + the React runtime. Their built output ships from
              wwwroot/App_Plugins as static web assets; the source must not be packed/published as Content. -->
         <Content Remove="Build\**" />
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Apps\*\package.json" />
+        <Content Include="Build\N3O.Umbraco.BuildConfig\base.json" />
+        <Content Include="Build\N3O.Umbraco.BuildConfig\package.json" />
+        <N3OClientApp Include="$(MSBuildProjectDirectory)\Extensions\*\package.json" />
         <N3OClientApp Include="$(MSBuildProjectDirectory)\Build\N3O.Umbraco.ReactRuntime\package.json" />
     </ItemGroup>
     <Target Name="BuildClientApps" BeforeTargets="BeforeBuild" DependsOnTargets="ResolveProjectReferences">
