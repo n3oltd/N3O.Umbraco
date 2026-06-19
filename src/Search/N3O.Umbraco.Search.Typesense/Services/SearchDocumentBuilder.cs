@@ -24,6 +24,7 @@ public class SearchDocumentBuilder<T> : ISearchDocumentBuilder<T> where T : clas
         var searchDocument = new T();
         
         _actions.Do(x => x(searchDocument));
+        _actions.Clear();
 
         return TransformObject(searchDocument);
     }

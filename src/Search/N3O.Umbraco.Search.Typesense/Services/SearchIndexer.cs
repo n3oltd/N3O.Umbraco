@@ -36,5 +36,5 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
 
     protected abstract Task ProcessContentAsync(ISearchDocumentBuilder<TDocument> builder,
                                                 TContent content,
-                                                string culture = null);
+                                                string culture);
 }
