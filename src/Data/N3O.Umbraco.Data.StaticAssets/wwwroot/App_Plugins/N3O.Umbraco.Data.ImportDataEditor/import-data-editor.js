@@ -1,72 +1,72 @@
-import { customElement as M } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as D } from "@umbraco-cms/backoffice/element-api";
-import { UmbAuthFetchMixin as F } from "@n3o/backoffice-core";
-import { UmbPropertyValueChangeEvent as b } from "@umbraco-cms/backoffice/property-editor";
-import { createElement as I } from "react";
+import { customElement as F } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as M } from "@umbraco-cms/backoffice/element-api";
+import { UmbAuthFetchMixin as D } from "@n3o/backoffice-core";
+import { UmbChangeEvent as b } from "@umbraco-cms/backoffice/event";
+import { createElement as A } from "react";
 import { createRoot as O } from "react-dom/client";
-import { jsxs as _, jsx as d } from "react/jsx-runtime";
+import { jsxs as _, jsx as p } from "react/jsx-runtime";
 const W = ".n3o-import-fields-editor .row-wrapper{margin-bottom:40px;width:100%}.n3o-import-fields-editor .row-1,.n3o-import-fields-editor .row-2{display:block;width:90%}.n3o-import-fields-editor .text{font-weight:700}.n3o-import-fields-editor .custom{width:100%;margin-top:10px}";
-function P({ value: t, onTextChange: e, onFileSelected: a }) {
+function I({ value: t, onTextChange: e, onFileSelected: a }) {
   const h = (t == null ? void 0 : t.fields) ?? [];
   return /* @__PURE__ */ _("div", { className: "n3o-import-fields-editor", children: [
-    h.map((s, n) => /* @__PURE__ */ _("div", { className: "row-wrapper", children: [
-      /* @__PURE__ */ d("div", { className: "row-1", children: /* @__PURE__ */ d("span", { className: "text", children: s.name }) }),
+    h.map((o, c) => /* @__PURE__ */ _("div", { className: "row-wrapper", children: [
+      /* @__PURE__ */ p("div", { className: "row-1", children: /* @__PURE__ */ p("span", { className: "text", children: o.name }) }),
       /* @__PURE__ */ _("div", { className: "row-2", children: [
-        /* @__PURE__ */ d(
+        /* @__PURE__ */ p(
           "input",
           {
             type: "text",
             className: "custom",
-            value: s.value ?? "",
-            placeholder: s.sourceValue ?? "",
-            onInput: (p) => e(n, p.target.value)
+            value: o.value ?? "",
+            placeholder: o.sourceValue ?? "",
+            onChange: (d) => e(c, d.currentTarget.value)
           }
         ),
-        s.isFile ? /* @__PURE__ */ d(
+        o.isFile ? /* @__PURE__ */ p(
           "input",
           {
             type: "file",
-            onChange: (p) => {
-              var C;
-              const y = (C = p.target.files) == null ? void 0 : C[0];
-              y && a(n, y);
+            onChange: (d) => {
+              var k;
+              const C = (k = d.target.files) == null ? void 0 : k[0];
+              C && a(c, C);
             }
           }
         ) : null
       ] })
-    ] }, n)),
-    /* @__PURE__ */ d("style", { children: W })
+    ] }, o.name)),
+    /* @__PURE__ */ p("style", { children: W })
   ] });
 }
-var A = Object.getOwnPropertyDescriptor, x = (t) => {
+var P = Object.getOwnPropertyDescriptor, x = (t) => {
   throw TypeError(t);
 }, U = (t, e, a, h) => {
-  for (var s = h > 1 ? void 0 : h ? A(e, a) : e, n = t.length - 1, p; n >= 0; n--)
-    (p = t[n]) && (s = p(s) || s);
-  return s;
-}, E = (t, e, a) => e.has(t) || x("Cannot " + a), i = (t, e, a) => (E(t, e, "read from private field"), a ? a.call(t) : e.get(t)), m = (t, e, a) => e.has(t) ? x("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), f = (t, e, a, h) => (E(t, e, "write to private field"), e.set(t, a), a), c = (t, e, a) => (E(t, e, "access private method"), a), l, u, o, v, r, N, S, T, k, w;
+  for (var o = h > 1 ? void 0 : h ? P(e, a) : e, c = t.length - 1, d; c >= 0; c--)
+    (d = t[c]) && (o = d(o) || o);
+  return o;
+}, y = (t, e, a) => e.has(t) || x("Cannot " + a), i = (t, e, a) => (y(t, e, "read from private field"), a ? a.call(t) : e.get(t)), m = (t, e, a) => e.has(t) ? x("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), f = (t, e, a, h) => (y(t, e, "write to private field"), e.set(t, a), a), r = (t, e, a) => (y(t, e, "access private method"), a), l, u, n, w, s, N, T, S, E, v;
 const q = "n3o-import-data-editor";
-let g = class extends F(D(HTMLElement)) {
+let g = class extends D(M(HTMLElement)) {
   constructor() {
-    super(), m(this, r), m(this, l), m(this, u), m(this, o), m(this, v);
+    super(), m(this, s), m(this, l), m(this, u), m(this, n), m(this, w);
     const t = this.attachShadow({ mode: "open" });
     f(this, u, document.createElement("div")), t.appendChild(i(this, u));
   }
   get value() {
-    return i(this, o);
+    return i(this, n);
   }
   set value(t) {
-    f(this, o, t), c(this, r, w).call(this);
+    f(this, n, t), r(this, s, v).call(this);
   }
   set config(t) {
-    f(this, v, t);
+    f(this, w, t);
   }
   get config() {
-    return i(this, v);
+    return i(this, w);
   }
   connectedCallback() {
     var t;
-    (t = super.connectedCallback) == null || t.call(this), i(this, l) ?? f(this, l, O(i(this, u))), c(this, r, w).call(this);
+    (t = super.connectedCallback) == null || t.call(this), i(this, l) ?? f(this, l, O(i(this, u))), r(this, s, v).call(this);
   }
   disconnectedCallback() {
     var t, e;
@@ -75,47 +75,53 @@ let g = class extends F(D(HTMLElement)) {
 };
 l = /* @__PURE__ */ new WeakMap();
 u = /* @__PURE__ */ new WeakMap();
-o = /* @__PURE__ */ new WeakMap();
-v = /* @__PURE__ */ new WeakMap();
-r = /* @__PURE__ */ new WeakSet();
+n = /* @__PURE__ */ new WeakMap();
+w = /* @__PURE__ */ new WeakMap();
+s = /* @__PURE__ */ new WeakSet();
 N = function(t, e) {
-  i(this, o) && (i(this, o).fields[t].value = e, c(this, r, k).call(this));
+  i(this, n) && (i(this, n).fields[t].value = e, r(this, s, v).call(this), r(this, s, E).call(this));
 };
-S = async function(t, e) {
-  if (!i(this, o))
+T = async function(t, e) {
+  if (!i(this, n))
     return;
-  const a = i(this, o).reference, s = { file: await c(this, r, T).call(this, e) };
-  (await (this.authFetch ?? fetch)(`/umbraco/backoffice/api/Imports/queued/${a}/files`, {
+  const a = i(this, n).reference, o = { file: await r(this, s, S).call(this, e) };
+  if (!this.authFetch) {
+    alert("Authentication context not ready, please try again");
+    return;
+  }
+  (await this.authFetch(`/umbraco/backoffice/api/Imports/queued/${a}/files`, {
     method: "POST",
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(s)
-  })).status === 200 ? (i(this, o).fields[t].value = e.name, c(this, r, w).call(this), c(this, r, k).call(this)) : alert("Failed to upload specified file, please contact support for assistance");
+    body: JSON.stringify(o)
+  })).status === 200 ? (i(this, n).fields[t].value = e.name, r(this, s, v).call(this), r(this, s, E).call(this)) : alert("Failed to upload specified file, please contact support for assistance");
 };
-T = async function(t) {
+S = async function(t) {
+  if (!this.authFetch)
+    throw new Error("Authentication context not ready");
   const e = new FormData();
-  return e.append("file", t), await (await (this.authFetch ?? fetch)("/umbraco/api/Storage/tempUpload", {
+  return e.append("file", t), await (await this.authFetch("/umbraco/api/Storage/tempUpload", {
     method: "POST",
     body: e
   })).json();
 };
-k = function() {
+E = function() {
   this.dispatchEvent(new b());
 };
-w = function() {
+v = function() {
   var t;
   (t = i(this, l)) == null || t.render(
-    I(P, {
-      value: i(this, o),
-      onTextChange: (e, a) => c(this, r, N).call(this, e, a),
-      onFileSelected: (e, a) => void c(this, r, S).call(this, e, a)
+    A(I, {
+      value: i(this, n),
+      onTextChange: (e, a) => r(this, s, N).call(this, e, a),
+      onFileSelected: (e, a) => void r(this, s, T).call(this, e, a)
     })
   );
 };
 g = U([
-  M(q)
+  F(q)
 ], g);
 const j = g;
 export {

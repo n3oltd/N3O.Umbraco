@@ -9,12 +9,12 @@
     </Target>
 
     <Target Name="BuildClientApp"
-            Condition="Exists('$(MSBuildProjectDirectory)\Apps') And '$(MSBuildProjectName)' != 'N3O.Umbraco.Cms'"
+            Condition="Exists('$(MSBuildProjectDirectory)\Extensions') And '$(MSBuildProjectName)' != 'N3O.Umbraco.Cms'"
             BeforeTargets="BeforeBuild"
             DependsOnTargets="ResolveProjectReferences">
         <ItemGroup>
-            <_N3OClientAppPackage Include="$(MSBuildProjectDirectory)\Apps\**\package.json"
-                                  Exclude="$(MSBuildProjectDirectory)\Apps\**\node_modules\**" />
+            <_N3OClientAppPackage Include="$(MSBuildProjectDirectory)\Extensions\**\package.json"
+                                  Exclude="$(MSBuildProjectDirectory)\Extensions\**\node_modules\**" />
         </ItemGroup>
         <Exec Condition="'@(_N3OClientAppPackage)' != ''"
               Command="npm run build"
@@ -22,7 +22,7 @@
     </Target>
 
     <Target Name="EnsureClientWorkspaceRestored"
-            Condition="Exists('$(MSBuildProjectDirectory)\Apps') Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
+            Condition="Exists('$(MSBuildProjectDirectory)\Extensions') Or '$(MSBuildProjectName)' == 'N3O.Umbraco.Cms'"
             BeforeTargets="BuildClientApp;BuildClientApps"
             DependsOnTargets="ResolveProjectReferences">
         <Error Condition="!Exists('$(MSBuildThisFileDirectory)src\node_modules')"

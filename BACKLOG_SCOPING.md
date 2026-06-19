@@ -70,13 +70,13 @@ Five Lit surfaces exist:
 
 | File | Type | Convert? | Verdict |
 |---|---|---|---|
-| `Cloud.Platforms.StaticAssets/Apps/src/platforms-urls-info-app.ts` | `workspaceInfoApp` | **No — deliberate** | Pure Lit by design; React would nest a React-in-web-component-in-React. Leave. |
-| `Cms/Apps/N3O.Umbraco.DynamicListViews/src/dynamic-list-view.ts` | `workspaceView` | **No — deliberate** | Docs confirm DynamicListViews kept Lit on purpose (fights the WC-native backoffice). Leave. |
-| `Cloud.Platforms.StaticAssets/Apps/src/platforms-preview.ts` | React-mount shell | Optional tidy | Already mounts a React root; only the shadow-root plumbing is Lit. Low priority, non-blocking. |
+| `Cloud.Platforms.StaticAssets/Extensions/src/platforms-urls-info-app.ts` | `workspaceInfoApp` | **No — deliberate** | Pure Lit by design; React would nest a React-in-web-component-in-React. Leave. |
+| `Cms/Extensions/N3O.Umbraco.DynamicListViews/src/dynamic-list-view.ts` | `workspaceView` | **No — deliberate** | Docs confirm DynamicListViews kept Lit on purpose (fights the WC-native backoffice). Leave. |
+| `Cloud.Platforms.StaticAssets/Extensions/src/platforms-preview.ts` | React-mount shell | Optional tidy | Already mounts a React root; only the shadow-root plumbing is Lit. Low priority, non-blocking. |
 | `Cloud.Platforms.Marketing.StaticAssets/.../segment-rule-telethon-on-air-display.js` | `engageSegmentRule` display | Yes (low pri) | ~10 lines. |
 | `Cloud.Platforms.Marketing.StaticAssets/.../segment-rule-telethon-on-air-editor.js` | `engageSegmentRule` editor | Yes (low pri) | Small AngularJS→Lit port; ~30 lines. |
 
-🟢 **Verdict: Easy, low value.** The only real work is the two `telethon-on-air-rule` components — **blocked on a prerequisite:** `Marketing.StaticAssets` has no `Apps/`/Vite/TS build pipeline; stand that up first, then the rewrites are trivial.
+🟢 **Verdict: Easy, low value.** The only real work is the two `telethon-on-air-rule` components — **blocked on a prerequisite:** `Marketing.StaticAssets` has no `Extensions/`/Vite/TS build pipeline; stand that up first, then the rewrites are trivial.
 
 ---
 

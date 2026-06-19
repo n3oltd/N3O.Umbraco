@@ -37,7 +37,7 @@ auth-fetch + the workspace-visibility condition were moved (git-tracked) into a 
 ### D. Cms folder consolidation (this is the final layout)
 ```
 N3O.Umbraco.Cms/
-  Apps/
+  Extensions/
     N3O.Umbraco.BackofficeCore/      auth-fetch (@n3o/backoffice-core) + workspace-visibility-condition
     N3O.Umbraco.DynamicListViews/
   Build/
@@ -51,13 +51,13 @@ N3O.Umbraco.Cms/
 ## Key invariants / mechanics (don't break these)
 - **By-name resolution is location-independent.** `@n3o/build`, `@n3o/build/tsconfig`, `@n3o/backoffice-core` all resolve through the npm-workspace symlink — moving the package folders needs **no** change to any app's tsconfig/vite/imports.
 - **`Cms/Build/**` is excluded from Content** via `<Content Remove="Build\**" />` in `N3O.Umbraco.Cms.csproj` — the Razor SDK auto-includes `**/*.json` as Content, so without this `@n3o/build/base.json` would leak into the NuGet package. The built artifacts ship separately from `wwwroot` as static web assets.
-- **Build target:** `N3O.Umbraco.Cms.csproj` builds `Apps\*\package.json` (BackofficeCore + DynamicListViews) + `Build\N3O.Umbraco.ReactRuntime\package.json`. `@n3o/build` (`Build\N3O.Umbraco.BuildConfig`) has **no build script** and is intentionally **not** in the build target (it ships raw `.json`/`.js`/`.d.ts`, consumed via the symlink).
-- **Workspaces** (`src/package.json`): `["**/Apps/**", "N3O.Umbraco.Cms/Build/*", "!**/bin/**", "!**/obj/**"]`. The `Build/*` glob covers both `N3O.Umbraco.BuildConfig` and `N3O.Umbraco.ReactRuntime`.
+- **Build target:** `N3O.Umbraco.Cms.csproj` builds `Extensions\*\package.json` (BackofficeCore + DynamicListViews) + `Build\N3O.Umbraco.ReactRuntime\package.json`. `@n3o/build` (`Build\N3O.Umbraco.BuildConfig`) has **no build script** and is intentionally **not** in the build target (it ships raw `.json`/`.js`/`.d.ts`, consumed via the symlink).
+- **Workspaces** (`src/package.json`): `["**/Extensions/**", "N3O.Umbraco.Cms/Build/*", "!**/bin/**", "!**/obj/**"]`. The `Build/*` glob covers both `N3O.Umbraco.BuildConfig` and `N3O.Umbraco.ReactRuntime`.
 - **Hoisting** lets apps omit react/vite/typescript; reliable for npm workspaces (would only break under a pnpm strict-node_modules migration).
 - ReactRuntime still declares `react`/`react-dom` (it's the one package that *bundles* React) — same `^19`, pinned by root `overrides`.
 
 ## Files changed (97 total; categories)
-- **New:** `N3O.Umbraco.Cms/Build/N3O.Umbraco.BuildConfig/` (@n3o/build: package.json, base.json, vite-config.js, vite-config.d.ts, vite-env.d.ts); `N3O.Umbraco.Cms/Apps/N3O.Umbraco.BackofficeCore/` (package.json, tsconfig.json, vite.config.ts, src/*); `N3O.Umbraco.Cms/wwwroot/App_Plugins/N3O.Umbraco.BackofficeCore/umbraco-package.json` (+ built js).
+- **New:** `N3O.Umbraco.Cms/Build/N3O.Umbraco.BuildConfig/` (@n3o/build: package.json, base.json, vite-config.js, vite-config.d.ts, vite-env.d.ts); `N3O.Umbraco.Cms/Extensions/N3O.Umbraco.BackofficeCore/` (package.json, tsconfig.json, vite.config.ts, src/*); `N3O.Umbraco.Cms/wwwroot/App_Plugins/N3O.Umbraco.BackofficeCore/umbraco-package.json` (+ built js).
 - **Moved (git-tracked renames):** ReactRuntime → `Cms/Build/N3O.Umbraco.ReactRuntime/`; auth-fetch.ts + workspace-visibility-condition.ts → BackofficeCore.
 - **Edited:** 16× `tsconfig.json` + 16× `vite.config.ts` + 16× `package.json` (apps); `src/package.json` (workspaces + root devDeps + overrides); `N3O.Umbraco.Cms.csproj`; ReactRuntime `package.json` (rename + drop `types`) + `vite.config.*.ts` (entries + outDir); both `umbraco-package.json` manifests (ReactRuntime slimmed, BackofficeCore added); `package-lock.json` regenerated.
 - **Deleted:** 11× per-app `src/vite-env.d.ts`; `src/tsconfig.base.json`; `src/build/vite-config.ts`.
@@ -74,4 +74,4 @@ N3O.Umbraco.Cms/
 4. **Naming (resolved):** the `@n3o/build` package folder was renamed `Cms/Build/build/` → `Cms/Build/N3O.Umbraco.BuildConfig/` to match the `N3O.Umbraco.*` sibling convention. The package name stays `@n3o/build`. The rename touched only the folder on disk + the `node_modules` symlink (refreshed via `npm install`) — no glob edit (the `Build/*` wildcard still matches) and no by-name reference changed; one app rebuilt clean to confirm.
 5. **Live backoffice smoke-test** is still owed (build verifies compilation, not runtime): confirm the backoffice loads, the React import-map resolves `react`/`@n3o/backoffice-core` from the new paths, and the `N3O.Condition.WorkspaceVisibility` condition still gates the Data Export/Import tabs.
 
-*Generated 2026-06-15. Subject: the frontend build-config refactor (`@n3o/build`) + BackofficeCore extraction + Cms `Build/`+`Apps/` consolidation. Commits handled by Talha.*
+*Generated 2026-06-15. Subject: the frontend build-config refactor (`@n3o/build`) + BackofficeCore extraction + Cms `Build/`+`Extensions/` consolidation. Commits handled by Talha.*

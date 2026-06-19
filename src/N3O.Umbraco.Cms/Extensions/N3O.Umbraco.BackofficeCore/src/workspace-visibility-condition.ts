@@ -58,7 +58,7 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisi
                 return false;
             }
 
-            const data = await response.json() as { visible?: boolean };
+            const data = await response.json() as WorkspaceVisibilityRes;
 
             if (typeof data.visible !== 'boolean') {
                 console.error('[WorkspaceVisibilityCondition] Unexpected response shape from', endpoint, '— expected { visible: boolean }, got', data);
