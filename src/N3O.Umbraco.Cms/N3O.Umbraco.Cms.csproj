@@ -54,6 +54,7 @@
         <Content Remove="Build\**" />
         <Content Include="Build\N3O.Umbraco.BuildConfig\base.json" />
         <Content Include="Build\N3O.Umbraco.BuildConfig\package.json" />
+        <Content Include="Build\N3O.Umbraco.ReactRuntime\tsconfig.json" />
         <N3OClientApp Include="$(MSBuildProjectDirectory)\Extensions\*\package.json" />
         <N3OClientApp Include="$(MSBuildProjectDirectory)\Build\N3O.Umbraco.ReactRuntime\package.json" />
     </ItemGroup>
