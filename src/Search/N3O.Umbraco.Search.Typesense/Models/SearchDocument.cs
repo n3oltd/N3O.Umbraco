@@ -9,7 +9,7 @@ public abstract class SearchDocument : Value {
     [Field("id", FieldType.String, true, true)]
     public string Id { get; set; }
 
-    [Field("content_key", FieldType.String, true, true, facet: true)]
+    [Field("content_key", FieldType.String, true, true)]
     public Guid ContentKey { get; set; }
 
     [Field("culture", FieldType.String, false, true, facet: true)]

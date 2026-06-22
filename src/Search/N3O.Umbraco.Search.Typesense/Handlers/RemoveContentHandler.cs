@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Search.Typesense.Handlers;
 
 public class RemoveContentHandler : IRequestHandler<RemoveContentCommand, None, None> {
-    private readonly IEnumerable<ISearchIndexer> _searchIndexers;
+    private readonly IReadOnlyList<ISearchIndexer> _searchIndexers;
 
     public RemoveContentHandler(IEnumerable<ISearchIndexer> searchIndexers) {
-        _searchIndexers = searchIndexers;
+        _searchIndexers = searchIndexers.ApplyAttributeOrdering();
     }
 
     public async Task<None> Handle(RemoveContentCommand req, CancellationToken cancellationToken) {

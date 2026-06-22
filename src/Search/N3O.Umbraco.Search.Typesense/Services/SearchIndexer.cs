@@ -31,7 +31,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
     public bool CanIndex(string contentTypeAlias) {
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
 
-        return collectionInfo.ContentTypeAliases.InvariantContains(contentTypeAlias);
+        return collectionInfo.ContentTypeAliases.OrEmpty().InvariantContains(contentTypeAlias);
     }
 
     public async Task DeleteAsync(Guid contentKey) {
