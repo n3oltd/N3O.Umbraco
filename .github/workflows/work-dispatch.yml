@@ -4,10 +4,10 @@ on:
   pull_request:
     types: [opened, edited, synchronize, closed, reopened, ready_for_review, converted_to_draft]
   push:
+    branches:
+      - main
 
 jobs:
   dispatch:
     uses: n3oltd/actions/.github/workflows/n3o-work-dispatch.yml@main
-    with:
-      ship-on-merge: true
     secrets: inherit
