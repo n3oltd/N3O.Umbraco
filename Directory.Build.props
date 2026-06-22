@@ -16,7 +16,7 @@
          no pack), so the folder is browsable from the project even though it's excluded from the SDK's
          default compile/content globs above. The npm/Turbo build owns these files; MSBuild ignores them. -->
     <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
-        <None Include="frontend\**" />
+        <None Include="frontend\**" Exclude="frontend\**\dist\**;frontend\**\.turbo\**" />
     </ItemGroup>
 
     <!-- The "react-plugin" opt-in (<N3OReactPlugin>true</N3OReactPlugin> → auto-reference the shared
