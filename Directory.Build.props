@@ -1,0 +1,19 @@
+<Project>
+    <!-- Repo-wide defaults. Applies to every project under the repo root. -->
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**;**\dist\**</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <!-- Frontend (backoffice client app) projects opt in by having a `frontend/` directory. They are
+         Razor SDK RCLs that serve their built wwwroot/App_Plugins assets at the site root via static
+         web assets; their TypeScript source under frontend/ must not be treated as project items. -->
+    <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <DefaultItemExcludes>$(DefaultItemExcludes);frontend\**</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <!-- "react-plugin" opt-in: a plugin sets <N3OReactPlugin>true</N3OReactPlugin> to auto-reference the
+         shared N3O.Umbraco.ReactRuntime, so the React import-map dependency can never be forgotten. -->
+    <Import Project="$(MSBuildThisFileDirectory)src\build\N3O.Umbraco.ReactPlugin.props"
+            Condition="'$(N3OReactPlugin)' == 'true'" />
+</Project>

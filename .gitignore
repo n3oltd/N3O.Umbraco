@@ -378,3 +378,8 @@ appsettings.Authentication.json
 appsettings.Environment.json
 .DS_Store
 .claude
+
+# Frontend (Turbo + Vite) build artifacts
+src/.turbo/
+**/frontend/**/dist/
+**/.n3o-frontend-restored

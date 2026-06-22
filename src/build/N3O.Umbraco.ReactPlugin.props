@@ -1,0 +1,9 @@
+<Project>
+    <!-- Shared "react-plugin" props. Any backoffice plugin whose frontend uses the shared React runtime
+         imports this (auto-wired from the repo-root Directory.Build.props when <N3OReactPlugin>true</N3OReactPlugin>
+         is set) so the N3O.Umbraco.ReactRuntime dependency can never be forgotten. The ProjectReference
+         becomes a NuGet package dependency for published consumers; in-repo it resolves as a project ref. -->
+    <ItemGroup>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)..\N3O.Umbraco.ReactRuntime\N3O.Umbraco.ReactRuntime.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,143 @@
+.n3o-data-import {
+    display: block;
+    padding: var(--uui-size-space-4);
+}
+.n3o-data-import uui-box {
+    --uui-box-default-padding: var(--uui-size-space-4);
+    margin-bottom: var(--uui-size-space-3);
+}
+.n3o-data-import .nativeSelect {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    height: var(--uui-size-11, 36px);
+    padding: 0 var(--uui-size-space-3);
+    font: inherit;
+    color: var(--uui-color-text);
+    background: var(--uui-color-surface);
+    border: 1px solid var(--uui-color-border);
+    border-radius: var(--uui-border-radius);
+}
+.n3o-data-import .nativeSelect:focus {
+    outline: none;
+    border-color: var(--uui-color-focus);
+    box-shadow: 0 0 0 1px var(--uui-color-focus);
+}
+.n3o-data-import .nativeSelect:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.n3o-data-import input[type='file'] {
+    font: inherit;
+}
+.n3o-data-import .toggleOption,
+.n3o-data-import .checkOption {
+    display: flex;
+    align-items: center;
+    gap: var(--uui-size-space-2);
+    cursor: pointer;
+}
+.n3o-data-import .toggleOption input,
+.n3o-data-import .checkOption input {
+    cursor: pointer;
+}
+.n3o-data-import .selectionCount {
+    font-size: var(--uui-type-small-size);
+    color: var(--uui-color-text-alt);
+}
+.n3o-data-import .selectionActions {
+    display: flex;
+    gap: var(--uui-size-space-2);
+    margin-bottom: var(--uui-size-space-3);
+}
+.n3o-data-import .checkboxGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--uui-size-space-1) var(--uui-size-space-5);
+}
+.n3o-data-import .emptyState {
+    margin: 0;
+    color: var(--uui-color-text-alt);
+    font-style: italic;
+}
+.n3o-data-import .boxHint {
+    margin: 0 0 var(--uui-size-space-4);
+    color: var(--uui-color-text-alt);
+}
+.n3o-data-import .progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--uui-size-space-2);
+    margin: var(--uui-size-space-4) 0;
+    color: var(--uui-color-text-alt);
+}
+.n3o-data-import .statusBox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--uui-size-space-3);
+    padding: var(--uui-size-space-4) var(--uui-size-space-5);
+    border-radius: var(--uui-border-radius);
+    margin-bottom: var(--uui-size-space-4);
+}
+.n3o-data-import .statusBox--positive {
+    background: var(--uui-color-positive);
+    color: var(--uui-color-positive-contrast);
+}
+.n3o-data-import .statusBox--danger {
+    background: var(--uui-color-danger);
+    color: var(--uui-color-danger-contrast);
+}
+.n3o-data-import .errorList {
+    margin: 0;
+    padding-left: var(--uui-size-space-4);
+}
+.n3o-data-import .actions {
+    display: flex;
+    gap: var(--uui-size-space-3);
+    align-items: center;
+    margin-top: var(--uui-size-space-4);
+}
+.n3o-data-import .btn {
+    font: inherit;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uui-size-space-2);
+    padding: 0 var(--uui-size-space-4);
+    height: var(--uui-size-11, 36px);
+    border: 1px solid transparent;
+    border-radius: var(--uui-border-radius);
+    cursor: pointer;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+.n3o-data-import .btn--compact {
+    height: var(--uui-size-9, 30px);
+    padding: 0 var(--uui-size-space-3);
+    font-size: var(--uui-type-small-size);
+}
+.n3o-data-import .btn--secondary {
+    background: var(--uui-color-surface);
+    color: var(--uui-color-text);
+    border-color: var(--uui-color-border);
+}
+.n3o-data-import .btn--secondary:hover:not(:disabled) {
+    background: var(--uui-color-surface-emphasis);
+    border-color: var(--uui-color-border-emphasis);
+}
+.n3o-data-import .btn--primary {
+    background: var(--uui-color-default);
+    color: var(--uui-color-default-contrast);
+}
+.n3o-data-import .btn--primary.btn--positive {
+    background: var(--uui-color-positive);
+    color: var(--uui-color-positive-contrast);
+}
+.n3o-data-import .btn--primary:hover:not(:disabled) {
+    background: var(--uui-color-positive-emphasis, var(--uui-color-positive));
+}
+.n3o-data-import .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

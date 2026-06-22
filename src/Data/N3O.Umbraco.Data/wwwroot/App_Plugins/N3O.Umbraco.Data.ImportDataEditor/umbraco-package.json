@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.Data.ImportDataEditor",
+    "name": "N3O Import Data Editor",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.Data.ImportDataEditor",
+            "name": "N3O Import Data Editor",
+            "element": "/App_Plugins/N3O.Umbraco.Data.ImportDataEditor/import-data-editor.js",
+            "meta": {
+                "label": "N3O Import Data Editor",
+                "icon": "icon-document",
+                "group": "common",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.Data.ImportDataEditor"
+            }
+        }
+    ]
+}

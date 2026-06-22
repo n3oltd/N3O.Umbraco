@@ -1,4 +1,0 @@
-{
-    "extends": "@n3o/build/tsconfig",
-    "include": ["src"]
-}

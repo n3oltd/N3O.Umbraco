@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <RootNamespace>N3O.Umbraco.ReactRuntime</RootNamespace>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <Copyright>Copyright © 2026 N3O Ltd</Copyright>
+        <NoWarn>NU1605;1591</NoWarn>
+        <!-- StaticWebAssetBasePath=/ and the frontend/node_modules/dist item excludes come from the
+             repo-root Directory.Build.props (frontend-project convention).
+             Shared self-hosted React 19 ESM runtime (react.js / react-dom.js / react-jsx-runtime + import map).
+             Built from frontend/react-runtime by the shared frontend MSBuild seam (Directory.Build.targets). -->
+        <N3OFrontendFilter>--filter=@n3oltd/react-runtime</N3OFrontendFilter>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>N3O.Umbraco.ReactRuntime</PackageId>
+        <IsPackable>true</IsPackable>
+        <Authors>N3O Ltd</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>Shared self-hosted React 19 ESM runtime + import map for N3O Umbraco backoffice plugins.</Description>
+        <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Version>17.0.0</Version>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
+    </PropertyGroup>
+</Project>

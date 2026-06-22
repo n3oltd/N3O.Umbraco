@@ -1,0 +1,16 @@
+{
+    "name": "@n3oltd/react-runtime",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build -c vite.config.react.ts && vite build -c vite.config.rest.ts"
+    },
+    "dependencies": {
+        "react": "19.2.7",
+        "react-dom": "19.2.7"
+    },
+    "devDependencies": {
+        "vite": "^6.0.0"
+    }
+}

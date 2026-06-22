@@ -10,8 +10,10 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
+        <!-- StaticWebAssetBasePath, node_modules/dist/frontend excludes come from the repo-root
+             Directory.Build.props (frontend-project convention). N3OFrontendFilter scopes the Turbo
+             build to Cms's own apps: DynamicListViews + the shared N3O.Umbraco.BackofficeCore. -->
+        <N3OFrontendFilter>--filter=@n3oltd/dynamic-list-views --filter=@n3oltd/backoffice-core</N3OFrontendFilter>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Cms</PackageId>
@@ -49,15 +51,10 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <!-- Build/ holds the shared @n3o/build config + the React runtime. Their built output ships from
-             wwwroot/App_Plugins as static web assets; the source must not be packed/published as Content. -->
-        <Content Remove="Build\**" />
-        <Content Include="Build\N3O.Umbraco.BuildConfig\base.json" />
-        <Content Include="Build\N3O.Umbraco.BuildConfig\package.json" />
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Extensions\*\package.json" />
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Build\N3O.Umbraco.ReactRuntime\package.json" />
+        <!-- The shared, non-React N3O.Umbraco.BackofficeCore (src/frontend/backoffice-core — auth-fetch +
+             the workspace-visibility condition) is shipped by Cms because every site references Cms, so
+             the condition/import-map is always present. Its dist lives outside this project, so add it to
+             the frontend copy explicitly; DynamicListViews (frontend/*) is picked up by convention. -->
+        <N3OFrontendExtraDist Include="$(MSBuildProjectDirectory)\..\frontend\backoffice-core\dist\**\*" />
     </ItemGroup>
-    <Target Name="BuildClientApps" BeforeTargets="BeforeBuild" DependsOnTargets="ResolveProjectReferences">
-        <Exec Command="npm run build" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" />
-    </Target>
 </Project>

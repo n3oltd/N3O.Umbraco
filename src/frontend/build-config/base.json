@@ -1,0 +1,26 @@
+{
+    // Shared TypeScript base for all N3O backoffice client apps. Apps reference this BY NAME via
+    // "extends": "@repo/build-config/tsconfig" (resolved through the workspace symlink — no relative
+    // paths). React apps extend "@repo/build-config/tsconfig-react" instead (adds jsx: react-jsx).
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "moduleResolution": "bundler",
+        "useDefineForClassFields": false,
+        "experimentalDecorators": true,
+        "verbatimModuleSyntax": true,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        // vite/client supplies the ambient module declarations for Vite query imports (e.g. *.css?inline).
+        // Carried here (not via a `files` entry) so it can't be silently dropped by an app that sets its
+        // own tsconfig `include`/`files`; inherited through `extends` to every app.
+        "types": ["vite/client", "@umbraco-cms/backoffice/extension-types"]
+    }
+}
