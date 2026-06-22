@@ -58,7 +58,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         _searchDocumentBuilder.Set(searchDocument => {
             searchDocument.ContentKey = content.Key;
             searchDocument.Culture = culture;
-            searchDocument.Id = SearchDocumentId.Create(content.Key, culture);
+            searchDocument.Id = SearchDocument.GetId(content.Key, culture);
         });
 
         var document = _searchDocumentBuilder.Build();
