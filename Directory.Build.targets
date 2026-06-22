@@ -1,21 +1,7 @@
 <Project>
-    <!-- "react-plugin" opt-in: a plugin sets <N3OReactPlugin>true</N3OReactPlugin> in its own body to
-         auto-reference the shared N3O.Umbraco.ReactRuntime, so the React import-map dependency can never
-         be forgotten. Imported here (not in Directory.Build.props) because the property is set in the
-         project body, which is evaluated after .props but before .targets — so only here does the
-         condition see the value. The ProjectReference flows ReactRuntime's static web assets transitively
-         into the host site. -->
     <Import Project="$(MSBuildThisFileDirectory)src\build\N3O.Umbraco.ReactPlugin.props"
             Condition="'$(N3OReactPlugin)' == 'true'" />
 
-    <!-- Frontend (backoffice client app) build seam — single convention-driven owner.
-         A project opts in by having a `frontend/` directory. Its npm workspace package(s) are built
-         once via Turbo, the emitted dist/ is copied into wwwroot/App_Plugins, and the result is fed
-         into the static-web-assets pipeline (so `dotnet pack`/publish include it — aspnetcore#38596). -->
-
-    <!-- 1. Restore the npm workspace exactly once. Designated to the universal core library so it runs
-            before any dependent project's BuildFrontend (avoids a concurrent `npm ci` race). Incremental
-            via the .n3o-frontend-restored stamp keyed on package-lock.json. -->
     <Target Name="RestoreFrontendDependencies"
             Condition="'$(MSBuildProjectName)' == 'N3O.Umbraco.Extensions'"
             BeforeTargets="BeforeBuild"
@@ -25,7 +11,6 @@
         <Touch Files="$(MSBuildThisFileDirectory)src\node_modules\.n3o-frontend-restored" AlwaysCreate="true" />
     </Target>
 
-    <!-- 2. Guard: every frontend project needs the workspace restored. -->
     <Target Name="EnsureFrontendDependenciesRestored"
             Condition="Exists('$(MSBuildProjectDirectory)\frontend')"
             BeforeTargets="BuildFrontend">
@@ -33,10 +18,6 @@
                Text="Frontend npm workspace is not restored ('$(MSBuildThisFileDirectory)src\node_modules' missing). Build the full solution (so N3O.Umbraco.Extensions restores it), or run 'npm ci' in 'src' first." />
     </Target>
 
-    <!-- 3. Build this project's frontend package(s) via Turbo (cached) and copy the emitted dist into
-            wwwroot/App_Plugins. Each package emits dist/<App_Plugins folder>/<file>, so %(RecursiveDir)
-            preserves the App_Plugins sub-folder. N3OFrontendFilter scopes the turbo build to this
-            project's package(s); N3OFrontendExtraDist ships shared packages not under this project. -->
     <Target Name="BuildFrontend"
             Condition="Exists('$(MSBuildProjectDirectory)\frontend')"
             DependsOnTargets="ResolveProjectReferences;EnsureFrontendDependenciesRestored">
@@ -45,9 +26,7 @@
         <ItemGroup>
             <_N3OFrontendDist Include="$(MSBuildProjectDirectory)\frontend\*\dist\**\*" />
             <_N3OFrontendDist Include="@(N3OFrontendExtraDist)" />
-            <!-- Destination is the path under each package's dist/ (i.e. <App_Plugins folder>\<file>). A
-                 single `frontend\*\dist\**\*` glob makes %(RecursiveDir) start at the `*` package segment,
-                 so derive the dist-relative path from %(Identity) (strip up to and incl. the last dist\). -->
+            
             <_N3OFrontendDist>
                 <AppPluginsPath>$([System.Text.RegularExpressions.Regex]::Replace('%(Identity)', '^.*[\\/]dist[\\/]', ''))</AppPluginsPath>
             </_N3OFrontendDist>
@@ -55,15 +34,8 @@
         <Copy SourceFiles="@(_N3OFrontendDist)"
               DestinationFiles="@(_N3OFrontendDist->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\%(AppPluginsPath)')"
               SkipUnchangedFiles="true" />
-        <!-- NOTE (Phase 6 prerequisite): the built JS is currently committed under wwwroot/App_Plugins, so
-             it is globbed at evaluation time and packed/published correctly (verified via `dotnet pack`).
-             When Phase 6 gitignores the generated JS, a clean build's first pack would miss files created
-             here (after the wwwroot glob) — at that point register them explicitly as @(StaticWebAsset)
-             items in this target (aspnetcore#38596). Keeping them committed avoids the gap for now. -->
     </Target>
 
-    <!-- Hook BuildFrontend into the static-web-assets pipeline (not BeforeBuild) so the generated assets
-         are present for build, pack and publish. -->
     <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
         <ResolveStaticWebAssetsInputsDependsOn>BuildFrontend;$(ResolveStaticWebAssetsInputsDependsOn)</ResolveStaticWebAssetsInputsDependsOn>
         <GenerateStaticWebAssetsManifestDependsOn>BuildFrontend;$(GenerateStaticWebAssetsManifestDependsOn)</GenerateStaticWebAssetsManifestDependsOn>
