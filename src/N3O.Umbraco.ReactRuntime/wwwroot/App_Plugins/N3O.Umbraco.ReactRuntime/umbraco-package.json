@@ -3,6 +3,7 @@
     "id": "N3O.Umbraco.ReactRuntime",
     "name": "N3O React Runtime",
     "version": "17.0.0",
+    "extensions": [],
     "importmap": {
         "imports": {
             "react": "/App_Plugins/N3O.Umbraco.ReactRuntime/react.js",

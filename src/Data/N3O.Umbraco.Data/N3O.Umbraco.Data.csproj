@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Data</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
@@ -10,6 +10,12 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <!-- React backoffice exemplar: StaticWebAssetBasePath and the node_modules/dist/frontend excludes
+             come from the repo-root Directory.Build.props (frontend-project convention). N3OReactPlugin
+             opts into the shared N3O.Umbraco.ReactRuntime dependency; N3OFrontendFilter scopes the Turbo
+             build to this project's four apps. -->
+        <N3OReactPlugin>true</N3OReactPlugin>
+        <N3OFrontendFilter>--filter=@n3oltd/data-export --filter=@n3oltd/data-import --filter=@n3oltd/data-import-data-editor --filter=@n3oltd/data-import-notices-viewer</N3OFrontendFilter>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Data</PackageId>
@@ -33,6 +39,9 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
+        <!-- Re-homed from the deleted N3O.Umbraco.Data.StaticAssets: the UIBuilder backoffice static
+             assets the Data admin screens depend on now flow through this project directly. -->
+        <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder.StaticAssets\N3O.Umbraco.UIBuilder.StaticAssets.csproj" />
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder\N3O.Umbraco.UIBuilder.csproj" />
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />

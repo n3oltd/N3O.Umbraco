@@ -1,7 +1,7 @@
 import { customElement as de } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as pe } from "@umbraco-cms/backoffice/element-api";
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT as ue } from "@umbraco-cms/backoffice/document";
-import { UmbAuthFetchMixin as me } from "@n3o/backoffice-core";
+import { UmbAuthFetchMixin as me } from "@n3oltd/backoffice-core";
 import { useState as v, useEffect as he, useRef as V, createElement as be } from "react";
 import { createRoot as ve } from "react-dom/client";
 import { jsxs as n, Fragment as Y, jsx as t } from "react/jsx-runtime";

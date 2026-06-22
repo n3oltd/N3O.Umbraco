@@ -12,8 +12,8 @@
         <DefaultItemExcludes>$(DefaultItemExcludes);frontend\**</DefaultItemExcludes>
     </PropertyGroup>
 
-    <!-- "react-plugin" opt-in: a plugin sets <N3OReactPlugin>true</N3OReactPlugin> to auto-reference the
-         shared N3O.Umbraco.ReactRuntime, so the React import-map dependency can never be forgotten. -->
-    <Import Project="$(MSBuildThisFileDirectory)src\build\N3O.Umbraco.ReactPlugin.props"
-            Condition="'$(N3OReactPlugin)' == 'true'" />
+    <!-- The "react-plugin" opt-in (<N3OReactPlugin>true</N3OReactPlugin> → auto-reference the shared
+         N3O.Umbraco.ReactRuntime) is wired in Directory.Build.targets, not here: a project sets the
+         property in its own body, which is evaluated AFTER this .props is imported, so the import must
+         live in the .targets (imported after the body) for the condition to see the value. -->
 </Project>

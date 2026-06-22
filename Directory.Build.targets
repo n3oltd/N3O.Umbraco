@@ -1,4 +1,13 @@
 <Project>
+    <!-- "react-plugin" opt-in: a plugin sets <N3OReactPlugin>true</N3OReactPlugin> in its own body to
+         auto-reference the shared N3O.Umbraco.ReactRuntime, so the React import-map dependency can never
+         be forgotten. Imported here (not in Directory.Build.props) because the property is set in the
+         project body, which is evaluated after .props but before .targets — so only here does the
+         condition see the value. The ProjectReference flows ReactRuntime's static web assets transitively
+         into the host site. -->
+    <Import Project="$(MSBuildThisFileDirectory)src\build\N3O.Umbraco.ReactPlugin.props"
+            Condition="'$(N3OReactPlugin)' == 'true'" />
+
     <!-- Frontend (backoffice client app) build seam — single convention-driven owner.
          A project opts in by having a `frontend/` directory. Its npm workspace package(s) are built
          once via Turbo, the emitted dist/ is copied into wwwroot/App_Plugins, and the result is fed
