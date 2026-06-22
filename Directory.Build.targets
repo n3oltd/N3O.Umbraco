@@ -20,13 +20,13 @@
 
     <Target Name="BuildFrontend"
             Condition="Exists('$(MSBuildProjectDirectory)\frontend')"
+            BeforeTargets="ResolveProjectStaticWebAssets"
             DependsOnTargets="ResolveProjectReferences;EnsureFrontendDependenciesRestored">
         <Exec Command="npx turbo run build --env-mode=loose $(N3OFrontendFilter)"
               WorkingDirectory="$(MSBuildThisFileDirectory)src" />
         <ItemGroup>
             <_N3OFrontendDist Include="$(MSBuildProjectDirectory)\frontend\*\dist\**\*" />
             <_N3OFrontendDist Include="@(N3OFrontendExtraDist)" />
-            
             <_N3OFrontendDist>
                 <AppPluginsPath>$([System.Text.RegularExpressions.Regex]::Replace('%(Identity)', '^.*[\\/]dist[\\/]', ''))</AppPluginsPath>
             </_N3OFrontendDist>
@@ -34,6 +34,16 @@
         <Copy SourceFiles="@(_N3OFrontendDist)"
               DestinationFiles="@(_N3OFrontendDist->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\%(AppPluginsPath)')"
               SkipUnchangedFiles="true" />
+        <!-- Register the just-copied bundles as Content so the static-web-assets pipeline picks them up
+             (ResolveProjectStaticWebAssets feeds @(Content) under wwwroot/** into DefineStaticWebAssets).
+             Because this target runs BeforeTargets that resolution and the bundles are generated (gitignored,
+             absent at evaluation), the default wwwroot/** Content glob misses them; this re-adds them so
+             build/pack/publish ship them (aspnetcore#38596). Relative path + Exclude="@(Content)" avoids a
+             duplicate when a previous build left the file on disk and the eval-time glob already has it. -->
+        <ItemGroup>
+            <Content Include="@(_N3OFrontendDist->'wwwroot\App_Plugins\%(AppPluginsPath)')"
+                     Exclude="@(Content)" />
+        </ItemGroup>
     </Target>
 
     <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
