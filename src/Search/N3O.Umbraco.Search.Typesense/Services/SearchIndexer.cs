@@ -53,7 +53,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
             _variationContextAccessor.VariationContext = new VariationContext(culture);
         }
 
-        await ProcessContentAsync(_searchDocumentBuilder, (TContent) content, culture);
+        await ProcessContentAsync(_searchDocumentBuilder, (TContent) content);
 
         _searchDocumentBuilder.Set(searchDocument => {
             searchDocument.ContentKey = content.Key;
@@ -67,7 +67,5 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         await _typesenseClient.UpsertDocument(collectionInfo.Name.Resolve(), document);
     }
 
-    protected abstract Task ProcessContentAsync(ISearchDocumentBuilder<TDocument> builder,
-                                                TContent content,
-                                                string culture);
+    protected abstract Task ProcessContentAsync(ISearchDocumentBuilder<TDocument> builder, TContent content);
 }
