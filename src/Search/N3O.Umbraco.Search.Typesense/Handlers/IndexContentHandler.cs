@@ -26,6 +26,10 @@ public class IndexContentHandler : IRequestHandler<IndexContentCommand, None, No
         if (searchIndexers.HasAny()) {
             foreach (var searchIndexer in searchIndexers) {
                 if (publishedContent.ContentType.VariesByCulture()) {
+                    // Remove all existing culture documents first so cultures that are no longer
+                    // published (and so won't be re-indexed below) don't linger in the index
+                    await searchIndexer.DeleteAsync(publishedContent.Key);
+
                     foreach (var publishedContentCulture in publishedContent.Cultures) {
                         await searchIndexer.IndexAsync(publishedContent, publishedContentCulture.Value.Culture);
                     }
