@@ -12,6 +12,13 @@
         <DefaultItemExcludes>$(DefaultItemExcludes);frontend\**</DefaultItemExcludes>
     </PropertyGroup>
 
+    <!-- Surface the frontend/ source in the IDE as display-only None items (None defaults to no copy,
+         no pack), so the folder is browsable from the project even though it's excluded from the SDK's
+         default compile/content globs above. The npm/Turbo build owns these files; MSBuild ignores them. -->
+    <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
+        <None Include="frontend\**" />
+    </ItemGroup>
+
     <!-- The "react-plugin" opt-in (<N3OReactPlugin>true</N3OReactPlugin> → auto-reference the shared
          N3O.Umbraco.ReactRuntime) is wired in Directory.Build.targets, not here: a project sets the
          property in its own body, which is evaluated AFTER this .props is imported, so the import must
