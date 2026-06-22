@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using System.Linq;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
@@ -15,7 +16,11 @@ public class LatestStateContentMetadataConverter : ContentMetadataConverter<stri
     }
 
     public override object GetValue(IContent content) {
-        var latestAuditLog = _auditService.GetLogs(content.Id).OrderByDescending(x => x.CreateDate).FirstOrDefault();
+        var latestAuditLog = _auditService.GetItemsByKeyAsync(content.Key, UmbracoObjectTypes.Document, 0, 1)
+                                           .GetAwaiter()
+                                           .GetResult()
+                                           .Items
+                                           .FirstOrDefault();
 
         return latestAuditLog?.AuditType.ToString();
     }

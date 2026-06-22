@@ -1,31 +1,31 @@
-using Konstrukt.Configuration.Builders.DataViews;
-using Konstrukt.Models;
+using Umbraco.UIBuilder.Configuration.Builders.DataViews;
+using Umbraco.UIBuilder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 
-public class ImportStatusDataViewsBuilder : KonstruktDataViewsBuilder<Import> {
+public class ImportStatusDataViewsBuilder : DataViewsBuilder<Import> {
     private static readonly string AllAlias = "all";
     private static readonly string PendingAlias = "pending";
     private static readonly string Group = "Status";
 
-    public override IEnumerable<KonstruktDataViewSummary> GetDataViews() {
-        yield return new KonstruktDataViewSummary {
+    public override IEnumerable<DataViewSummary> GetDataViews() {
+        yield return new DataViewSummary {
             Alias = PendingAlias,
             Name = "Pending (Queued or Error)",
             Group = Group
         };
-        
-        yield return new KonstruktDataViewSummary {
+
+        yield return new DataViewSummary {
             Alias = AllAlias,
             Name = "All",
             Group = Group
         };
-        
+
         foreach (var status in ImportStatuses.All) {
-            yield return new KonstruktDataViewSummary {
+            yield return new DataViewSummary {
                 Alias = status,
                 Name = status,
                 Group = Group

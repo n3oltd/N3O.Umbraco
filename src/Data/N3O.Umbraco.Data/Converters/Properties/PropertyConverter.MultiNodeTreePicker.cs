@@ -29,7 +29,7 @@ public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublished
         }
         
         var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
-        var parentId = configuration.TreeSource?.StartNodeId?.ToId();
+        var parentId = configuration.TreeSource?.StartNodeId;
 
         if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
             // As IPublishedQuery.ContentAtXPath() does not work without variables such as $root, $site etc.
@@ -78,7 +78,7 @@ public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublished
     
     private ParseResult<IPublishedContent> Parse(IParser parser, UmbracoPropertyInfo propertyInfo, string source) {
         var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
-        var parentId = configuration.TreeSource?.StartNodeId?.ToId();
+        var parentId = configuration.TreeSource?.StartNodeId;
 
         return parser.PublishedContent.Parse(source, OurDataTypes.PublishedContent.GetClrType(), parentId);
     }

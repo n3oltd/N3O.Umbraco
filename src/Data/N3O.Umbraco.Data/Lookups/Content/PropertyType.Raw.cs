@@ -11,7 +11,7 @@ public class RawPropertyType : PropertyType<RawValueReq> {
         : base("raw",
                (ctx, src, dest) => dest.Raw = ctx.Map<PublishedContentProperty, RawValueRes>(src),
                (ctx, src) => ctx.Map<ContentPropertyConfiguration, RawConfigurationRes>(src),
-               UmbracoPropertyEditors.Aliases.TinyMce) { }
+               UmbracoPropertyEditors.Aliases.RichText) { }
 
     protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,

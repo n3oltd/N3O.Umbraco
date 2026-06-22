@@ -24,7 +24,6 @@ public class UmbracoPropertyInfo {
     public IDataType DataType { get; }
     public IReadOnlyList<ElementInfo> Elements { get; }
 
-    public bool IsNestedContent() => Type.IsNestedContent();
 }
 
 public class ElementInfo {

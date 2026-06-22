@@ -141,8 +141,12 @@ public class ImportQueue : IImportQueue {
     public async Task<int> CommitAsync(bool queueForProcessing = true) {
         if (_imports.Any()) {
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                foreach (var import in _imports) {
-                    await db.InsertAsync(import);
+                using (var transaction = db.GetTransaction()) {
+                    foreach (var import in _imports) {
+                        await db.InsertAsync(import);
+                    }
+
+                    transaction.Complete();
                 }
             }
 
