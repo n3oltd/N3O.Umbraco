@@ -4,7 +4,7 @@ using Umbraco.UIBuilder.Configuration.Builders;
 
 namespace N3O.Umbraco.UIBuilder;
 
-public abstract class KonstruktConfigurator : IConfigurator {
+public abstract class UIBuilderConfigurator : IConfigurator {
     // Keyed by builder instance so each UIBuilder config run gets exactly one "content"
     // section, correctly shared across all configurators in that run, without carrying
     // state across re-invocations of the factory lambda.
