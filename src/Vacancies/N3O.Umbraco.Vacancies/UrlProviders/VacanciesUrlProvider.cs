@@ -9,11 +9,13 @@ using UrlProvider = N3O.Umbraco.UrlProviders.UrlProvider;
 namespace N3O.Umbraco.Vacancies.UrlProviders;
 
 public class VacanciesUrlProvider : UrlProvider {
+    public override string Alias => "vacanciesUrlProvider";
+
     private static readonly string VacanciesPageAlias = AliasHelper<VacanciesPageContent>.ContentTypeAlias();
     private static readonly string VacancyAlias = AliasHelper<VacancyContent>.ContentTypeAlias();
     
     public VacanciesUrlProvider(ILogger<VacanciesUrlProvider> logger,
-                                DefaultUrlProvider defaultUrlProvider,
+                                NewDefaultUrlProvider defaultUrlProvider,
                                 IContentCache contentCache)
         : base(logger, defaultUrlProvider, contentCache) { }
 
