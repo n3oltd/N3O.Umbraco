@@ -10,7 +10,11 @@ public static class PublishedContentTypeCacheExtensions {
                                             IContentTypeService contentTypeService,
                                             string contentTypeAlias) {
         var rawContentType = contentTypeService.Get(contentTypeAlias);
-        
+
+        if (rawContentType == null) {
+            return null;
+        }
+
         return publishedContentTypeCache.Get(rawContentType.GetItemType(), rawContentType.Alias);
     }
 }
