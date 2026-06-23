@@ -8,7 +8,11 @@ public static class ContentTypeServiceExtensions {
                                       string contentTypeAlias,
                                       string compositionAlias) {
         var contentType = contentTypeService.Get(contentTypeAlias);
-        
+
+        if (contentType == null) {
+            return false;
+        }
+
         return contentType.ContentTypeComposition.Any(x => x.Alias.EqualsInvariant(compositionAlias));
     }
 }
