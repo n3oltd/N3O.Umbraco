@@ -9,7 +9,7 @@ public abstract class WorkspaceVisibilityController : BackofficeAuthorizedApiCon
     public async Task<ActionResult<WorkspaceVisibilityRes>> GetVisibility([FromRoute] Guid contentId) {
         var res = new WorkspaceVisibilityRes();
         res.Visible = await IsVisibleAsync(contentId);
-        
+
         return Ok(res);
     }
 

@@ -17,6 +17,7 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisi
     #args: UmbConditionControllerArguments<WorkspaceVisibilityConditionConfig>;
     #authFetch: AuthFetch | null = null;
     #unique: string | null = null;
+    #generation = 0;
 
     constructor(host: UmbControllerHost, args: UmbConditionControllerArguments<WorkspaceVisibilityConditionConfig>) {
         super(host, args);
@@ -39,16 +40,25 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisi
 
     async #evaluate(): Promise<void> {
         const endpoint = this.#args.config?.endpoint;
+        const unique = this.#unique;
+        const authFetch = this.#authFetch;
 
-        if (!endpoint || !this.#unique || !this.#authFetch) {
+        if (!endpoint || !unique || !authFetch) {
             return;
         }
+
+        const generation = ++this.#generation;
 
         this.permitted = false;
         this.#args.onChange(false);
 
-        const authFetch = this.#authFetch;
-        this.permitted = await this.#isPermitted(endpoint, this.#unique, authFetch);
+        const permitted = await this.#isPermitted(endpoint, unique, authFetch);
+
+        if (generation !== this.#generation) {
+            return;
+        }
+
+        this.permitted = permitted;
         this.#args.onChange(this.permitted);
     }
 
