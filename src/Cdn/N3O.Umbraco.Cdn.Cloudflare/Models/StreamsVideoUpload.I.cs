@@ -9,4 +9,3 @@ public interface IStreamsVideoUpload {
     string ThumbnailUrl { get; }
     ByteSize Size { get; }
 }
-
