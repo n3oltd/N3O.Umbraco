@@ -11,9 +11,10 @@
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <!-- StaticWebAssetBasePath, node_modules/dist/frontend excludes come from the repo-root
-             Directory.Build.props (frontend-project convention). N3OFrontendFilter scopes the Turbo
-             build to Cms's own apps: DynamicListViews + the shared N3O.Umbraco.BackofficeCore. -->
-        <N3OFrontendFilter>--filter=@n3oltd/dynamic-list-views --filter=@n3oltd/backoffice-core</N3OFrontendFilter>
+             Directory.Build.props (frontend-project convention). The frontend MSBuild seam now runs a single
+             workspace-wide Turbo build (no per-project filter) and Cms copies only its own DynamicListViews
+             dist; @n3oltd/backoffice-core (auth-fetch + the workspace-visibility condition) ships from the
+             referenced N3O.Umbraco.ReactRuntime. -->
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Cms</PackageId>
@@ -38,6 +39,10 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <!-- Cms's Lit DynamicListViews uses backoffice-core's auth-fetch and the N3O.Condition.WorkspaceVisibility
+             condition, both shipped by ReactRuntime (the @n3oltd/backoffice-core import map + condition manifest).
+             Referencing it guarantees they are installed alongside Cms. -->
+        <ProjectReference Include="..\N3O.Umbraco.ReactRuntime\N3O.Umbraco.ReactRuntime.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Diplo.GodMode" Version="17.0.0" />
@@ -49,12 +54,5 @@
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
-    </ItemGroup>
-    <ItemGroup>
-        <!-- The shared, non-React N3O.Umbraco.BackofficeCore (src/frontend/backoffice-core — auth-fetch +
-             the workspace-visibility condition) is shipped by Cms because every site references Cms, so
-             the condition/import-map is always present. Its dist lives outside this project, so add it to
-             the frontend copy explicitly; DynamicListViews (frontend/*) is picked up by convention. -->
-        <N3OFrontendExtraDist Include="$(MSBuildProjectDirectory)\..\frontend\backoffice-core\dist\**\*" />
     </ItemGroup>
 </Project>

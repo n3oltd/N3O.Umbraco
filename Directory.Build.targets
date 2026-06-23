@@ -2,28 +2,63 @@
     <Import Project="$(MSBuildThisFileDirectory)src\build\N3O.Umbraco.ReactPlugin.props"
             Condition="'$(N3OReactPlugin)' == 'true'" />
 
+    <!-- Restore the shared npm workspace once. Gated on the N3OHasFrontend convention (not a literal
+         project name) so it runs for any frontend-having build, including a standalone pack. Inputs/Outputs
+         make it a no-op once the .n3o-frontend-restored stamp is newer than package-lock.json; in a full
+         solution build the first frontend project (ReactRuntime — a common ancestor of the others) restores
+         and the rest skip, so npm ci is never run concurrently. -->
     <Target Name="RestoreFrontendDependencies"
-            Condition="'$(MSBuildProjectName)' == 'N3O.Umbraco.Extensions'"
+            Condition="'$(N3OHasFrontend)' == 'true' And '$(DesignTimeBuild)' != 'true'"
             BeforeTargets="BeforeBuild"
-            Inputs="$(MSBuildThisFileDirectory)src\package-lock.json"
-            Outputs="$(MSBuildThisFileDirectory)src\node_modules\.n3o-frontend-restored">
-        <Exec Command="npm ci" WorkingDirectory="$(MSBuildThisFileDirectory)src" />
-        <Touch Files="$(MSBuildThisFileDirectory)src\node_modules\.n3o-frontend-restored" AlwaysCreate="true" />
+            Inputs="$(N3OFrontendWorkspace)\package-lock.json"
+            Outputs="$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored">
+        <Exec Command="npm ci" WorkingDirectory="$(N3OFrontendWorkspace)" />
+        <Touch Files="$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored" AlwaysCreate="true" />
     </Target>
 
+    <!-- Guard: the restore's success marker is the .n3o-frontend-restored stamp, not merely node_modules
+         (an interrupted npm ci leaves the dir but no stamp). If the stamp is missing, self-heal by running
+         npm ci (idempotent) so a clean standalone pack works without first building the whole solution. -->
     <Target Name="EnsureFrontendDependenciesRestored"
-            Condition="Exists('$(MSBuildProjectDirectory)\frontend')"
-            BeforeTargets="BuildFrontend">
-        <Error Condition="!Exists('$(MSBuildThisFileDirectory)src\node_modules')"
-               Text="Frontend npm workspace is not restored ('$(MSBuildThisFileDirectory)src\node_modules' missing). Build the full solution (so N3O.Umbraco.Extensions restores it), or run 'npm ci' in 'src' first." />
+            Condition="'$(N3OHasFrontend)' == 'true' And '$(DesignTimeBuild)' != 'true'"
+            BeforeTargets="BuildFrontendWorkspace">
+        <Exec Condition="!Exists('$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored')"
+              Command="npm ci" WorkingDirectory="$(N3OFrontendWorkspace)" />
+        <Touch Condition="!Exists('$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored')"
+               Files="$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored" AlwaysCreate="true" />
+        <Error Condition="!Exists('$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored')"
+               Text="Frontend npm workspace is not restored (stamp '$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-restored' missing). Run 'npm ci' in 'src' first." />
     </Target>
 
+    <!-- Build the whole npm workspace exactly once with a single Turbo invocation, instead of each project
+         running its own filtered turbo run (which raced on the shared @n3oltd/backoffice-core dist/.turbo when
+         Cms and Data built in parallel under msbuild /m). Gated on the convention + Inputs/Outputs stamp so it
+         does real work once per source change; the first frontend project (ReactRuntime, a common ancestor)
+         runs it and the others — already ordered after it via ProjectReference — find the stamp and skip. -->
+    <Target Name="BuildFrontendWorkspace"
+            Condition="'$(N3OHasFrontend)' == 'true' And '$(DesignTimeBuild)' != 'true'"
+            DependsOnTargets="EnsureFrontendDependenciesRestored"
+            Inputs="$(N3OFrontendWorkspace)\package-lock.json;@(_N3OFrontendWorkspaceSources)"
+            Outputs="$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-built">
+        <Exec Command="npx turbo run build --env-mode=loose"
+              WorkingDirectory="$(N3OFrontendWorkspace)" />
+        <Touch Files="$(N3OFrontendWorkspace)\node_modules\.n3o-frontend-built" AlwaysCreate="true" />
+    </Target>
+
+    <!-- Source inputs for the workspace-build incrementality check: every package's frontend sources except
+         the generated dist/ and the turbo cache. Touching any source re-runs the single Turbo build. -->
+    <ItemGroup Condition="'$(N3OHasFrontend)' == 'true'">
+        <_N3OFrontendWorkspaceSources Include="$(N3OFrontendWorkspace)\**\frontend\**\*"
+                                      Exclude="$(N3OFrontendWorkspace)\**\dist\**;$(N3OFrontendWorkspace)\**\.turbo\**;$(N3OFrontendWorkspace)\**\node_modules\**" />
+    </ItemGroup>
+
+    <!-- Per-project: copy only this project's own built dist into its wwwroot/App_Plugins. The Turbo build
+         itself is done once by BuildFrontendWorkspace (above). N3OFrontendExtraDist lets a project ship a
+         shared package's dist that lives outside its own frontend/ folder. -->
     <Target Name="BuildFrontend"
-            Condition="Exists('$(MSBuildProjectDirectory)\frontend')"
+            Condition="'$(N3OHasFrontend)' == 'true' And '$(DesignTimeBuild)' != 'true'"
             BeforeTargets="ResolveProjectStaticWebAssets"
-            DependsOnTargets="ResolveProjectReferences;EnsureFrontendDependenciesRestored">
-        <Exec Command="npx turbo run build --env-mode=loose $(N3OFrontendFilter)"
-              WorkingDirectory="$(MSBuildThisFileDirectory)src" />
+            DependsOnTargets="ResolveProjectReferences;BuildFrontendWorkspace">
         <ItemGroup>
             <_N3OFrontendDist Include="$(MSBuildProjectDirectory)\frontend\*\dist\**\*" />
             <_N3OFrontendDist Include="@(N3OFrontendExtraDist)" />
@@ -46,7 +81,7 @@
         </ItemGroup>
     </Target>
 
-    <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
+    <PropertyGroup Condition="'$(N3OHasFrontend)' == 'true'">
         <ResolveStaticWebAssetsInputsDependsOn>BuildFrontend;$(ResolveStaticWebAssetsInputsDependsOn)</ResolveStaticWebAssetsInputsDependsOn>
         <GenerateStaticWebAssetsManifestDependsOn>BuildFrontend;$(GenerateStaticWebAssetsManifestDependsOn)</GenerateStaticWebAssetsManifestDependsOn>
     </PropertyGroup>

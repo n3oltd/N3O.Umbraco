@@ -8,8 +8,8 @@
         <!-- StaticWebAssetBasePath=/ and the frontend/node_modules/dist item excludes come from the
              repo-root Directory.Build.props (frontend-project convention).
              Shared self-hosted React 19 ESM runtime (react.js / react-dom.js / react-jsx-runtime + import map).
-             Built from frontend/react-runtime by the shared frontend MSBuild seam (Directory.Build.targets). -->
-        <N3OFrontendFilter>--filter=@n3oltd/react-runtime</N3OFrontendFilter>
+             Built from frontend/react-runtime by the shared frontend MSBuild seam (Directory.Build.targets),
+             which now runs a single workspace-wide Turbo build (no per-project filter). -->
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.ReactRuntime</PackageId>
@@ -24,4 +24,19 @@
         <AssemblyVersion>$(Version)</AssemblyVersion>
         <FileVersion>$(Version)</FileVersion>
     </PropertyGroup>
+    <ItemGroup>
+        <!-- Every frontend project references Extensions; ReactRuntime did not, leaving nothing to order the
+             shared restore before ReactRuntime's own frontend build (and breaking a clean standalone pack).
+             Referencing Extensions makes ReactRuntime a common ancestor of the other frontend projects, so the
+             single workspace restore + Turbo build run here, once, before Cms/Data copy their dist. -->
+        <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <!-- The shared, non-React N3O.Umbraco.BackofficeCore (src/frontend/backoffice-core — auth-fetch + the
+             workspace-visibility condition) ships from ReactRuntime: every React plugin already hard-depends on
+             ReactRuntime (via the react-plugin props), and Cms references it too, so the @n3oltd/backoffice-core
+             import map + condition are always present wherever a plugin needs them — without depending on Cms.
+             Its dist lives outside this project, so add it to the frontend copy explicitly. -->
+        <N3OFrontendExtraDist Include="$(MSBuildProjectDirectory)\..\frontend\backoffice-core\dist\**\*" />
+    </ItemGroup>
 </Project>
