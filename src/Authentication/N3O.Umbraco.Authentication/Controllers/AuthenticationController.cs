@@ -32,14 +32,14 @@ public class AuthenticationController : SurfaceController {
                publishedUrlProvider) {
         _signInManager = signInManager;
     }
-
+    
     [HttpGet("signout")]
     public async Task<IActionResult> HandleLogout([FromQuery] string returnUrl) {
         await _signInManager.SignOutAsync(HttpContext);
-
+        
         return Redirect(returnUrl ?? HttpContext.Request.Headers.Referer);
     }
-
+    
     [HttpGet("password/reset")]
     public async Task<IActionResult> GetPasswordResetUrl() {
         var passwordChangeUrl = await _signInManager.GetPasswordResetUrlAsync();
