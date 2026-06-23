@@ -1,14 +1,14 @@
-using Konstrukt.Mapping;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using Umbraco.UIBuilder.Mapping;
 
 namespace N3O.Umbraco.UIBuilder.ValueMappers;
 
-public class UdiToIntContentPickerValueMapper : KonstruktValueMapper {
+public class UdiToIntContentPickerValueMapper : ValueMapper {
     private readonly IIdKeyMap _idKeyMap;
 
     public UdiToIntContentPickerValueMapper(IIdKeyMap idKeyMap) {
@@ -17,7 +17,7 @@ public class UdiToIntContentPickerValueMapper : KonstruktValueMapper {
 
     public override object ModelToEditor(object input) {
         var inputStr = input?.ToString();
-        
+
         if (!input.HasValue()) {
             return null;
         }
@@ -30,7 +30,7 @@ public class UdiToIntContentPickerValueMapper : KonstruktValueMapper {
 
     public override object EditorToModel(object input) {
         var inputStr = input?.ToString();
-        
+
         if (!input.HasValue()) {
             return null;
         }
