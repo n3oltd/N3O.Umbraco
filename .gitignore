@@ -378,3 +378,17 @@ appsettings.Authentication.json
 appsettings.Environment.json
 .DS_Store
 .claude
+
+# Frontend (Turbo + Vite) build artifacts
+**/.turbo/
+**/frontend/**/dist/
+**/.n3o-frontend-restored
+
+# Generated backoffice bundles — emitted into wwwroot/App_Plugins by the BuildFrontend target and
+# registered as static web assets at build time, so they aren't committed (project names not hardcoded,
+# so new frontend plugins are covered automatically). Only the hand-authored umbraco-package.json
+# manifests stay tracked. The `wwwroot/` segment scopes this to new-model Razor-SDK plugins; legacy
+# .StaticAssets plugins commit their JS under App_Plugins at the project root (no wwwroot/), so they are
+# not matched — and migrate into this rule automatically once their bundles move under wwwroot/.
+**/wwwroot/App_Plugins/**/*.js
+**/wwwroot/App_Plugins/**/*.js.map

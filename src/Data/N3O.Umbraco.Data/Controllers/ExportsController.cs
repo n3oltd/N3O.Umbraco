@@ -17,6 +17,7 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Data.Controllers;
 
 [ApiDocument(DataConstants.ApiNames.Exports)]
+[RequireUserGroup(DataConstants.SecurityGroups.ExportUsers.Alias)]
 public class ExportsController : PluginController {
     private readonly IMediator _mediator;
     private readonly Lazy<ILookups> _lookups;

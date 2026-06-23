@@ -1,0 +1,9 @@
+{
+    // React variant of the shared base. Apps with .tsx extend this via
+    // "extends": "@repo/build-config/tsconfig-react". @types/react / @types/react-dom resolve from the
+    // hoisted workspace node_modules (peerDependencies on the React plugin packages).
+    "extends": "./base.json",
+    "compilerOptions": {
+        "jsx": "react-jsx"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "@n3oltd/backoffice-core",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": "./src/auth-fetch.ts"
+    },
+    "scripts": {
+        "build": "tsc --noEmit && vite build",
+        "watch": "vite build --watch"
+    },
+    "devDependencies": {
+        "@repo/build-config": "*"
+    }
+}

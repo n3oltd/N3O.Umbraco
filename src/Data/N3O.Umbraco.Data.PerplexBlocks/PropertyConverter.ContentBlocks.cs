@@ -5,7 +5,7 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
-using Perplex.ContentBlocks.PropertyEditor.ModelValue;
+using Perplex.ContentBlocks.PropertyEditor.Value;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Extensions;
@@ -36,7 +36,7 @@ public class ContentBlocksPropertyConverter : PropertyConverter<string> {
         var parseResult = parser.String.Parse(fields.Single().Value, OurDataTypes.String.GetClrType());
 
         if (parseResult.Value.HasValue()) {
-            var modelValue = JsonConvert.DeserializeObject<ContentBlocksModelValue>(parseResult.Value);
+            var modelValue = JsonConvert.DeserializeObject<ContentBlocksValue>(parseResult.Value);
             
             contentBuilder.PerplexBlocks(propertyInfo.Type.Alias).Set(modelValue);
         }

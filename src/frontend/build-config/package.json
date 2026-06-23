@@ -1,0 +1,13 @@
+{
+    "name": "@repo/build-config",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./tsconfig": "./base.json",
+        "./tsconfig-react": "./react.json",
+        ".": {
+            "types": "./vite-config.d.ts",
+            "import": "./vite-config.js"
+        }
+    }
+}

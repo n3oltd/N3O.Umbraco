@@ -7,7 +7,6 @@ using NodaTime;
 using NodaTime.Extensions;
 using System;
 using System.Collections.Generic;
-using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
@@ -18,18 +17,7 @@ public class DateTimePropertyConverter : PropertyConverter<LocalDateTime?> {
     public DateTimePropertyConverter(IColumnRangeBuilder columnRangeBuilder) : base(columnRangeBuilder) { }
     
     public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-        if (!propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.DateTime)) {
-            return false;
-        }
-        
-        var configuration = propertyInfo.DataType.ConfigurationAs<DateTimeConfiguration>();
-
-        // h or H in format indicates includes some component of time
-        if (!configuration.Format.Contains("h", StringComparison.InvariantCultureIgnoreCase)) {
-            return false;
-        }
-
-        return true;
+        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.DateTime);
     }
 
     protected override IEnumerable<Cell<LocalDateTime?>> GetCells(IContentProperty contentProperty,

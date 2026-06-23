@@ -18,6 +18,7 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Data.Controllers;
 
 [ApiDocument(DataConstants.ApiNames.Imports)]
+[RequireUserGroup(DataConstants.SecurityGroups.ImportUsers.Alias)]
 public class ImportsController : PluginController {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;

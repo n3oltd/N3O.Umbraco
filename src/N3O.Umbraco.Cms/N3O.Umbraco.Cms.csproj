@@ -10,8 +10,6 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Cms</PackageId>
@@ -36,6 +34,7 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.ReactRuntime\N3O.Umbraco.ReactRuntime.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Diplo.GodMode" Version="17.0.0" />
@@ -48,12 +47,4 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-    <ItemGroup>
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Apps\*\package.json" />
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\N3O.Umbraco.ReactRuntime\package.json" />
-    </ItemGroup>
-    <Target Name="BuildClientApps" BeforeTargets="BeforeBuild">
-        <Exec Command="npm ci" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" Condition="!Exists('%(N3OClientApp.RootDir)%(N3OClientApp.Directory)node_modules')" />
-        <Exec Command="npm run build" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" />
-    </Target>
 </Project>

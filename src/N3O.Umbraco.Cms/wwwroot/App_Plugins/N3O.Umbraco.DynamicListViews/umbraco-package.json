@@ -1,14 +1,9 @@
 {
     "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.DynamicListViews",
     "name": "N3O Dynamic List Views",
-    "version": "1.0.0",
+    "version": "17.0.0",
     "extensions": [
-        {
-            "type": "condition",
-            "alias": "N3O.Condition.DynamicListView",
-            "name": "N3O Dynamic List View Condition",
-            "api": "/App_Plugins/N3O.Umbraco.DynamicListViews/dynamic-list-view-condition.js"
-        },
         {
             "type": "workspaceView",
             "alias": "N3O.WorkspaceView.DynamicListView",
@@ -26,7 +21,8 @@
                     "match": "Umb.Workspace.Document"
                 },
                 {
-                    "alias": "N3O.Condition.DynamicListView"
+                    "alias": "N3O.Condition.WorkspaceVisibility",
+                    "endpoint": "/umbraco/backoffice/api/DynamicListViewApi"
                 }
             ]
         }

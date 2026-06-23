@@ -1,0 +1,44 @@
+.n3o-data-export {
+    display: block;
+    padding: var(--uui-size-space-4);
+}
+.n3o-data-export uui-box {
+    --uui-box-default-padding: var(--uui-size-space-4);
+    margin-bottom: var(--uui-size-space-3);
+}
+.n3o-data-export .selectionCount {
+    font-size: var(--uui-type-small-size);
+    color: var(--uui-color-text-alt);
+}
+.n3o-data-export .selectionActions {
+    display: flex;
+    gap: var(--uui-size-space-2);
+    margin-bottom: var(--uui-size-space-3);
+}
+.n3o-data-export .checkboxGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uui-size-space-2) var(--uui-size-space-5);
+}
+.n3o-data-export .checkboxGrid > * {
+    flex: 0 1 160px;
+}
+.n3o-data-export .emptyState {
+    margin: 0;
+    color: var(--uui-color-text-alt);
+    font-style: italic;
+}
+.n3o-data-export .hint {
+    margin: 0 0 var(--uui-size-space-4);
+    color: var(--uui-color-text-alt);
+}
+.n3o-data-export .progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--uui-size-space-2);
+    margin-bottom: var(--uui-size-space-4);
+    color: var(--uui-color-text-alt);
+}
+.n3o-data-export .actions {
+    margin-top: var(--uui-size-space-4);
+}

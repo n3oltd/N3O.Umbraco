@@ -1,21 +1,21 @@
-using Konstrukt.Configuration.Builders.DataViews;
-using Konstrukt.Models;
+using Umbraco.UIBuilder.Configuration.Builders.DataViews;
+using Umbraco.UIBuilder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 
-public class ImportActionDataViewsBuilder : KonstruktDataViewsBuilder<Import> {
-    public override IEnumerable<KonstruktDataViewSummary> GetDataViews() {
-        yield return new KonstruktDataViewSummary {
+public class ImportActionDataViewsBuilder : DataViewsBuilder<Import> {
+    public override IEnumerable<DataViewSummary> GetDataViews() {
+        yield return new DataViewSummary {
             Alias = "all",
             Name = "All",
             Group = "Action"
         };
 
         foreach (var status in ImportActions.All) {
-            yield return new KonstruktDataViewSummary {
+            yield return new DataViewSummary {
                 Alias = status,
                 Name = status,
                 Group = "Action"

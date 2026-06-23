@@ -72,37 +72,40 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
     }
 
     public async Task<None> Handle(ProcessImportCommand req, CancellationToken cancellationToken) {
+        Import import;
+
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var import = await req.ImportId.RunAsync((id, _) => db.SingleByIdAsync<Import>(id),
-                                                     true,
-                                                     cancellationToken);
+            import = await req.ImportId.RunAsync((id, _) => db.SingleByIdAsync<Import>(id),
+                                                 true,
+                                                 cancellationToken);
+        }
 
-            if (import.CanProcess) {
-                try {
-                    var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
-                    var parser = await GetParserAsync(import);
-                    var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Data)
-                                                          .Fields
-                                                          .GroupBy(x => x.Property)
-                                                          .Where(x => x.Any(f => f.Value.HasValue()))
-                                                          .ToDictionary(x => propertyInfos[x.Key],
-                                                                        x => x.ToList());
-                    var importData = _jsonProvider.DeserializeObject<ImportData>(import.Data);
-                    var contentPublisher = GetContentPublisher(import, importData.ContentId);
-                    
-                    foreach (var (propertyInfo, fields) in propertyInfoFields) {
-                        ImportProperty(contentPublisher, parser, propertyInfo, fields);
-                    }
-                    
-                    _errorLog.ThrowIfHasErrors();
+        if (import.CanProcess) {
+            try {
+                var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
+                var parser = await GetParserAsync(import);
+                var importData = _jsonProvider.DeserializeObject<ImportData>(import.Data);
+                var propertyInfoFields = importData.Fields
+                                                   .GroupBy(x => x.Property)
+                                                   .Where(x => x.Any(f => f.Value.HasValue()))
+                                                   .ToDictionary(x => propertyInfos[x.Key],
+                                                                 x => x.ToList());
+                var contentPublisher = GetContentPublisher(import, importData.ContentId);
 
-                    SaveOrPublishContent(contentPublisher, import);
-                } catch (ProcessingException processingException) {
-                    import.Error(_jsonProvider, processingException.Errors);
-                } catch (Exception ex) {
-                    import.Error(_jsonProvider, ex);
+                foreach (var (propertyInfo, fields) in propertyInfoFields) {
+                    ImportProperty(contentPublisher, parser, propertyInfo, fields);
                 }
 
+                _errorLog.ThrowIfHasErrors();
+
+                SaveOrPublishContent(contentPublisher, import);
+            } catch (ProcessingException processingException) {
+                import.Error(_jsonProvider, processingException.Errors);
+            } catch (Exception ex) {
+                import.Error(_jsonProvider, ex);
+            }
+
+            using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
                 await db.UpdateAsync(import);
             }
         }
