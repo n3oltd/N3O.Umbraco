@@ -10,11 +10,6 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <!-- React backoffice exemplar: StaticWebAssetBasePath and the node_modules/dist/frontend excludes
-             come from the repo-root Directory.Build.props (frontend-project convention). N3OReactPlugin
-             opts into the shared N3O.Umbraco.ReactRuntime dependency (which also ships @n3oltd/backoffice-core).
-             The frontend MSBuild seam runs a single workspace-wide Turbo build; this project just copies its
-             own four apps' dist. -->
         <N3OReactPlugin>true</N3OReactPlugin>
     </PropertyGroup>
     <PropertyGroup>
@@ -39,8 +34,6 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <!-- Re-homed from the deleted N3O.Umbraco.Data.StaticAssets: the UIBuilder backoffice static
-             assets the Data admin screens depend on now flow through this project directly. -->
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder.StaticAssets\N3O.Umbraco.UIBuilder.StaticAssets.csproj" />
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder\N3O.Umbraco.UIBuilder.csproj" />
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
