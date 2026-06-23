@@ -75,14 +75,9 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
     const [progress, setProgress] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // Task 1: generation counter replaces the shared/reset cancelledRef pattern.
-    // Each new doExport() increments the counter; the poll closure captures the value at call-time
-    // and bails out if a newer generation has started. The setTimeout id is captured so the
-    // pending tick is cancelled immediately when a new export starts or the component unmounts.
     const generationRef = useRef<number>(0);
     const pollTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-    // Cancel any pending poll tick when the component unmounts.
     useEffect(() => {
         return () => {
             clearTimeout(pollTimerRef.current);
@@ -96,9 +91,6 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
         setErrorMessage(message);
     };
 
-    // Task 1: poll() captures the current generation at call time (incremented by doExport before calling
-    // poll). Stale ticks from a previous export are discarded when generationRef.current !== gen.
-    // The setTimeout id is captured in pollTimerRef so doExport can clearTimeout on the next invocation.
     const poll = (exportId: string): Promise<ExportProgressResponse> => {
         const gen = generationRef.current;
 
@@ -111,13 +103,11 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
                 return;
             }
 
-            // Task 2: authFetch is guarded by canExport before doExport() is called; safe to use directly.
             const getProgress = await authFetch!(`/umbraco/backoffice/api/Exports/export/${exportId}/progress`, {
                 headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                 method: 'GET',
             });
 
-            // Task 4: use response.ok instead of comparing === 200.
             if (!getProgress.ok) {
                 const progressRes = (await getProgress.json()) as ExportProgressResponse;
                 processingError(String(progressRes));
@@ -131,7 +121,7 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
                 resolve(progressRes);
             } else {
                 setProgress(progressRes.text);
-                // Task 1: capture the timer id so it can be cleared on cancel.
+                
                 pollTimerRef.current = setTimeout(() => void executePoll(resolve, reject), 2500);
             }
         };
@@ -147,7 +137,6 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
         selectedMetadataIds: string[],
         selectedPropertyAliases: string[],
     ): Promise<void> => {
-        // Task 1: cancel any in-flight poll timer before starting a new export.
         clearTimeout(pollTimerRef.current);
         generationRef.current += 1;
 
@@ -167,7 +156,6 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
             properties: selectedPropertyAliases,
         };
 
-        // Task 2: authFetch is guarded by canExport (!! authFetch check); non-null assertion is safe here.
         const createExport = await authFetch!(
             `/umbraco/backoffice/api/Exports/export/${contentKey}/${contentTypeAlias}`,
             {
@@ -177,7 +165,6 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
             }
         );
 
-        // Task 4: use response.ok instead of comparing === 200.
         if (!createExport.ok) {
             const createRes = (await createExport.json()) as CreateExportResponse;
             processingError(String(createRes));
@@ -216,9 +203,7 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
                 setProcessing(false);
                 setProgress('');
             })
-            .catch(() => {
-                // error already handled in poll
-            });
+            .catch(() => { });
     };
 
     return { processing, progress, errorMessage, doExport };

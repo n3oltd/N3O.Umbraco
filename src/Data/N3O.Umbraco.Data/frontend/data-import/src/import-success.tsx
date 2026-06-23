@@ -2,9 +2,6 @@ interface ImportSuccessProps {
     onStartOver: () => void;
 }
 
-// The imports queue is a Umbraco UI Builder dashboard (alias "imports") on the Content section.
-// In the v17 Bellissima backoffice that resolves to the path-based route below
-// (section pathname "content" + dashboard pathname "imports"); there is no hash route.
 export function ImportSuccess({ onStartOver }: ImportSuccessProps) {
     return (
         <uui-box headline="Import queued">

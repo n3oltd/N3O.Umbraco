@@ -12,11 +12,6 @@ interface DataImportAppProps {
     authFetch: AuthFetch | null;
 }
 
-// React UI for the multi-step CSV/ZIP import workspace view. Ported from the Lit component (originally
-// the AngularJS "Import" content app). Steps: choose content type, select importable properties,
-// download a template, upload CSV (+ optional ZIP assets) and queue the import. The current document key
-// is supplied by the host shell (from the document workspace context) as a prop. Reuses the same backend
-// endpoints verbatim.
 export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
     const [show, setShow] = useState<string>('form');
     const [processing, setProcessing] = useState<boolean>(false);

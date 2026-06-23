@@ -12,12 +12,6 @@ import { ImportDataEditorApp, type ImportDataValue } from './import-data-editor-
 
 const elementName = 'n3o-import-data-editor';
 
-// Web-component SHELL for the import data property editor. Umbraco's backoffice only loads custom
-// elements, so this thin element owns the Umbraco contract (value/config + UmbPropertyValueChangeEvent)
-// and the file-upload side effects, and mounts the React UI (ImportDataEditorApp) into its shadow root.
-// React is NOT bundled here — it is external and resolved at runtime from the shared N3O.Umbraco.React
-// import map. The host holds the single source of truth for `value`. UmbAuthFetchMixin gives `this.authFetch`
-// (bearer token from UMB_AUTH_CONTEXT) so the [Authorize] Imports/Storage endpoints don't 401 in v17.
 @customElement(elementName)
 export class N3oImportDataEditorElement
     extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement))
@@ -25,8 +19,6 @@ export class N3oImportDataEditorElement
     #root?: Root;
     #mount: HTMLDivElement;
     #value: ImportDataValue | undefined = undefined;
-    // Config is set by Umbraco (UmbPropertyEditorConfigCollection); unused by this editor but accepted
-    // so the platform can assign it without warnings.
     #config: UmbPropertyEditorConfigCollection | undefined = undefined;
 
     constructor() {

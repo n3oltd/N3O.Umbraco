@@ -18,11 +18,6 @@ interface ImportDataEditorAppProps {
     onFileSelected: (index: number, file: File) => void;
 }
 
-// React UI for the import data property editor. Controlled by the host web component: `value` comes in
-// as a prop, edits are pushed back out via callbacks (the host mutates its value and raises
-// UmbPropertyValueChangeEvent). Each field has a text input (placeholder = sourceValue) and, when
-// isFile is set, a file input whose selection the host uploads via the temp-upload endpoint and
-// attaches to the queued import.
 export function ImportDataEditorApp({ value, onTextChange, onFileSelected }: ImportDataEditorAppProps) {
     const fields = value?.fields ?? [];
 

@@ -1,6 +1,3 @@
-// React UI for the content-export workspace view. Exports a document's descendants of a chosen content
-// type to Excel/CSV. Ported from the Lit component; reuses the same backend endpoints verbatim. The
-// current document key is supplied by the host shell (from the document workspace context) as a prop.
 import { useEffect, useState } from 'react';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 import styles from './data-export-app.css?inline';
@@ -15,7 +12,6 @@ interface DataExportAppProps {
 }
 
 export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
-    // Task 3: server reference data lives in the custom hook; local state covers only UI / export flow.
     const { contentTypes, metadatas: initialMetadatas } = useExportServerData(contentKey, authFetch);
     const { processing, progress, errorMessage, doExport } = useExportRun(authFetch);
 
@@ -25,7 +21,6 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
     const [metadatas, setMetadatas] = useState<ContentMetadata[]>([]);
     const [exportableProperties, setExportableProperties] = useState<ExportableProperty[]>([]);
 
-    // Sync initialMetadatas from the hook into local state so the user can toggle selections.
     useEffect(() => {
         setMetadatas(initialMetadatas);
     }, [initialMetadatas]);
@@ -56,15 +51,10 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
 
     const selectAllMetadatas = (): void => setMetadatas((prev) => prev.map((m) => ({ ...m, selected: true })));
     const clearSelectedMetadatas = (): void => setMetadatas((prev) => prev.map((m) => ({ ...m, selected: false })));
-    const selectAllProperties = (): void =>
-        setExportableProperties((prev) => prev.map((p) => ({ ...p, selected: true })));
-    const clearSelectedProperties = (): void =>
-        setExportableProperties((prev) => prev.map((p) => ({ ...p, selected: false })));
-
-    const toggleMetadata = (metadata: ContentMetadata, checked: boolean): void =>
-        setMetadatas((prev) => prev.map((m) => (m === metadata ? { ...m, selected: checked } : m)));
-    const toggleProperty = (property: ExportableProperty, checked: boolean): void =>
-        setExportableProperties((prev) => prev.map((p) => (p === property ? { ...p, selected: checked } : p)));
+    const selectAllProperties = (): void => setExportableProperties((prev) => prev.map((p) => ({ ...p, selected: true })));
+    const clearSelectedProperties = (): void => setExportableProperties((prev) => prev.map((p) => ({ ...p, selected: false })));
+    const toggleMetadata = (metadata: ContentMetadata, checked: boolean): void => setMetadatas((prev) => prev.map((m) => (m === metadata ? { ...m, selected: checked } : m)));
+    const toggleProperty = (property: ExportableProperty, checked: boolean): void => setExportableProperties((prev) => prev.map((p) => (p === property ? { ...p, selected: checked } : p)));
 
     const selectedMetadataCount = metadatas.filter((m) => m.selected).length;
     const selectedPropertyCount = exportableProperties.filter((p) => p.selected).length;

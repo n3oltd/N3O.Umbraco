@@ -9,13 +9,6 @@ import type { AuthFetch } from '@n3oltd/backoffice-core';
 
 const elementName = 'n3o-data-import';
 
-// Web-component SHELL for the CSV/ZIP import workspace view. Umbraco's backoffice only loads custom
-// elements; this thin element keeps a Lit base (UmbElementMixin) ONLY for context plumbing — it consumes
-// UMB_DOCUMENT_WORKSPACE_CONTEXT to obtain the current document key (`unique`) and passes it as a prop
-// into the React UI (DataImportApp), which renders the multi-step form and talks to the backend. React
-// is NOT bundled here — it is external and resolved at runtime from the shared N3O.Umbraco.ReactRuntime
-// import map. The authenticated fetch is likewise shared: UmbAuthFetchMixin (from @n3oltd/backoffice-core) gives
-// us `this.authFetch` (rebuilt from UMB_AUTH_CONTEXT) with no per-plugin auth boilerplate.
 @customElement(elementName)
 export class N3oDataImportElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) {
     #root?: Root;
@@ -47,7 +40,6 @@ export class N3oDataImportElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
         });
     }
 
-    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
     authFetchChanged(_authFetch: AuthFetch | null): void {
         this.#render();
     }
