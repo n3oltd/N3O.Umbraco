@@ -1,3 +1,4 @@
+import { UuiButton, UuiCheckbox, UuiSelect, UuiToggle } from '@n3oltd/backoffice-ui';
 import type { ContentType, DatePattern, ImportableProperty } from './types';
 
 interface ImportFormProps {
@@ -11,8 +12,8 @@ interface ImportFormProps {
     selectedPropertyCount: number;
     csvFileRef: React.RefObject<HTMLInputElement | null>;
     zipFileRef: React.RefObject<HTMLInputElement | null>;
-    onContentTypeChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-    onDatePatternChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    onContentTypeChange: (alias: string) => void;
+    onDatePatternChange: (id: string) => void;
     onMoveUpdatedChange: (checked: boolean) => void;
     onPropertyToggle: (property: ImportableProperty, checked: boolean) => void;
     onSelectAllProperties: () => void;
@@ -49,20 +50,13 @@ export function ImportForm({
                     description="The child type that rows in your CSV will be imported as."
                     mandatory>
                     <div slot="editor">
-                        <select
-                            className="nativeSelect"
+                        <UuiSelect
+                            options={contentTypes.map((item) => ({ name: item.name, value: item.alias }))}
                             value={contentType?.alias ?? ''}
+                            placeholder="Select a content type…"
+                            disabled={processing || contentTypes.length === 0}
                             onChange={onContentTypeChange}
-                            disabled={processing || contentTypes.length === 0}>
-                            <option value="" disabled>
-                                Select a content type…
-                            </option>
-                            {contentTypes.map((item) => (
-                                <option key={item.alias} value={item.alias}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
+                        />
                     </div>
                 </umb-property-layout>
 
@@ -71,17 +65,12 @@ export function ImportForm({
                     description="How dates in your CSV are formatted, so they can be parsed correctly."
                     mandatory>
                     <div slot="editor">
-                        <select
-                            className="nativeSelect"
+                        <UuiSelect
+                            options={datePatterns.map((item) => ({ name: item.name, value: item.id }))}
                             value={datePattern?.id ?? ''}
+                            disabled={processing || datePatterns.length === 0}
                             onChange={onDatePatternChange}
-                            disabled={processing || datePatterns.length === 0}>
-                            {datePatterns.map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
+                        />
                     </div>
                 </umb-property-layout>
 
@@ -89,15 +78,12 @@ export function ImportForm({
                     label="Move updated content"
                     description="When enabled, existing content that is updated will be moved beneath the current item.">
                     <div slot="editor">
-                        <label className="toggleOption">
-                            <input
-                                type="checkbox"
-                                checked={moveUpdatedContentToCurrentLocation}
-                                onChange={(e) => onMoveUpdatedChange(e.target.checked)}
-                                disabled={processing}
-                            />
-                            <span>Move updated content to the current location</span>
-                        </label>
+                        <UuiToggle
+                            label="Move updated content to the current location"
+                            checked={moveUpdatedContentToCurrentLocation}
+                            disabled={processing}
+                            onChange={onMoveUpdatedChange}
+                        />
                     </div>
                 </umb-property-layout>
             </uui-box>
@@ -114,33 +100,19 @@ export function ImportForm({
                 ) : (
                     <>
                         <div className="selectionActions">
-                            <button
-                                type="button"
-                                className="btn btn--secondary btn--compact"
-                                disabled={processing}
-                                onClick={onSelectAllProperties}>
-                                Select all
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn--secondary btn--compact"
-                                disabled={processing}
-                                onClick={onClearSelectedProperties}>
-                                Clear
-                            </button>
+                            <UuiButton label="Select all" look="secondary" compact disabled={processing} onClick={onSelectAllProperties} />
+                            <UuiButton label="Clear" look="secondary" compact disabled={processing} onClick={onClearSelectedProperties} />
                         </div>
 
                         <div className="checkboxGrid">
                             {importableProperties.map((property) => (
-                                <label key={property.alias} className="checkOption">
-                                    <input
-                                        type="checkbox"
-                                        checked={!!property.selected}
-                                        onChange={(e) => onPropertyToggle(property, e.target.checked)}
-                                        disabled={processing}
-                                    />
-                                    <span>{property.columnTitle}</span>
-                                </label>
+                                <UuiCheckbox
+                                    key={property.alias}
+                                    label={property.columnTitle}
+                                    checked={!!property.selected}
+                                    disabled={processing}
+                                    onChange={(checked) => onPropertyToggle(property, checked)}
+                                />
                             ))}
                         </div>
                     </>
@@ -152,14 +124,14 @@ export function ImportForm({
                     Download a CSV template containing a column for each selected property, then fill it in
                     with your data.
                 </p>
-                <button
-                    type="button"
-                    className="btn btn--secondary"
+                <UuiButton
+                    label="Download template"
+                    look="secondary"
                     disabled={!contentType || selectedPropertyCount === 0 || processing}
                     onClick={onGetTemplate}>
                     <uui-icon name="icon-download-alt"></uui-icon>
                     Download template
-                </button>
+                </UuiButton>
             </uui-box>
 
             <uui-box headline="4. Upload &amp; queue">
@@ -188,13 +160,13 @@ export function ImportForm({
                 ) : null}
 
                 <div className="actions">
-                    <button
-                        type="button"
-                        className="btn btn--primary btn--positive"
+                    <UuiButton
+                        label={processing ? 'Importing…' : 'Import'}
+                        look="primary"
+                        color="positive"
                         disabled={!contentType || processing}
-                        onClick={onImport}>
-                        {processing ? 'Importing…' : 'Import'}
-                    </button>
+                        onClick={onImport}
+                    />
                 </div>
             </uui-box>
         </>

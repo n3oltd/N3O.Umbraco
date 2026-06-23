@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { UuiButton } from '@n3oltd/backoffice-ui';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 import styles from './data-export-app.css?inline';
 import { useExportServerData, useExportRun } from './use-export';
@@ -42,8 +43,7 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
         setExportableProperties(res);
     };
 
-    const onContentTypeChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const alias = event.target.value;
+    const onContentTypeChange = (alias: string): void => {
         const selected = contentTypes.find((x) => x.alias === alias) ?? null;
         setContentType(selected);
         void refreshProperties(selected);
@@ -127,9 +127,10 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
             ) : null}
 
             <div className="actions">
-                <button
-                    type="button"
-                    className="btn btn--primary btn--positive"
+                <UuiButton
+                    label={processing ? 'Exporting…' : 'Export'}
+                    look="primary"
+                    color="positive"
                     disabled={!canExport}
                     onClick={() => void doExport(
                         contentKey,
@@ -138,9 +139,8 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
                         includeUnpublished,
                         metadatas.filter((x) => x.selected).map((x) => x.id),
                         exportableProperties.filter((x) => x.selected).map((x) => x.alias),
-                    )}>
-                    {processing ? 'Exporting…' : 'Export'}
-                </button>
+                    )}
+                />
             </div>
 
             <style>{styles}</style>

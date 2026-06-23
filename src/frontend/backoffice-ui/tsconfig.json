@@ -1,0 +1,10 @@
+{
+    "extends": "@repo/build-config/tsconfig-react",
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outDir": "dist"
+    },
+    "include": ["src"]
+}

@@ -1,3 +1,5 @@
+import { UuiButton } from '@n3oltd/backoffice-ui';
+
 interface ImportErrorProps {
     errorMessages: string[] | null;
     onStartOver: () => void;
@@ -21,9 +23,7 @@ export function ImportError({ errorMessages, onStartOver }: ImportErrorProps) {
                 </div>
             </div>
             <div className="actions">
-                <button type="button" className="btn btn--secondary" onClick={onStartOver}>
-                    Start over
-                </button>
+                <UuiButton label="Start over" look="secondary" onClick={onStartOver} />
             </div>
         </uui-box>
     );

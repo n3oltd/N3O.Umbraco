@@ -1,4 +1,6 @@
-﻿interface SelectableFieldListProps<T> {
+import { UuiButton, UuiCheckbox } from '@n3oltd/backoffice-ui';
+
+interface SelectableFieldListProps<T> {
     headline: string;
     selectedCount: number;
     items: T[];
@@ -36,33 +38,19 @@ export function SelectableFieldList<T>({
             ) : (
                 <>
                     <div className="selectionActions">
-                        <button
-                            type="button"
-                            className="btn btn--secondary btn--compact"
-                            disabled={processing}
-                            onClick={onSelectAll}>
-                            Select all
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn--secondary btn--compact"
-                            disabled={processing}
-                            onClick={onClear}>
-                            Clear
-                        </button>
+                        <UuiButton label="Select all" look="secondary" compact disabled={processing} onClick={onSelectAll} />
+                        <UuiButton label="Clear" look="secondary" compact disabled={processing} onClick={onClear} />
                     </div>
 
                     <div className="checkboxGrid">
                         {items.map((item) => (
-                            <label key={getKey(item)} className="checkOption">
-                                <input
-                                    type="checkbox"
-                                    checked={!!getChecked(item)}
-                                    onChange={(e) => onToggle(item, e.target.checked)}
-                                    disabled={processing}
-                                />
-                                <span>{getLabel(item)}</span>
-                            </label>
+                            <UuiCheckbox
+                                key={getKey(item)}
+                                label={getLabel(item)}
+                                checked={!!getChecked(item)}
+                                disabled={processing}
+                                onChange={(checked) => onToggle(item, checked)}
+                            />
                         ))}
                     </div>
                 </>

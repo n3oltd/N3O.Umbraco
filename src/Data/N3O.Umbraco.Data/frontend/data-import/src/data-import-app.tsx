@@ -59,15 +59,13 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         setShow('form');
     };
 
-    const onContentTypeChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const alias = event.target.value;
+    const onContentTypeChange = (alias: string): void => {
         const selected = contentTypes.find((x) => x.alias === alias) ?? null;
         setContentType(selected);
         void refreshProperties(selected);
     };
 
-    const onDatePatternChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const id = event.target.value;
+    const onDatePatternChange = (id: string): void => {
         setDatePattern(datePatterns.find((x) => x.id === id) ?? null);
     };
 
