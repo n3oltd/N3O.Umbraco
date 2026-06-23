@@ -44,13 +44,17 @@ export class WorkspaceVisibilityCondition extends UmbConditionBase<WorkspaceVisi
             return;
         }
 
-        this.permitted = await this.#isPermitted(endpoint, this.#unique);
+        this.permitted = false;
+        this.#args.onChange(false);
+
+        const authFetch = this.#authFetch;
+        this.permitted = await this.#isPermitted(endpoint, this.#unique, authFetch);
         this.#args.onChange(this.permitted);
     }
 
-    async #isPermitted(endpoint: string, unique: string): Promise<boolean> {
+    async #isPermitted(endpoint: string, unique: string, authFetch: AuthFetch): Promise<boolean> {
         try {
-            const response = await this.#authFetch!(`${endpoint}/${unique}`, {
+            const response = await authFetch(`${endpoint}/${unique}`, {
                 headers: { Accept: 'application/json' },
             });
 
