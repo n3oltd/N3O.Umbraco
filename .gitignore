@@ -380,7 +380,7 @@ appsettings.Environment.json
 .claude
 
 # Frontend (Turbo + Vite) build artifacts
-src/.turbo/
+**/.turbo/
 **/frontend/**/dist/
 **/.n3o-frontend-restored
 

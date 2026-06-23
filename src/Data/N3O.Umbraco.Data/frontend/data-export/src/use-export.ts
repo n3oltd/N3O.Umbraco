@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 import type { ContentType, ContentMetadata, ExportProgressResponse, CreateExportResponse } from './types';
 

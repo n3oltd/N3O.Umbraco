@@ -6,5 +6,4 @@ export default n3oPluginConfig({
     },
     outDir: 'dist',
     react: true,
-    additionalExternals: ['@n3oltd/backoffice-core'],
 });

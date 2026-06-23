@@ -6,7 +6,8 @@
     "node": ">=22.19.0"
   },
   "scripts": {
-    "build": "turbo run build --env-mode=loose"
+    "build": "turbo run build --env-mode=loose",
+    "lint:versions": "syncpack lint"
   },
   "workspaces": [
     "frontend/*",
