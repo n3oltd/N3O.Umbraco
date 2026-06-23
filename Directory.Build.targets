@@ -53,15 +53,16 @@
     </ItemGroup>
 
     <!-- Per-project: copy only this project's own built dist into its wwwroot/App_Plugins. The Turbo build
-         itself is done once by BuildFrontendWorkspace (above). N3OFrontendExtraDist lets a project ship a
-         shared package's dist that lives outside its own frontend/ folder. -->
+         itself is done once by BuildFrontendWorkspace (above). N3OFrontendExtraDistDir lets a project ship a
+         shared package's dist that lives outside its own frontend/ folder; it is a directory (globbed here, at
+         execution time) rather than a pre-globbed item, so the dist need not exist at project evaluation. -->
     <Target Name="BuildFrontend"
             Condition="'$(N3OHasFrontend)' == 'true' And '$(DesignTimeBuild)' != 'true'"
             BeforeTargets="ResolveProjectStaticWebAssets"
             DependsOnTargets="ResolveProjectReferences;BuildFrontendWorkspace">
         <ItemGroup>
             <_N3OFrontendDist Include="$(MSBuildProjectDirectory)\frontend\*\dist\**\*" />
-            <_N3OFrontendDist Include="@(N3OFrontendExtraDist)" />
+            <_N3OFrontendDist Include="$(N3OFrontendExtraDistDir)\**\*" Condition="'$(N3OFrontendExtraDistDir)' != ''" />
             <_N3OFrontendDist>
                 <AppPluginsPath>$([System.Text.RegularExpressions.Regex]::Replace('%(Identity)', '^.*[\\/]dist[\\/]', ''))</AppPluginsPath>
             </_N3OFrontendDist>

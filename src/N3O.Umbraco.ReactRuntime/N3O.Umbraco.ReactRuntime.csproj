@@ -22,7 +22,9 @@
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
-    <ItemGroup>
-        <N3OFrontendExtraDist Include="$(MSBuildProjectDirectory)\..\frontend\backoffice-core\dist\**\*" />
-    </ItemGroup>
+    <PropertyGroup>
+        <!-- A directory, not a glob: a glob here expands at evaluation time, before Turbo has produced dist/
+             (gitignored, absent on a clean checkout), so it ships nothing. BuildFrontend globs it at execution. -->
+        <N3OFrontendExtraDistDir>$(MSBuildProjectDirectory)\..\frontend\backoffice-core\dist</N3OFrontendExtraDistDir>
+    </PropertyGroup>
 </Project>
