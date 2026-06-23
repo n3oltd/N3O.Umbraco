@@ -5,16 +5,17 @@ import styles from './data-export-app.css?inline';
 import { useExportServerData, useExportRun } from './use-export';
 import { ExportOptions } from './export-options';
 import { SelectableFieldList } from './selectable-field-list';
-import type { ContentType, ContentMetadata, ExportableProperty } from './types';
+import type { ContentType, ContentMetadata, ExportableProperty, Notify } from './types';
 
 interface DataExportAppProps {
     contentKey: string | null;
     authFetch: AuthFetch | null;
+    notify: Notify;
 }
 
-export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
+export function DataExportApp({ contentKey, authFetch, notify }: DataExportAppProps) {
     const { contentTypes, metadatas: initialMetadatas } = useExportServerData(contentKey, authFetch);
-    const { processing, progress, errorMessage, doExport } = useExportRun(authFetch);
+    const { processing, progress, doExport } = useExportRun(authFetch, notify);
 
     const [contentType, setContentType] = useState<ContentType | null>(null);
     const [format, setFormat] = useState<string>('excel');
@@ -110,13 +111,6 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
 
             {!processing && contentType && !hasSelection ? (
                 <p className="hint">Select at least one metadata field or property to export.</p>
-            ) : null}
-
-            {errorMessage ? (
-                <div className="errorBox">
-                    <uui-icon name="icon-alert"></uui-icon>
-                    <span>{errorMessage}</span>
-                </div>
             ) : null}
 
             {processing ? (

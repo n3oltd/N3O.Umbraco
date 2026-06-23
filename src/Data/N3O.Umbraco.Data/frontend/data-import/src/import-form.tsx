@@ -1,4 +1,4 @@
-import { UuiButton, UuiCheckbox, UuiSelect, UuiToggle } from '@n3oltd/backoffice-ui';
+import { UuiButton, UuiCheckbox, UuiFileDropzone, UuiSelect, UuiToggle } from '@n3oltd/backoffice-ui';
 import type { ContentType, DatePattern, ImportableProperty } from './types';
 
 interface ImportFormProps {
@@ -10,8 +10,10 @@ interface ImportFormProps {
     moveUpdatedContentToCurrentLocation: boolean;
     importableProperties: ImportableProperty[];
     selectedPropertyCount: number;
-    csvFileRef: React.RefObject<HTMLInputElement | null>;
-    zipFileRef: React.RefObject<HTMLInputElement | null>;
+    csvFile: File | null;
+    zipFile: File | null;
+    onCsvFileChange: (file: File | null) => void;
+    onZipFileChange: (file: File | null) => void;
     onContentTypeChange: (alias: string) => void;
     onDatePatternChange: (id: string) => void;
     onMoveUpdatedChange: (checked: boolean) => void;
@@ -31,8 +33,10 @@ export function ImportForm({
     moveUpdatedContentToCurrentLocation,
     importableProperties,
     selectedPropertyCount,
-    csvFileRef,
-    zipFileRef,
+    csvFile,
+    zipFile,
+    onCsvFileChange,
+    onZipFileChange,
     onContentTypeChange,
     onDatePatternChange,
     onMoveUpdatedChange,
@@ -79,7 +83,7 @@ export function ImportForm({
                     description="When enabled, existing content that is updated will be moved beneath the current item.">
                     <div slot="editor">
                         <UuiToggle
-                            label="Move updated content to the current location"
+                            label=""
                             checked={moveUpdatedContentToCurrentLocation}
                             disabled={processing}
                             onChange={onMoveUpdatedChange}
@@ -126,12 +130,11 @@ export function ImportForm({
                 </p>
                 <UuiButton
                     label="Download template"
+                    icon="icon-download-alt"
                     look="secondary"
                     disabled={!contentType || selectedPropertyCount === 0 || processing}
-                    onClick={onGetTemplate}>
-                    <uui-icon name="icon-download-alt"></uui-icon>
-                    Download template
-                </UuiButton>
+                    onClick={onGetTemplate}
+                />
             </uui-box>
 
             <uui-box headline="4. Upload &amp; queue">
@@ -140,7 +143,13 @@ export function ImportForm({
                     description="The completed CSV file containing the rows to import."
                     mandatory>
                     <div slot="editor">
-                        <input type="file" id="csvFile" accept=".csv" ref={csvFileRef} disabled={processing} />
+                        <UuiFileDropzone
+                            accept=".csv"
+                            label="Drop a CSV file here or click to browse"
+                            disabled={processing}
+                            onChange={(files) => onCsvFileChange(files[0] ?? null)}
+                        />
+                        {csvFile ? <p className="fileName">{csvFile.name}</p> : null}
                     </div>
                 </umb-property-layout>
 
@@ -148,7 +157,13 @@ export function ImportForm({
                     label="ZIP assets file"
                     description="Optional. A ZIP archive of media/assets referenced by the CSV.">
                     <div slot="editor">
-                        <input type="file" id="zipFile" accept=".zip" ref={zipFileRef} disabled={processing} />
+                        <UuiFileDropzone
+                            accept=".zip"
+                            label="Drop a ZIP file here or click to browse"
+                            disabled={processing}
+                            onChange={(files) => onZipFileChange(files[0] ?? null)}
+                        />
+                        {zipFile ? <p className="fileName">{zipFile.name}</p> : null}
                     </div>
                 </umb-property-layout>
 

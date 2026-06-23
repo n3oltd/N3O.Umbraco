@@ -6,8 +6,10 @@
     --uui-box-default-padding: var(--uui-size-space-4);
     margin-bottom: var(--uui-size-space-3);
 }
-.n3o-data-import input[type='file'] {
-    font: inherit;
+.n3o-data-import .fileName {
+    margin: var(--uui-size-space-2) 0 0;
+    font-size: var(--uui-type-small-size);
+    color: var(--uui-color-text-alt);
 }
 .n3o-data-import .selectionCount {
     font-size: var(--uui-type-small-size);
@@ -19,9 +21,12 @@
     margin-bottom: var(--uui-size-space-3);
 }
 .n3o-data-import .checkboxGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: var(--uui-size-space-1) var(--uui-size-space-5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uui-size-space-2) var(--uui-size-space-5);
+}
+.n3o-data-import .checkboxGrid > * {
+    flex: 0 1 160px;
 }
 .n3o-data-import .emptyState {
     margin: 0;
@@ -38,22 +43,6 @@
     gap: var(--uui-size-space-2);
     margin: var(--uui-size-space-4) 0;
     color: var(--uui-color-text-alt);
-}
-.n3o-data-import .statusBox {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--uui-size-space-3);
-    padding: var(--uui-size-space-4) var(--uui-size-space-5);
-    border-radius: var(--uui-border-radius);
-    margin-bottom: var(--uui-size-space-4);
-}
-.n3o-data-import .statusBox--positive {
-    background: var(--uui-color-positive);
-    color: var(--uui-color-positive-contrast);
-}
-.n3o-data-import .statusBox--danger {
-    background: var(--uui-color-danger);
-    color: var(--uui-color-danger-contrast);
 }
 .n3o-data-import .errorList {
     margin: 0;

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
-import type { ContentType, ContentMetadata, ExportProgressResponse, CreateExportResponse } from './types';
+import type { ContentType, ContentMetadata, ExportProgressResponse, CreateExportResponse, Notify } from './types';
 
 export interface ExportServerData {
     contentTypes: ContentType[];
@@ -59,7 +59,6 @@ export function useExportServerData(
 export interface ExportRun {
     processing: boolean;
     progress: string;
-    errorMessage: string | null;
     doExport: (
         contentKey: string | null,
         contentTypeAlias: string,
@@ -70,10 +69,9 @@ export interface ExportRun {
     ) => Promise<void>;
 }
 
-export function useExportRun(authFetch: AuthFetch | null): ExportRun {
+export function useExportRun(authFetch: AuthFetch | null, notify: Notify): ExportRun {
     const [processing, setProcessing] = useState<boolean>(false);
     const [progress, setProgress] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const generationRef = useRef<number>(0);
     const pollTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -88,7 +86,7 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
     const processingError = (message: string): void => {
         setProcessing(false);
         setProgress('');
-        setErrorMessage(message);
+        notify('danger', 'Export failed', message);
     };
 
     const poll = (exportId: string): Promise<ExportProgressResponse> => {
@@ -142,7 +140,6 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
 
         setProcessing(true);
         setProgress('');
-        setErrorMessage(null);
 
         if (!selectedPropertyAliases.length && !selectedMetadataIds.length) {
             processingError('At least one property or metadata field must be selected');
@@ -205,5 +202,5 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
             .catch(() => { });
     };
 
-    return { processing, progress, errorMessage, doExport };
+    return { processing, progress, doExport };
 }

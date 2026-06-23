@@ -1,4 +1,4 @@
-import { UuiRadio, UuiRadioGroup, UuiSelect, UuiToggle } from '@n3oltd/backoffice-ui';
+import { UuiRadioGroup, UuiSelect, UuiToggle } from '@n3oltd/backoffice-ui';
 import type { ContentType } from './types';
 
 interface ExportOptionsProps {
@@ -44,10 +44,16 @@ export function ExportOptions({
                 description="Choose the file format for the exported data."
                 mandatory>
                 <div slot="editor">
-                    <UuiRadioGroup name="format" value={format} disabled={processing} onChange={onFormatChange}>
-                        <UuiRadio label="Excel (.xlsx)" value="excel" />
-                        <UuiRadio label="CSV (.csv)" value="csv" />
-                    </UuiRadioGroup>
+                    <UuiRadioGroup
+                        name="format"
+                        value={format}
+                        disabled={processing}
+                        options={[
+                            { label: 'Excel (.xlsx)', value: 'excel' },
+                            { label: 'CSV (.csv)', value: 'csv' },
+                        ]}
+                        onChange={onFormatChange}
+                    />
                 </div>
             </umb-property-layout>
 
@@ -56,7 +62,7 @@ export function ExportOptions({
                 description="When enabled, unpublished content is included in the export.">
                 <div slot="editor">
                     <UuiToggle
-                        label="Include unpublished content"
+                        label=""
                         checked={includeUnpublished}
                         disabled={processing}
                         onChange={onIncludeUnpublishedChange}
