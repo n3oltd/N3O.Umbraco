@@ -9,10 +9,6 @@ import { ImportNoticesViewerApp, type ImportNoticesValue } from './import-notice
 
 const elementName = 'n3o-import-notices-viewer';
 
-// Web-component SHELL for the read-only import notices viewer property editor. Umbraco's backoffice
-// only loads custom elements, so this thin element owns the Umbraco contract (value/config) and mounts
-// the React UI (ImportNoticesViewerApp) into its shadow root. React is NOT bundled here — it is external
-// and resolved at runtime from the shared N3O.Umbraco.React import map. Display only - no change event.
 @customElement(elementName)
 export class N3oImportNoticesViewerElement extends HTMLElement implements UmbPropertyEditorUiElement {
     #root?: Root;
@@ -35,7 +31,6 @@ export class N3oImportNoticesViewerElement extends HTMLElement implements UmbPro
         this.#render();
     }
 
-    // Config is set by Umbraco for property editors; unused here but accepted to avoid warnings.
     public set config(_config: UmbPropertyEditorConfigCollection | undefined) { }
 
     public get config(): UmbPropertyEditorConfigCollection | undefined {

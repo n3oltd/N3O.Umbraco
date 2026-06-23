@@ -9,9 +9,6 @@ interface ImportNoticesViewerAppProps {
     value: ImportNoticesValue | undefined;
 }
 
-// React UI for the read-only import notices viewer. Controlled by the host web component: `value`
-// comes in as a prop. Display only - no change event. Renders errors then warnings, or a placeholder
-// when there are none.
 export function ImportNoticesViewerApp({ value }: ImportNoticesViewerAppProps) {
     const errors = value?.errors ?? null;
     const warnings = value?.warnings ?? null;

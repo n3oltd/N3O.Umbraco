@@ -23,9 +23,6 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
     const csvFileRef = useRef<HTMLInputElement>(null);
     const zipFileRef = useRef<HTMLInputElement>(null);
 
-    // Tracks the AbortController for the currently in-flight doImport call.
-    // Replaced on each new invocation so that a stale import is cancelled before
-    // starting a fresh one, and cleared (aborted) when the user starts over.
     const importAbortRef = useRef<AbortController | null>(null);
 
     const { contentTypes, datePatterns, datePattern, setDatePattern } = useImportLookups(contentKey, authFetch);
@@ -144,7 +141,6 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
     };
 
     const doImport = async (): Promise<void> => {
-        // Cancel any previously in-flight import before starting a new one.
         cancelImport();
         const controller = new AbortController();
         importAbortRef.current = controller;
@@ -201,7 +197,6 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
                 processingError((await result.json()) as string | string[]);
             }
         } catch (err) {
-            // Ignore AbortError (user cancelled); surface all other errors.
             if (err instanceof DOMException && err.name === 'AbortError') return;
             processingError('An unexpected error occurred while queueing the import.');
         } finally {

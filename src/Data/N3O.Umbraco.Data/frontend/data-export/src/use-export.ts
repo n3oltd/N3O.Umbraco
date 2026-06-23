@@ -180,7 +180,6 @@ export function useExportRun(authFetch: AuthFetch | null): ExportRun {
                     method: 'GET',
                 });
 
-                // Task 4: use response.ok instead of comparing === 200.
                 if (!exportFile.ok) {
                     processingError(String(await exportFile.json()));
                     return;

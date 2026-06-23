@@ -59,7 +59,6 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
     const selectedMetadataCount = metadatas.filter((m) => m.selected).length;
     const selectedPropertyCount = exportableProperties.filter((p) => p.selected).length;
     const hasSelection = selectedMetadataCount > 0 || selectedPropertyCount > 0;
-    // Task 2: guard canExport with !! authFetch so the Export button is disabled until auth is ready.
     const canExport = !!contentType && hasSelection && !processing && !!authFetch;
 
     return (
