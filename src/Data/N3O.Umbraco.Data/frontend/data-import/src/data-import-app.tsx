@@ -4,15 +4,16 @@ import { useImportLookups } from './use-import-lookups';
 import { ImportForm } from './import-form';
 import { ImportSuccess } from './import-success';
 import { ImportError } from './import-error';
-import type { ContentType, ImportableProperty } from './types';
+import type { ContentType, ImportableProperty, Notify } from './types';
 import styles from './data-import-app.css?inline';
 
 interface DataImportAppProps {
     contentKey: string | null;
     authFetch: AuthFetch | null;
+    notify: Notify;
 }
 
-export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
+export function DataImportApp({ contentKey, authFetch, notify }: DataImportAppProps) {
     const [show, setShow] = useState<string>('form');
     const [processing, setProcessing] = useState<boolean>(false);
     const [contentType, setContentType] = useState<ContentType | null>(null);
@@ -20,8 +21,8 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
     const [importableProperties, setImportableProperties] = useState<ImportableProperty[]>([]);
     const [errorMessages, setErrorMessages] = useState<string[] | null>(null);
 
-    const csvFileRef = useRef<HTMLInputElement>(null);
-    const zipFileRef = useRef<HTMLInputElement>(null);
+    const [csvFile, setCsvFile] = useState<File | null>(null);
+    const [zipFile, setZipFile] = useState<File | null>(null);
 
     const importAbortRef = useRef<AbortController | null>(null);
 
@@ -56,18 +57,18 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         setContentType(null);
         setErrorMessages(null);
         setImportableProperties([]);
+        setCsvFile(null);
+        setZipFile(null);
         setShow('form');
     };
 
-    const onContentTypeChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const alias = event.target.value;
+    const onContentTypeChange = (alias: string): void => {
         const selected = contentTypes.find((x) => x.alias === alias) ?? null;
         setContentType(selected);
         void refreshProperties(selected);
     };
 
-    const onDatePatternChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const id = event.target.value;
+    const onDatePatternChange = (id: string): void => {
         setDatePattern(datePatterns.find((x) => x.id === id) ?? null);
     };
 
@@ -86,6 +87,7 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         setProcessing(false);
         setErrorMessages(list);
         setShow('error');
+        notify('danger', 'Import failed', list[0]);
     };
 
     const getTemplate = async (): Promise<void> => {
@@ -123,13 +125,13 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         window.URL.revokeObjectURL(blobUrl);
     };
 
-    const getStorageToken = async (input: HTMLInputElement, signal: AbortSignal): Promise<unknown> => {
-        if (!input.files || input.files.length === 0) {
+    const getStorageToken = async (file: File | null, signal: AbortSignal): Promise<unknown> => {
+        if (!file) {
             return null;
         }
 
         const data = new FormData();
-        data.append('file', input.files[0]);
+        data.append('file', file);
 
         const res = await authFetch!('/umbraco/api/Storage/tempUpload', {
             method: 'POST',
@@ -149,15 +151,12 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         setProcessing(true);
 
         try {
-            const csvFile = csvFileRef.current;
-            const zipFile = zipFileRef.current;
-
-            if (!csvFile || !csvFile.value || csvFile.value.split('.')[1]?.toLowerCase() !== 'csv') {
+            if (!csvFile || !csvFile.name.toLowerCase().endsWith('.csv')) {
                 processingError('A valid CSV file must be specified');
                 return;
             }
 
-            if (zipFile && zipFile.value && zipFile.value.split('.')[1]?.toLowerCase() !== 'zip') {
+            if (zipFile && !zipFile.name.toLowerCase().endsWith('.zip')) {
                 processingError('The selected file is not a valid ZIP file');
                 return;
             }
@@ -193,6 +192,7 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
             if (result.status === 200) {
                 setShow('success');
                 setProcessing(false);
+                notify('positive', 'Import queued', 'Your CSV file has been queued and will be processed shortly.');
             } else {
                 processingError((await result.json()) as string | string[]);
             }
@@ -224,8 +224,10 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
                     moveUpdatedContentToCurrentLocation={moveUpdatedContentToCurrentLocation}
                     importableProperties={importableProperties}
                     selectedPropertyCount={selectedPropertyCount}
-                    csvFileRef={csvFileRef}
-                    zipFileRef={zipFileRef}
+                    csvFile={csvFile}
+                    zipFile={zipFile}
+                    onCsvFileChange={setCsvFile}
+                    onZipFileChange={setZipFile}
                     onContentTypeChange={onContentTypeChange}
                     onDatePatternChange={onDatePatternChange}
                     onMoveUpdatedChange={setMoveUpdatedContentToCurrentLocation}

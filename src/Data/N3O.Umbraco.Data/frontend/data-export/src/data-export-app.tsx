@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react';
+import { UuiButton } from '@n3oltd/backoffice-ui';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 import styles from './data-export-app.css?inline';
 import { useExportServerData, useExportRun } from './use-export';
 import { ExportOptions } from './export-options';
 import { SelectableFieldList } from './selectable-field-list';
-import type { ContentType, ContentMetadata, ExportableProperty } from './types';
+import type { ContentType, ContentMetadata, ExportableProperty, Notify } from './types';
 
 interface DataExportAppProps {
     contentKey: string | null;
     authFetch: AuthFetch | null;
+    notify: Notify;
 }
 
-export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
+export function DataExportApp({ contentKey, authFetch, notify }: DataExportAppProps) {
     const { contentTypes, metadatas: initialMetadatas } = useExportServerData(contentKey, authFetch);
-    const { processing, progress, errorMessage, doExport } = useExportRun(authFetch);
+    const { processing, progress, doExport } = useExportRun(authFetch, notify);
 
     const [contentType, setContentType] = useState<ContentType | null>(null);
     const [format, setFormat] = useState<string>('excel');
@@ -42,8 +44,7 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
         setExportableProperties(res);
     };
 
-    const onContentTypeChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-        const alias = event.target.value;
+    const onContentTypeChange = (alias: string): void => {
         const selected = contentTypes.find((x) => x.alias === alias) ?? null;
         setContentType(selected);
         void refreshProperties(selected);
@@ -112,13 +113,6 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
                 <p className="hint">Select at least one metadata field or property to export.</p>
             ) : null}
 
-            {errorMessage ? (
-                <div className="errorBox">
-                    <uui-icon name="icon-alert"></uui-icon>
-                    <span>{errorMessage}</span>
-                </div>
-            ) : null}
-
             {processing ? (
                 <div className="progress">
                     <uui-loader-bar></uui-loader-bar>
@@ -127,9 +121,10 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
             ) : null}
 
             <div className="actions">
-                <button
-                    type="button"
-                    className="btn btn--primary btn--positive"
+                <UuiButton
+                    label={processing ? 'Exporting…' : 'Export'}
+                    look="primary"
+                    color="positive"
                     disabled={!canExport}
                     onClick={() => void doExport(
                         contentKey,
@@ -138,9 +133,8 @@ export function DataExportApp({ contentKey, authFetch }: DataExportAppProps) {
                         includeUnpublished,
                         metadatas.filter((x) => x.selected).map((x) => x.id),
                         exportableProperties.filter((x) => x.selected).map((x) => x.alias),
-                    )}>
-                    {processing ? 'Exporting…' : 'Export'}
-                </button>
+                    )}
+                />
             </div>
 
             <style>{styles}</style>

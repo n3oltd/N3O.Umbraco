@@ -1,4 +1,5 @@
-﻿import type { ContentType } from './types';
+import { UuiRadioGroup, UuiSelect, UuiToggle } from '@n3oltd/backoffice-ui';
+import type { ContentType } from './types';
 
 interface ExportOptionsProps {
     contentTypes: ContentType[];
@@ -6,7 +7,7 @@ interface ExportOptionsProps {
     format: string;
     includeUnpublished: boolean;
     processing: boolean;
-    onContentTypeChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    onContentTypeChange: (alias: string) => void;
     onFormatChange: (value: string) => void;
     onIncludeUnpublishedChange: (checked: boolean) => void;
 }
@@ -28,20 +29,13 @@ export function ExportOptions({
                 description="The descendant type to export. Properties available for export depend on this."
                 mandatory>
                 <div slot="editor">
-                    <select
-                        className="nativeSelect"
+                    <UuiSelect
+                        options={contentTypes.map((item) => ({ name: item.name, value: item.alias }))}
                         value={contentType?.alias ?? ''}
+                        placeholder="Select a content type…"
+                        disabled={processing || contentTypes.length === 0}
                         onChange={onContentTypeChange}
-                        disabled={processing || contentTypes.length === 0}>
-                        <option value="" disabled>
-                            Select a content type…
-                        </option>
-                        {contentTypes.map((item) => (
-                            <option key={item.alias} value={item.alias}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
             </umb-property-layout>
 
@@ -50,30 +44,16 @@ export function ExportOptions({
                 description="Choose the file format for the exported data."
                 mandatory>
                 <div slot="editor">
-                    <div className="radioGroup">
-                        <label className="radioOption">
-                            <input
-                                type="radio"
-                                name="format"
-                                value="excel"
-                                checked={format === 'excel'}
-                                onChange={(e) => onFormatChange(e.target.value)}
-                                disabled={processing}
-                            />
-                            <span>Excel (.xlsx)</span>
-                        </label>
-                        <label className="radioOption">
-                            <input
-                                type="radio"
-                                name="format"
-                                value="csv"
-                                checked={format === 'csv'}
-                                onChange={(e) => onFormatChange(e.target.value)}
-                                disabled={processing}
-                            />
-                            <span>CSV (.csv)</span>
-                        </label>
-                    </div>
+                    <UuiRadioGroup
+                        name="format"
+                        value={format}
+                        disabled={processing}
+                        options={[
+                            { label: 'Excel (.xlsx)', value: 'excel' },
+                            { label: 'CSV (.csv)', value: 'csv' },
+                        ]}
+                        onChange={onFormatChange}
+                    />
                 </div>
             </umb-property-layout>
 
@@ -81,15 +61,12 @@ export function ExportOptions({
                 label="Include unpublished"
                 description="When enabled, unpublished content is included in the export.">
                 <div slot="editor">
-                    <label className="toggleOption">
-                        <input
-                            type="checkbox"
-                            checked={includeUnpublished}
-                            onChange={(e) => onIncludeUnpublishedChange(e.target.checked)}
-                            disabled={processing}
-                        />
-                        <span>Include unpublished content</span>
-                    </label>
+                    <UuiToggle
+                        label=""
+                        checked={includeUnpublished}
+                        disabled={processing}
+                        onChange={onIncludeUnpublishedChange}
+                    />
                 </div>
             </umb-property-layout>
         </uui-box>

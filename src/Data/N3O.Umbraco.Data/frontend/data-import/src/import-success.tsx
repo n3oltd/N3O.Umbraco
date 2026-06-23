@@ -1,3 +1,5 @@
+import { UuiButton } from '@n3oltd/backoffice-ui';
+
 interface ImportSuccessProps {
     onStartOver: () => void;
 }
@@ -5,17 +7,10 @@ interface ImportSuccessProps {
 export function ImportSuccess({ onStartOver }: ImportSuccessProps) {
     return (
         <uui-box headline="Import queued">
-            <div className="statusBox statusBox--positive">
-                <uui-icon name="icon-check"></uui-icon>
-                <span>Your CSV file has been queued and will be processed shortly.</span>
-            </div>
+            <p className="boxHint">Your CSV file has been queued and will be processed shortly.</p>
             <div className="actions">
-                <a className="btn btn--primary" href="/umbraco/section/content/dashboard/imports">
-                    View import queue
-                </a>
-                <button type="button" className="btn btn--secondary" onClick={onStartOver}>
-                    Import another file
-                </button>
+                <UuiButton label="View import queue" look="primary" href="/umbraco/section/content/dashboard/imports" />
+                <UuiButton label="Import another file" look="secondary" onClick={onStartOver} />
             </div>
         </uui-box>
     );
