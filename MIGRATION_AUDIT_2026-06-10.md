@@ -1,5 +1,7 @@
 # v17 Migration Audit — 2026-06-10 (session 14)
 
+> ⚠️ **CURRENT STATE (2026-06-24):** `origin/v17` was merged into `v17-Talha`, **RESTRUCTURING** the frontend/build layout. The authoritative current layout is in **AGENTS.md**. This is a dated audit — findings below referencing `ClientApp/`, `Apps/`, `Cms/Build/`, `Cms/Extensions/`, `@n3o/build`, `@n3o/auth-fetch`, `@n3o/backoffice-core`, `N3O.Umbraco.React`, `BuildClientApp`/`BuildReactRuntime`, or `KonstruktConfigurator` reflect earlier intermediate states and are retained as history. **Current names:** shared packages `@repo/build-config` + `@n3oltd/backoffice-core` + `@n3oltd/backoffice-ui` under `src/frontend/`; React runtime is the standalone `N3O.Umbraco.ReactRuntime` project; per-plugin apps at `<Project>/frontend/<app>/`; build via root `Directory.Build.props`/`.targets` + Turbo; `KonstruktConfigurator`→`UIBuilderConfigurator`. **NOTE:** an old parallel layout (`Cms/Build/*`, `Cms/Extensions/*`, `Data.StaticAssets/Extensions/*`) is still git-tracked pending deletion.
+
 *Source: read-only audit workflow (17 agents, 1781 tool calls) — verified every known remaining task
 against the actual code on `v17-Talha` + the Umbraco 17.3.5 source, and swept for new issues. This file
 is the **current source of truth** for remaining migration work; the older trackers

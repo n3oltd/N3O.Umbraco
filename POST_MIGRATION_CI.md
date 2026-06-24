@@ -25,15 +25,18 @@ There is **no `global.json`** anywhere, so the .NET SDK is selected purely by ea
 ## 🔴 Verify now — most likely CI break
 
 **Node/npm must be available to `dotnet build`/`pack`.** The migration made the .NET build
-**hard-depend on Node/npm**: the repo-root `Directory.Build.targets` runs Vite via the
-`BuildClientApp`/`BuildClientApps` targets, and building `N3O.Umbraco.Cms` now requires Node/npm
-(per `SESSION_HANDOFF.md`). The backoffice ClientApps live in the `src/package.json` npm workspace
-(14 workspaces).
+**hard-depend on Node/npm**: the repo-root `Directory.Build.props` + `Directory.Build.targets` run
+`npx turbo run build --env-mode=loose` via the `RestoreFrontendDependencies` /
+`BuildFrontendWorkspace` / `BuildFrontend` targets (which replaced the old
+`BuildClientApp`/`BuildClientApps`), and building `N3O.Umbraco.Cms` now requires Node/npm
+(per `SESSION_HANDOFF.md`). The backoffice frontends live as `frontend/<app>` packages in the
+Turborepo + npm workspace rooted at `src/` (`src/package.json`, **9 packages**). The orchestrator is
+Turborepo; build agents need Node **`>=22.19.0`** (`.nvmrc` = `22.19.0` at repo root).
 
 **Action:** confirm that the shared `n3oltd/actions` `dotnet-build-pack-push.yml` workflow sets up
-Node and runs `npm ci` in `src/` **before** `dotnet pack`. If it does not, the `v17-ci.yml` pack job
-(and later `main`/`tag` packs) will fail on the Vite target. **This fix lives in the `n3oltd/actions`
-repo, not here.** This is the single highest-priority item.
+Node `>=22.19.0` and runs `npm ci` in `src/` **before** `dotnet pack`. If it does not, the `v17-ci.yml`
+pack job (and later `main`/`tag` packs) will fail on the turbo build target. **This fix lives in the
+`n3oltd/actions` repo, not here.** This is the single highest-priority item.
 
 ---
 
@@ -67,7 +70,7 @@ These are **correct as-is today** — do not change until the merge/release happ
   `v17` get no build check. The reusable workflow packs+pushes (not wanted on every PR), so a separate
   **build-only** workflow (`on: pull_request`, `run-pack: false`) would be needed to gate PRs.
 - **Dependabot npm coverage.** `dependabot.yml` covers only NuGet on `/src`. The migration added a real
-  npm surface (`src/package.json` workspace, 14 ClientApps). Consider adding an `npm` ecosystem (and
+  npm surface (`src/package.json` Turborepo workspace, 9 `frontend/<app>` packages). Consider adding an `npm` ecosystem (and
   optionally `github-actions`) so backoffice deps get updates.
 - **No tests run** (`run-tests: false` in `tag-ci.yml`; audit notes zero tests) — not a migration
   regression; no change needed unless a test project is added.

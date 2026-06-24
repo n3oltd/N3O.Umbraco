@@ -42,7 +42,7 @@ Items that require external action, design decisions, or significant implementat
 ### ~~BLOCKER-03: Konstrukt → Umbraco.UIBuilder~~ — RESOLVED
 - **Old state:** `Konstrukt.Startup 1.6.7` renamed to `Umbraco.UIBuilder` in v14+; full API port needed.
 - **Resolution:** All Konstrukt → UIBuilder API ports complete:
-  - `KonstruktConfigurator` → uses `UIBuilderConfigBuilder`, `WithSectionConfigBuilder`
+  - `UIBuilderConfigurator` → uses `UIBuilderConfigBuilder`, `WithSectionConfigBuilder`
   - `UIBuilderComposer` → `builder.AddUIBuilder(cfg => { ... })` with auto-discovery of `IConfigurator`
   - `KonstruktValueMapper` → `ValueMapper` (`Umbraco.UIBuilder.Mapping`)
   - `KonstruktDataViewsBuilder<T>` → `DataViewsBuilder<T>`; `KonstruktDataViewSummary` → `DataViewSummary`
@@ -113,7 +113,7 @@ The Cockpit factory interface in v17.2.2 is at: `Umbraco.Engage.Web.Cockpit.Segm
 4. Rewrite the 3 AngularJS segment rule editor JS files (`segment-rule-telethon-on-air*.js`) as Bellissima web components
 
 #### AngularJS UI still blocked
-The three JS files in `App_Plugins/telethon-on-air-rule/` are AngularJS and will not run in Umbraco 17 backoffice. These depend on `umsSegmentRuleRepository` (an Engage Angular service). Check what the Engage v17.2.2 client-side API provides for custom segment rule UIs.
+The three JS files in `App_Plugins/telethon-on-air-rule/` are AngularJS and will not run in Umbraco 17 backoffice. These depend on `umsSegmentRuleRepository` (an Engage Angular service). Check what the Engage v17.2.2 client-side API provides for custom segment rule UIs. *(Note: when ported, the source for this plugin would live under the per-plugin `<Project>/frontend/<app>/` Turbo workspace convention like the other migrated plugins; the blocker itself remains open.)*
 
 ---
 
@@ -186,7 +186,7 @@ This plan needs to be registered in a Composer via `builder.PackageMigrationPlan
 
 ### BLOCKER-07: Bellissima Frontend — All AngularJS Plugins
 
-**Status:** DONE + modernized to TypeScript (2026-06-02). 15 of 16 plugin areas migrated to `umbraco-package.json` + Lit (only `telethon-on-air-rule` blocked, depends on BLOCKER-04). **Session 6:** all 16 areas (13 build units) further converted from plain-JS to **TypeScript + Vite** — per-project `ClientApp/` (`package.json`/`tsconfig.json`/`vite.config.ts`/`src/*.ts`) with an MSBuild `BuildClientApp` target running `npm ci`/`npm run build`; `@umbraco/*` kept external, code + npm libs bundled (Handsontable, cropperjs, @editorjs/* now npm deps; formstone/jQuery kept vendored + flagged). Full solution build 0 errors. **Live smoke-test passed:** app boots, WelcomeDashboard + Scheduler render, 6 referenced property-editor UIs register & are selectable, zero N3O console errors. Recipe: `TYPESCRIPT_MIGRATION_GUIDE.md`; AngularJS→Lit history: `BELLISSIMA_MIGRATION_LOG.md`/`BELLISSIMA_MIGRATION_GUIDE.md`. **Still pending:** live property-editor render *inside a content node* (needs doctype/content fixtures), and the 5 plugins not referenced by DemoSite.Web (EditorJs, Cells, Blocks.Preview, Cloud.Platforms.Preview, Blazor.BackOffice).
+**Status:** DONE + modernized to TypeScript (2026-06-02). 15 of 16 plugin areas migrated to `umbraco-package.json` + Lit (only `telethon-on-air-rule` blocked, depends on BLOCKER-04). **Session 6:** all 16 areas (13 build units) further converted from plain-JS to **TypeScript + Vite** — per-project `ClientApp/` (`package.json`/`tsconfig.json`/`vite.config.ts`/`src/*.ts`) with an MSBuild `BuildClientApp` target running `npm ci`/`npm run build`; `@umbraco/*` kept external, code + npm libs bundled (Handsontable, cropperjs, @editorjs/* now npm deps; formstone/jQuery kept vendored + flagged). Full solution build 0 errors. *(2026-06-24: the per-project `ClientApp/`+`BuildClientApp` approach was later replaced by the `src/frontend/` Turbo workspace + shared `Directory.Build.targets`; see AGENTS.md.)* **Live smoke-test passed:** app boots, WelcomeDashboard + Scheduler render, 6 referenced property-editor UIs register & are selectable, zero N3O console errors. Recipe: `TYPESCRIPT_MIGRATION_GUIDE.md`; AngularJS→Lit history: `BELLISSIMA_MIGRATION_LOG.md`/`BELLISSIMA_MIGRATION_GUIDE.md`. **Still pending:** live property-editor render *inside a content node* (needs doctype/content fixtures), and the 5 plugins not referenced by DemoSite.Web (EditorJs, Cells, Blocks.Preview, Cloud.Platforms.Preview, Blazor.BackOffice).
 
 **Critical fix discovered during testing:** each custom `propertyEditorUi.alias` (and `propertyEditorSchemaAlias`) must equal the backend `[DataEditor]` alias (NOT a new `N3O.PropertyEditorUi.*`), else existing data types show "Property Editor UI not found". Applied to all custom editors (TextResourceEditor's backend alias is `N3O.Umbraco.TemplateTextEditor`).
 

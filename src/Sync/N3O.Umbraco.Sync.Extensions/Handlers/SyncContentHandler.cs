@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core;
 using uSync.Core;
 using uSync.Core.Dependency;
 using uSync.Core.Sync;

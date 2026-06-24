@@ -6,21 +6,24 @@ You are converting **one Umbraco backoffice plugin project** from plain-JS Lit c
 Vite**, the modern Umbraco-recommended build. The backend C# APIs and the `umbraco-package.json` registration
 are **unchanged** — you only add a typed build pipeline and rewrite the component(s) in TypeScript.
 
-A complete, verified-building reference already exists: **`Plugins/SerpEditor/N3O.Umbraco.SerpEditor.StaticAssets`**
-(`ClientApp/` + the `BuildClientApp` MSBuild target in its `.csproj`). **Read it first and mirror it exactly.**
-It builds with `dotnet build` → 0 errors and `npm run build` → emits `App_Plugins/.../serp-editor.js`.
+A complete, verified-building reference already exists: **`src/N3O.Umbraco.Cms/frontend/dynamic-list-views`**
+(a Lit, no-React `workspaceView`). **Read it first and mirror it exactly.** Each plugin app now lives at
+`<Project>/frontend/<app>/` inside the single npm + Turborepo workspace rooted at `src/`, and builds via the
+shared root `Directory.Build.targets` (turbo) — no per-project MSBuild target. It emits to `dist/` and the
+build seam copies it to `App_Plugins/...`.
 
 ---
 
-## The recipe (mirror SerpEditor)
+## The recipe (mirror dynamic-list-views)
 
-For each `*.StaticAssets` project, create a `ClientApp/` folder **next to** `App_Plugins/` (NOT inside it — files
-inside `App_Plugins` get shipped; `ClientApp` must not be). It contains:
+For each plugin, create a `frontend/<app>/` folder under its project (e.g.
+`src/N3O.Umbraco.Cms/frontend/dynamic-list-views`). The config files are tiny because they extend / call the
+shared `@repo/build-config` preset (`src/frontend/build-config`). It contains:
 
-### `ClientApp/package.json`
+### `frontend/<app>/package.json`
 ```json
 {
-    "name": "n3o-umbraco-<plugin-kebab>",
+    "name": "@n3oltd/<app>",
     "version": "1.0.0",
     "private": true,
     "type": "module",
@@ -29,136 +32,83 @@ inside `App_Plugins` get shipped; `ClientApp` must not be). It contains:
         "watch": "vite build --watch"
     },
     "devDependencies": {
-        "@umbraco-cms/backoffice": "17.3.5",
-        "typescript": "~5.7.0",
-        "vite": "^6.0.0"
+        "@repo/build-config": "*"
     }
 }
 ```
 Add any **third-party libs** the plugin uses as real dependencies here (see "Third-party libraries" below).
+`@umbraco-cms/backoffice`, `typescript` and `vite` come from the shared workspace — don't re-pin them per app.
 
-### `ClientApp/tsconfig.json`
+### `frontend/<app>/tsconfig.json`
+Extend the shared base preset by name (no per-app compilerOptions boilerplate):
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "ESNext",
-        "lib": ["ES2022", "DOM", "DOM.Iterable"],
-        "moduleResolution": "bundler",
-        "useDefineForClassFields": false,
-        "experimentalDecorators": true,
-        "skipLibCheck": true,
-        "isolatedModules": true,
-        "moduleDetection": "force",
-        "noEmit": true,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
-    },
+    "extends": "@repo/build-config/tsconfig",
     "include": ["src"]
 }
 ```
 
-### `ClientApp/vite.config.ts` — SINGLE-entry plugin
+### `frontend/<app>/vite.config.ts` — SINGLE-entry plugin
+Import `{ n3oPluginConfig }` from `@repo/build-config` and call it. The entry **key** is the
+`App_Plugins/<folder>/<file>` sub-path; `outDir: 'dist'` and the `BuildFrontend` target maps `dist/**` →
+`wwwroot/App_Plugins/...`:
 ```ts
-import { defineConfig } from 'vite';
+import { n3oPluginConfig } from '@repo/build-config';
 
-export default defineConfig({
-    build: {
-        lib: {
-            entry: 'src/<file>.ts',
-            formats: ['es'],
-            fileName: () => '<file>.js',
-        },
-        outDir: '../App_Plugins/<FolderName>',
-        emptyOutDir: false,
-        sourcemap: true,
-        rollupOptions: {
-            external: [/^@umbraco/],
-        },
+export default n3oPluginConfig({
+    entries: {
+        'N3O.Umbraco.DynamicListViews/dynamic-list-view': 'src/dynamic-list-view.ts',
     },
+    outDir: 'dist',
 });
 ```
-- `<file>.js` MUST match the filename the `umbraco-package.json` `element`/`js` path points at.
-- `external: [/^@umbraco/]` keeps `@umbraco-cms/backoffice/*` imports as bare specifiers (Umbraco import-maps
-  them at runtime). Everything else (your code + npm libs) is bundled into the one output file.
-- `emptyOutDir: false` is **required** — the committed `umbraco-package.json` lives in that folder.
+- The entry key's `<file>.js` MUST match the filename the `umbraco-package.json` `element`/`js` path points at.
+- The preset keeps `@umbraco-cms/backoffice/*` imports as bare external specifiers (Umbraco import-maps them at
+  runtime). Everything else (your code + npm libs) is bundled into the output file.
+- Output goes to `dist/<folder>/<file>.js`; the build seam copies it into `App_Plugins/<folder>/`.
 
-### `ClientApp/vite.config.ts` — MULTI-entry project (e.g. Data has 4 plugins in one project)
-Use an entry **map** whose keys are the per-plugin output paths, with `outDir: '../App_Plugins'`:
+### `frontend/<app>/vite.config.ts` — MULTI-entry project (e.g. Data has 4 plugins in one project)
+Add one entry per plugin to the `entries` map (key = its `App_Plugins/<folder>/<file>` path):
 ```ts
-import { defineConfig } from 'vite';
+import { n3oPluginConfig } from '@repo/build-config';
 
-export default defineConfig({
-    build: {
-        lib: {
-            entry: {
-                'N3O.Umbraco.Data.Import/data-import': 'src/data-import.ts',
-                'N3O.Umbraco.Data.Export/data-export': 'src/data-export.ts',
-                'N3O.Umbraco.Data.ImportDataEditor/import-data-editor': 'src/import-data-editor.ts',
-                'N3O.Umbraco.Data.ImportNoticesViewer/import-notices-viewer': 'src/import-notices-viewer.ts',
-            },
-            formats: ['es'],
-        },
-        outDir: '../App_Plugins',
-        emptyOutDir: false,
-        sourcemap: true,
-        rollupOptions: {
-            external: [/^@umbraco/],
-            output: { entryFileNames: '[name].js' },
-        },
+export default n3oPluginConfig({
+    entries: {
+        'N3O.Umbraco.Data.Import/data-import': 'src/data-import.ts',
+        'N3O.Umbraco.Data.Export/data-export': 'src/data-export.ts',
+        'N3O.Umbraco.Data.ImportDataEditor/import-data-editor': 'src/import-data-editor.ts',
+        'N3O.Umbraco.Data.ImportNoticesViewer/import-notices-viewer': 'src/import-notices-viewer.ts',
     },
+    outDir: 'dist',
 });
 ```
-(Each key resolves to `App_Plugins/<folder>/<file>.js`.) Confirm each path matches that plugin's
-`umbraco-package.json` `element`.
-
-### `ClientApp/.gitignore`
-```
-node_modules/
-```
+(Each key resolves to `dist/<folder>/<file>.js`, then copied to `App_Plugins/<folder>/<file>.js`.) Confirm
+each path matches that plugin's `umbraco-package.json` `element`. (For a React app, also pass `react: true` and
+`additionalExternals: ['@n3oltd/backoffice-core']` — see the React guide.)
 
 ---
 
-## MSBuild wiring (edit the project's `.csproj`)
+## Build wiring (no per-project MSBuild target)
 
-Mirror SerpEditor's `.csproj`:
+There is **no per-project `BuildClientApp` csproj target** anymore. The shared root `Directory.Build.targets`
+drives the whole workspace and is gated on `N3OHasFrontend` (auto-set by `Directory.Build.props` for any
+project containing a `frontend/` folder):
 
-1. **Exclude built outputs from the static `<Content>` glob** (so the target can add them without duplicates):
-```xml
-<Content Include="App_Plugins\<FolderName>\**\*.*"
-         Exclude="App_Plugins\<FolderName>\**\*.js;App_Plugins\<FolderName>\**\*.js.map">
-    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-</Content>
-```
-(For a project covering multiple plugin folders, exclude each folder's `**\*.js;**\*.js.map`, or use
-`App_Plugins\**\*.js;App_Plugins\**\*.js.map`.)
+- `RestoreFrontendDependencies` — `npm ci` once in `src`.
+- `BuildFrontendWorkspace` — a single `npx turbo run build --env-mode=loose` for the whole workspace.
+- `BuildFrontend` — per-project copy of `frontend/*/dist/**` into `wwwroot/App_Plugins/...`, re-registered for
+  the static-web-assets pipeline.
 
-2. **Add the build target** (before the SerpEditor `<None Include="build\...">` line is fine):
-```xml
-<PropertyGroup>
-    <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
-</PropertyGroup>
-<Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
-    <Message Text="Building <Plugin> client app (Vite)" Importance="high" />
-    <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
-    <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-    <ItemGroup>
-        <Content Include="App_Plugins\<FolderName>\**\*.js;App_Plugins\<FolderName>\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-    </ItemGroup>
-</Target>
-```
+So you do **not** edit the `.csproj` to add a build step or `<Content>` excludes — creating the
+`frontend/<app>/` folder is enough for the shared targets to pick it up. (A React plugin opts into the
+ReactRuntime ProjectReference by setting `<N3OReactPlugin>true</N3OReactPlugin>`, which auto-imports
+`src/build/N3O.Umbraco.ReactPlugin.props`.)
 
 ---
 
 ## Writing the TypeScript component
 
-Port the **existing** `App_Plugins/.../<file>.js` faithfully into `ClientApp/src/<file>.ts`. Same API calls,
+Port the **existing** `App_Plugins/.../<file>.js` faithfully into `frontend/<app>/src/<file>.ts`. Same API calls,
 same fields, same UX, same behaviour. **Do not add features or abstractions.** Modernize only the language:
 
 - Use **Lit decorators**: `@customElement('n3o-...')`, `@property({...})`, `@state()` — imported from
@@ -183,7 +133,7 @@ keep it minimal and note it in your report. `skipLibCheck` is already on so the 
 
 | Lib | Guidance |
 |---|---|
-| Available as a clean ESM npm package (`cropperjs`, `handsontable`, `@editorjs/*`, `editorjs-*`) | Add to `ClientApp/package.json` `dependencies`, `import` it in the `.ts`, let Vite bundle it. Delete the old vendored copy from `App_Plugins` (it becomes dead). Match the version the vendored copy used if discernible. |
+| Available as a clean ESM npm package (`cropperjs`, `handsontable`, `@editorjs/*`, `editorjs-*`) | Add to `frontend/<app>/package.json` `dependencies`, `import` it in the `.ts`, let Vite bundle it. Delete the old vendored copy from `App_Plugins` (it becomes dead). Match the version the vendored copy used if discernible. |
 | jQuery / Formstone (Cropper upload, Uploader) | **Pending product decision (do NOT rewrite to native pickers).** Keep the existing vendored files and the existing load mechanism; just port the wrapper to TS. If you bundle them, fine, but don't change behaviour. **Flag this in your report.** |
 | Blazor loader (`N3O.Umbraco.Blazor.BackOffice.js`) | It's a non-Lit loader that relies on global `$`. Port to TS minimally (typed), keep it a `bundle`/`script` entry. Don't Lit-ify it. Flag the jQuery dependency. |
 
@@ -201,15 +151,17 @@ If a CSS file is imported (not inlined as `css\`\``), Vite emits a `style.css` �
 - Don't rewrite Cropper/Uploader to Umbraco native media/image pickers (pending Talha's decision).
 
 ## Verify before reporting done (REQUIRED)
-1. `cd ClientApp && npm install` then `npm run build` → must succeed (tsc strict passes + Vite emits).
-2. Confirm the output `.js` landed at `App_Plugins/<FolderName>/<file>.js` and its `import`s of
+1. `cd frontend/<app> && npm run build` → must succeed (tsc strict passes + Vite emits to `dist/`).
+   (Run `npm ci` once in `src` first if the workspace isn't restored.)
+2. Confirm the output `.js` landed at `dist/<FolderName>/<file>.js` and its `import`s of
    `@umbraco-cms/backoffice/*` are still **bare external specifiers** (grep the output).
 3. Confirm the element is registered (the `@customElement('n3o-...')` tag name appears in the output) and
    `export ... default` is present.
-4. `dotnet build <project>.csproj -c Debug` → **0 errors** (this exercises the MSBuild target end-to-end).
-5. Old hand-written `App_Plugins/.../<file>.js` is overwritten by the build (expected) — don't hand-delete it.
+4. `dotnet build <project>.csproj -c Debug` → **0 errors** (this exercises the shared frontend build seam
+   end-to-end: turbo build + copy of `dist/**` into `App_Plugins/`).
+5. Old hand-written `App_Plugins/.../<file>.js` is overwritten by the build seam (expected) — don't hand-delete it.
 
 ## Report back
-Plugin/project name; files created (ClientApp/*); component(s) ported; third-party libs (npm-bundled vs kept
+Plugin/project name; files created (`frontend/<app>/*`); component(s) ported; third-party libs (npm-bundled vs kept
 vendored, with versions); any `as`/`@ts-expect-error` casts used and why; CSS handling; `npm run build` result;
 `dotnet build` result (errors/warnings count); anything uncertain or flagged.

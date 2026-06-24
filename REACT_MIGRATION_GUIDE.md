@@ -7,7 +7,8 @@ You are converting **one Umbraco backoffice plugin** from a **Lit + TypeScript +
 **UNCHANGED** — you only replace the component implementation and its build deps.
 
 A complete, verified-building reference already exists — **read it first and mirror it exactly**:
-`src/Plugins/SerpEditor/N3O.Umbraco.SerpEditor.StaticAssets/ClientApp` (a `propertyEditorUi`).
+`src/Data/N3O.Umbraco.Data/frontend/data-import` (a React `workspaceView`). Each plugin app now lives at
+`<Project>/frontend/<app>/` and is part of the single npm + Turborepo workspace rooted at `src/`.
 
 ---
 
@@ -21,11 +22,12 @@ directly. So every plugin keeps a thin **web-component shell** that:
 
 **React is shared, not bundled.** `react`, `react-dom`, `react-dom/client`, `react/jsx-runtime` are kept
 **external** in every plugin's Vite build and resolved at runtime by the import map declared in
-`src/N3O.Umbraco.Cms/wwwroot/App_Plugins/N3O.Umbraco.ReactRuntime/umbraco-package.json` (a self-hosted
-React 19 ESM runtime; renamed from `N3O.Umbraco.React` 2026-06-10). **Never bundle React into a plugin** —
+`src/N3O.Umbraco.ReactRuntime/wwwroot/App_Plugins/N3O.Umbraco.ReactRuntime/umbraco-package.json` (a self-hosted
+React 19 ESM runtime shipped by its own `N3O.Umbraco.ReactRuntime` project). **Never bundle React into a plugin** —
 that would load multiple React instances.
 
-> **Shim gotcha (fixed 2026-06-10):** the runtime's shim files (`N3O.Umbraco.ReactRuntime/src/react.js`,
+> **Shim gotcha:** the runtime's shim files
+> (`src/N3O.Umbraco.ReactRuntime/frontend/react-runtime/src/react.js`,
 > `react-dom.js`, `react-jsx-runtime.js`) must re-export the named API **explicitly**
 > (`import React from 'react'; export default React; export const { useState, ... } = React;`). A bare
 > `export * from 'react'` drops React's CommonJS named exports through the Vite lib build — only `default`
@@ -34,37 +36,68 @@ that would load multiple React instances.
 
 ---
 
-## Build-file changes (mirror SerpEditor's ClientApp)
+## Build-file changes (mirror data-import's `frontend/<app>/`)
 
-### `ClientApp/package.json`
-Add React as deps + types (keep `@umbraco-cms/backoffice`, `typescript`, `vite`):
+The app lives at `<Project>/frontend/<app>/` (e.g. `src/Data/N3O.Umbraco.Data/frontend/data-import`). Its
+config files are tiny because they extend / call the shared `@repo/build-config` preset
+(`src/frontend/build-config`). There is **no per-app duplicated** `tsconfig`/`vite` boilerplate and **no
+per-project `BuildClientApp` csproj target** — the shared root `Directory.Build.targets`
+(`RestoreFrontendDependencies` → `BuildFrontendWorkspace` → `BuildFrontend`) builds the whole workspace via
+turbo and copies `frontend/*/dist/**` into `wwwroot/App_Plugins/`.
+
+### `frontend/<app>/package.json`
+React/react-dom are **peerDependencies** (resolved by the runtime import map, never bundled); pull in the
+shared workspace packages + React types as devDeps:
 ```json
-"dependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" },
-"devDependencies": {
-    "@types/react": "^19.0.0", "@types/react-dom": "^19.0.0",
-    "@umbraco-cms/backoffice": "17.3.5", "typescript": "~5.7.0", "vite": "^6.0.0"
+{
+    "name": "@n3oltd/<app>",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc --noEmit && vite build",
+        "watch": "vite build --watch"
+    },
+    "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" },
+    "devDependencies": {
+        "@repo/build-config": "*",
+        "@n3oltd/backoffice-core": "*",
+        "@n3oltd/backoffice-ui": "*",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0"
+    }
 }
 ```
 
-### `ClientApp/tsconfig.json`
-Add `"jsx": "react-jsx"` to `compilerOptions` (everything else unchanged).
-
-### `ClientApp/vite.config.ts`
-Add `esbuild: { jsx: 'automatic' }` and add react to the externals:
-```ts
-esbuild: { jsx: 'automatic' },
-build: {
-    lib: { entry: 'src/<file>.ts', formats: ['es'], fileName: () => '<file>.js' },
-    outDir: '../App_Plugins/<FolderName>',
-    emptyOutDir: false,
-    sourcemap: true,
-    rollupOptions: { external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'] },
-},
+### `frontend/<app>/tsconfig.json`
+Extend the shared **react** preset by name (it sets `jsx: react-jsx`); nothing else needed:
+```json
+{
+    "extends": "@repo/build-config/tsconfig-react",
+    "include": ["src"]
+}
 ```
-For MULTI-entry projects (e.g. Data has 4 plugins), keep the existing entry map; just add the react
-externals + `esbuild.jsx`.
 
-### `ClientApp/src/uui-react.d.ts` (copy from SerpEditor)
+### `frontend/<app>/vite.config.ts`
+Import `{ n3oPluginConfig }` from `@repo/build-config` and call it. The entry **key** is the
+`App_Plugins` sub-path; `outDir: 'dist'` and `BuildFrontend` maps `dist/**` → `wwwroot/App_Plugins/...`.
+`react: true` externalizes `react`/`react-dom`/`react-dom/client`/`react/jsx-runtime` and enables JSX:
+```ts
+import { n3oPluginConfig } from '@repo/build-config';
+
+export default n3oPluginConfig({
+    entries: {
+        'N3O.Umbraco.Data.Import/data-import': 'src/data-import.ts',
+    },
+    outDir: 'dist',
+    react: true,
+    additionalExternals: ['@n3oltd/backoffice-core'],
+});
+```
+For MULTI-entry projects (e.g. Data has 4 plugins), add one entry per plugin in the `entries` map
+(key = its `App_Plugins/<folder>/<file>` path); the preset still handles externals + JSX.
+
+### `frontend/<app>/src/uui-react.d.ts` (copy from data-import)
 JSX typings so `uui-*` web components compile inside TSX. Add any extra `uui-*` tags you use.
 
 ---
@@ -75,7 +108,7 @@ Port the EXISTING Lit element to a shell that mounts React. The shell file stays
 component is a separate `.tsx`. The `@customElement('<existing-tag>')` tag name and the file name MUST
 stay identical (the `umbraco-package.json` `element` path points at the built `<file>.js`).
 
-**Property editor** (`UmbPropertyEditorUiElement`) — see SerpEditor `serp-editor.ts` verbatim. Key points:
+**Property editor** (`UmbPropertyEditorUiElement`) — see the data-import-data-editor shell verbatim. Key points:
 - `extends HTMLElement implements UmbPropertyEditorUiElement` (no Lit base needed), `attachShadow`, a mount div.
 - `get/set value` + `set config` push into React via `#render()`.
 - `createRoot` in `connectedCallback`, `unmount` in `disconnectedCallback`.
@@ -120,15 +153,16 @@ then pass `unique`/data as props into React. (The Lit base is only for context p
 - Do not bundle React. Do not rewrite Cropper/Uploader (out of scope this round).
 
 ## Verify before reporting done (REQUIRED)
-1. `cd ClientApp && npm install` then `npm run build` → must succeed (tsc strict passes + Vite emits).
-2. Grep the built `App_Plugins/<folder>/<file>.js`: `react`, `react-dom/client`, `react/jsx-runtime`,
+1. `cd frontend/<app> && npm run build` → must succeed (tsc strict passes + Vite emits to `dist/`).
+   (Run `npm ci` once in `src` first if the workspace isn't restored.)
+2. Grep the built `dist/<folder>/<file>.js`: `react`, `react-dom/client`, `react/jsx-runtime`,
    `@umbraco-cms/*` must remain **bare external imports** (NOT inlined). The bundle should NOT contain
    React internals (no `scheduler`, no `react-dom` internals).
 3. Confirm the `@customElement('n3o-...')` tag + `export default` are present and unchanged.
 4. Do NOT run `dotnet build` (the orchestrator runs the single consolidated solution build).
 
 ## Report back
-Plugin/project; files changed (shell `.ts`, app `.tsx`, package.json/tsconfig/vite/d.ts); UUI components
+Plugin/project; files changed (shell `.ts`, app `.tsx`, package.json/tsconfig/vite.config.ts/d.ts); UUI components
 used vs custom React surfaces; anything flagged/uncertain; `npm run build` result + the external-imports grep.
 
 ---

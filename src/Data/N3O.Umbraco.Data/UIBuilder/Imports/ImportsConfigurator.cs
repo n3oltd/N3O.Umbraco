@@ -4,7 +4,7 @@ using N3O.Umbraco.UIBuilder;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 
-public class ImportsConfigurator : KonstruktConfigurator {
+public class ImportsConfigurator : UIBuilderConfigurator {
     public override void Configure(UIBuilderConfigBuilder builder) {
         var section = GetContentSection(builder);
         var dashboard = section.AddDashboard("Imports");

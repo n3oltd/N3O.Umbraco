@@ -1,6 +1,27 @@
 # CMS / backoffice client-app build restructure
 
-> **Status:** implemented + **build-verified (full `dotnet build` → 0 errors)**, **UNCOMMITTED** on `v17-Talha`
+> ⚠️ SUPERSEDED (2026-06-24). The intermediate layout described below (`@n3o/build`, `Cms/Build/`, `Cms/Extensions/`, BackofficeCore extracted under Cms) was replaced by the `src/frontend/` workspace when `origin/v17` was merged. For the CURRENT authoritative layout see AGENTS.md and the summary immediately below. The historical detail is retained for context.
+
+## Current layout (2026-06-24)
+
+The frontend is a single npm + Turborepo workspace rooted at `src/` (root manifest `@n3oltd/client-root`, private). It contains **9 workspace packages**.
+
+**Three shared packages at top-level `src/frontend/`:**
+- `src/frontend/build-config` → **`@repo/build-config`** — shared Vite/TS preset. Exposes `./tsconfig` (base), `./tsconfig-react` (adds `jsx: react-jsx`), and `.` → `n3oPluginConfig()`. Consumers extend the tsconfig **by name**.
+- `src/frontend/backoffice-core` → **`@n3oltd/backoffice-core`** — auth-fetch (`createAuthFetch`, `UmbAuthFetchMixin`) + the `WorkspaceVisibilityCondition` (alias `N3O.Condition.WorkspaceVisibility`). Built to `dist/N3O.Umbraco.BackofficeCore/` and **shipped by the ReactRuntime project** (via `N3OFrontendExtraDistDir`) into `App_Plugins/N3O.Umbraco.BackofficeCore`.
+- `src/frontend/backoffice-ui` → **`@n3oltd/backoffice-ui`** — React wrappers over UUI controls; React externalized, peerDep `react ^19`.
+
+**Shared React runtime is its own .NET project:** `src/N3O.Umbraco.ReactRuntime/` (`Microsoft.NET.Sdk.Razor`, `net10.0`, PackageId `N3O.Umbraco.ReactRuntime`). Its frontend lives at `src/N3O.Umbraco.ReactRuntime/frontend/react-runtime/` → **`@n3oltd/react-runtime`** (real react/react-dom 19.2.7; two-pass Vite build emitting the singleton `react.js` / `react-dom.js` / `react-jsx-runtime.js`). Its `wwwroot/App_Plugins/N3O.Umbraco.ReactRuntime/umbraco-package.json` publishes the **import map**; the sibling `N3O.Umbraco.BackofficeCore/umbraco-package.json` registers the condition + maps `@n3oltd/backoffice-core`.
+
+**Per-plugin apps** live at `<Project>/frontend/<app>/` and build via `n3oPluginConfig()` — e.g. `src/Data/N3O.Umbraco.Data/frontend/{data-export,data-import,data-import-data-editor,data-import-notices-viewer}` and `src/N3O.Umbraco.Cms/frontend/dynamic-list-views` (Lit, no React). React 19 is a self-hosted ESM singleton via the import map; every React plugin externalizes `react`/`react-dom`/`react-dom/client`/`react/jsx-runtime` (and `@n3oltd/backoffice-core` where used).
+
+**Build seam (MSBuild ↔ npm):** root `Directory.Build.props` (sets `N3OHasFrontend` for any project with a `frontend/` folder) + `Directory.Build.targets` with targets `RestoreFrontendDependencies` (`npm ci` once in `src`), `BuildFrontendWorkspace` (a single `npx turbo run build --env-mode=loose`), and `BuildFrontend` (per-project copy of `frontend/*/dist/**` + optional `N3OFrontendExtraDistDir` into `wwwroot/App_Plugins`). These replace the old `BuildClientApp` / `BuildClientApps` / `BuildReactRuntime` targets. Version consistency is enforced by `src/.syncpackrc.json` (`syncpack lint`); root `overrides` pin react `19.2.7`, vite `^6`, typescript `~5.7`, `@umbraco-cms/backoffice` `17.3.5`.
+
+> **Stale coexistence (cleanup pending):** the old `src/N3O.Umbraco.Cms/Build/*` and `src/N3O.Umbraco.Cms/Extensions/*` dirs (and `src/Data/N3O.Umbraco.Data.StaticAssets/Extensions/*`) are **still git-tracked and pending deletion**. They are not part of the Turbo workspace and no project builds them.
+
+---
+
+> **Status (historical, 2026-06-15):** implemented + **build-verified (full `dotnet build` → 0 errors)**, **UNCOMMITTED** on `v17-Talha`
 > (parent commit `5d98eacbd`). 97 changed paths. `npm install` clean; all three `@n3o/*` workspace packages resolve.
 > Nothing pushed. This doc is the handoff so the work can be reviewed / committed / PR'd from here.
 
@@ -34,7 +55,7 @@ auth-fetch + the workspace-visibility condition were moved (git-tracked) into a 
 - Consumers unchanged: apps still `import … from '@n3o/backoffice-core'`; the condition is still referenced by alias `N3O.Condition.WorkspaceVisibility`.
 - The `@n3o/backoffice-core` import-map entry + the condition registration moved to BackofficeCore's own `umbraco-package.json`; ReactRuntime's manifest now carries only the `react*` import-map.
 
-### D. Cms folder consolidation (this is the final layout)
+### D. Cms folder consolidation (this is the final layout) (SUPERSEDED — see Current layout above)
 ```
 N3O.Umbraco.Cms/
   Extensions/
