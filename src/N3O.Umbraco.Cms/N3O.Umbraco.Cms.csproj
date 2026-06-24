@@ -10,8 +10,6 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Cms</PackageId>
@@ -36,6 +34,7 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.ReactRuntime\N3O.Umbraco.ReactRuntime.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Diplo.GodMode" Version="17.0.0" />
@@ -48,17 +47,4 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-    <ItemGroup>
-        <!-- Build/ holds the shared @n3o/build config + the React runtime. Their built output ships from
-             wwwroot/App_Plugins as static web assets; the source must not be packed/published as Content. -->
-        <Content Remove="Build\**" />
-        <Content Include="Build\N3O.Umbraco.BuildConfig\base.json" />
-        <Content Include="Build\N3O.Umbraco.BuildConfig\package.json" />
-        <Content Include="Build\N3O.Umbraco.ReactRuntime\tsconfig.json" />
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Extensions\*\package.json" />
-        <N3OClientApp Include="$(MSBuildProjectDirectory)\Build\N3O.Umbraco.ReactRuntime\package.json" />
-    </ItemGroup>
-    <Target Name="BuildClientApps" BeforeTargets="BeforeBuild" DependsOnTargets="ResolveProjectReferences">
-        <Exec Command="npm run build" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" />
-    </Target>
 </Project>

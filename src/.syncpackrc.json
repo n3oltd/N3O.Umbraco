@@ -1,0 +1,20 @@
+{
+    "$schema": "./node_modules/syncpack/dist/schema.json",
+    "source": [
+        "package.json",
+        "frontend/*/package.json",
+        "*/frontend/*/package.json",
+        "*/*/frontend/*/package.json",
+        "Plugins/*/*/frontend/*/package.json"
+    ],
+    "dependencyTypes": ["prod", "dev", "peer"],
+    "lintFormatting": false,
+    "versionGroups": [
+        {
+            "label": "react/react-dom: leaf peerDependencies are intentionally the broad ^19.0.0 range, while the workspace install is pinned to 19.2.7 via root overrides + devDeps — keep both as-is",
+            "dependencies": ["react", "react-dom"],
+            "dependencyTypes": ["peer"],
+            "isIgnored": true
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+<Project>
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**;**\dist\**</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <!-- N3OHasFrontend is the convention every frontend MSBuild target gates on (instead of a literal
+         project name): true for any project that has a local frontend/ folder. The shared npm workspace
+         root (where package-lock.json / node_modules / turbo live) is src/. -->
+    <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
+        <N3OHasFrontend>true</N3OHasFrontend>
+        <N3OFrontendWorkspace>$(MSBuildThisFileDirectory)src</N3OFrontendWorkspace>
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <DefaultItemExcludes>$(DefaultItemExcludes);frontend\**</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\frontend')">
+        <None Include="frontend\**" Exclude="frontend\**\dist\**;frontend\**\.turbo\**" />
+    </ItemGroup>
+</Project>
