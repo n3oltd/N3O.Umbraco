@@ -44,7 +44,11 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
                                       GivingType givingType,
                                       string propertyAlias) {
         var property = content.ElementsProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
-        var priceHandles = property?.Value.OrEmpty().ToList();
+        var priceHandles = property.IfNotNull(x => ContentHelper.GetBlockList(x))
+                                   .OrEmpty()
+                                   .Select(x => x.Content)
+                                   .As<PriceHandleElement>()
+                                   .ToList();
 
         if (priceHandles.HasAny()) {
             if (donationItem.HasPricing()) {
