@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
@@ -30,7 +30,7 @@ public class SponsorshipSchemeContent :
     [UmbracoProperty(AllocationsConstants.Aliases.SponsorshipScheme.Properties.Dimension4)]
     public IEnumerable<FundDimension4Value> Dimension4 => GetPickedAs(x => x.Dimension4);
     
-    public IEnumerable<SponsorshipComponent> Components => Content().Children.As<SponsorshipComponent>();
+    public IEnumerable<SponsorshipComponent> Components => Content().Children().As<SponsorshipComponent>();
 
     [JsonIgnore]
     public FundDimensionOptions FundDimensionOptions => new(Dimension1, Dimension2, Dimension3, Dimension4);
@@ -42,30 +42,22 @@ public class SponsorshipSchemeContent :
 [Order(int.MinValue)]
 public class ContentSponsorshipSchemes : LookupsCollection<SponsorshipScheme> {
     private readonly IContentCache _contentCache;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentSponsorshipSchemes(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentSponsorshipSchemes(IContentCache contentCache) {
         _contentCache = contentCache;
-        _umbracoContextAccessor = umbracoContextAccessor;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
-    
+
     protected override Task<IReadOnlyList<SponsorshipScheme>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
-        
+
         return Task.FromResult(all);
     }
 
     private IReadOnlyList<SponsorshipScheme> GetFromCache() {
-        List<SponsorshipSchemeContent> content;
-        
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<SponsorshipSchemeContent>().OrderBy(x => x.Content().Name).ToList();
-        } else {
-            content = [];
-        }
-        
+        var content = _contentCache.All<SponsorshipSchemeContent>().OrderBy(x => x.Content().Name).ToList();
+
         var lookups = content.Select(ToSponsorshipScheme).ToList();
 
         return lookups;

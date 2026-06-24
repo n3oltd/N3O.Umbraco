@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
@@ -26,30 +25,22 @@ public abstract class ContentFundDimensionValues<T, TContent> : LookupsCollectio
     where TContent : FundDimensionValueContent<TContent>
     where T : IFundDimensionValue  {
     private readonly IContentCache _contentCache;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    protected ContentFundDimensionValues(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    protected ContentFundDimensionValues(IContentCache contentCache) {
         _contentCache = contentCache;
-        _umbracoContextAccessor = umbracoContextAccessor;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
-    
+
     protected override Task<IReadOnlyList<T>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
-        
+
         return Task.FromResult(all);
     }
 
     private IReadOnlyList<T> GetFromCache() {
-        List<TContent> content;
-        
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<TContent>().OrderBy(x => x.Content().Name).ToList();
-        } else {
-            content = [];
-        }
-        
+        var content = _contentCache.All<TContent>().OrderBy(x => x.Content().Name).ToList();
+
         var lookups = content.Select(GetFundDimensionValue).ToList();
 
         return lookups;
@@ -65,8 +56,8 @@ public abstract class ContentFundDimensionValues<T, TContent> : LookupsCollectio
 }
 
 public class ContentFundDimension1Values : ContentFundDimensionValues<FundDimension1Value, FundDimension1ValueContent> {
-    public ContentFundDimension1Values(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
-        : base(contentCache, umbracoContextAccessor) { }
+    public ContentFundDimension1Values(IContentCache contentCache)
+        : base(contentCache) { }
     
     protected override FundDimension1Value GetFundDimensionValue(FundDimension1ValueContent fundDimension1Value) {
         return new FundDimension1Value(LookupContent.GetId(fundDimension1Value.Content()),
@@ -77,8 +68,8 @@ public class ContentFundDimension1Values : ContentFundDimensionValues<FundDimens
 }
 
 public class ContentFundDimension2Values : ContentFundDimensionValues<FundDimension2Value, FundDimension2ValueContent> {
-    public ContentFundDimension2Values(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
-        : base(contentCache, umbracoContextAccessor) { }
+    public ContentFundDimension2Values(IContentCache contentCache)
+        : base(contentCache) { }
     
     protected override FundDimension2Value GetFundDimensionValue(FundDimension2ValueContent fundDimension2Value) {
         return new FundDimension2Value(LookupContent.GetId(fundDimension2Value.Content()),
@@ -89,8 +80,8 @@ public class ContentFundDimension2Values : ContentFundDimensionValues<FundDimens
 }
 
 public class ContentFundDimension3Values : ContentFundDimensionValues<FundDimension3Value, FundDimension3ValueContent> {
-    public ContentFundDimension3Values(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
-        : base(contentCache, umbracoContextAccessor) { }
+    public ContentFundDimension3Values(IContentCache contentCache)
+        : base(contentCache) { }
     
     protected override FundDimension3Value GetFundDimensionValue(FundDimension3ValueContent fundDimension3Value) {
         return new FundDimension3Value(LookupContent.GetId(fundDimension3Value.Content()),
@@ -101,8 +92,8 @@ public class ContentFundDimension3Values : ContentFundDimensionValues<FundDimens
 }
 
 public class ContentFundDimension4Values : ContentFundDimensionValues<FundDimension4Value, FundDimension4ValueContent> {
-    public ContentFundDimension4Values(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
-        : base(contentCache, umbracoContextAccessor) { }
+    public ContentFundDimension4Values(IContentCache contentCache)
+        : base(contentCache) { }
     
     protected override FundDimension4Value GetFundDimensionValue(FundDimension4ValueContent fundDimension4Value) {
         return new FundDimension4Value(LookupContent.GetId(fundDimension4Value.Content()),
