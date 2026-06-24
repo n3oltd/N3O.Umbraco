@@ -3,6 +3,7 @@ using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Authentication.Extensions;
 using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Infrastructure.Manifest;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 
@@ -18,5 +19,7 @@ public class Auth0AuthenticationComposer : Composer {
         builder.Services.AddScoped<ISignInManager, Auth0MemberSignInManager>();
         builder.Services.AddTransient<IUserDirectory, UserDirectory>();
         builder.Services.AddScoped<IUserDirectoryIdAccessor, UserDirectoryIdAccessor>();
+
+        builder.Services.AddSingleton<IPackageManifestReader, Auth0BackOfficePackageManifestReader>();
     }
 }
