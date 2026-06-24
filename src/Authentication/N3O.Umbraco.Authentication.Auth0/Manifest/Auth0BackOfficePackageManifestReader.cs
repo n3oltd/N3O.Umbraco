@@ -15,8 +15,6 @@ public class Auth0BackOfficePackageManifestReader : IPackageManifestReader {
     }
 
     public Task<IEnumerable<PackageManifest>> ReadPackageManifestsAsync() {
-        var autoRedirect = _options.Value.AutoRedirect;
-
         var manifest = new PackageManifest {
             Name = "N3O.Umbraco.Authentication.Auth0",
             AllowPublicAccess = true,
@@ -32,7 +30,7 @@ public class Auth0BackOfficePackageManifestReader : IPackageManifestReader {
                             icon = "icon-cloud"
                         },
                         behavior = new {
-                            autoRedirect
+                            autoRedirect = _options.Value.AutoRedirect
                         }
                     }
                 }
