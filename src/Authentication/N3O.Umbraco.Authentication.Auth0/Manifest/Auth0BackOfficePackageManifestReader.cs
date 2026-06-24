@@ -15,12 +15,10 @@ public class Auth0BackOfficePackageManifestReader : IPackageManifestReader {
     }
 
     public Task<IEnumerable<PackageManifest>> ReadPackageManifestsAsync() {
-        var autoRedirect = _options.Value.AutoRedirect;
-
         var manifest = new PackageManifest {
             Name = "N3O.Umbraco.Authentication.Auth0",
             AllowPublicAccess = true,
-            Extensions = new object[] {
+            Extensions = [
                 new {
                     type = "authProvider",
                     alias = "N3O.AuthProvider.Auth0",
@@ -32,13 +30,13 @@ public class Auth0BackOfficePackageManifestReader : IPackageManifestReader {
                             icon = "icon-cloud"
                         },
                         behavior = new {
-                            autoRedirect
+                            autoRedirect = _options.Value.AutoRedirect
                         }
                     }
                 }
-            }
+            ]
         };
 
-        return Task.FromResult<IEnumerable<PackageManifest>>(new[] { manifest });
+        return Task.FromResult<IEnumerable<PackageManifest>>([manifest]);
     }
 }
