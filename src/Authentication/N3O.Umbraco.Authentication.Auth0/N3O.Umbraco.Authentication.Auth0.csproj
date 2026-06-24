@@ -36,12 +36,12 @@
         <ProjectReference Include="..\N3O.Umbraco.Authentication\N3O.Umbraco.Authentication.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Auth0.AuthenticationApi" Version="7.45.1" />
+        <PackageReference Include="Auth0.AuthenticationApi" Version="7.46.0" />
         <PackageReference Include="Auth0.ManagementApi" Version="7.46.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.8" />
-        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.17.0" />
-        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.17.0" />
-        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.17.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.18.0" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
