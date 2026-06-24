@@ -3,7 +3,6 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Constants;
-using N3O.Umbraco.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

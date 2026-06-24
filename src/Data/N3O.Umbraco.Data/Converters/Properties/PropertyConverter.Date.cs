@@ -6,7 +6,6 @@ using N3O.Umbraco.Extensions;
 using NodaTime;
 using System;
 using System.Collections.Generic;
-using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 

@@ -1,4 +1,4 @@
-using Flurl;
+﻿using Flurl;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Controllers;
 

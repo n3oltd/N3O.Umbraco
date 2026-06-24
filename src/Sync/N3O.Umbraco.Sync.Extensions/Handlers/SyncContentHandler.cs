@@ -4,7 +4,6 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Sync.Extensions.Commands;
 using N3O.Umbraco.Sync.Extensions.Models;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core;

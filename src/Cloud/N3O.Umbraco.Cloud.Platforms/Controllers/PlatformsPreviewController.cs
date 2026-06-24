@@ -4,7 +4,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using System;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Controllers;
 

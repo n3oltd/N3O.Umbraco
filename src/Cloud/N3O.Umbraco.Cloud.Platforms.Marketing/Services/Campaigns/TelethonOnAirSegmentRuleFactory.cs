@@ -1,6 +1,5 @@
 using N3O.Umbraco.Localization;
 using System;
-using Umbraco.Engage.Infrastructure.Personalization.Segments;
 using Umbraco.Engage.Infrastructure.Personalization.Segments.Rules;
 
 namespace N3O.Umbraco.Cloud.Platforms.Marketing;

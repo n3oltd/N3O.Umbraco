@@ -1,11 +1,8 @@
 using N3O.Umbraco.Extensions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services.Navigation;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Content;
 

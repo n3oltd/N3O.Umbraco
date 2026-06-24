@@ -1,8 +1,6 @@
 using Hangfire;
-using Hangfire.AspNetCore;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
-using Humanizer;
 using Humanizer.Bytes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;

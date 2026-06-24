@@ -1,14 +1,11 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services.Navigation;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Hosting;
 

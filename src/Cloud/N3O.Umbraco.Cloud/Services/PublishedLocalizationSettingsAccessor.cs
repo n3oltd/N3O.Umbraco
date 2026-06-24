@@ -1,7 +1,6 @@
-using N3O.Umbraco.Cloud.Extensions;
+﻿using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
