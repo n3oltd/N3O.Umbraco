@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Scheduler.Controllers;
 
 [ApiDocument("JobProxy")]
+[AllowAnonymous]
 public class JobProxyController : ApiController {
     private readonly IJsonProvider _jsonProvider;
     private readonly IMediator _mediator;
@@ -40,7 +42,7 @@ public class JobProxyController : ApiController {
 
             return Ok();
         } catch (Exception ex) {
-            return BadRequest(new { error = ex.Message, stackTrace = ex.StackTrace });
+            return BadRequest(new { error = ex.ToString() });
         }
     }
 

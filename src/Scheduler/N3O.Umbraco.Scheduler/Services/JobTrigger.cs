@@ -50,7 +50,20 @@ public class JobTrigger {
             if (!response.IsSuccessStatusCode) {
                 var content = await response.Content.ReadAsStringAsync(timeout.Token);
 
-                throw new Exception(content);
+                // The controller returns { "error": ex.ToString() }. Parse it so Hangfire
+                // logs show the actual exception text rather than a raw JSON blob.
+                string errorMessage;
+                try {
+                    var errorResponse = _jsonProvider.DeserializeObject<Dictionary<string, string>>(content);
+                    
+                    errorMessage = errorResponse?.TryGetValue("error", out var err) == true && !string.IsNullOrEmpty(err)
+                        ? err
+                        : content;
+                } catch {
+                    errorMessage = content;
+                }
+
+                throw new Exception(errorMessage);
             }
         }
     }
