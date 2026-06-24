@@ -1,13 +1,10 @@
 ﻿using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Auth0.ManagementApi;
-using Auth0.ManagementApi.Models;
-using Auth0.ManagementApi.Paging;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections;
-using System.Linq;
 using System.Threading.Tasks;
 using Auth0User = Auth0.ManagementApi.Models.User;
 
