@@ -20,7 +20,7 @@ public class Auth0BackOfficePackageManifestReader : IPackageManifestReader {
         var manifest = new PackageManifest {
             Name = "N3O.Umbraco.Authentication.Auth0",
             AllowPublicAccess = true,
-            Extensions = new object[] {
+            Extensions = [
                 new {
                     type = "authProvider",
                     alias = "N3O.AuthProvider.Auth0",
@@ -36,9 +36,9 @@ public class Auth0BackOfficePackageManifestReader : IPackageManifestReader {
                         }
                     }
                 }
-            }
+            ]
         };
 
-        return Task.FromResult<IEnumerable<PackageManifest>>(new[] { manifest });
+        return Task.FromResult<IEnumerable<PackageManifest>>([manifest]);
     }
 }
