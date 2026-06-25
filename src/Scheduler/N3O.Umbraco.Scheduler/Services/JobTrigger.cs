@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Scheduler;
@@ -30,28 +29,27 @@ public class JobTrigger {
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
         var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromMinutes(30);
         var req = GetProxyReq(triggerKey, modelJson, parameterData);
         var url = GetUrl();
         var reqStr = _jsonProvider.SerializeObject(req);
 
-        using (var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(30))) {
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Content = new StringContent(reqStr, null, "application/json");
+        var request = new HttpRequestMessage(HttpMethod.Post, url);
+        request.Content = new StringContent(reqStr, null, "application/json");
 
-            request.Headers.Add("accept", "*/*");
-            request.Headers.Add("X-Api-Key", TriggerKey.ApiSecurityKey);
+        request.Headers.Add("accept", "*/*");
+        request.Headers.Add("X-Api-Key", TriggerKey.ApiSecurityKey);
 
-            if (parameterData?.ContainsKey(SchedulerConstants.Parameters.Culture) == true) {
-                request.Headers.Add("Accept-Language", parameterData[SchedulerConstants.Parameters.Culture]);
-            }
+        if (parameterData?.ContainsKey(SchedulerConstants.Parameters.Culture) == true) {
+            request.Headers.Add("Accept-Language", parameterData[SchedulerConstants.Parameters.Culture]);
+        }
 
-            var response = await httpClient.SendAsync(request, timeout.Token);
+        var response = await httpClient.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode) {
-                var content = await response.Content.ReadAsStringAsync(timeout.Token);
+        if (!response.IsSuccessStatusCode) {
+            var content = await response.Content.ReadAsStringAsync();
 
-                throw new Exception(content);
-            }
+            throw new Exception(content);
         }
     }
 
