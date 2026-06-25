@@ -30,6 +30,7 @@ public class JobTrigger {
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
         var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = Timeout.InfiniteTimeSpan;
         var req = GetProxyReq(triggerKey, modelJson, parameterData);
         var url = GetUrl();
         var reqStr = _jsonProvider.SerializeObject(req);
