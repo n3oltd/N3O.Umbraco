@@ -17,21 +17,22 @@ public class CurrencyValuesMapping : IMapDefinition {
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<decimal, Dictionary<string, MoneyRes>>((_, _) => new Dictionary<string, MoneyRes>(), Map);
+        mapper.Define<(decimal Amount, ICurrencyRounder Rounder), Dictionary<string, MoneyRes>>((_, _) => new Dictionary<string, MoneyRes>(), Map);
     }
 
     // Umbraco.Code.MapAll
-    private void Map(decimal src, Dictionary<string, MoneyRes> dest, MapperContext ctx) {
+    private void Map((decimal Amount, ICurrencyRounder Rounder) src, Dictionary<string, MoneyRes> dest, MapperContext ctx) {
         var currencies = _lookups.GetAll<Currency>();
         var baseCurrency = currencies.Single(x => x.IsBaseCurrency);
         var otherCurrencies = currencies.Except(baseCurrency).ToList();
-        
-        dest[baseCurrency.Code] = ctx.Map<Money, MoneyRes>(new Money(src, baseCurrency));
+
+        dest[baseCurrency.Code] = ctx.Map<Money, MoneyRes>(new Money(src.Amount, baseCurrency));
 
         foreach (var currency in otherCurrencies) {
-            var forexMoney = _forexConverter.BaseToQuote().ToCurrency(currency).Convert(src);
-            
-            dest[currency.Code] = ctx.Map<Money, MoneyRes>(forexMoney.Quote);
+            var forexMoney = _forexConverter.BaseToQuote().ToCurrency(currency).Convert(src.Amount);
+            var roundedAmount = src.Rounder.Round(forexMoney.Quote.Amount);
+
+            dest[currency.Code] = ctx.Map<Money, MoneyRes>(new Money(roundedAmount, currency));
         }
     }
 }

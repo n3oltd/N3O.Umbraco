@@ -17,6 +17,7 @@ public static class UpsellOfferContentExtensions {
                                                            IForexConverter forexConverter,
                                                            IPriceCalculator priceCalculator,
                                                            ILookups lookups,
+                                                           ICurrencyRounder currencyRounder,
                                                            Currency currency,
                                                            decimal? customAmount,
                                                            GivingType givingType,
@@ -28,6 +29,7 @@ public static class UpsellOfferContentExtensions {
         var amount = await CalculatePriceAsync(forexConverter,
                                                priceCalculator,
                                                lookups,
+                                               currencyRounder,
                                                upsellOfferContent,
                                                currency,
                                                givingType,
@@ -53,6 +55,7 @@ public static class UpsellOfferContentExtensions {
                                                              IForexConverter forexConverter,
                                                              IPriceCalculator priceCalculator,
                                                              ILookups lookups,
+                                                             ICurrencyRounder currencyRounder,
                                                              Currency currency,
                                                              GivingType givingType,
                                                              Money cartTotal) {
@@ -63,6 +66,7 @@ public static class UpsellOfferContentExtensions {
         var price = await CalculatePriceAsync(forexConverter,
                                               priceCalculator,
                                               lookups,
+                                              currencyRounder,
                                               upsellOfferContent,
                                               currency,
                                               givingType,
@@ -81,6 +85,7 @@ public static class UpsellOfferContentExtensions {
     private static async Task<Money> CalculatePriceAsync(IForexConverter forexConverter,
                                                          IPriceCalculator priceCalculator,
                                                          ILookups lookups,
+                                                         ICurrencyRounder currencyRounder,
                                                          UpsellOfferContent upsellOfferContent,
                                                          Currency currency,
                                                          GivingType givingType,
@@ -98,6 +103,10 @@ public static class UpsellOfferContentExtensions {
                                          .ConvertAsync(upsellOfferContent.FixedAmount.GetValueOrThrow())).Quote;
         } else if (!upsellOfferContent.PriceHandles.HasAny()) {
             price = GetCustomPrice(forexConverter, upsellOfferContent, currency, givingType, cartTotal);
+        }
+
+        if (price != null && !currency.IsBaseCurrency) {
+            price = new Money(currencyRounder.Round(price.Amount), currency);
         }
 
         return price;

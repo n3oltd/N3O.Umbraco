@@ -1,6 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Content;
@@ -20,6 +21,7 @@ public partial class Cart {
                                             IForexConverter forexConverter,
                                             IPriceCalculator priceCalculator,
                                             ILookups lookups,
+                                            ICurrencyRounder currencyRounder,
                                             GivingType givingType,
                                             Func<CartContents, CartContents> replace) {
         if (givingType == GivingTypes.Donation) {
@@ -27,12 +29,14 @@ public partial class Cart {
                                                       forexConverter,
                                                       priceCalculator,
                                                       lookups,
+                                                      currencyRounder,
                                                       replace(Donation));
         } else if (givingType == GivingTypes.RegularGiving) {
             RegularGiving = await UpdateUpsellAmountsAsync(contentLocator,
                                                            forexConverter,
                                                            priceCalculator,
                                                            lookups,
+                                                           currencyRounder,
                                                            replace(RegularGiving));
         } else {
             throw UnrecognisedValueException.For(givingType);
@@ -43,6 +47,7 @@ public partial class Cart {
                                                               IForexConverter forexConverter,
                                                               IPriceCalculator priceCalculator,
                                                               ILookups lookups,
+                                                              ICurrencyRounder currencyRounder,
                                                               CartContents cartContents) {
         if (cartContents.Allocations.None(x => x.UpsellOfferId.HasValue())) {
             return cartContents;
@@ -57,6 +62,7 @@ public partial class Cart {
                 var newUpsellAllocation = await upsellOfferContent.ToAllocationAsync(forexConverter,
                                                                                      priceCalculator,
                                                                                      lookups,
+                                                                                     currencyRounder,
                                                                                      Currency,
                                                                                      allocation.Value.Amount,
                                                                                      cartContents.Type,
