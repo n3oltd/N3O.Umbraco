@@ -67,6 +67,7 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
     }
 
     public async Task<None> Handle(ProcessExportCommand req, CancellationToken cancellationToken) {
+        throw new NullReferenceException();
         var export = await req.ExportId.RunAsync(_repository.GetAsync, true, cancellationToken);
         var containerContent = _contentService.GetById(export.ContainerId);
         var contentType = _contentTypeService.Get(export.ContentType);

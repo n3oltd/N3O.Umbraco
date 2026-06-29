@@ -13,13 +13,16 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
     private readonly AuthenticationOptions _authenticationOptions;
     private readonly Auth0M2MTokenAccessor _tokenAccessor;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ITokenProvider _managementTokenProvider;
 
     public Auth0ClientFactory(IOptions<AuthenticationOptions> authenticationOptions,
                               Auth0M2MTokenAccessor tokenAccessor,
-                              IHttpClientFactory httpClientFactory) {
+                              IHttpClientFactory httpClientFactory,
+                              ITokenProvider managementTokenProvider) {
         _authenticationOptions = authenticationOptions.Value;
         _tokenAccessor = tokenAccessor;
         _httpClientFactory = httpClientFactory;
+        _managementTokenProvider = managementTokenProvider;
     }
     
     public AuthenticationApiClient GetAuthenticationApiClient(UserDirectoryType userDirectoryType) {
@@ -34,14 +37,8 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
     
     public async Task<IManagementApiClient> GetManagementApiClientAsync(UserDirectoryType userDirectoryType) {
         var managementOptions = GetClientOptions(userDirectoryType).Management;
-        var token = await _tokenAccessor.GetTokenAsync(managementOptions, managementOptions.ApiIdentifier);
-        var httpClient = _httpClientFactory.CreateClient();
-
-        var connection = new HttpClientManagementConnection(httpClient);
-
-        var auth0Client = new ManagementApiClient(token, managementOptions.Domain, connection);
-
-        return auth0Client;
+        
+        return ManagementClientBuilder.Build(_httpClientFactory, _managementTokenProvider, managementOptions.Domain);
     }
     
     private Auth0AuthenticationOptions GetClientOptions(UserDirectoryType userDirectoryType) {

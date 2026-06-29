@@ -1,15 +1,11 @@
 ﻿using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Auth0.ManagementApi;
-using Auth0.ManagementApi.Models;
-using Auth0.ManagementApi.Paging;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Extensions;
 using System;
-using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using Auth0User = Auth0.ManagementApi.Models.User;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 
@@ -18,9 +14,11 @@ public class UserDirectory : IUserDirectory {
     private AuthenticationApiClient _authClient;
     
     private readonly IAuth0ClientFactory _clientFactory;
+    private readonly IUserDirectoryConnections _userDirectoryConnections;
 
-    public UserDirectory(IAuth0ClientFactory clientFactory) {
+    public UserDirectory(IAuth0ClientFactory clientFactory, IUserDirectoryConnections userDirectoryConnections) {
         _clientFactory = clientFactory;
+        _userDirectoryConnections = userDirectoryConnections;
     }
 
     public async Task<Auth0User> CreateUserIfNotExistsAsync(UserDirectoryType userDirectoryType,
@@ -43,31 +41,28 @@ public class UserDirectory : IUserDirectory {
     public async Task<string> GetPasswordResetUrlAsync(UserDirectoryType userDirectoryType, string directoryId) {
         var managementClient = await GetManagementClientAsync(userDirectoryType);
         
-        var isFederated = await IsFederatedByIdAsync(managementClient, directoryId);
+        var isFederated = await IsFederatedByIdAsync(userDirectoryType, directoryId);
 
         if (isFederated) {
             throw new Exception("Password reset emails cannot be sent for federated users");
         }
 
-        var request = new PasswordChangeTicketRequest();
-        request.UserId = directoryId;
-        request.Ttl = TimeSpan.FromHours(1).Seconds;
+        var request = new ChangePasswordTicketRequestContent {
+            UserId = directoryId,
+            TtlSec = (int) TimeSpan.FromHours(1).TotalSeconds
+        };
 
-        var ticket = await _managementClient.Tickets.CreatePasswordChangeTicketAsync(request);
+        var ticket = await managementClient.Tickets.ChangePasswordAsync(request);
 
-        return ticket.Value;
+        return ticket.Ticket;
     }
     
     public async Task<Auth0User> GetUserByEmailAsync(UserDirectoryType userDirectoryType, string email) {
         var managementClient = await GetManagementClientAsync(userDirectoryType);
-        
-        var auth0Users = await managementClient.Users.GetUsersByEmailAsync(email.ToLowerInvariant());
 
-        if (auth0Users.Count > 1) {
-            throw new Exception($"Multiple users with email {email.Quote()} found in Auth0");
-        }
+        var user = await GetDirectoryUserByEmailAsync(managementClient, email);
 
-        return auth0Users.SingleOrDefault();
+        return user.ToAuth0User();
     }
 
     private async Task<Auth0User> GetOrCreatePasswordlessUserAsync(IManagementApiClient managementClient,
@@ -75,15 +70,15 @@ public class UserDirectory : IUserDirectory {
                                                                    string email,
                                                                    string firstName,
                                                                    string lastName) {
-        var user = await GetDirectoryUserByEmailAsync(managementClient, email);
+        var user = (await GetDirectoryUserByEmailAsync(managementClient, email)).ToAuth0User();
 
         if (!user.HasValue() || user.Identities.None(x => x.Connection == connectionName)) {
-            user = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password: null);
+            user = (await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password: null)).ToAuth0User();
         }
 
         return user;
     }
-    
+
     private async Task<Auth0User> GetOrCreatePasswordUserAsync(IManagementApiClient managementClient,
                                                                UserDirectoryType userDirectoryType,
                                                                string clientId,
@@ -92,63 +87,70 @@ public class UserDirectory : IUserDirectory {
                                                                string firstName,
                                                                string lastName,
                                                                string password = null) {
-        var user = await GetDirectoryUserByEmailAsync(managementClient, email);
+        var user = (await GetDirectoryUserByEmailAsync(managementClient, email)).ToAuth0User();
 
-        if (!user.HasValue() ||user.Identities.None(x => x.Connection == connectionName)) {
-            var isFederated = await IsFederatedByEmailAsync(managementClient, email);
+        if (!user.HasValue() || user.Identities.None(x => x.Connection == connectionName)) {
+            var isFederated = await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, email);
 
             if (isFederated) {
                 return null;
             }
-            
+
             var authClient = GetAuthenticationClient(userDirectoryType);
-            
+
             password ??= PasswordGenerator.Generate(10,
                                                     PasswordCharacters.UppercaseLetters |
                                                     PasswordCharacters.LowercaseLetters |
                                                     PasswordCharacters.AlphaNumeric);
 
-            user = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
+            user = (await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password)).ToAuth0User();
 
-            await SendPasswordResetEmailAsync(managementClient, authClient, clientId, connectionName, email);
+            await SendPasswordResetEmailAsync(userDirectoryType, authClient, clientId, connectionName, email);
         }
-        
+
         return user;
     }
 
-    private async Task<Auth0User> CreateDirectoryUserAsync(IManagementApiClient managementClient,
-                                                           string connectionName,
-                                                           string email,
-                                                           string firstName,
-                                                           string lastName,
-                                                           string password) {
-        var request = new UserCreateRequest();
-        request.Email = email.ToLowerInvariant();
-        request.Password = password;
-        request.VerifyEmail = false;
-        request.EmailVerified = true;
-        request.FirstName = firstName;
-        request.LastName = lastName;
-        request.FullName = $"{firstName} {lastName}".Trim();
-        request.Connection = connectionName;
+    private async Task<CreateUserResponseContent> CreateDirectoryUserAsync(IManagementApiClient managementClient,
+                                                                           string connectionName,
+                                                                           string email,
+                                                                           string firstName,
+                                                                           string lastName,
+                                                                           string password) {
+        var request = new CreateUserRequestContent() {
+            Email = email.ToLowerInvariant(),
+            Password = password,
+            VerifyEmail = false,
+            EmailVerified = true,
+            GivenName = firstName,
+            FamilyName = lastName,
+            Name = $"{firstName} {lastName}".Trim(),
+            Connection = connectionName
+        };
+        
 
         var auth0User = await managementClient.Users.CreateAsync(request);
 
         return auth0User;
     }
 
-    private async Task<Auth0User> GetDirectoryUserByEmailAsync(IManagementApiClient managementClient, string email) {
-        var auth0Users = await managementClient.Users.GetUsersByEmailAsync(email.ToLowerInvariant());
+    private async Task<UserResponseSchema> GetDirectoryUserByEmailAsync(IManagementApiClient managementClient, string email) {
+        var request = new ListUsersByEmailRequestParameters {
+            Email = email.ToLowerInvariant()
+        };
+        
+        var directoryUsers = await managementClient.Users.ListUsersByEmailAsync(request);
+        var list = directoryUsers.OrEmpty().ToList();
 
-        if (auth0Users.Count > 1) {
+        if (list.Count > 1) {
             throw new Exception($"Multiple users with email {email.Quote()} found in Auth0");
         }
 
-        return auth0Users.FirstOrDefault();
+        return list.FirstOrDefault();
     }
     
-    private async Task<Auth0User> GetDirectoryUserByIdAsync(string directoryId, bool throwIfNotFound) {
-            var directoryUser = await _managementClient.Users.GetAsync(directoryId);
+    private async Task<GetUserResponseContent> GetDirectoryUserByIdAsync(string directoryId, bool throwIfNotFound) {
+            var directoryUser = await _managementClient.Users.GetAsync(directoryId, new GetUserRequestParameters());
     
             if (directoryUser == null && throwIfNotFound) {
                 throw new Exception($"No Auth0 user found with ID {directoryId}");
@@ -157,42 +159,18 @@ public class UserDirectory : IUserDirectory {
             return directoryUser;
         }
 
-    private async Task<bool> IsFederatedByEmailAsync(IManagementApiClient managementClient, string email) {
-        var request = new GetConnectionsRequest();
-
-        var pagination = new PaginationInfo(0, 100);
-
-        var connections = await managementClient.Connections.GetAllAsync(request, pagination);
-
-        foreach (var connection in connections) {
-            try {
-                if (connection.Options.domain_aliases is IEnumerable enumerable) {
-                    foreach (var domainAlias in enumerable) {
-                        if (email.EndsWith($"@{domainAlias}", StringComparison.InvariantCultureIgnoreCase)) {
-                            return true;
-                        }
-                    }
-                }
-            } catch { }
-        }
-
-        return false;
-    }
-    
-    private async Task<bool> IsFederatedByIdAsync(IManagementApiClient managementApiClient, string directoryId) {
+    private async Task<bool> IsFederatedByIdAsync(UserDirectoryType userDirectoryType, string directoryId) {
         var user = await GetDirectoryUserByIdAsync(directoryId, true);
 
-        var isFederated = await IsFederatedByEmailAsync(managementApiClient, user.Email);
-
-        return isFederated;
+        return await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, user.Email);
     }
 
-    private async Task SendPasswordResetEmailAsync(IManagementApiClient managementClient,
+    private async Task SendPasswordResetEmailAsync(UserDirectoryType userDirectoryType,
                                                    AuthenticationApiClient authClient,
                                                    string clientId,
                                                    string connectionName,
                                                    string email) {
-        var isFederated = await IsFederatedByEmailAsync(managementClient, email);
+        var isFederated = await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, email);
 
         if (isFederated) {
             throw new Exception("Password reset emails cannot be sent for federated users");
