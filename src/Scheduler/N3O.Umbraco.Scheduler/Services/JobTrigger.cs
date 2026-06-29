@@ -50,16 +50,17 @@ public class JobTrigger {
             if (!response.IsSuccessStatusCode) {
                 var content = await response.Content.ReadAsStringAsync(timeout.Token);
 
-                // The controller returns { "error": ex.ToString() }. Parse it so Hangfire
-                // logs show the actual exception text rather than a raw JSON blob.
                 string errorMessage;
                 try {
-                    var errorResponse = _jsonProvider.DeserializeObject<Dictionary<string, string>>(content);
-                    
-                    errorMessage = errorResponse?.TryGetValue("error", out var error) == true &&
-                                   error.HasValue() ? error : content;
+                    var errorResponse = _jsonProvider.DeserializeObject<ProxyErrorRes>(content);
+
+                    errorMessage = errorResponse?.Error.HasValue() == true ? errorResponse.Error : content;
                 } catch {
                     errorMessage = content;
+                }
+
+                if (!errorMessage.HasValue()) {
+                    errorMessage = $"Job proxy request failed with status {(int) response.StatusCode} ({response.ReasonPhrase}).";
                 }
 
                 throw new Exception(errorMessage);
