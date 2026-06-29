@@ -1,6 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Content;
@@ -22,6 +23,7 @@ public class RemoveFromCartHandler :
     private readonly IPriceCalculator _priceCalculator;
     private readonly ICartAccessor _cartAccessor;
     private readonly ILookups _lookups;
+    private readonly ICurrencyRounder _currencyRounder;
     private readonly IRepository<Entities.Cart> _repository;
 
     public RemoveFromCartHandler(IContentLocator contentLocator,
@@ -29,12 +31,14 @@ public class RemoveFromCartHandler :
                                  IPriceCalculator priceCalculator,
                                  ICartAccessor cartAccessor,
                                  ILookups lookups,
+                                 ICurrencyRounder currencyRounder,
                                  IRepository<Entities.Cart> repository) {
         _contentLocator = contentLocator;
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
         _cartAccessor = cartAccessor;
         _lookups = lookups;
+        _currencyRounder = currencyRounder;
         _repository = repository;
     }
     
@@ -45,6 +49,7 @@ public class RemoveFromCartHandler :
                                    _forexConverter,
                                    _priceCalculator,
                                    _lookups,
+                                   _currencyRounder,
                                    req.Model.GivingType,
                                    req.Model.Indexes);
 
@@ -60,6 +65,7 @@ public class RemoveFromCartHandler :
                                _forexConverter,
                                _priceCalculator,
                                _lookups,
+                               _currencyRounder,
                                req.Model.GivingType,
                                req.Model.Index.GetValueOrThrow());
 
@@ -76,6 +82,7 @@ public class RemoveFromCartHandler :
                                      _forexConverter,
                                      _priceCalculator,
                                      _lookups,
+                                     _currencyRounder,
                                      upsellOfferContent.GivingType,
                                      req.UpsellOfferId.Value);
         
