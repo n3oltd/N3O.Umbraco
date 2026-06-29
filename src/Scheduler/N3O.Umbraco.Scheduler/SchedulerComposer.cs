@@ -78,8 +78,6 @@ public class SchedulerComposer : IComposer {
         }
     }
 
-    // Registers the dedicated cookie scheme used to authorize the Hangfire dashboard, and the OpenIddict
-    // server event handler that issues that cookie when a Settings-section backoffice user signs in.
     private void AddHangfireDashboardAuthentication(IUmbracoBuilder builder) {
         builder.Services
                .AddAuthentication()
@@ -87,15 +85,10 @@ public class SchedulerComposer : IComposer {
                    opt.Cookie.Name = SchedulerConstants.Dashboard.CookieName;
                    opt.Cookie.HttpOnly = true;
                    opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                   // Strict is safe: the dashboard is only ever loaded in a same-origin backoffice iframe,
-                   // and this cookie plays no part in any cross-site OAuth redirect.
                    opt.Cookie.SameSite = SameSiteMode.Strict;
                    opt.SlidingExpiration = true;
                });
 
-        // The handler is wired into OpenIddict by adding descriptors to OpenIddictServerOptions.Handlers
-        // below. That path (unlike AddOpenIddict().AddServer().AddEventHandler) does not register the handler
-        // in DI, so this AddSingleton supplies the instance OpenIddict resolves when it dispatches the events.
         builder.Services.AddSingleton<HangfireDashboardCookieIssuer>();
 
         builder.Services.Configure<OpenIddictServerOptions>(opt => {
@@ -115,10 +108,6 @@ public class SchedulerComposer : IComposer {
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(SchedulerConstants.Dashboard.Name);
             filter.Endpoints = app => app.UseEndpoints(endpoints => {
-                // AllowAnonymous bypasses Umbraco v17's fallback auth policy for /umbraco/backoffice/*
-                // (which issues a Bearer challenge that blocks iframe navigation). Authorization is instead
-                // performed by HangfireDashboardAuthorizationFilter, which validates the dedicated cookie
-                // issued at login (see HangfireDashboardCookieIssuer) - so the endpoint is not actually open.
                 endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
                                                new DashboardOptions {
                                                    AppPath = null,

@@ -39,14 +39,7 @@
     <ItemGroup>
         <PackageReference Include="Hangfire" Version="1.8.23" />
         <PackageReference Include="Hangfire.SqlServer" Version="1.8.23" />
-        <!-- Direct compile-time dependency: HangfireDashboardCookieIssuer hooks OpenIddict server events.
-             It also arrives transitively via Umbraco.Cms.Api.Management; pinned to the version Umbraco
-             currently resolves so NuGet unifies upward rather than downgrading. -->
-        <PackageReference Include="OpenIddict.Server" Version="7.1.0" />
-        <!--In .Net 8 the SqlClient had some compatibility issues that were fixed in version 5.2.0 of SqlClient but
-         the hangfire package still references the old version that causes the jobs to fail. Remove the below package
-         reference once the hangfire is updated to use the latest SqlClient package.-->
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+        <PackageReference Include="OpenIddict.Server" Version="7.2.0" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

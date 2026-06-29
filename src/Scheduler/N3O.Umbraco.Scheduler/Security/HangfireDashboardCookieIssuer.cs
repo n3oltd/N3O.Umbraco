@@ -13,14 +13,8 @@ using UmbracoConstants = Umbraco.Cms.Core.Constants;
 
 namespace N3O.Umbraco.Scheduler;
 
-// In v17 the backoffice authenticates the Management API with OpenIddict JWT bearer tokens, so the
-// Hangfire dashboard (a server-rendered page loaded by an iframe via a plain cookie navigation) cannot
-// be gated by the backoffice bearer scheme. Instead we mint a dedicated, validated auth cookie when a
-// backoffice user with Settings-section access signs in, and authorize the dashboard against that cookie
-// (see HangfireDashboardAuthorizationFilter). This mirrors the approach taken by Cultiv.Hangfire for v17.
-public class HangfireDashboardCookieIssuer :
-    IOpenIddictServerHandler<OpenIddictServerEvents.GenerateTokenContext>,
-    IOpenIddictServerHandler<OpenIddictServerEvents.ApplyRevocationResponseContext> {
+public class HangfireDashboardCookieIssuer : IOpenIddictServerHandler<OpenIddictServerEvents.GenerateTokenContext>,
+                                             IOpenIddictServerHandler<OpenIddictServerEvents.ApplyRevocationResponseContext> {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly string[] _claimTypes;
     private readonly TimeSpan _timeout;
@@ -42,9 +36,6 @@ public class HangfireDashboardCookieIssuer :
             return;
         }
 
-        // Gate on Settings-section access: any backoffice user who can reach the Settings section receives
-        // the cookie and therefore full Hangfire dashboard control, including destructive actions
-        // (delete/requeue/enqueue jobs, purge queues).
         if (!context.Principal.HasClaim(c => c.Issuer == UmbracoConstants.Security.BackOfficeAuthenticationType &&
                                              c.Value == UmbracoConstants.Applications.Settings)) {
             return;
