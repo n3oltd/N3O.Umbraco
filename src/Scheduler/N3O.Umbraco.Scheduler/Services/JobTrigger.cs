@@ -1,10 +1,10 @@
 using Flurl;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,9 +56,8 @@ public class JobTrigger {
                 try {
                     var errorResponse = _jsonProvider.DeserializeObject<Dictionary<string, string>>(content);
                     
-                    errorMessage = errorResponse?.TryGetValue("error", out var err) == true && !string.IsNullOrEmpty(err)
-                        ? err
-                        : content;
+                    errorMessage = errorResponse?.TryGetValue("error", out var error) == true &&
+                                   error.HasValue() ? error : content;
                 } catch {
                     errorMessage = content;
                 }
@@ -78,7 +77,7 @@ public class JobTrigger {
         req.CommandType = requestType;
         req.RequestType = modelType;
         req.RequestBody = modelJson;
-        req.ParameterData = parameterData?.ToDictionary();
+        req.ParameterData = parameterData == null ? null : new Dictionary<string, string>(parameterData);
 
         return req;
     }

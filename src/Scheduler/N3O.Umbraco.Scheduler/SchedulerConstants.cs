@@ -1,6 +1,13 @@
 ﻿namespace N3O.Umbraco.Scheduler;
 
 public static class SchedulerConstants {
+    public static class Dashboard {
+        public const string Name = "HangfireDashboard";
+        public const string CookieScheme = "N3O.Hangfire.CookieScheme";
+        public const string CookieName = "N3O.Hangfire";
+        public const string IdentityAuthenticationType = "HangfireAllowed";
+    }
+
     public static class Parameters {
         public const string Culture = "culture";
     }
