@@ -19,7 +19,9 @@ public static class MoneyExtensions {
     }
 
     public static Money RoundUpToWholeNumber(this Money money) {
-        return new Money(Math.Ceiling(money.Amount), money.Currency);
+        var newAmount = Math.Round(money.Amount, 0, MidpointRounding.AwayFromZero);
+
+        return new Money(newAmount, money.Currency);
     }
 
     public static IEnumerable<Money> SafeDivide(this Money money, int shares) {
