@@ -1,7 +1,7 @@
-using System;
+using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.Financial;
 
 public class DefaultCurrencyRounder : ICurrencyRounder {
-    public virtual Money Round(Money money) => new Money(Math.Ceiling(money.Amount), money.Currency);
+    public virtual Money Round(Money money) => money.RoundUpToWholeNumber();
 }
