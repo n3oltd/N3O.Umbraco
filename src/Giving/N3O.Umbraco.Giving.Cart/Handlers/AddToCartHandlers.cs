@@ -2,6 +2,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Content;
@@ -31,6 +32,7 @@ public class AddToCartHandlers :
     private readonly IForexConverter _forexConverter;
     private readonly IPriceCalculator _priceCalculator;
     private readonly ILookups _lookups;
+    private readonly ICurrencyRounder _currencyRounder;
     private readonly IEnumerable<IAllocationExtensionRequestBinder> _extensionBinders;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
@@ -40,6 +42,7 @@ public class AddToCartHandlers :
                              IForexConverter forexConverter,
                              IPriceCalculator priceCalculator,
                              ILookups lookups,
+                             ICurrencyRounder currencyRounder,
                              IEnumerable<IAllocationExtensionRequestBinder> extensionBinders) {
         _cartAccessor = cartAccessor;
         _repository = repository;
@@ -48,6 +51,7 @@ public class AddToCartHandlers :
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
         _lookups = lookups;
+        _currencyRounder = currencyRounder;
         _extensionBinders = extensionBinders;
     }
 
@@ -75,6 +79,7 @@ public class AddToCartHandlers :
         var allocation = await upsellOfferContent.ToAllocationAsync(_forexConverter,
                                                                     _priceCalculator,
                                                                     _lookups,
+                                                                    _currencyRounder,
                                                                     currency,
                                                                     req.Model.Amount,
                                                                     upsellOfferContent.GivingType,
@@ -110,6 +115,7 @@ public class AddToCartHandlers :
                             _forexConverter,
                             _priceCalculator,
                             _lookups,
+                            _currencyRounder,
                             givingType,
                             allocation,
                             quantity);
