@@ -72,7 +72,7 @@ internal static class Auth0UserMapping {
         user.LastName = familyName;
         user.EmailVerified = emailVerified == true;
         user.Blocked = blocked == true;
-        user.IsFederated = await userDirectoryConnections.IsFederatedAsync(directoryType, user.Email);
+        user.IsFederated = await userDirectoryConnections.IsFederatedByEmailAsync(directoryType, user.Email);
         user.LastLogin = ParseLastLogin(lastLogin);
         user.LastIpAddress = lastIp;
         user.Identities = identities;

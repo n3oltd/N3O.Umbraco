@@ -95,7 +95,7 @@ public class UserDirectory : IUserDirectory {
         var user = await directoryUser.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
 
         if (!user.HasValue() || user.Identities.None(x => x.Connection == connectionName)) {
-            var isFederated = await _userDirectoryConnections.IsFederatedAsync(userDirectoryType, email);
+            var isFederated = await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, email);
 
             if (isFederated) {
                 return null;
@@ -168,7 +168,7 @@ public class UserDirectory : IUserDirectory {
     private async Task<bool> IsFederatedByIdAsync(UserDirectoryType userDirectoryType, string directoryId) {
         var user = await GetDirectoryUserByIdAsync(directoryId, true);
 
-        return await _userDirectoryConnections.IsFederatedAsync(userDirectoryType, user.Email);
+        return await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, user.Email);
     }
 
     private async Task SendPasswordResetEmailAsync(UserDirectoryType userDirectoryType,
@@ -176,7 +176,7 @@ public class UserDirectory : IUserDirectory {
                                                    string clientId,
                                                    string connectionName,
                                                    string email) {
-        var isFederated = await _userDirectoryConnections.IsFederatedAsync(userDirectoryType, email);
+        var isFederated = await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, email);
 
         if (isFederated) {
             throw new Exception("Password reset emails cannot be sent for federated users");

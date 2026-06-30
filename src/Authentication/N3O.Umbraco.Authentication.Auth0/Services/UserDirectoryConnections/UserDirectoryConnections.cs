@@ -18,7 +18,7 @@ public class UserDirectoryConnections : IUserDirectoryConnections {
         _domainAliasesByType = new ConcurrentDictionary<UserDirectoryType, Lazy<Task<IReadOnlyCollection<string>>>>();
     }
 
-    public async Task<bool> IsFederatedAsync(UserDirectoryType userDirectoryType, string email) {
+    public async Task<bool> IsFederatedByEmailAsync(UserDirectoryType userDirectoryType, string email) {
         var domainAliases = await GetDomainAliasesAsync(userDirectoryType);
 
         return domainAliases.Any(x => email.EndsWith($"@{x}", StringComparison.InvariantCultureIgnoreCase));
