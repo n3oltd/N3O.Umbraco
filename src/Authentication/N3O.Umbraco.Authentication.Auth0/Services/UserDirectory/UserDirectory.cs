@@ -32,7 +32,7 @@ public class UserDirectory : IUserDirectory {
         var managementClient = await GetManagementClientAsync(userDirectoryType);
 
         if (passwordless) {
-            return await GetOrCreatePasswordlessUserAsync(managementClient, connectionName, email, firstName, lastName);
+            return await GetOrCreatePasswordlessUserAsync(managementClient, userDirectoryType, connectionName, email, firstName, lastName);
         } else {
             return await GetOrCreatePasswordUserAsync(managementClient, userDirectoryType, clientId, connectionName, email, firstName, lastName);
         }
@@ -62,18 +62,22 @@ public class UserDirectory : IUserDirectory {
 
         var user = await GetDirectoryUserByEmailAsync(managementClient, email);
 
-        return user.ToAuth0User();
+        return await user.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
     }
 
     private async Task<Auth0User> GetOrCreatePasswordlessUserAsync(IManagementApiClient managementClient,
+                                                                   UserDirectoryType userDirectoryType,
                                                                    string connectionName,
                                                                    string email,
                                                                    string firstName,
                                                                    string lastName) {
-        var user = (await GetDirectoryUserByEmailAsync(managementClient, email)).ToAuth0User();
+        var directoryUser = await GetDirectoryUserByEmailAsync(managementClient, email);
+        var user = await directoryUser.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
 
         if (!user.HasValue() || user.Identities.None(x => x.Connection == connectionName)) {
-            user = (await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password: null)).ToAuth0User();
+            var createdUser = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password: null);
+            
+            user = await createdUser.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
         }
 
         return user;
@@ -87,10 +91,11 @@ public class UserDirectory : IUserDirectory {
                                                                string firstName,
                                                                string lastName,
                                                                string password = null) {
-        var user = (await GetDirectoryUserByEmailAsync(managementClient, email)).ToAuth0User();
+        var directoryUser = await GetDirectoryUserByEmailAsync(managementClient, email);
+        var user = await directoryUser.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
 
         if (!user.HasValue() || user.Identities.None(x => x.Connection == connectionName)) {
-            var isFederated = await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, email);
+            var isFederated = await _userDirectoryConnections.IsFederatedAsync(userDirectoryType, email);
 
             if (isFederated) {
                 return null;
@@ -103,7 +108,8 @@ public class UserDirectory : IUserDirectory {
                                                     PasswordCharacters.LowercaseLetters |
                                                     PasswordCharacters.AlphaNumeric);
 
-            user = (await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password)).ToAuth0User();
+            var createdUser = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
+            user = await createdUser.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
 
             await SendPasswordResetEmailAsync(userDirectoryType, authClient, clientId, connectionName, email);
         }
@@ -162,7 +168,7 @@ public class UserDirectory : IUserDirectory {
     private async Task<bool> IsFederatedByIdAsync(UserDirectoryType userDirectoryType, string directoryId) {
         var user = await GetDirectoryUserByIdAsync(directoryId, true);
 
-        return await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, user.Email);
+        return await _userDirectoryConnections.IsFederatedAsync(userDirectoryType, user.Email);
     }
 
     private async Task SendPasswordResetEmailAsync(UserDirectoryType userDirectoryType,
@@ -170,7 +176,7 @@ public class UserDirectory : IUserDirectory {
                                                    string clientId,
                                                    string connectionName,
                                                    string email) {
-        var isFederated = await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, email);
+        var isFederated = await _userDirectoryConnections.IsFederatedAsync(userDirectoryType, email);
 
         if (isFederated) {
             throw new Exception("Password reset emails cannot be sent for federated users");
