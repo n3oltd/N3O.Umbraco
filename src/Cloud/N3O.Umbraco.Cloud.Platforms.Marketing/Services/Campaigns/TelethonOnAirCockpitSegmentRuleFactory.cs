@@ -1,10 +1,10 @@
-using Umbraco.Engage.Infrastructure.Personalization.Segments;
+using Umbraco.Engage.Infrastructure.Personalization.Segments.Rules;
 using Umbraco.Engage.Web.Cockpit.Segments;
 
 namespace N3O.Umbraco.Cloud.Platforms.Marketing;
 
 public class TelethonOnAirCockpitSegmentRuleFactory : ICockpitSegmentRuleFactory {
-    public bool TryCreate(ISegmentRule segmentRule, bool isSatisfied, out CockpitSegmentRule cockpitSegmentRule) {
+    public bool TryCreate(ISegmentRule segmentRule, bool isSatisfied, out CockpitSegmentRule? cockpitSegmentRule) {
         cockpitSegmentRule = null;
 
         if (segmentRule is TelethonOnAirSegmentRule telethonOnAirRule) {

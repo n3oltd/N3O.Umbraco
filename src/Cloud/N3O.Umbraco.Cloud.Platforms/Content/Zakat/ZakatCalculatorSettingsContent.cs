@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.Blocks;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
@@ -17,5 +18,5 @@ public class ZakatCalculatorSettingsContent : UmbracoContent<ZakatCalculatorSett
     public FundDimension1 FundDimension2 => GetValue(x => x.FundDimension2);
     public FundDimension1 FundDimension3 => GetValue(x => x.FundDimension3);
     public FundDimension1 FundDimension4 => GetValue(x => x.FundDimension4);
-    public IEnumerable<ZakatCalculatorSectionSettingsContent> Sections => Content().Children.As<ZakatCalculatorSectionSettingsContent>();
+    public IEnumerable<ZakatCalculatorSectionSettingsContent> Sections => Content().Children().As<ZakatCalculatorSectionSettingsContent>();
 }

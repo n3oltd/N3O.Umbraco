@@ -5,6 +5,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 using ECommerceStage = N3O.Umbraco.Cloud.Platforms.Clients.ECommerceStage;
 
@@ -24,7 +25,7 @@ public class UpdateCrossSellReqMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(CrossSellContent src, UpdateCrossSellReq dest, MapperContext ctx) {
         dest.Name = src.Name;
-        dest.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
+        dest.Order = src.Content().Parent<IPublishedContent>().Children().FindIndex(x => x.Id == src.Content().Id);
         dest.Stage = src.Stage.ToEnum<ECommerceStage>();
 
         dest.Targeting = new CrossSellTargetingReq();

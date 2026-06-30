@@ -6,8 +6,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
@@ -26,7 +28,7 @@ public class CampaignSaving : INotificationAsyncHandler<ContentSavingNotificatio
                 var crowdfundingEnabled = content.GetValue<bool>(AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled));
 
                 if (crowdfundingEnabled) {
-                    var offerings = _contentLocator.Value.All(x => x.Parent?.Id == content.Id).As<OfferingContent>();
+                    var offerings = _contentLocator.Value.All(x => x.Parent<IPublishedContent>()?.Id == content.Id).As<OfferingContent>();
 
                     if (offerings.None(x => x.AllowCrowdfunding)) {
                         notification.CancelWithError("Crowdfunding cannot be enabled as no offering available for crowdfunding");

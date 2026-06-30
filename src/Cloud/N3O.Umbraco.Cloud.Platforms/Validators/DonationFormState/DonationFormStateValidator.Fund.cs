@@ -44,10 +44,7 @@ public class FundDonationFormStateValidator : DonationFormStateValidator<FundDon
                                          GivingType givingType,
                                          string propertyAlias) {
         var property = content.ElementsProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
-        var suggestedAmounts = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
-                                       .OrEmpty()
-                                       .As<DonationFormStateSuggestedAmountElement>()
-                                       .ToList();
+        var suggestedAmounts = property?.Value.OrEmpty().ToList();
 
         if (suggestedAmounts.HasAny()) {
             if (donationItem.Pricing?.Price?.Locked == true) {

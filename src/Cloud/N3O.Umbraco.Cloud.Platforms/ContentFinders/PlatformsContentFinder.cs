@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using N3O.Umbraco.Cloud.Lookups;
+﻿using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
