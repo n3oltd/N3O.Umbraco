@@ -1,5 +1,5 @@
 {
-    "name": "n3o-umbraco-cloud-platforms-preview",
+    "name": "@n3oltd/telethon-on-air-rule",
     "version": "1.0.0",
     "private": true,
     "type": "module",
@@ -8,6 +8,6 @@
         "watch": "vite build --watch"
     },
     "devDependencies": {
-        "@n3o/build": "*"
+        "@repo/build-config": "*"
     }
 }

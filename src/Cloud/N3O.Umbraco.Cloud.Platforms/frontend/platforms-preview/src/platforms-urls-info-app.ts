@@ -1,7 +1,8 @@
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { html, css, customElement, state } from '@umbraco-cms/backoffice/external/lit';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
-import { UMB_AUTH_CONTEXT, type UmbOpenApiConfiguration } from '@umbraco-cms/backoffice/auth';
+import { UmbAuthFetchMixin } from '@n3oltd/backoffice-core';
+import type { AuthFetch } from '@n3oltd/backoffice-core';
 
 interface ContentUrlsRes {
     permitted: boolean;
@@ -14,53 +15,43 @@ const elementName = 'n3o-platforms-urls-info-app';
 // workspaceInfoApp panel that renders staging + production platform URLs inside the document
 // Info tab (replaces the v13 CampaignSending / OfferingSending SendingContentNotification approach).
 // The element handles its own visibility: if the backend returns permitted=false (content is not
-// a campaign or offering) it renders nothing, so no custom condition extension is needed.
+// a campaign or offering) it renders nothing, so no custom condition extension is needed. The
+// authenticated call goes through the shared UmbAuthFetchMixin (UMB_AUTH_CONTEXT bearer token).
 @customElement(elementName)
-export class N3oPlatformsUrlsInfoAppElement extends UmbLitElement {
+export class N3oPlatformsUrlsInfoAppElement extends UmbAuthFetchMixin(UmbLitElement) {
     @state() private _stagingUrl: string | null = null;
     @state() private _productionUrl: string | null = null;
 
     #unique: string | null | undefined;
-    #authConfig: UmbOpenApiConfiguration | null = null;
 
     constructor() {
         super();
-
-        this.consumeContext(UMB_AUTH_CONTEXT, (authContext) => {
-            this.#authConfig = authContext ? authContext.getOpenApiConfiguration() : null;
-
-            if (this.#unique) {
-                void this.#loadUrls(this.#unique);
-            }
-        });
 
         this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (context) => {
             this.observe(context?.unique, (unique) => {
                 this.#unique = unique;
 
-                if (unique && this.#authConfig) {
-                    void this.#loadUrls(unique);
-                }
+                void this.#loadUrls();
             });
         });
     }
 
-    async #loadUrls(unique: string): Promise<void> {
-        if (!this.#authConfig) {
+    // Load (or reload) once the shared authenticated fetch becomes available / changes (mixin hook).
+    authFetchChanged(_authFetch: AuthFetch | null): void {
+        void this.#loadUrls();
+    }
+
+    async #loadUrls(): Promise<void> {
+        if (!this.authFetch || !this.#unique) {
             return;
         }
 
-        const rawToken = this.#authConfig.token;
-        const token = typeof rawToken === 'function' ? await rawToken() : rawToken;
-
-        const headers: Record<string, string> = { Accept: 'application/json' };
-
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-
         try {
-            const res = await fetch(`/umbraco/backoffice/api/PlatformsBackOffice/contentUrls/${unique}`, { headers });
+            const res = await this.authFetch(
+                `/umbraco/backoffice/api/PlatformsBackOffice/contentUrls/${this.#unique}`,
+                { headers: { Accept: 'application/json' } },
+            );
+
             const data = (await res.json()) as ContentUrlsRes;
 
             this._stagingUrl = data.permitted ? (data.stagingUrl ?? null) : null;

@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Cloud.Platforms</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
+        <N3OReactPlugin>true</N3OReactPlugin>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>

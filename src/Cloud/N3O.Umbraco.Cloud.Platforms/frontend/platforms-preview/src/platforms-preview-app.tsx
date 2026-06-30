@@ -4,7 +4,7 @@ import type {
     UmbDocumentVariantModel,
     UmbDocumentValueModel,
 } from '@umbraco-cms/backoffice/document';
-import type { AuthFetch } from '@n3o/backoffice-core';
+import type { AuthFetch } from '@n3oltd/backoffice-core';
 
 // Response shape from /umbraco/backoffice/api/platformsBackOffice/previewHtml/...
 export interface PreviewHtmlResponse {

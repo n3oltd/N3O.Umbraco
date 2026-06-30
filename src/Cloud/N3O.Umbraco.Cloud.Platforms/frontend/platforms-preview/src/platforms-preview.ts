@@ -2,8 +2,8 @@ import { LitElement, css, customElement, html, nothing } from '@umbraco-cms/back
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
 import type { UmbDocumentDetailModel, UmbDocumentWorkspaceContext } from '@umbraco-cms/backoffice/document';
-import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
-import type { AuthFetch } from '@n3o/backoffice-core';
+import { UmbAuthFetchMixin } from '@n3oltd/backoffice-core';
+import type { AuthFetch } from '@n3oltd/backoffice-core';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { PlatformsPreviewApp } from './platforms-preview-app';
