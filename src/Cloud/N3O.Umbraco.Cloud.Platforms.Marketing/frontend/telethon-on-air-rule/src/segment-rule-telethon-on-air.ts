@@ -1,7 +1,3 @@
-// Loads and registers the Telethon On Air segment rule custom elements so they are available when
-// Engage renders the rule editor (elementName in umbraco-package.json). The engageSegmentRule extension
-// entry in umbraco-package.json tells Engage about this rule; this bundle just ensures the element
-// classes are defined first.
 import './segment-rule-telethon-on-air-editor';
 import './segment-rule-telethon-on-air-display';
 
