@@ -12,11 +12,6 @@ interface ContentUrlsRes {
 
 const elementName = 'n3o-platforms-urls-info-app';
 
-// workspaceInfoApp panel that renders staging + production platform URLs inside the document
-// Info tab (replaces the v13 CampaignSending / OfferingSending SendingContentNotification approach).
-// The element handles its own visibility: if the backend returns permitted=false (content is not
-// a campaign or offering) it renders nothing, so no custom condition extension is needed. The
-// authenticated call goes through the shared UmbAuthFetchMixin (UMB_AUTH_CONTEXT bearer token).
 @customElement(elementName)
 export class N3oPlatformsUrlsInfoAppElement extends UmbAuthFetchMixin(UmbLitElement) {
     @state() private _stagingUrl: string | null = null;
@@ -36,7 +31,6 @@ export class N3oPlatformsUrlsInfoAppElement extends UmbAuthFetchMixin(UmbLitElem
         });
     }
 
-    // Load (or reload) once the shared authenticated fetch becomes available / changes (mixin hook).
     authFetchChanged(_authFetch: AuthFetch | null): void {
         void this.#loadUrls();
     }

@@ -10,12 +10,6 @@ import { PlatformsPreviewApp } from './platforms-preview-app';
 
 const elementName = 'n3o-platforms-preview';
 
-// Web-component SHELL for the Platforms preview workspace view. Umbraco's backoffice only loads custom
-// elements, so this thin Lit element owns the Umbraco contract — it consumes UMB_DOCUMENT_WORKSPACE_CONTEXT
-// and observes the document `unique` — then mounts the React UI (PlatformsPreviewApp) into its shadow
-// root, passing the document `unique` plus a getter for the current in-memory content. The Lit base is
-// only for context plumbing; React renders the UI. React itself is NOT bundled here — it is external and
-// resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 @customElement(elementName)
 export class N3oPlatformsPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(LitElement)) {
     #workspaceContext: UmbDocumentWorkspaceContext | undefined;
@@ -51,7 +45,6 @@ export class N3oPlatformsPreviewElement extends UmbAuthFetchMixin(UmbElementMixi
         this.#root = undefined;
     }
 
-    // Lit owns the shadow root; we host a single mount div in it and let React render into that.
     override render() {
         if (this.#mount.parentNode == null) {
             return html`${this.#mount}`;
@@ -61,14 +54,12 @@ export class N3oPlatformsPreviewElement extends UmbAuthFetchMixin(UmbElementMixi
     }
 
     override updated(): void {
-        // The shadow root and mount div exist after the first Lit render; create the React root then.
         if (!this.#root && this.#mount.isConnected) {
             this.#root = createRoot(this.#mount);
             this.#render();
         }
     }
 
-    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
     authFetchChanged(_authFetch: AuthFetch | null): void {
         this.#render();
     }

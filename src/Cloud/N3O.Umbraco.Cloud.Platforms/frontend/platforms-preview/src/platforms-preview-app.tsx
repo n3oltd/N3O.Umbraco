@@ -6,18 +6,14 @@ import type {
 } from '@umbraco-cms/backoffice/document';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 
-// Response shape from /umbraco/backoffice/api/platformsBackOffice/previewHtml/...
 export interface PreviewHtmlResponse {
     eTag: string;
     html: string;
 }
 
 interface PlatformsPreviewAppProps {
-    // `unique` drives a re-run of the preview effect when the workspace document changes.
     unique: string | null | undefined;
-    // Reads the current in-memory document on each poll (mirrors the original getData() call).
     getContent: () => UmbDocumentDetailModel | undefined;
-    // Authenticated fetch from UMB_AUTH_CONTEXT; null until the auth context resolves.
     authFetch: AuthFetch | null;
 }
 
@@ -36,11 +32,6 @@ function getApiReq(
     return req;
 }
 
-// React UI for the Platforms preview workspace view. The preview is a bespoke surface: it builds a
-// request from the current variant's property values, posts it to the platforms back office preview
-// endpoint, and renders the returned HTML in an iframe loading the tenant's platforms.js. Refreshed
-// every 10 seconds; unchanged responses (same eTag) are skipped. The iframe DOM is built imperatively
-// inside the container ref, preserving the original Lit behaviour exactly.
 export function PlatformsPreviewApp({ unique, getContent, authFetch }: PlatformsPreviewAppProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const previousETagRef = useRef<string | null>(null);
@@ -59,11 +50,8 @@ export function PlatformsPreviewApp({ unique, getContent, authFetch }: Platforms
                 return;
             }
 
-            // In v17 UmbDocumentDetailModel.documentType has {unique, icon, collection} but no alias.
-            // The server resolves the alias from the GUID (see PlatformsBackOfficeController).
             const documentTypeUnique: string | undefined = content.documentType?.unique;
 
-            // Parent and parentId are not in the typed model; cast to access as legacy fields if present.
             const rawContent = content as UmbDocumentDetailModel & {
                 parent?: { unique?: string };
                 parentId?: string;
@@ -118,8 +106,6 @@ export function PlatformsPreviewApp({ unique, getContent, authFetch }: Platforms
 
             container.appendChild(iframe);
 
-            // iframe.contentWindow is non-null immediately after appending a same-origin iframe.
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const doc = iframe.contentWindow!.document;
             doc.open();
             doc.write(res.html);
