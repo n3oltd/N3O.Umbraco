@@ -8,7 +8,11 @@
 // 2. Staging/production URL display: IMPLEMENTED as the N3O.WorkspaceInfoApp.PlatformsUrls
 //    panel in the Info tab (platforms-urls-info-app.ts / PlatformsBackOfficeController.GetContentUrls).
 //
-// 3. Crowdfunding tab visibility for unpublished campaigns: NOT YET IMPLEMENTED. Requires a
-//    custom Bellissima workspace condition based on the content's publish state.
-//    Deferred.
+// 3. Crowdfunding tab visibility for new campaigns: IMPLEMENTED as the
+//    N3O.WorkspaceContext.CrowdfundingVisibility extension (frontend/crowdfunding-visibility). It denies
+//    the crowdfunding tab's properties through the document workspace propertyViewGuard while the document
+//    is new (getIsNew), reproducing the v13 ContentSavedState.NotCreated behaviour. The crowdfunding
+//    properties therefore appear only after the campaign has been saved (created). NOTE: v17 has no API to
+//    hide a property-group TAB itself, only its properties, so the (empty) crowdfunding tab still renders on
+//    a brand-new campaign until it is first saved.
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
