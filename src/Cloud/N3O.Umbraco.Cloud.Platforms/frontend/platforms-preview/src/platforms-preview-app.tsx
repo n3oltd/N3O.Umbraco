@@ -71,7 +71,7 @@ export function PlatformsPreviewApp({ unique, getContent, authFetch }: Platforms
             const subscriptionCodeRes = await authFetch('/umbraco/backoffice/api/cloudBackOffice/subscription/code');
             const subscriptionCode = (await subscriptionCodeRes.json()) as string;
 
-            const apiRes = await authFetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${documentTypeUnique}`, {
+            const apiRes = await authFetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${content.unique}`, {
                 method: 'POST',
                 headers: {
                     accept: 'application/json',
