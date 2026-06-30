@@ -111,7 +111,7 @@ public class UserDirectory : IUserDirectory {
             var createdUser = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
             user = await createdUser.ToAuth0UserAsync(_userDirectoryConnections, userDirectoryType);
 
-            await SendPasswordResetEmailAsync(userDirectoryType, authClient, clientId, connectionName, email);
+            await SendPasswordResetEmailAsync(authClient, userDirectoryType, clientId, connectionName, email);
         }
 
         return user;
@@ -171,8 +171,8 @@ public class UserDirectory : IUserDirectory {
         return await _userDirectoryConnections.IsFederatedByEmailAsync(userDirectoryType, user.Email);
     }
 
-    private async Task SendPasswordResetEmailAsync(UserDirectoryType userDirectoryType,
-                                                   AuthenticationApiClient authClient,
+    private async Task SendPasswordResetEmailAsync(AuthenticationApiClient authClient,
+                                                   UserDirectoryType userDirectoryType,
                                                    string clientId,
                                                    string connectionName,
                                                    string email) {
