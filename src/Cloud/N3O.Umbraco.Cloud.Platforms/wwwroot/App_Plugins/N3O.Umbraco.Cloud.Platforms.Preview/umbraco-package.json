@@ -24,20 +24,6 @@
                     "endpoint": "/umbraco/backoffice/api/PlatformsPreviewVisibility"
                 }
             ]
-        },
-        {
-            "type": "workspaceInfoApp",
-            "alias": "N3O.WorkspaceInfoApp.PlatformsUrls",
-            "name": "N3O Platforms URLs",
-            "element": "/App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview/platforms-urls-info-app.js",
-            "weight": 50,
-            "meta": {},
-            "conditions": [
-                {
-                    "alias": "Umb.Condition.WorkspaceAlias",
-                    "match": "Umb.Workspace.Document"
-                }
-            ]
         }
     ]
 }

@@ -8,7 +8,6 @@ import { n3oPluginConfig } from '@repo/build-config';
 export default n3oPluginConfig({
     entries: {
         'N3O.Umbraco.Cloud.Platforms.Preview/platforms-preview': 'src/platforms-preview.ts',
-        'N3O.Umbraco.Cloud.Platforms.Preview/platforms-urls-info-app': 'src/platforms-urls-info-app.ts',
     },
     outDir: 'dist',
     react: true,
