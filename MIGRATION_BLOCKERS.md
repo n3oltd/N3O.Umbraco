@@ -1,5 +1,14 @@
 # Migration Blockers
 
+> ✅ **CURRENT STATE (2026-06-29) — authoritative; audit re-verified these against current code.** The originally-numbered blockers are unchanged from the 2026-06-15 banner below: **genuinely still open = all EXTERNAL or per-site OPERATIONAL** — BLOCKER-02 (Perplex stable v4, upstream), BLOCKER-04 (telethon-on-air *client* UI, needs Engage v17 segment-rule API), BLOCKER-05 (uSync Publisher remote-server E2E), BLOCKER-06 (NC→BlockList per-site offline CLI run + value-transform dry-run), BLOCKER-08 (Umbraco Forms subscription license). All earlier numbered code blockers (01,03,04-C#,05-code,07,09,10,11) remain RESOLVED.
+>
+> **⚠️ The repeated "build 0 errors" claims below are now stale** — `dotnet build N3O.Umbraco.sln` on `v17-Talha` currently has **27 errors from 3 root causes**, two of which are *new* and not captured as numbered blockers below:
+> - **NEW — Auth0.ManagementApi 8.5.0 SDK bump** in `N3O.Umbraco.Authentication.Auth0` (`UserDirectory.cs`/`.I.cs`): v8 dropped the `Auth0.ManagementApi.Models` namespace + the single `User` type; ticket/user/connection APIs renamed. Currently reverted to the v7 API locally → won't compile. In-progress follow-up to the merged Authentication PR (#876). API mapping: [[auth0-managementapi-v8-migration]].
+> - **NEW — DemoSite.Web** has a stale `Import` of `N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets` (Cms is now an RCL — drop the import).
+> - `npm ci` environmental failure in `Directory.Build.targets`.
+>
+> Per-project migration/PR status now lives in **GitHub issue [n3oltd/work#729](https://github.com/n3oltd/work/issues/729)** + the `MIGRATION_PR_TRACKER.md` 2026-06-29 banner.
+>
 > ⚠️ **SUPERSEDED (2026-06-10, session 14):** a full read-only audit re-verified every item here against
 > the current code — see **[`MIGRATION_AUDIT_2026-06-10.md`](MIGRATION_AUDIT_2026-06-10.md)** (the current
 > source of truth). Many items below are now DONE (Content Apps→workspaceViews, dashboards, Hangfire auth
