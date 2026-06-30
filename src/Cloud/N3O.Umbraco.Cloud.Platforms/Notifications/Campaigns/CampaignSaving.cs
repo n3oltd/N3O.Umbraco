@@ -28,7 +28,7 @@ public class CampaignSaving : INotificationAsyncHandler<ContentSavingNotificatio
                 var crowdfundingEnabled = content.GetValue<bool>(AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled));
 
                 if (crowdfundingEnabled) {
-                    var offerings = _contentLocator.Value.All(x => x.Parent<IPublishedContent>()?.Id == content.Id).As<OfferingContent>();
+                    var offerings = _contentLocator.Value.All(x => x.Parent()?.Id == content.Id).As<OfferingContent>();
 
                     if (offerings.None(x => x.AllowCrowdfunding)) {
                         notification.CancelWithError("Crowdfunding cannot be enabled as no offering available for crowdfunding");

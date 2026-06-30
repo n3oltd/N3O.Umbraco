@@ -3,7 +3,6 @@
 public static class PlatformsConstants {
     public const string BackOfficeApiName = "PlatformsBackOffice";
     public const string DevToolsApiName = "PlatformsDevTools";
-    public const string PreviewApiName = "PlatformsPreview";
 
     public static class Campaigns {
         public const string CompositionAlias = "platformsCampaign";

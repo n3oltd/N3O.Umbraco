@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 [UmbracoContent(PlatformsConstants.Offerings.CompositionAlias)]
 public class OfferingContent :
     UmbracoContent<OfferingContent>, IHoldDonationFormStateContent, IHoldDonationFormContentContent {
-    public CampaignContent Campaign => Content().Parent<IPublishedContent>().As<CampaignContent>();
+    public CampaignContent Campaign => Content().Parent().As<CampaignContent>();
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);

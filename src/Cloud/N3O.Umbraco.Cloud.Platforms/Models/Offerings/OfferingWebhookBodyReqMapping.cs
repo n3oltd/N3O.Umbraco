@@ -14,7 +14,7 @@ public class OfferingWebhookBodyReqMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(OfferingContent src, OfferingWebhookBodyReq dest, MapperContext ctx) {
         dest.Id = src.Key.ToString();
-        dest.CampaignId = src.Content().Parent<IPublishedContent>().Key.ToString();
+        dest.CampaignId = src.Content().Parent().Key.ToString();
         dest.Action = WebhookSyncAction.AddOrUpdate;
 
         dest.Add = ctx.Map<OfferingContent, CreateOfferingReq>(src);
