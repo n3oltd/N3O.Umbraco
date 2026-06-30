@@ -37,7 +37,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.FormContent = src.FormContent.ToDonationFormContentReq(_mediaUrl);
         
         dest.Order = new OfferingOrderReq();
-        dest.Order.Order = src.Content().Parent<IPublishedContent>().Children().FindIndex(x => x.Id == src.Content().Id);
+        dest.Order.Order = src.Content().Parent().Children().FindIndex(x => x.Id == src.Content().Id);
         
         try {
             ctx.Map<OfferingContent, IEnumerable<string>>(src);
