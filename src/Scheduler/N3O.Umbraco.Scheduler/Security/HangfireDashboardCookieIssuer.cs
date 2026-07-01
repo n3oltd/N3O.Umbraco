@@ -33,14 +33,11 @@ public class HangfireDashboardCookieIssuer : IOpenIddictServerHandler<OpenIddict
     }
 
     public async ValueTask HandleAsync(OpenIddictServerEvents.GenerateTokenContext context) {
-        // Only issue the cookie when the access token is generated, so we sign in once per login
-        // (an access token is produced for both the code exchange and each refresh) rather than
-        // once for every generated token type.
         if (context.TokenType != OpenIddictConstants.TokenTypeIdentifiers.AccessToken) {
             return;
         }
 
-        if (context.Principal is null) {
+        if (context.Principal == null) {
             return;
         }
 
