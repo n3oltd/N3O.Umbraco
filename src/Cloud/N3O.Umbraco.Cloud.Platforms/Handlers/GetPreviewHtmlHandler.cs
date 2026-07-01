@@ -14,14 +14,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Handlers;
 public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictionary<string, object>, PreviewHtmlRes> {
     private readonly IReadOnlyList<IPreviewHtmlGenerator> _previewHtmlGenerators;
     private readonly IContentService _contentService;
-    private readonly IContentTypeService _contentTypeService;
 
     public GetPreviewHtmlHandler(IEnumerable<IPreviewHtmlGenerator> previewHtmlGenerators,
-                                 IContentService contentService,
-                                 IContentTypeService contentTypeService) {
+                                 IContentService contentService) {
         _previewHtmlGenerators = previewHtmlGenerators.ApplyAttributeOrdering();
         _contentService = contentService;
-        _contentTypeService = contentTypeService;
     }
 
     public async Task<PreviewHtmlRes> Handle(GetPreviewHtmlQuery req, CancellationToken cancellationToken) {
@@ -47,12 +44,6 @@ public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictio
     private string GetContentTypeAlias(Guid contentId) {
         var content = _contentService.GetById(contentId);
 
-        if (content == null) {
-            return null;
-        }
-
-        var contentType = _contentTypeService.Get(content.ContentTypeId);
-
-        return contentType?.Alias;
+        return content?.ContentType.Alias;
     }
 }

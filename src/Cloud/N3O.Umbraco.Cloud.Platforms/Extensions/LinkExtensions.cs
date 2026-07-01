@@ -13,7 +13,7 @@ public static class LinkExtensions {
         var url = link?.Url;
 
         if (url.HasValue()) {
-            return new Uri(url);
+            return Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri : null;
         } else {
             return null;
         }

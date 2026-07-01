@@ -47,7 +47,6 @@ public class FundDonationFormStateValidator : DonationFormStateValidator<FundDon
         var suggestedAmounts = property.IfNotNull(x => ContentHelper.GetBlockList(x))
                                        .OrEmpty()
                                        .Select(x => x.Content)
-                                       .OrEmpty()
                                        .As<DonationFormStateSuggestedAmountElement>()
                                        .ToList();
 
