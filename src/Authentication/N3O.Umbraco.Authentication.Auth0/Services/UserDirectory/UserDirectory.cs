@@ -47,10 +47,9 @@ public class UserDirectory : IUserDirectory {
             throw new Exception("Password reset emails cannot be sent for federated users");
         }
 
-        var request = new ChangePasswordTicketRequestContent {
-            UserId = directoryId,
-            TtlSec = (int) TimeSpan.FromHours(1).TotalSeconds
-        };
+        var request = new ChangePasswordTicketRequestContent();
+        request.UserId = directoryId;
+        request.TtlSec = (int) TimeSpan.FromHours(1).TotalSeconds;
 
         var ticket = await managementClient.Tickets.ChangePasswordAsync(request);
 
@@ -123,7 +122,8 @@ public class UserDirectory : IUserDirectory {
                                                                            string firstName,
                                                                            string lastName,
                                                                            string password) {
-        var request = new CreateUserRequestContent() {
+        // CreateUserRequestContent.Connection is a required member, so an object initializer is mandatory here
+        var request = new CreateUserRequestContent {
             Email = email.ToLowerInvariant(),
             Password = password,
             VerifyEmail = false,
@@ -133,7 +133,6 @@ public class UserDirectory : IUserDirectory {
             Name = $"{firstName} {lastName}".Trim(),
             Connection = connectionName
         };
-        
 
         var auth0User = await managementClient.Users.CreateAsync(request);
 
@@ -141,10 +140,11 @@ public class UserDirectory : IUserDirectory {
     }
 
     private async Task<UserResponseSchema> GetDirectoryUserByEmailAsync(IManagementApiClient managementClient, string email) {
+        // ListUsersByEmailRequestParameters.Email is a required member, so an object initializer is mandatory here
         var request = new ListUsersByEmailRequestParameters {
             Email = email.ToLowerInvariant()
         };
-        
+
         var directoryUsers = await managementClient.Users.ListUsersByEmailAsync(request);
         var list = directoryUsers.OrEmpty().ToList();
 

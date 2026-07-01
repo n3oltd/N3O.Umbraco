@@ -9,11 +9,14 @@ internal static class ManagementClientBuilder {
                                              string domain) {
         var httpClient = httpClientFactory.CreateClient(AuthenticationConstants.ManagementApiName);
 
-        return new ManagementClient(new ManagementClientOptions {
+        // ManagementClientOptions uses required/init-only members, so an object initializer is mandatory here
+        var options = new ManagementClientOptions {
             Domain = domain,
             TokenProvider = tokenProvider,
             HttpClient = httpClient,
             MaxRetries = 0
-        });
+        };
+
+        return new ManagementClient(options);
     }
 }
