@@ -1,8 +1,8 @@
 using Hangfire;
-using Hangfire.Dashboard;
 using Hangfire.SqlServer;
 using Humanizer.Bytes;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
@@ -12,24 +12,24 @@ using N3O.Umbraco.Scheduler.Commands;
 using N3O.Umbraco.Scheduler.Filters;
 using N3O.Umbraco.Scheduler.Models;
 using N3O.Umbraco.Utilities;
+using OpenIddict.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Web.BackOffice.Authorization;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using UmbracoConstants = Umbraco.Cms.Core.Constants;
 
 namespace N3O.Umbraco.Scheduler;
 
 public class SchedulerComposer : IComposer {
-    private static readonly string HangfireDashboard = nameof(HangfireDashboard);
-
     public void Compose(IUmbracoBuilder builder) {
         builder.Services.AddSingleton<IJobUrlProvider, JobUrlProvider>();
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
@@ -67,6 +67,7 @@ public class SchedulerComposer : IComposer {
                 opt.WorkerCount = 1;
             });
 
+            AddHangfireDashboardAuthentication(builder);
             AddAuthorizedUmbracoDashboard(builder);
 
             // https://discuss.hangfire.io/t/jobstorage-current-property-value-has-not-been-initialized/884
@@ -77,31 +78,51 @@ public class SchedulerComposer : IComposer {
         }
     }
 
-    private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
-        builder.Services.AddAuthorization(opt => {
-            opt.AddPolicy(HangfireDashboard, policy => {
-                policy.AuthenticationSchemes.Add(UmbracoConstants.Security.BackOfficeAuthenticationType);
-                policy.Requirements.Add(new SectionRequirement(UmbracoConstants.Applications.Settings));
-            });
-        });
+    private void AddHangfireDashboardAuthentication(IUmbracoBuilder builder) {
+        builder.Services
+               .AddAuthentication()
+               .AddCookie(SchedulerConstants.Dashboard.CookieScheme, opt => {
+                   opt.Cookie.Name = SchedulerConstants.Dashboard.CookieName;
+                   opt.Cookie.Path = "/";
+                   opt.Cookie.HttpOnly = true;
+                   opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                   opt.Cookie.SameSite = SameSiteMode.Strict;
+                   opt.SlidingExpiration = true;
+               });
 
+        builder.Services.AddSingleton<HangfireDashboardCookieIssuer>();
+
+        builder.Services.Configure<OpenIddictServerOptions>(opt => {
+            opt.Handlers.Add(OpenIddictServerHandlerDescriptor
+                             .CreateBuilder<OpenIddictServerEvents.GenerateTokenContext>()
+                             .UseSingletonHandler<HangfireDashboardCookieIssuer>()
+                             .Build());
+
+            opt.Handlers.Add(OpenIddictServerHandlerDescriptor
+                             .CreateBuilder<OpenIddictServerEvents.ApplyRevocationResponseContext>()
+                             .UseSingletonHandler<HangfireDashboardCookieIssuer>()
+                             .Build());
+        });
+    }
+
+    private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
-            var filter = new UmbracoPipelineFilter(HangfireDashboard);
+            var filter = new UmbracoPipelineFilter(SchedulerConstants.Dashboard.Name);
             filter.Endpoints = app => app.UseEndpoints(endpoints => {
                 endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
                                                new DashboardOptions {
                                                    AppPath = null,
-                                                   Authorization = new[] { new UmbracoAuthorizationFilter() }
+                                                   AsyncAuthorization = new[] { new HangfireDashboardAuthorizationFilter() }
                                                })
-                         .RequireAuthorization(HangfireDashboard);
+                         .AllowAnonymous();
             })
             .UseHangfireDashboard();
-        
+
             opt.AddFilter(filter);
         });
     }
 
-    public class RegisterRecurringJobsComponent : IComponent {
+    public class RegisterRecurringJobsComponent : IAsyncComponent {
         private readonly IRuntimeState _runtimeState;
         private readonly Lazy<IMediator> _mediator;
         private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
@@ -112,7 +133,7 @@ public class SchedulerComposer : IComposer {
             _umbracoContextFactory = umbracoContextFactory;
         }
     
-        public void Initialize() {
+        public Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
             if (_runtimeState.Level == RuntimeLevel.Run) {
                 var recurringJobTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                                     t.HasAttribute<RecurringJobAttribute>())
@@ -153,13 +174,10 @@ public class SchedulerComposer : IComposer {
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
-        
-        public void Terminate() { }
-    }
-    
-    // https://github.com/nul800sebastiaan/Cultiv.Hangfire/issues/5
-    public class UmbracoAuthorizationFilter : IDashboardAuthorizationFilter {
-        public bool Authorize(DashboardContext context) => true;
+
+        public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }
