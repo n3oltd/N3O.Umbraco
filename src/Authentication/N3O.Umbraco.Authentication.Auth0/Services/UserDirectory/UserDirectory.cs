@@ -51,9 +51,9 @@ public class UserDirectory : IUserDirectory {
         request.UserId = directoryId;
         request.TtlSec = (int) TimeSpan.FromHours(1).TotalSeconds;
 
-        var ticket = await managementClient.Tickets.ChangePasswordAsync(request);
+        var response = await managementClient.Tickets.ChangePasswordAsync(request);
 
-        return ticket.Ticket;
+        return response.Ticket;
     }
     
     public async Task<Auth0User> GetUserByEmailAsync(UserDirectoryType userDirectoryType, string email) {
