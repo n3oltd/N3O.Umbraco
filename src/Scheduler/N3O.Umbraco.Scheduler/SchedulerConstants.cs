@@ -2,7 +2,7 @@
 
 public static class SchedulerConstants {
     public static class Dashboard {
-        public const string CookieName = "__Host-N3O.Hangfire";
+        public const string CookieName = "N3O.Hangfire";
         public const string CookieScheme = "N3O.Hangfire.CookieScheme";
         public const string IdentityAuthenticationType = "HangfireAllowed";
         public const string Name = "HangfireDashboard";
