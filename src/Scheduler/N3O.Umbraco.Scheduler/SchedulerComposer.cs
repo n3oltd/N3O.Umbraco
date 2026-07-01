@@ -83,6 +83,7 @@ public class SchedulerComposer : IComposer {
                .AddAuthentication()
                .AddCookie(SchedulerConstants.Dashboard.CookieScheme, opt => {
                    opt.Cookie.Name = SchedulerConstants.Dashboard.CookieName;
+                   opt.Cookie.Path = "/";
                    opt.Cookie.HttpOnly = true;
                    opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                    opt.Cookie.SameSite = SameSiteMode.Strict;

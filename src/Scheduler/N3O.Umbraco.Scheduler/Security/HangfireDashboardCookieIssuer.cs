@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using OpenIddict.Abstractions;
 using OpenIddict.Server;
 using System;
 using System.Linq;
@@ -32,11 +33,22 @@ public class HangfireDashboardCookieIssuer : IOpenIddictServerHandler<OpenIddict
     }
 
     public async ValueTask HandleAsync(OpenIddictServerEvents.GenerateTokenContext context) {
+        // Only issue the cookie when the access token is generated, so we sign in once per login
+        // (an access token is produced for both the code exchange and each refresh) rather than
+        // once for every generated token type.
+        if (context.TokenType != OpenIddictConstants.TokenTypeIdentifiers.AccessToken) {
+            return;
+        }
+
+        if (context.Principal is null) {
+            return;
+        }
+
         if (context.Principal.Identity?.AuthenticationType != UmbracoConstants.Security.BackOfficeAuthenticationType) {
             return;
         }
 
-        if (!context.Principal.HasClaim(c => c.Issuer == UmbracoConstants.Security.BackOfficeAuthenticationType &&
+        if (!context.Principal.HasClaim(c => c.Type == UmbracoConstants.Security.AllowedApplicationsClaimType &&
                                              c.Value == UmbracoConstants.Applications.Settings)) {
             return;
         }
