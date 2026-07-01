@@ -5,13 +5,15 @@ import type { UmbDocumentWorkspaceContext } from '@umbraco-cms/backoffice/docume
 
 const crowdfundingTabName = 'Crowdfunding';
 
+const noteAliasMarker = 'savenote';
+
 export class N3oCrowdfundingVisibilityContext extends UmbControllerBase {
     #workspaceContext?: UmbDocumentWorkspaceContext;
     #isNew = false;
     #tabIds: string[] = [];
     #groupIdsByTab = new Map<string, string[]>();
-    #properties: Array<{ unique: string; container?: { id: string } | null }> = [];
-    #ruleUniques: Array<string | symbol> = [];
+    #properties: Array<{ unique: string; alias: string; container?: { id: string } | null }> = [];
+    #ruleUniques: string[] = [];
 
     constructor(host: UmbControllerHost) {
         super(host);
@@ -70,10 +72,6 @@ export class N3oCrowdfundingVisibilityContext extends UmbControllerBase {
             this.#ruleUniques = [];
         }
 
-        if (!this.#isNew) {
-            return;
-        }
-
         const containerIds = new Set<string>(this.#tabIds);
 
         this.#groupIdsByTab.forEach((groupIds) => groupIds.forEach((id) => containerIds.add(id)));
@@ -84,15 +82,21 @@ export class N3oCrowdfundingVisibilityContext extends UmbControllerBase {
 
         this.#properties
             .filter((property) => property.container != null && containerIds.has(property.container.id))
+            .filter((property) => {
+                const isNote = (property.alias ?? '').toLowerCase().includes(noteAliasMarker);
+
+                return this.#isNew ? !isNote : isNote;
+            })
             .forEach((property) => {
-                const ruleUnique = context.propertyViewGuard.addRule({
+                const ruleUnique = `n3o-crowdfunding-${property.unique}`;
+
+                context.propertyViewGuard.addRule({
+                    unique: ruleUnique,
                     permitted: false,
                     propertyType: { unique: property.unique },
                 });
 
-                if (ruleUnique != null) {
-                    this.#ruleUniques.push(ruleUnique);
-                }
+                this.#ruleUniques.push(ruleUnique);
             });
     }
 }
