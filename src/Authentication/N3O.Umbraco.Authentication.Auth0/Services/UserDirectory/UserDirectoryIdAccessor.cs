@@ -48,7 +48,7 @@ public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
                         _value = await Cache.GetOrAddAtomicAsync(email, async () => {
                             var directoryUser = await _userDirectory.GetUserByEmailAsync(userDirectoryType, email);
 
-                            return directoryUser?.UserId;
+                            return directoryUser?.Id;
                         });
                     }
                 }

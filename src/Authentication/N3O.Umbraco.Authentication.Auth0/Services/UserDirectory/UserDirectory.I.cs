@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
 using System.Threading.Tasks;
-using Auth0User = Auth0.ManagementApi.Models.User;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 

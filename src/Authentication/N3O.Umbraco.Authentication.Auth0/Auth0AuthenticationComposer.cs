@@ -18,6 +18,7 @@ public class Auth0AuthenticationComposer : Composer {
         builder.Services.AddScoped<IAuth0ClientFactory, Auth0ClientFactory>();
         builder.Services.AddScoped<ISignInManager, Auth0MemberSignInManager>();
         builder.Services.AddTransient<IUserDirectory, UserDirectory>();
+        builder.Services.AddScoped<IUserDirectoryConnections, UserDirectoryConnections>();
         builder.Services.AddScoped<IUserDirectoryIdAccessor, UserDirectoryIdAccessor>();
 
         builder.Services.AddSingleton<IPackageManifestReader, Auth0BackOfficePackageManifestReader>();

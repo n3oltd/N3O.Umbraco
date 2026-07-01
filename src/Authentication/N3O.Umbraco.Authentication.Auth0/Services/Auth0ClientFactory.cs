@@ -34,14 +34,13 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
     
     public async Task<IManagementApiClient> GetManagementApiClientAsync(UserDirectoryType userDirectoryType) {
         var managementOptions = GetClientOptions(userDirectoryType).Management;
-        var token = await _tokenAccessor.GetTokenAsync(managementOptions, managementOptions.ApiIdentifier);
-        var httpClient = _httpClientFactory.CreateClient();
 
-        var connection = new HttpClientManagementConnection(httpClient);
+        var tokenProvider = new ClientCredentialsTokenProvider(managementOptions.Domain,
+                                                               managementOptions.ClientId,
+                                                               managementOptions.ClientSecret,
+                                                               managementOptions.ApiIdentifier);
 
-        var auth0Client = new ManagementApiClient(token, managementOptions.Domain, connection);
-
-        return auth0Client;
+        return ManagementClientBuilder.Build(_httpClientFactory, tokenProvider, managementOptions.Domain);
     }
     
     private Auth0AuthenticationOptions GetClientOptions(UserDirectoryType userDirectoryType) {
