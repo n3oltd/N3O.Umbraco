@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Scheduler</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
@@ -39,10 +39,7 @@
     <ItemGroup>
         <PackageReference Include="Hangfire" Version="1.8.23" />
         <PackageReference Include="Hangfire.SqlServer" Version="1.8.23" />
-        <!--In .Net 8 the SqlClient had some compatibility issues that were fixed in version 5.2.0 of SqlClient but
-         the hangfire package still references the old version that causes the jobs to fail. Remove the below package
-         reference once the hangfire is updated to use the latest SqlClient package.-->
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+        <PackageReference Include="OpenIddict.Server" Version="7.2.0" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

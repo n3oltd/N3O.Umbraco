@@ -38,7 +38,7 @@ public class SponsorshipComponentContent : UmbracoContent<SponsorshipComponentCo
     [JsonIgnore]
     IPricing IHoldPricing.Pricing => Pricing;
     
-    public SponsorshipScheme GetScheme() => Content().Parent().As<SponsorshipScheme>();
+    public SponsorshipScheme GetScheme() => Content().Parent<IPublishedContent>().As<SponsorshipScheme>();
 }
 
 [Order(int.MinValue)]

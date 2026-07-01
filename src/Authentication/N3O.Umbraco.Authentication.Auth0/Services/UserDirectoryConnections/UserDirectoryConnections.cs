@@ -34,9 +34,10 @@ public class UserDirectoryConnections : IUserDirectoryConnections {
     private async Task<IReadOnlyCollection<string>> LoadDomainAliasesAsync(UserDirectoryType userDirectoryType) {
         var managementClient = await _clientFactory.GetManagementApiClientAsync(userDirectoryType);
 
-        var pager = await managementClient.Connections.ListAsync(new ListConnectionsQueryParameters {
-            Take = 100
-        });
+        var queryParameters = new ListConnectionsQueryParameters();
+        queryParameters.Take = 100;
+
+        var pager = await managementClient.Connections.ListAsync(queryParameters);
 
         var domainAliases = new List<string>();
 

@@ -47,14 +47,13 @@ public class UserDirectory : IUserDirectory {
             throw new Exception("Password reset emails cannot be sent for federated users");
         }
 
-        var request = new ChangePasswordTicketRequestContent {
-            UserId = directoryId,
-            TtlSec = (int) TimeSpan.FromHours(1).TotalSeconds
-        };
+        var request = new ChangePasswordTicketRequestContent();
+        request.UserId = directoryId;
+        request.TtlSec = (int) TimeSpan.FromHours(1).TotalSeconds;
 
-        var ticket = await managementClient.Tickets.ChangePasswordAsync(request);
+        var response = await managementClient.Tickets.ChangePasswordAsync(request);
 
-        return ticket.Ticket;
+        return response.Ticket;
     }
     
     public async Task<Auth0User> GetUserByEmailAsync(UserDirectoryType userDirectoryType, string email) {
@@ -123,7 +122,7 @@ public class UserDirectory : IUserDirectory {
                                                                            string firstName,
                                                                            string lastName,
                                                                            string password) {
-        var request = new CreateUserRequestContent() {
+        var request = new CreateUserRequestContent {
             Email = email.ToLowerInvariant(),
             Password = password,
             VerifyEmail = false,
@@ -133,7 +132,6 @@ public class UserDirectory : IUserDirectory {
             Name = $"{firstName} {lastName}".Trim(),
             Connection = connectionName
         };
-        
 
         var auth0User = await managementClient.Users.CreateAsync(request);
 
@@ -144,7 +142,7 @@ public class UserDirectory : IUserDirectory {
         var request = new ListUsersByEmailRequestParameters {
             Email = email.ToLowerInvariant()
         };
-        
+
         var directoryUsers = await managementClient.Users.ListUsersByEmailAsync(request);
         var list = directoryUsers.OrEmpty().ToList();
 

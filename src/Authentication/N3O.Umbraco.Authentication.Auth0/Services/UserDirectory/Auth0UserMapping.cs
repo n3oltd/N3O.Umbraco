@@ -87,7 +87,7 @@ internal static class Auth0UserMapping {
 
         var value = lastLogin.AsString();
 
-        if (string.IsNullOrEmpty(value)) {
+        if (!value.HasValue()) {
             return null;
         }
 
