@@ -122,7 +122,6 @@ public class UserDirectory : IUserDirectory {
                                                                            string firstName,
                                                                            string lastName,
                                                                            string password) {
-        // CreateUserRequestContent.Connection is a required member, so an object initializer is mandatory here
         var request = new CreateUserRequestContent {
             Email = email.ToLowerInvariant(),
             Password = password,
@@ -140,7 +139,6 @@ public class UserDirectory : IUserDirectory {
     }
 
     private async Task<UserResponseSchema> GetDirectoryUserByEmailAsync(IManagementApiClient managementClient, string email) {
-        // ListUsersByEmailRequestParameters.Email is a required member, so an object initializer is mandatory here
         var request = new ListUsersByEmailRequestParameters {
             Email = email.ToLowerInvariant()
         };
