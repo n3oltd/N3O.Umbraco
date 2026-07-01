@@ -41,10 +41,9 @@ public class HangfireDashboardCookieIssuer : IOpenIddictServerHandler<OpenIddict
             return;
         }
 
-        var principal = new ClaimsPrincipal(new ClaimsIdentity(context.Principal
-                                                                      .Claims
-                                                                      .Where(claim => _claimTypes.Contains(claim.Type)),
-                                                               SchedulerConstants.Dashboard.IdentityAuthenticationType));
+        var claims = context.Principal.Claims.Where(claim => _claimTypes.Contains(claim.Type));
+        var identity = new ClaimsIdentity(claims, SchedulerConstants.Dashboard.IdentityAuthenticationType);
+        var principal = new ClaimsPrincipal(identity);
 
         await _httpContextAccessor.GetRequiredHttpContext()
                                   .SignInAsync(SchedulerConstants.Dashboard.CookieScheme,
