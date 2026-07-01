@@ -20,8 +20,8 @@
                     "match": "Umb.Workspace.Document"
                 },
                 {
-                    "alias": "N3O.Condition.WorkspaceVisibility",
-                    "endpoint": "/umbraco/backoffice/api/PlatformsPreviewVisibility"
+                    "alias": "Umb.Condition.WorkspaceContentTypeAlias",
+                    "match": "platformsOffering"
                 }
             ]
         }

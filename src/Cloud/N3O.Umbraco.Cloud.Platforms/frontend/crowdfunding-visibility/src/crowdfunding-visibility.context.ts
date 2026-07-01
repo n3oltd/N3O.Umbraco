@@ -83,7 +83,7 @@ export class N3oCrowdfundingVisibilityContext extends UmbControllerBase {
         this.#properties
             .filter((property) => property.container != null && containerIds.has(property.container.id))
             .filter((property) => {
-                const isNote = (property.alias ?? '').toLowerCase().includes(noteAliasMarker);
+                const isNote = (property.alias ?? '').toLowerCase().endsWith(noteAliasMarker);
 
                 return this.#isNew ? !isNote : isNote;
             })

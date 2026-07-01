@@ -5,7 +5,6 @@ import { UmbAuthFetchMixin } from '@n3oltd/backoffice-core';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 
 interface ContentUrlsRes {
-    permitted: boolean;
     stagingUrl: string | null;
     productionUrl: string | null;
 }
@@ -48,8 +47,8 @@ export class N3oPlatformsUrlsInfoAppElement extends UmbAuthFetchMixin(UmbLitElem
 
             const data = (await res.json()) as ContentUrlsRes;
 
-            this._stagingUrl = data.permitted ? (data.stagingUrl ?? null) : null;
-            this._productionUrl = data.permitted ? (data.productionUrl ?? null) : null;
+            this._stagingUrl = data.stagingUrl ?? null;
+            this._productionUrl = data.productionUrl ?? null;
         } catch {
             this._stagingUrl = null;
             this._productionUrl = null;
