@@ -9,7 +9,6 @@ internal static class ManagementClientBuilder {
                                              string domain) {
         var httpClient = httpClientFactory.CreateClient(AuthenticationConstants.ManagementApiName);
 
-        // ManagementClientOptions uses required/init-only members, so an object initializer is mandatory here
         var options = new ManagementClientOptions {
             Domain = domain,
             TokenProvider = tokenProvider,
