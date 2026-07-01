@@ -36,7 +36,7 @@ public class GetContentUrlsHandler : IRequestHandler<GetContentUrlsQuery, None, 
         var isCampaign = content != null && content.IsCampaign(_contentTypeService);
         var isOffering = content != null && content.IsOffering(_contentTypeService);
 
-        if (content == null || urlSettings == null || (!isCampaign && !isOffering)) {
+        if (content == null || !content.Published || urlSettings == null || (!isCampaign && !isOffering)) {
             return Task.FromResult(new ContentUrlsRes());
         }
 
