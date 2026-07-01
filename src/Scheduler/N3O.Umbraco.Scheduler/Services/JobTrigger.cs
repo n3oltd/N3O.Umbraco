@@ -51,6 +51,7 @@ public class JobTrigger {
                 var content = await response.Content.ReadAsStringAsync(timeout.Token);
 
                 string errorMessage;
+                
                 try {
                     var errorResponse = _jsonProvider.DeserializeObject<ProxyErrorRes>(content);
 
