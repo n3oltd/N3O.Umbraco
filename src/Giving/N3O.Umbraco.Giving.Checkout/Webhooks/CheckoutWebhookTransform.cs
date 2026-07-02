@@ -6,6 +6,7 @@ using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Lookups;
@@ -110,8 +111,10 @@ public class CheckoutWebhookTransform : WebhookTransform {
     }
     
     private void TransformTags(JObject jObject) {
-        if (Site.Language.HasValue()) {
-            AddTag(jObject, "SiteLanguageTag", Site.Language);
+        var language = LocalizationSettings.GetLanguageName(LocalizationSettings.CultureCode) ?? Site.Language;
+
+        if (language.HasValue()) {
+            AddTag(jObject, "SiteLanguageTag", language);
         }
 
         if (Site.Id.HasValue()) {
