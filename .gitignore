@@ -249,3 +249,6 @@ storybook-static/
 out-tsc/
 .turbo
 .vercel
+
+# Build-time codegen output (regenerated on every build, e.g. Refitter)
+src/**/Generated/
