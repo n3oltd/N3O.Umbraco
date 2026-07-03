@@ -252,3 +252,9 @@ out-tsc/
 
 # Build-time codegen output (regenerated on every build, e.g. Refitter)
 src/**/Generated/
+
+# Playwright artifacts (test runner output + MCP page snapshots)
+test-results/
+playwright-report/
+playwright/.cache/
+.playwright-mcp/
