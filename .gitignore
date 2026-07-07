@@ -258,3 +258,7 @@ test-results/
 playwright-report/
 playwright/.cache/
 .playwright-mcp/
+
+# Vitest browser-mode artifacts (attachments + failure screenshots)
+**/.vitest-attachments/
+**/__screenshots__/
