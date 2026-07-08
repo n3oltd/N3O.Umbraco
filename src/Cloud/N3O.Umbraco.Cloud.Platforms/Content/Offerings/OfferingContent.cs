@@ -36,6 +36,10 @@ public class OfferingContent :
     public Guid Key => Content().Key;
 
     public string Notes => GetValue(x => x.Notes);
+    public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
+    public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
+    public string DonationPopupEmbedCode => GetValue(x => x.DonationPopupEmbedCode);
+
 
     public DonationFormContentContent FormContent { get; private set; }
     public DonationFormStateContent FormState { get; private set; }
