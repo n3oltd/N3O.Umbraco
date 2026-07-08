@@ -3,8 +3,8 @@
 public interface IOpenGraphBuilder {
     IOpenGraphBuilder WithTitle(string title);
     IOpenGraphBuilder WithDescription(string description);
-    IOpenGraphBuilder WithRelativeImageUrl(string relativeImageUrl);
     IOpenGraphBuilder WithImageUrl(string imageUrl);
+    IOpenGraphBuilder WithRelativeImageUrl(string relativeImageUrl);
     IOpenGraphBuilder WithUrl(string url);
 
     OpenGraphData Build();
