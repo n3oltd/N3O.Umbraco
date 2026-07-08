@@ -252,6 +252,8 @@ out-tsc/
 
 # Build-time codegen output (regenerated on every build, e.g. Refitter)
 src/**/Generated/
+!src/lib-be-*/*.Abstractions/Generated/
+!src/lib-be-*/TypeScript/dist/
 
 # Playwright artifacts (test runner output + MCP page snapshots)
 test-results/
