@@ -3,7 +3,7 @@
 public interface IOpenGraphBuilder {
     IOpenGraphBuilder WithTitle(string title);
     IOpenGraphBuilder WithDescription(string description);
-    IOpenGraphBuilder WithImagePath(string imagePath);
+    IOpenGraphBuilder WithRelativeImageUrl(string relativeImageUrl);
     IOpenGraphBuilder WithImageUrl(string imageUrl);
     IOpenGraphBuilder WithUrl(string url);
 

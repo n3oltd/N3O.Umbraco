@@ -27,8 +27,8 @@ public class OpenGraphBuilder : IOpenGraphBuilder {
         return this;
     }
 
-    public IOpenGraphBuilder WithImagePath(string imagePath) {
-        var imageUrl = Url.Combine(_urlBuilder.Root(), imagePath);
+    public IOpenGraphBuilder WithRelativeImageUrl(string relativeImageUrl) {
+        var imageUrl = Url.Combine(_urlBuilder.Root(), relativeImageUrl);
 
         return WithImageUrl(imageUrl);
     }
