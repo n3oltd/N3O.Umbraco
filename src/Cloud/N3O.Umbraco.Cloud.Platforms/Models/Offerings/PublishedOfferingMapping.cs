@@ -36,8 +36,8 @@ public class PublishedOfferingMapping : IMapDefinition {
         dest.FormContent.Image.Main = new PublishedProcessedImage();
         dest.FormContent.Image.Main.Url = new Uri(updateOfferingReq.FormContent.Image.SourceFile);
         dest.FormContent.Image.Main.Size = new PublishedSize();
-        dest.FormContent.Image.Main.Size.Width = updateOfferingReq.FormContent.Image.Main.Crop.TopRight.X;
-        dest.FormContent.Image.Main.Size.Height = updateOfferingReq.FormContent.Image.Main.Crop.BottomLeft.Y;
+        dest.FormContent.Image.Main.Size.Width = updateOfferingReq.FormContent.Image.Main.Crop.Width;
+        dest.FormContent.Image.Main.Size.Height = updateOfferingReq.FormContent.Image.Main.Crop.Height;
         
         dest.FormContent.Icon = new PublishedSvgContent();
         dest.FormContent.Icon.Url = new Uri(updateOfferingReq.FormContent.Icon.SourceFile);
