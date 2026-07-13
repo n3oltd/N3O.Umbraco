@@ -238,11 +238,9 @@ code-model-v1
 **/*.SDK.xml
 **/*.Abstractions.xml
 
-# Frontend build output
-**/build/**/*.js
-**/build/**/*.js.map
-**/build/**/*.d.ts
-**/build/**/*.d.ts.map
+# Frontend build output (CRA/webpack output dir — never tracked)
+**/build/
+!**/[Pp]ackages/build/
 dist-ssr
 dist-server
 storybook-static/
