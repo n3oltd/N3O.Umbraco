@@ -372,7 +372,6 @@ export interface ChargeCardReq {
     cardIdentifier?: string | undefined;
     googlePayToken?: string | undefined;
     applePayToken?: ApplePayTokenReq | undefined;
-    value?: MoneyReq | undefined;
     browserParameters?: BrowserParametersReq | undefined;
     challengeWindowSize?: ChallengeWindowSize | undefined;
     returnUrl?: string | undefined;
@@ -383,11 +382,6 @@ export interface ApplePayTokenReq {
     displayName?: string | undefined;
     paymentData?: string | undefined;
     sessionValidationToken?: string | undefined;
-}
-
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: string | undefined;
 }
 
 export interface BrowserParametersReq {

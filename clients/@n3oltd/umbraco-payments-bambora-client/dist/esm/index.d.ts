@@ -83,13 +83,8 @@ export interface ProblemDetails {
 }
 export interface ChargeCardReq {
     token?: string | undefined;
-    value?: MoneyReq | undefined;
     returnUrl?: string | undefined;
     browserParameters?: BrowserParametersReq | undefined;
-}
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: string | undefined;
 }
 export interface BrowserParametersReq {
     colourDepth?: number | undefined;
