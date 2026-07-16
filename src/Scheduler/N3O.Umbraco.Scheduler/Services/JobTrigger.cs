@@ -1,10 +1,10 @@
 using Flurl;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,7 +50,21 @@ public class JobTrigger {
             if (!response.IsSuccessStatusCode) {
                 var content = await response.Content.ReadAsStringAsync(timeout.Token);
 
-                throw new Exception(content);
+                string errorMessage;
+                
+                try {
+                    var errorResponse = _jsonProvider.DeserializeObject<ProxyErrorRes>(content);
+
+                    errorMessage = errorResponse?.Error.HasValue() == true ? errorResponse.Error : content;
+                } catch {
+                    errorMessage = content;
+                }
+
+                if (!errorMessage.HasValue()) {
+                    errorMessage = $"Job proxy request failed with status {(int) response.StatusCode} ({response.ReasonPhrase}).";
+                }
+
+                throw new Exception(errorMessage);
             }
         }
     }
@@ -65,7 +79,7 @@ public class JobTrigger {
         req.CommandType = requestType;
         req.RequestType = modelType;
         req.RequestBody = modelJson;
-        req.ParameterData = parameterData?.ToDictionary();
+        req.ParameterData = parameterData == null ? null : new Dictionary<string, string>(parameterData);
 
         return req;
     }

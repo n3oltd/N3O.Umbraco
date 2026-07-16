@@ -40,7 +40,10 @@ public class JobProxyController : ApiController {
 
             return Ok();
         } catch (Exception ex) {
-            return BadRequest(new { error = ex.Message, stackTrace = ex.StackTrace });
+            var errorRes = new ProxyErrorRes();
+            errorRes.Error = ex.ToString();
+            
+            return BadRequest(errorRes);
         }
     }
 
