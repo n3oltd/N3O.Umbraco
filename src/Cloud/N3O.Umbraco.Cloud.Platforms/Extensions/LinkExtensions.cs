@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Extensions;
 using System;
 using Umbraco.Cms.Core.Models;
 
@@ -10,10 +10,10 @@ public static class LinkExtensions {
             return null;
         }
 
-        var url = link.Content?.AbsoluteUrl() ?? link?.Url;
+        var url = link?.Url;
 
         if (url.HasValue()) {
-            return new Uri(url);
+            return Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri : null;
         } else {
             return null;
         }

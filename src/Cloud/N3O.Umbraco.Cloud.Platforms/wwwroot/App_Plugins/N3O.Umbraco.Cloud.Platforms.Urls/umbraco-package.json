@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.Cloud.Platforms.Urls",
+    "name": "N3O Platforms URLs",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "workspaceInfoApp",
+            "alias": "N3O.WorkspaceInfoApp.PlatformsUrls",
+            "name": "N3O Platforms URLs",
+            "element": "/App_Plugins/N3O.Umbraco.Cloud.Platforms.Urls/platforms-urls-info-app.js",
+            "weight": 50,
+            "meta": {},
+            "conditions": [
+                {
+                    "alias": "Umb.Condition.WorkspaceAlias",
+                    "match": "Umb.Workspace.Document"
+                }
+            ]
+        }
+    ]
+}

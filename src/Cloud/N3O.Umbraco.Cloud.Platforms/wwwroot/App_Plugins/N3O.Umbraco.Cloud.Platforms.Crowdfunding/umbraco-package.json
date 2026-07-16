@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.Cloud.Platforms.Crowdfunding",
+    "name": "N3O Platforms Crowdfunding Visibility",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "workspaceContext",
+            "alias": "N3O.WorkspaceContext.CrowdfundingVisibility",
+            "name": "N3O Crowdfunding Visibility",
+            "api": "/App_Plugins/N3O.Umbraco.Cloud.Platforms.Crowdfunding/crowdfunding-visibility.js",
+            "conditions": [
+                {
+                    "alias": "Umb.Condition.WorkspaceAlias",
+                    "match": "Umb.Workspace.Document"
+                }
+            ]
+        }
+    ]
+}

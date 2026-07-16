@@ -1,14 +1,14 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Models;
-using N3O.Umbraco.Cloud.Platforms.NamedParameters;
+using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Parameters;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Queries;
 
 public class GetPreviewHtmlQuery : Request<Dictionary<string, object>, PreviewHtmlRes> {
-    public GetPreviewHtmlQuery(ContentTypeAlias contentTypeAlias) {
-        ContentTypeAlias = contentTypeAlias;
+    public GetPreviewHtmlQuery(ContentId contentId) {
+        ContentId = contentId;
     }
-    
-    public ContentTypeAlias ContentTypeAlias { get; }
+
+    public ContentId ContentId { get; }
 }
