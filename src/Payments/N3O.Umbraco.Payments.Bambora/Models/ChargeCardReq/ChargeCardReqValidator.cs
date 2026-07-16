@@ -10,10 +10,6 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
             .NotEmpty()
             .WithMessage(Get<Strings>(x => x.SpecifyToken));
 
-        RuleFor(x => x.Value)
-           .NotEmpty()
-           .WithMessage(Get<Strings>(x => x.SpecifyValue));
-        
         RuleFor(x => x.BrowserParameters)
             .NotEmpty()
             .WithMessage(Get<Strings>(x => x.SpecifyBrowserParameters));
@@ -27,6 +23,5 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
         public string SpecifyBrowserParameters => "Please specify the browser parameters";
         public string SpecifyReturnUrl => "Please specify the return URL";
         public string SpecifyToken => "Please specify the token";
-        public string SpecifyValue => "Please specify the value";
     }
 }

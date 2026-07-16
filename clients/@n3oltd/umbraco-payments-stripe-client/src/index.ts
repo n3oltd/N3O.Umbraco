@@ -317,13 +317,7 @@ export interface ProblemDetails {
 }
 
 export interface PaymentIntentReq {
-    value?: MoneyReq | undefined;
     paymentMethodId?: string | undefined;
-}
-
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: string | undefined;
 }
 
 export interface PaymentFlowResOfStripeCredential {
