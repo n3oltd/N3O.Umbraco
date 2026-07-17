@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using NodaTime.Extensions;
 using NodaTime.Text;
@@ -44,9 +45,11 @@ public class CreateCampaignReqMapping : IMapDefinition {
             if (src.Giving.Type == GivingType.Regular) {
                 dest.Giving.Regular = new ConnectRegularGivingOptionsReq();
                 dest.Giving.Regular.Frequency = src.Giving.RegularGiving.RegularGivingFrequency.ToEnum<RegularGivingFrequency>();
-            } else {
+            } else if (src.Giving.Type == GivingType.Scheduled) {
                 dest.Giving.Scheduled = new ConnectScheduledGivingOptionsReq();
                 dest.Giving.Scheduled.ScheduleId = src.Giving.ScheduledGiving.Schedule.Id;
+            } else {
+                throw UnrecognisedValueException.For(src.Giving.Type);
             }
         } else if (src.Type == CampaignTypes.Telethon) {
             dest.Telethon = new TelethonCampaignOptionsReq();
