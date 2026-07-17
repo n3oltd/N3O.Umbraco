@@ -74,8 +74,8 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
             return null;
         }
     }
-    private Dictionary<long, PublishedAsset> GetAssets(DirectoryInfo directory, string relativeUrlPath) {
-        var publishedAssets = new Dictionary<long, PublishedAsset>();
+    private Dictionary<string, PublishedAsset> GetAssets(DirectoryInfo directory, string relativeUrlPath) {
+        var publishedAssets = new Dictionary<string, PublishedAsset>();
         
         var assetsDirectory = new DirectoryInfo(Path.Combine(directory.FullName, "assets"));
 
@@ -89,7 +89,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
                     publishedAsset.Number = assetNumber;
                     publishedAsset.Url = $"{relativeUrlPath}/{assetNumber}/{assetDirectory.GetFiles().Single().Name}";
 
-                    publishedAssets[assetNumber.GetValueOrThrow()] = publishedAsset;
+                    publishedAssets[assetDirectory.Name] = publishedAsset;
                 }
             }
         }
