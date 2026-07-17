@@ -77,6 +77,8 @@ public class UpdateCampaignReqMapping : IMapDefinition {
             dest.Qurbani.End = LocalDatePattern.Iso.Format(src.Qurbani.EndAt.ToLocalDate());
         } else if (src.Type == CampaignTypes.ScheduledGiving) {
             dest.Giving = new ConnectGivingOptionsReq();
+            dest.Giving.Type = GivingType.Scheduled;
+            dest.Giving.Scheduled = new ConnectScheduledGivingOptionsReq();
             dest.Giving.Scheduled.ScheduleId = src.ScheduledGiving.Schedule.Id;
         } else if (src.Type == CampaignTypes.Telethon) {
             dest.Telethon = new TelethonCampaignOptionsReq();
