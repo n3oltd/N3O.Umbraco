@@ -1,4 +1,4 @@
-using N3O.Umbraco.Giving.Checkout.Lookups;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Lookups;
 using NodaTime;
 

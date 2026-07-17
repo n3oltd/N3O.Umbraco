@@ -7,9 +7,12 @@ public static class PlatformsConstants {
     public static class Campaigns {
         public const string CompositionAlias = "platformsCampaign";
         public const string Qurbani = "platformsQurbaniCampaign";
-        public const string ScheduledGiving = "platformsScheduledGivingCampaign";
+        public const string Giving = "platformsGivingCampaign";
         public const string Standard = "platformsStandardCampaign";
         public const string Telethon = "platformsTelethonCampaign";
+        
+        public const string ScheduledGiving = "platformsScheduledGivingCampaign";
+        public const string RegularGiving = "platformsRegularGivingCampaign";
     }
 
     public static class CrossSells {
