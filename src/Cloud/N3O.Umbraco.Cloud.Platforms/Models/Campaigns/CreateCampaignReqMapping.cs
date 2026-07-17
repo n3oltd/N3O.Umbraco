@@ -38,8 +38,8 @@ public class CreateCampaignReqMapping : IMapDefinition {
             dest.Qurbani.Begin = LocalDatePattern.Iso.Format(src.Qurbani.BeginAt.ToLocalDate());
             dest.Qurbani.End = LocalDatePattern.Iso.Format(src.Qurbani.EndAt.ToLocalDate());
         } else if (src.Type == CampaignTypes.ScheduledGiving) {
-            dest.ScheduledGiving = new ScheduledGivingCampaignOptionsReq();
-            dest.ScheduledGiving.ScheduleId = src.ScheduledGiving.Schedule.Id;
+            dest.Giving = new ConnectGivingOptionsReq();
+            dest.Giving.Scheduled.ScheduleId = src.ScheduledGiving.Schedule.Id;
         } else if (src.Type == CampaignTypes.Telethon) {
             dest.Telethon = new TelethonCampaignOptionsReq();
             dest.Telethon.Begin = src.Telethon.BeginAt.ToLocalDateTime().ToString("o", null);

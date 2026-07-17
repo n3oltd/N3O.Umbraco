@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
@@ -62,14 +63,14 @@ public class FundOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator {
 
     protected override void PopulateFormStateOptions(IReadOnlyDictionary<string, object> content,
                                                      PublishedDonationFormOptions options) {
-        var oneTimeSuggestedAmounts = GetDonationFormSuggestedAmountsReq(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts), PublishedGiftType.OneTime);
-        var recurringSuggestedAmounts = GetDonationFormSuggestedAmountsReq(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.RecurringSuggestedAmounts), PublishedGiftType.Recurring);
+        var oneTimeSuggestedAmounts = PublishedDonationFormSuggestedAmounts(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts));
+        var recurringSuggestedAmounts = PublishedDonationFormSuggestedAmounts(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.RecurringSuggestedAmounts));
         
-        var suggestedAmounts = new List<DonationFormSuggestedAmountsReq>();
-        suggestedAmounts.Add(oneTimeSuggestedAmounts);
-        suggestedAmounts.Add(recurringSuggestedAmounts);
+        var suggestedAmounts = new Dictionary<string, List<PublishedDonationFormSuggestedAmount>>();
+        suggestedAmounts.Add(PublishedGiftType.OneTime.ToEnumString(), oneTimeSuggestedAmounts.ToList());
+        suggestedAmounts.Add(PublishedGiftType.Recurring.ToEnumString(), recurringSuggestedAmounts.ToList());
         
-        options.SuggestedAmounts = suggestedAmounts;
+        options.SuggestedAmounts = suggestedAmounts.ToDictionary(x => x.Key, x => (ICollection<PublishedDonationFormSuggestedAmount>) x.Value);
     }
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData, PublishedDonationForm publishedDonationForm) {
@@ -105,16 +106,13 @@ public class FundOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator {
         return GetDataListValue<DonationItem>(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.DonationItem));
     }
     
-    private DonationFormSuggestedAmountsReq GetDonationFormSuggestedAmountsReq(IReadOnlyDictionary<string, object> content,
-                                                                               string alias,
-                                                                               PublishedGiftType giftType) {
+    private IEnumerable<PublishedDonationFormSuggestedAmount> PublishedDonationFormSuggestedAmounts(IReadOnlyDictionary<string, object> content,
+                                                                                                    string alias) {
         var suggestedAmountsStr = content[alias]?.ToString();
 
         if (suggestedAmountsStr.HasValue()) {
-            var suggested = new DonationFormSuggestedAmountsReq();
-            suggested.GiftType = giftType;
-            suggested.Amounts = _jsonProvider.DeserializeObject<IEnumerable<DonationFormSuggestedAmountReq>>(suggestedAmountsStr).ToList();
-
+            var suggested =_jsonProvider.DeserializeObject<IEnumerable<PublishedDonationFormSuggestedAmount>>(suggestedAmountsStr).ToList();
+            
             return suggested;
         } else {
             return null;

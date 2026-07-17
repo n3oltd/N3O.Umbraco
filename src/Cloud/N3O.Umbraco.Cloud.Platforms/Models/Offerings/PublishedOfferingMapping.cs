@@ -1,9 +1,12 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Markup;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Strings;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
@@ -57,7 +60,9 @@ public class PublishedOfferingMapping : IMapDefinition {
         dest.FormState.CartItem.Value.Currency = currency;
         dest.FormState.CartItem.Value.Amount = 0d;
 
-        var allocation = updateOfferingReq.FormState.CartItem.NewRegularGiving?.Allocation ?? updateOfferingReq.FormState.CartItem.NewDonation?.Allocation;
+        var allocation = updateOfferingReq.FormState.CartItem.Type == CartItemType.NewDonation
+                             ? updateOfferingReq.FormState.CartItem.NewDonation?.Allocation
+                             : updateOfferingReq.FormState.CartItem.NewGiving?.Allocation;
         
         dest.FormState.CartItem.NewDonation = new PublishedNewDonation();
         dest.FormState.CartItem.NewDonation.Allocation = new PublishedAllocationIntent();
@@ -83,7 +88,7 @@ public class PublishedOfferingMapping : IMapDefinition {
 
         if (allocation.Type == AllocationType.Fund) {
             dest.FormState.Options = new PublishedDonationFormOptions();
-            dest.FormState.Options.SuggestedAmounts = updateOfferingReq.FormState.Options.SuggestedAmounts;
+            dest.FormState.Options.SuggestedAmounts = GetPublishedDonationFormSuggestedAmounts(updateOfferingReq.FormState.Options.SuggestedAmounts.ToList());
         }
 
         dest.Options = new PublishedOfferingOptions();
@@ -98,5 +103,20 @@ public class PublishedOfferingMapping : IMapDefinition {
         publishedFundDimensionValues.Dimension4 = allocation.FundDimensions.Dimension4;
 
         return publishedFundDimensionValues;
+    }
+
+    private IDictionary<string, ICollection<PublishedDonationFormSuggestedAmount>> GetPublishedDonationFormSuggestedAmounts(List<DonationFormSuggestedAmountsReq> suggestedAmountsReq) {
+        var res = new Dictionary<string, ICollection<PublishedDonationFormSuggestedAmount>>();
+
+        var oneTimeAmountsReq = suggestedAmountsReq.Where(x => x.GiftType == GiftType.OneTime).SelectMany(x => x.Amounts);
+        var recurringAmountsReq = suggestedAmountsReq.Where(x => x.GiftType == GiftType.Recurring).SelectMany(x => x.Amounts);
+
+        var oneTimePublishedSuggestedAmounts = oneTimeAmountsReq.Select(x => new PublishedDonationFormSuggestedAmount { Amount = x.Amount, Description = x.Description});
+        var recurringPublishedSuggestedAmounts = recurringAmountsReq.Select(x => new PublishedDonationFormSuggestedAmount { Amount = x.Amount, Description = x.Description});
+
+        res.Add(GiftType.OneTime.ToEnumString(), oneTimePublishedSuggestedAmounts.ToList());
+        res.Add(GiftType.Recurring.ToEnumString(), recurringPublishedSuggestedAmounts.ToList());
+
+        return res;
     }
 }
