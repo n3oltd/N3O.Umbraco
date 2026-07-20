@@ -79,6 +79,7 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         } else if (src.Type == CampaignTypes.Giving) {
             dest.Giving = new ConnectGivingOptionsReq();
             dest.Giving.Type = src.Giving.Type;
+            dest.Giving.PaymentConfirmations = false;
             
             if (src.Giving.Type == GivingType.Regular) {
                 dest.Giving.Regular = new ConnectRegularGivingOptionsReq();
