@@ -1,20 +1,32 @@
 using Microsoft.AspNetCore.Hosting;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Features;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Search.Extensions;
 using N3O.Umbraco.Search.Models;
+using N3O.Umbraco.Utilities;
+using NodaTime;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Search;
 
 public class Sitemap : ISitemap {
+    private const string SitemapFileName = "sitemap.xml";
+    private const string SitemapFilePattern = "sitemap*.xml";
+
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IUrlBuilder _urlBuilder;
     private readonly IReadOnlyList<ISitemapEntriesProvider> _entriesProviders;
 
-    public Sitemap(IWebHostEnvironment webHostEnvironment, IEnumerable<ISitemapEntriesProvider> entriesProviders) {
+    public Sitemap(IWebHostEnvironment webHostEnvironment,
+                   IUrlBuilder urlBuilder,
+                   IEnumerable<ISitemapEntriesProvider> entriesProviders) {
         _webHostEnvironment = webHostEnvironment;
+        _urlBuilder = urlBuilder;
         _entriesProviders = entriesProviders.ApplyAttributeOrdering();
     }
 
@@ -29,14 +41,67 @@ public class Sitemap : ISitemap {
     }
 
     public async Task PublishAsync() {
-        var sitemapXml = await GetXmlAsync();
-
-        await WebRoot.SaveTextAsync(_webHostEnvironment, "sitemap.xml", sitemapXml);
-    }
-
-    private async Task<string> GetXmlAsync() {
         var entries = await GetEntriesAsync();
 
-        return entries.ToXml();
+        if (FeatureFlags.IsSet(FeatureFlags.SitemapIndex) && entries.Any()) {
+            await PublishIndexAsync(entries);
+        } else {
+            await PublishSingleAsync(entries);
+        }
+    }
+
+    private async Task PublishSingleAsync(IEnumerable<SitemapEntry> entries) {
+        await WebRoot.SaveTextAsync(_webHostEnvironment, SitemapFileName, entries.ToXml());
+
+        PruneStaleFiles(new HashSet<string>(StringComparer.OrdinalIgnoreCase) { SitemapFileName });
+    }
+
+    private async Task PublishIndexAsync(IReadOnlyList<SitemapEntry> entries) {
+        var baseUrl = _urlBuilder.Root();
+        var writtenFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var indexEntries = new List<SitemapIndexEntry>();
+
+        var groups = entries.GroupBy(x => (x.Section, LanguageSlug: x.Culture.ToHrefLang()));
+
+        foreach (var group in groups) {
+            var fileName = GetChildFileName(group.Key.Section, group.Key.LanguageSlug);
+            var groupEntries = group.ToList();
+
+            await WebRoot.SaveTextAsync(_webHostEnvironment, fileName, groupEntries.ToXml());
+
+            writtenFileNames.Add(fileName);
+            indexEntries.Add(new SitemapIndexEntry(baseUrl.AppendPathSegment(fileName), GetLastModified(groupEntries)));
+        }
+
+        await WebRoot.SaveTextAsync(_webHostEnvironment, SitemapFileName, indexEntries.ToSitemapIndexXml());
+        writtenFileNames.Add(SitemapFileName);
+
+        PruneStaleFiles(writtenFileNames);
+    }
+
+    private void PruneStaleFiles(ISet<string> writtenFileNames) {
+        foreach (var file in WebRoot.GetFiles(_webHostEnvironment, SitemapFilePattern)) {
+            if (!writtenFileNames.Contains(file.Name)) {
+                WebRoot.DeleteFile(_webHostEnvironment, file.Name);
+            }
+        }
+    }
+
+    private static string GetChildFileName(string section, string languageSlug) {
+        if (languageSlug.HasValue()) {
+            return $"sitemap_{section}_{languageSlug}.xml";
+        } else {
+            return $"sitemap_{section}.xml";
+        }
+    }
+
+    private static LocalDate? GetLastModified(IEnumerable<SitemapEntry> entries) {
+        var dates = entries.Where(x => x.LastModified.HasValue()).Select(x => x.LastModified.Value).ToList();
+
+        if (dates.Any()) {
+            return dates.Max();
+        } else {
+            return null;
+        }
     }
 }

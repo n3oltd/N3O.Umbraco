@@ -1,6 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Search.Extensions;
 using N3O.Umbraco.Search.Models;
 using NodaTime.Extensions;
 using System.Collections.Generic;
@@ -31,27 +32,70 @@ public class ContentSitemapEntriesProvider : ISitemapEntriesProvider {
     public Task<IEnumerable<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default) {
         using (_umbracoContextFactory.EnsureUmbracoContext()) {
             var localizationSettings = _localizationSettingsAccessor.GetSettings();
-            
-            var publicContent = _contentLocator.All()
-                                               .Where(x => _contentVisibility.IsVisible(x))
-                                               .Select(x => GetSitemapEntry(x, localizationSettings.DefaultCultureCode))
-                                               .ToList();
 
-            return Task.FromResult<IEnumerable<SitemapEntry>>(publicContent);
+            var entries = _contentLocator.All()
+                                         .Where(x => _contentVisibility.IsVisible(x))
+                                         .SelectMany(x => GetSitemapEntries(x, localizationSettings.DefaultCultureCode))
+                                         .ToList();
+
+            return Task.FromResult<IEnumerable<SitemapEntry>>(entries);
         }
     }
 
-    private SitemapEntry GetSitemapEntry(IPublishedContent publishedContent, string defaultCultureCode) {
-        var cultureVariantUrls = new Dictionary<string, string>();
+    private IEnumerable<SitemapEntry> GetSitemapEntries(IPublishedContent content, string defaultCultureCode) {
+        var section = SitemapSections.GetSection(content.ContentType.Alias);
+        var lastModified = content.UpdateDate.ToLocalDateTime().Date;
 
-        foreach (var cultureCode in publishedContent.OrEmpty(x => x.Cultures).Where(x => x.Key.HasValue()).Select(x => x.Key).Except(defaultCultureCode)) {
-            cultureVariantUrls[cultureCode] = publishedContent.AbsoluteUrl(cultureCode);
+        var publishedCultureCodes = content.OrEmpty(x => x.Cultures)
+                                           .Select(x => x.Key)
+                                           .Where(x => x.HasValue())
+                                           .ToList();
+
+        if (!publishedCultureCodes.Any()) {
+            var url = content.AbsoluteUrl();
+
+            if (IsRoutable(url)) {
+                yield return new SitemapEntry(url, null, section, lastModified, null);
+            }
+
+            yield break;
         }
-        
-        return new SitemapEntry(publishedContent.AbsoluteUrl(),
-                                "daily",
-                                0.5f,
-                                publishedContent.UpdateDate.ToLocalDateTime().Date,
-                                cultureVariantUrls);
+
+        var cultureUrls = new Dictionary<string, string>();
+
+        foreach (var cultureCode in publishedCultureCodes) {
+            var url = content.AbsoluteUrl(cultureCode);
+
+            if (IsRoutable(url)) {
+                cultureUrls[cultureCode] = url;
+            }
+        }
+
+        if (!cultureUrls.Any()) {
+            yield break;
+        }
+
+        if (cultureUrls.Count == 1) {
+            var only = cultureUrls.First();
+
+            yield return new SitemapEntry(only.Value, only.Key, section, lastModified, null);
+
+            yield break;
+        }
+
+        var xDefaultUrl = cultureUrls.ContainsKey(defaultCultureCode)
+                              ? cultureUrls[defaultCultureCode]
+                              : cultureUrls.Values.First();
+
+        foreach (var cultureCode in cultureUrls.Keys) {
+            var alternateUrls = new Dictionary<string, string>(cultureUrls);
+            alternateUrls[SitemapEntryExtensions.XDefault] = xDefaultUrl;
+
+            yield return new SitemapEntry(cultureUrls[cultureCode], cultureCode, section, lastModified, alternateUrls);
+        }
+    }
+
+    private static bool IsRoutable(string url) {
+        return url.HasValue() && !url.EndsWith("#");
     }
 }
