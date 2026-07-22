@@ -87,8 +87,7 @@ public class CdnClient : ICdnClient {
         var download = Downloads.GetOrDefault(publishedUrl);
 
         if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-            // Coalesce concurrent refreshes for the same URL so a slow or timing-out CDN cannot pile up
-            // in-flight fetches and exhaust the shared ConcurrencyLimit.
+            // Coalesce refreshes per URL so a failing CDN cannot pile up in-flight fetches and drain ConcurrencyLimit.
             var refresh = Refreshes.GetOrAdd(publishedUrl,
                                              url => new Lazy<Task<CdnDownloadResult>>(() => RefreshAsync(url)));
 
@@ -102,8 +101,7 @@ public class CdnClient : ICdnClient {
         try {
             var cdnDownloadResult = await DownloadStringAsync(publishedUrl, CancellationToken.None);
 
-            // Store a success; refresh a still-failed entry to reset its retry cooldown; keep a cached
-            // success when the refresh failed. Evaluated atomically against the live entry.
+            // A cached success is retained when a later refresh fails.
             return Downloads.AddOrUpdate(publishedUrl,
                                          cdnDownloadResult,
                                          (_, existing) => cdnDownloadResult.Success || !existing.Success

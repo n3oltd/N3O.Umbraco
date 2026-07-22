@@ -73,7 +73,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                         return getPageResult;
                     } else {
                         if (currentPath != platformsPath) {
-                            return GetPageResult.ForRedirect(getPageResult.Page.Url.AbsolutePath, false);
+                            return GetPageResult.ForRedirect(getPageResult.Page.Url.AbsolutePath, true);
                         } else {
                             return getPageResult;
                         }

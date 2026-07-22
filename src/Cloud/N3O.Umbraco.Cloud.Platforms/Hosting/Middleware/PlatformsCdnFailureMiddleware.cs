@@ -22,8 +22,7 @@ public class PlatformsCdnFailureMiddleware : IMiddleware {
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
         try {
-            // Page resolution reads the content cache, which requires an ambient UmbracoContext;
-            // one does not yet exist this early in the pipeline, so establish it here.
+            // Content-cache resolution requires an ambient UmbracoContext, which PrePipeline lacks.
             using (_umbracoContextFactory.Value.EnsureUmbracoContext()) {
                 var getPageResult = await _platformsPageAccessor.GetAsync(context.RequestAborted);
 
@@ -35,7 +34,7 @@ public class PlatformsCdnFailureMiddleware : IMiddleware {
                 }
             }
         } catch (Exception ex) {
-            // A CDN failure check must never itself fail the request; fall through to the pipeline.
+            // A CDN failure check must never itself fail the request.
             _logger.Value.LogWarning(ex, "Could not check platforms page for a CDN failure");
         }
 
