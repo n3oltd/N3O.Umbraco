@@ -4,7 +4,9 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Media;
 using NodaTime.Extensions;
 using NodaTime.Text;
@@ -13,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Extensions;
+using GivingType = N3O.Umbraco.Cloud.Platforms.Clients.GivingType;
+using RegularGivingFrequency = N3O.Umbraco.Cloud.Platforms.Clients.RegularGivingFrequency;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -75,9 +79,30 @@ public class UpdateCampaignReqMapping : IMapDefinition {
             dest.Qurbani.SeasonId = activeSeason.Id;
             dest.Qurbani.Begin = LocalDatePattern.Iso.Format(src.Qurbani.BeginAt.ToLocalDate());
             dest.Qurbani.End = LocalDatePattern.Iso.Format(src.Qurbani.EndAt.ToLocalDate());
-        } else if (src.Type == CampaignTypes.ScheduledGiving) {
-            dest.ScheduledGiving = new ScheduledGivingCampaignOptionsReq();
-            dest.ScheduledGiving.ScheduleId = src.ScheduledGiving.Schedule.Id;
+        } else if (src.Type == CampaignTypes.Giving) {
+            dest.Giving = new ConnectGivingOptionsReq();
+            dest.Giving.Type = src.Giving.Type;
+            dest.Giving.PaymentConfirmations = false;
+            
+            if (src.Giving.Type == GivingType.Regular) {
+                dest.Giving.Regular = new ConnectRegularGivingOptionsReq();
+                dest.Giving.Regular.Frequency = src.Giving.RegularGiving.RegularGivingFrequency.ToEnum<RegularGivingFrequency>();
+                
+                if (src.Giving.RegularGiving.RegularGivingFrequency == RegularGivingFrequencies.Monthly && 
+                    src.Giving.RegularGiving.DayOfMonth.HasValue()) {
+                    dest.Giving.Regular.Monthly = new MonthlyGivingOptionsReq();
+                    dest.Giving.Regular.Monthly.CollectionDay = src.Giving.RegularGiving.DayOfMonth.Id;
+                } else if (src.Giving.RegularGiving.RegularGivingFrequency == RegularGivingFrequencies.Weekly && 
+                           src.Giving.RegularGiving.DayOfWeek.HasValue()) {
+                    dest.Giving.Regular.Weekly = new WeeklyGivingOptionsReq();
+                    dest.Giving.Regular.Weekly.CollectionDay = src.Giving.RegularGiving.DayOfWeek.ToEnum<DayOfWeek>();
+                }
+            } else if (src.Giving.Type == GivingType.Scheduled) {
+                dest.Giving.Scheduled = new ConnectScheduledGivingOptionsReq();
+                dest.Giving.Scheduled.ScheduleId = src.Giving.ScheduledGiving.Schedule.Id;
+            } else {
+                throw UnrecognisedValueException.For(src.Giving.Type);
+            }
         } else if (src.Type == CampaignTypes.Telethon) {
             dest.Telethon = new TelethonCampaignOptionsReq();
             

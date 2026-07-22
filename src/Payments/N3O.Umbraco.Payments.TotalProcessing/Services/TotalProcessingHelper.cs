@@ -46,8 +46,10 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
     public async Task PrepareCredentialCheckoutAsync(TotalProcessingCredential credential,
                                                      PaymentsParameters parameters,
                                                      PrepareCheckoutReq req) {
-        var paymentReq = GetPaymentReq(req.Value, parameters, true);
-        
+        var value = parameters.GetPaymentAmount(credential.Type);
+
+        var paymentReq = GetPaymentReq(value, parameters, true);
+
         var res = await _checkoutClient.Value.PrepareCheckoutAsync(paymentReq);
 
         credential.CheckoutPrepared(req.ReturnUrl, res.Ndc, res.Id);
@@ -56,18 +58,20 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
     public async Task PreparePaymentCheckoutAsync(TotalProcessingPayment payment,
                                                   PaymentsParameters parameters,
                                                   PrepareCheckoutReq req) {
-        var paymentReq = GetPaymentReq(req.Value, parameters, false);
+        var value = parameters.GetPaymentAmount(payment.Type);
+
+        var paymentReq = GetPaymentReq(value, parameters, false);
 
         var res = await _checkoutClient.Value.PrepareCheckoutAsync(paymentReq);
 
         payment.CheckoutPrepared(req.ReturnUrl, res.Ndc, res.Id);
     }
-    
-    private PaymentReq GetPaymentReq(MoneyReq value, PaymentsParameters parameters, bool store) {
+
+    private PaymentReq GetPaymentReq(Money value, PaymentsParameters parameters, bool store) {
         var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
-        
+
         var req = new PaymentReq();
-        req.Amount = value.Amount?.ToString(CultureInfo.InvariantCulture);
+        req.Amount = value.Amount.ToString(CultureInfo.InvariantCulture);
         req.Currency = value.Currency.Code;
         req.PaymentType = "DB";
         req.EntityId = _totalProcessingApiSettings.EntityId;

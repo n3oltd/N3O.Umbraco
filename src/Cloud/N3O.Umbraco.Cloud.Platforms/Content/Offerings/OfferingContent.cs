@@ -38,6 +38,10 @@ public class OfferingContent :
 
     public string Notes => GetValue(x => x.Notes);
 
+    public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
+    public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
+    public string DonationPopupEmbedCode => GetValue(x => x.DonationPopupEmbedCode);
+
     public DonationFormContentContent FormContent { get; private set; }
     public DonationFormStateContent FormState { get; private set; }
     public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);

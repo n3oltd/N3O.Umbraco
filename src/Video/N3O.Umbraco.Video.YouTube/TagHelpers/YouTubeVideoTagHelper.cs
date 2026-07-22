@@ -13,19 +13,40 @@ public class YouTubeVideoTagHelper : TagHelper {
 
     public override void Process(TagHelperContext context, TagHelperOutput output) {
         var videoId = VideoUrl.GetYouTubeVideoId();
+
         if (videoId == null) {
             output.SuppressOutput();
-        } else {
-            output.TagName = "div";
-            output.Attributes.Add("style", "position: relative; width: 100%; height: 0; padding-bottom: 56.25%;");
 
-            var iframeTag = new TagBuilder("iframe");
-            iframeTag.Attributes.Add("src", $"https://www.youtube.com/embed/{videoId}?enablejsapi=1");
-            iframeTag.Attributes.Add("frameborder", "0");
-            iframeTag.Attributes.Add("allowfullscreen", "true");
-            iframeTag.Attributes.Add("style", "position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;");
-
-            output.Content.SetHtmlContent(iframeTag.ToHtmlString());
+            return;
         }
+
+        var host = VideoUrl.InvariantContains("youtube-nocookie.com")
+                       ? "https://www.youtube-nocookie.com"
+                       : "https://www.youtube.com";
+
+        var iframeTag = new TagBuilder("iframe");
+
+        foreach (var attribute in output.Attributes) {
+            iframeTag.Attributes[attribute.Name] = attribute.Value?.ToString();
+        }
+
+        iframeTag.Attributes["src"] = $"{host}/embed/{videoId}?enablejsapi=1";
+
+        if (!iframeTag.Attributes.ContainsKey("frameborder")) {
+            iframeTag.Attributes["frameborder"] = "0";
+        }
+
+        if (!iframeTag.Attributes.ContainsKey("allowfullscreen")) {
+            iframeTag.Attributes["allowfullscreen"] = "true";
+        }
+
+        if (!iframeTag.Attributes.ContainsKey("style")) {
+            iframeTag.Attributes["style"] = "position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;";
+        }
+
+        output.TagName = "div";
+        output.Attributes.Clear();
+        output.Attributes.Add("style", "position: relative; width: 100%; height: 0; padding-bottom: 56.25%;");
+        output.Content.SetHtmlContent(iframeTag.ToHtmlString());
     }
 }

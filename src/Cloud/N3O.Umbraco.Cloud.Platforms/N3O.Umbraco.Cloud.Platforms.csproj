@@ -46,6 +46,4 @@
         <ProjectReference Include="..\..\Plugins\EditorJs\N3O.Umbraco.EditorJs\N3O.Umbraco.EditorJs.csproj" />
         <ProjectReference Include="..\N3O.Umbraco.Cloud\N3O.Umbraco.Cloud.csproj" />
     </ItemGroup>
-    <ItemGroup>
-    </ItemGroup>
 </Project>

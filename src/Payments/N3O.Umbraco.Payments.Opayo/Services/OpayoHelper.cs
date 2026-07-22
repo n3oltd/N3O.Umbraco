@@ -82,8 +82,9 @@ public class OpayoHelper : IOpayoHelper {
         try {
             var settings = _contentCache.Single<OpayoSettingsContent>();
             var vendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier ?? Guid.NewGuid().ToString() ).Left(40);
-            
-            var apiRequest = GetApiPaymentTransactionReq(settings, vendorTxCode, req, parameters, saveCard);
+            var value = parameters.GetPaymentAmount(payment.Type);
+
+            var apiRequest = GetApiPaymentTransactionReq(settings, vendorTxCode, req, parameters, saveCard, value);
 
             payment.UpdateKeyAndVendorTxCode(req.MerchantSessionKey, vendorTxCode);
             
@@ -108,11 +109,12 @@ public class OpayoHelper : IOpayoHelper {
                                                                  string vendorTxCode,
                                                                  ChargeCardReq req,
                                                                  PaymentsParameters parameters,
-                                                                 bool saveCard) {
+                                                                 bool saveCard,
+                                                                 Money value) {
         var apiReq = new ApiPaymentTransactionReq();
 
-        apiReq.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
-        apiReq.Currency = req.Value.Currency.Code.ToUpperInvariant();
+        apiReq.Amount = value.GetAmountInLowestDenomination();
+        apiReq.Currency = value.Currency.Code.ToUpperInvariant();
         apiReq.Description = parameters.GetTransactionDescription(settings);
         apiReq.VendorTxCode = vendorTxCode;
 

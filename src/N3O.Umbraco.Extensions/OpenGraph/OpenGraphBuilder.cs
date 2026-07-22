@@ -1,3 +1,4 @@
+using Flurl;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 
@@ -26,16 +27,16 @@ public class OpenGraphBuilder : IOpenGraphBuilder {
         return this;
     }
 
-    public IOpenGraphBuilder WithImagePath(string imagePath) {
-        var imageUrl = _urlBuilder.Root().AppendPathSegment(imagePath);
-
-        return WithImageUrl(imageUrl);
-    }
-
     public IOpenGraphBuilder WithImageUrl(string imageUrl) {
         _imageUrl = imageUrl;
 
         return this;
+    }
+
+    public IOpenGraphBuilder WithRelativeImageUrl(string relativeImageUrl) {
+        var imageUrl = Url.Combine(_urlBuilder.Root(), relativeImageUrl);
+
+        return WithImageUrl(imageUrl);
     }
 
     public IOpenGraphBuilder WithUrl(string url) {

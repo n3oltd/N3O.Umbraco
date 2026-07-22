@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 
@@ -27,4 +28,15 @@ public class LocalizationSettings : Value {
     public Timezone Timezone { get; }
     
     public static string CultureCode => Thread.CurrentThread.CurrentCulture.ToString();
+
+    public static string GetLanguageName(string cultureCode) {
+        try {
+            var requestedCulture = CultureInfo.GetCultureInfo(cultureCode);
+            var languageCulture = CultureInfo.GetCultureInfo(requestedCulture.TwoLetterISOLanguageName);
+
+            return languageCulture.EnglishName;
+        } catch {
+            return null;
+        }
+    }
 }
