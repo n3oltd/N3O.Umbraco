@@ -21,6 +21,7 @@ namespace N3O.Umbraco.Cloud;
 public class CdnClient : ICdnClient {
     private static readonly SemaphoreSlim ConcurrencyLimit = new(10, 10);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
+    private static readonly ConcurrentDictionary<string, Lazy<Task<CdnDownloadResult>>> Refreshes = new(StringComparer.InvariantCultureIgnoreCase);
 
     private readonly ICloudUrl _cloudUrl;
     private readonly IClock _clock;
@@ -43,8 +44,10 @@ public class CdnClient : ICdnClient {
 
     public async Task<string> DownloadAsync(string path, CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(path);
+        
+        var download = await FetchAsync(publishedUrl, cancellationToken);
 
-        return await FetchStringAsync(publishedUrl, cancellationToken);
+        return download.Content;
     }
 
     public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
@@ -53,18 +56,22 @@ public class CdnClient : ICdnClient {
                                                           CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(kind, path);
 
-        var json = await FetchStringAsync(publishedUrl, cancellationToken);
-            
-        return json.IfNotNull(x => Deserialize<T>(x, jsonSerializer));
+        var download = await FetchAsync(publishedUrl, cancellationToken);
+
+        return download.Content.IfNotNull(x => Deserialize<T>(x, jsonSerializer));
     }
 
     public async Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
                                                                             CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(path);
 
-        var json = await FetchStringAsync(publishedUrl, cancellationToken);
+        var download = await FetchAsync(publishedUrl, cancellationToken);
 
-        var jObject = json.IfNotNull(JObject.Parse);
+        if (download.Error) {
+            return PublishedContentResult.ForError(path);
+        }
+
+        var jObject = download.Content.IfNotNull(JObject.Parse);
         var kind = jObject.GetPublishedFileKind();
             
         if (kind.HasValue()) {
@@ -76,18 +83,33 @@ public class CdnClient : ICdnClient {
         }
     }
 
-    private async Task<string> FetchStringAsync(string publishedUrl, CancellationToken cancellationToken) {
+    private async Task<CdnDownloadResult> FetchAsync(string publishedUrl, CancellationToken cancellationToken) {
         var download = Downloads.GetOrDefault(publishedUrl);
-            
-        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, cancellationToken);
 
-            if (download == null || cdnDownloadResult.Success) {
-                Downloads[publishedUrl] = cdnDownloadResult;
-            }
+        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
+            // Coalesce refreshes per URL so a failing CDN cannot pile up in-flight fetches and drain ConcurrencyLimit.
+            var refresh = Refreshes.GetOrAdd(publishedUrl,
+                                             url => new Lazy<Task<CdnDownloadResult>>(() => RefreshAsync(url)));
+
+            await refresh.Value.WaitAsync(cancellationToken);
         }
 
-        return Downloads[publishedUrl].Content;
+        return Downloads[publishedUrl];
+    }
+
+    private async Task<CdnDownloadResult> RefreshAsync(string publishedUrl) {
+        try {
+            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, CancellationToken.None);
+
+            // A cached success is retained when a later refresh fails.
+            return Downloads.AddOrUpdate(publishedUrl,
+                                         cdnDownloadResult,
+                                         (_, existing) => cdnDownloadResult.Success || !existing.Success
+                                                              ? cdnDownloadResult
+                                                              : existing);
+        } finally {
+            Refreshes.TryRemove(publishedUrl, out _);
+        }
     }
     
     private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
@@ -99,11 +121,11 @@ public class CdnClient : ICdnClient {
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
             _logger.LogDebug("CDN 404 for {PublishedUrl}", publishedUrl);
 
-            return CdnDownloadResult.ForFailure(_clock);
+            return CdnDownloadResult.ForNotFound(_clock);
         } catch (Exception ex) {
             _logger.LogWarning(ex, "Could not download {PublishedUrl}", publishedUrl);
 
-            return CdnDownloadResult.ForFailure(_clock);
+            return CdnDownloadResult.ForError(_clock);
         }
     }
     

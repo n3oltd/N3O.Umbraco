@@ -4,16 +4,18 @@ namespace N3O.Umbraco.Cloud.Models;
 
 public class CdnDownloadResult {
     private static readonly Duration MaxAge = Duration.FromMinutes(5);
-    // Long interval so chronic 404 paths don't keep re-fetching and saturating CdnClient's concurrency budget
-    private static readonly Duration RetryInterval = Duration.FromMinutes(15);
-    
-    private CdnDownloadResult(bool success, string content, Instant timestamp) {
+    private static readonly Duration NotFoundRetryInterval = Duration.FromMinutes(15);
+    private static readonly Duration ErrorRetryInterval = Duration.FromSeconds(10);
+
+    private CdnDownloadResult(bool success, bool error, string content, Instant timestamp) {
         Success = success;
+        Error = error;
         Content = content;
         Timestamp = timestamp;
     }
 
     public bool Success { get; }
+    public bool Error { get; }
     public string Content { get; }
     public Instant Timestamp { get; }
 
@@ -23,7 +25,7 @@ public class CdnDownloadResult {
         } else {
             var age = clock.GetCurrentInstant() - Timestamp;
 
-            return age > RetryInterval;
+            return age > (Error ? ErrorRetryInterval : NotFoundRetryInterval);
         }
     }
     
@@ -37,11 +39,15 @@ public class CdnDownloadResult {
         }
     }
 
-    public static CdnDownloadResult ForFailure(IClock clock) {
-        return new CdnDownloadResult(false, null, clock.GetCurrentInstant());
+    public static CdnDownloadResult ForNotFound(IClock clock) {
+        return new CdnDownloadResult(false, false, null, clock.GetCurrentInstant());
     }
-    
+
+    public static CdnDownloadResult ForError(IClock clock) {
+        return new CdnDownloadResult(false, true, null, clock.GetCurrentInstant());
+    }
+
     public static CdnDownloadResult ForSuccess(IClock clock, string content) {
-        return new CdnDownloadResult(true, content, clock.GetCurrentInstant());
+        return new CdnDownloadResult(true, false, content, clock.GetCurrentInstant());
     }
 }

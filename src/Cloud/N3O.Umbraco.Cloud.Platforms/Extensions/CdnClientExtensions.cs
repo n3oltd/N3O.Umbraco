@@ -22,7 +22,9 @@ public static class CdnClientExtensions {
         
         var publishedContentResult = await cdnClient.DownloadPublishedContentAsync(pagePath, cancellationToken);
 
-        if (publishedContentResult.NotFound) {
+        if (publishedContentResult.Error) {
+            return GetPageResult.ForError();
+        } else if (publishedContentResult.NotFound) {
             return null;
         } else {
             if (publishedContentResult.Kind == PublishedFileKinds.PageRedirect) {
@@ -36,6 +38,10 @@ public static class CdnClientExtensions {
 
             var additionalModels = await publishedPlatformsPage.OrEmpty(x => x.MergeModels)
                                                                .SelectListAsync(x => FetchMergeModelAsync(cdnClient, x));
+
+            if (additionalModels.HasAny(x => x.Error)) {
+                return GetPageResult.ForError();
+            }
 
             var platformsPage = new PlatformsPage(publishedContentResult.Id.GetValueOrThrow(),
                                                   publishedContentResult.Kind,
