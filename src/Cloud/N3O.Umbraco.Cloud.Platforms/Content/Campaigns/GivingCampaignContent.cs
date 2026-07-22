@@ -7,7 +7,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Campaigns.CompositionAlias)]
+[UmbracoContent(PlatformsConstants.Campaigns.Giving)]
 public class GivingCampaignContent : UmbracoContent<GivingCampaignContent> {
     private static readonly string ScheduledGivingCampaignAlias = AliasHelper<ScheduledGivingCampaignContent>.ContentTypeAlias();
     private static readonly string RegularGivingCampaignAlias = AliasHelper<RegularGivingCampaignContent>.ContentTypeAlias();
