@@ -2,6 +2,7 @@ using N3O.Umbraco.Lookups;
 using N3O.Umbraco.StructuredData;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace N3O.Umbraco.Extensions;
@@ -44,13 +45,13 @@ public static class JsonLdExtensions {
     }
 
     public static JsonLd DatePublished(this JsonLd jsonLd, DateTime date) {
-        jsonLd.Custom("datePublished", date.ToString("yyyy-MM-dd"));
+        jsonLd.Custom("datePublished", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
 
         return jsonLd;
     }
 
     public static JsonLd DateModified(this JsonLd jsonLd, DateTime date) {
-        jsonLd.Custom("dateModified", date.ToString("yyyy-MM-dd"));
+        jsonLd.Custom("dateModified", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
 
         return jsonLd;
     }
@@ -66,10 +67,12 @@ public static class JsonLdExtensions {
     }
 
     public static JsonLd Reference(this JsonLd jsonLd, string key, string id) {
-        var reference = JsonLd.New();
+        if (id.HasValue()) {
+            var reference = JsonLd.New();
 
-        reference.Id(id);
-        jsonLd.Custom(key, reference);
+            reference.Id(id);
+            jsonLd.Custom(key, reference);
+        }
 
         return jsonLd;
     }
@@ -89,7 +92,7 @@ public static class JsonLdExtensions {
     }
 
     public static JsonLd StartDate(this JsonLd jsonLd, DateTime date) {
-        jsonLd.Custom("startDate", date.ToString("yyyy-MM-dd"));
+        jsonLd.Custom("startDate", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
 
         return jsonLd;
     }
