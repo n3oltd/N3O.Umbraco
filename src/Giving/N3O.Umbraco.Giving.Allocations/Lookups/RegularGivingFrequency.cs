@@ -1,7 +1,7 @@
 using N3O.Umbraco.Lookups;
 using NodaTime;
 
-namespace N3O.Umbraco.Giving.Checkout.Lookups;
+namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
 public class RegularGivingFrequency : NamedLookup {
     public RegularGivingFrequency(string id, string name, int months) : base(id, name) {
@@ -19,4 +19,5 @@ public class RegularGivingFrequencies : StaticLookupsCollection<RegularGivingFre
     public static RegularGivingFrequency Annually = new("annually", "Annually", 12);
     public static RegularGivingFrequency Monthly = new("monthly", "Monthly", 1);
     public static RegularGivingFrequency Quarterly = new("quarterly", "Quarterly", 3);
+    public static RegularGivingFrequency Weekly = new ("weekly", "Weekly", 1);
 }

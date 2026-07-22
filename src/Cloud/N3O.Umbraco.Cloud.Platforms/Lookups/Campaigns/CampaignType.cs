@@ -8,7 +8,7 @@ public class CampaignType : NamedLookup {
 
 public class CampaignTypes : StaticLookupsCollection<CampaignType> {
     public static readonly CampaignType Qurbani = new("qurbani", "Qurbani");
-    public static readonly CampaignType ScheduledGiving = new("scheduledGiving", "Scheduled Giving");
+    public static readonly CampaignType Giving = new("giving", "Giving");
     public static readonly CampaignType Standard = new("standard", "Standard");
     public static readonly CampaignType Telethon = new("telethon", "Telethon");
 }

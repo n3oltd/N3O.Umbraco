@@ -10,10 +10,12 @@ namespace N3O.Umbraco.Forex.Models;
 public class CurrencyValuesMapping : IMapDefinition {
     private readonly ILookups _lookups;
     private readonly IForexConverter _forexConverter;
+    private readonly ICurrencyRounder _currencyRounder;
 
-    public CurrencyValuesMapping(ILookups lookups, IForexConverter forexConverter) {
+    public CurrencyValuesMapping(ILookups lookups, IForexConverter forexConverter, ICurrencyRounder currencyRounder) {
         _lookups = lookups;
         _forexConverter = forexConverter;
+        _currencyRounder = currencyRounder;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -30,8 +32,8 @@ public class CurrencyValuesMapping : IMapDefinition {
 
         foreach (var currency in otherCurrencies) {
             var forexMoney = _forexConverter.BaseToQuote().ToCurrency(currency).Convert(src);
-            
-            dest[currency.Code] = ctx.Map<Money, MoneyRes>(forexMoney.Quote);
+
+            dest[currency.Code] = ctx.Map<Money, MoneyRes>(_currencyRounder.Round(forexMoney.Quote));
         }
     }
 }

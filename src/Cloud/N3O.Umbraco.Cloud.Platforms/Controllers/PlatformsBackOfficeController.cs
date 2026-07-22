@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
-using N3O.Umbraco.Cloud.Platforms.Queries;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
-using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Utilities;
 using Slugify;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
 
@@ -22,26 +19,16 @@ public class PlatformsBackOfficeController : BackofficeAuthorizedApiController {
     private readonly IContentCache _contentCache;
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
-    private readonly IMediator _mediator;
     private readonly ISlugHelper _slugHelper;
 
     public PlatformsBackOfficeController(IContentCache contentCache,
                                          IContentService contentService,
                                          IContentTypeService contentTypeService,
-                                         IMediator mediator,
                                          ISlugHelper slugHelper) {
         _contentCache = contentCache;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
-        _mediator = mediator;
         _slugHelper = slugHelper;
-    }
-
-    [HttpPost("previewHtml/{contentId:guid}")]
-    public async Task<ActionResult<PreviewHtmlRes>> GetPreviewHtml(Dictionary<string, object> req) {
-        var res = await _mediator.SendAsync<GetPreviewHtmlQuery, Dictionary<string, object>, PreviewHtmlRes>(req);
-
-        return Ok(res);
     }
 
     [HttpGet("contentUrls/{contentId:guid}")]

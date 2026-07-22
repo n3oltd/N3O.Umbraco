@@ -44,9 +44,9 @@ public partial class DonationFormStateReqMapping {
                                        AllocationIntentReq allocation,
                                        OurGiftType suggestedGiftType) {
         if (suggestedGiftType == GiftTypes.Recurring) {
-            cartItem.Type = CartItemType.NewRegularGiving;
-            cartItem.NewRegularGiving = new NewRegularGivingWithOptionsReq();
-            cartItem.NewRegularGiving.Allocation = allocation;
+            cartItem.Type = CartItemType.NewGiving;
+            cartItem.NewGiving = new NewGivingReq();
+            cartItem.NewGiving.Allocation = allocation;
         } else {
             cartItem.Type = CartItemType.NewDonation;
             cartItem.NewDonation = new NewDonationReq();

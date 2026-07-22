@@ -20,14 +20,10 @@ public static class MediaWithCropsExtensions {
         
         req.Main = new ImageSimpleProcessingReq();
         req.Main.Crop = new ImageCropReq();
-        
-        req.Main.Crop.BottomLeft = new PointReq();
-        req.Main.Crop.BottomLeft.X = 0;
-        req.Main.Crop.BottomLeft.Y = 0;
-        
-        req.Main.Crop.TopRight = new PointReq();
-        req.Main.Crop.TopRight.X = (int) media.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
-        req.Main.Crop.TopRight.Y = (int) media.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
+        req.Main.Crop.X = 0;
+        req.Main.Crop.Y = 0;
+        req.Main.Crop.Width = (int) media.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
+        req.Main.Crop.Height = (int) media.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
 
         return req;
     }

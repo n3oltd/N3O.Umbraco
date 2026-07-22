@@ -86,12 +86,7 @@ export interface ProblemDetails {
     [key: string]: any;
 }
 export interface PaymentIntentReq {
-    value?: MoneyReq | undefined;
     paymentMethodId?: string | undefined;
-}
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: string | undefined;
 }
 export interface PaymentFlowResOfStripeCredential {
     flowRevision?: number;

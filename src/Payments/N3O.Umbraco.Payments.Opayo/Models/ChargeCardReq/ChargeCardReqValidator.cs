@@ -16,10 +16,6 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
            .NotEmpty()
            .WithMessage(Get<Strings>(x => x.SpecifyMerchantSessionKey));
 
-        RuleFor(x => x.Value)
-           .NotEmpty()
-           .WithMessage(Get<Strings>(x => x.SpecifyValue));
-
         RuleFor(x => x.BrowserParameters)
            .NotEmpty()
            .WithMessage(Get<Strings>(x => x.SpecifyBrowserParameters));
@@ -46,6 +42,5 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
         public string SpecifyChallengeWindowSize => "Please specify the challenge window size";
         public string SpecifyMerchantSessionKey => "Please specify the merchant session key";
         public string SpecifyReturnUrl => "Please specify the return URL";
-        public string SpecifyValue => "Please specify the value";
     }
 }

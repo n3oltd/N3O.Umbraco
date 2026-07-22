@@ -1,5 +1,6 @@
 using N3O.Umbraco.Extensions;
 using System;
+using System.Globalization;
 
 namespace N3O.Umbraco.Giving.Checkout.Entities;
 
@@ -10,7 +11,7 @@ public partial class Checkout {
                               Progress.CurrentStage.TransactionIdPrefix,
                               StringComparison.InvariantCultureIgnoreCase)
                      .Replace("{IdempotencyKey}",
-                              idempotencyKey?.GetDeterministicHashCode(true).ToString(),
-                              StringComparison.CurrentCultureIgnoreCase);
+                              idempotencyKey?.GetDeterministicHashCode(true).ToString(CultureInfo.InvariantCulture),
+                              StringComparison.InvariantCultureIgnoreCase);
     }
 }
