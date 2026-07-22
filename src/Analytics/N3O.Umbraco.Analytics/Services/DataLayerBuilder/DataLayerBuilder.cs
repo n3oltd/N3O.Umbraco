@@ -17,7 +17,7 @@ public class DataLayerBuilder : IDataLayerBuilder {
         var javaScript = new StringBuilder();
 
         foreach (var obj in toPush.OrEmpty()) {
-            var json = _jsonProvider.SerializeObject(obj);
+            var json = _jsonProvider.SerializeObjectForScript(obj);
             
             javaScript.AppendLine($"window.dataLayer.push({json});");
             javaScript.AppendLine();
