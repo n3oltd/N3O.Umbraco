@@ -93,8 +93,6 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         }
         
         if (fallbacks.Any()) {
-            // Temporary (302): the fallback fires when a page cannot be resolved, which may be a transient condition.
-            // A permanent (301) redirect would be cached by browsers indefinitely and pin a broken campaign link
             return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, fallbacks.First()),
                                              true);
         } else {
