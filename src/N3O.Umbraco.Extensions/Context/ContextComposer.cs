@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Context;
@@ -17,6 +18,7 @@ public class ContextComposer : Composer {
         builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
         builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
         builder.Services.TryAddSingleton<IRequestHostAccessor, RequestHostAccessor>();
+        builder.Services.TryAddSingleton<ICurrencyRounder, DefaultCurrencyRounder>();
 
         RegisterCookies<ICookie>(builder);
         RegisterCookies<IReadOnlyCookie>(builder);

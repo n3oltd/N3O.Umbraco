@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Search.Typesense.Handlers;
 
@@ -24,7 +25,17 @@ public class IndexContentHandler : IRequestHandler<IndexContentCommand, None, No
         
         if (searchIndexers.HasAny()) {
             foreach (var searchIndexer in searchIndexers) {
-                await searchIndexer.IndexAsync(publishedContent);
+                if (publishedContent.ContentType.VariesByCulture()) {
+                    // Remove all existing culture documents first so cultures that are no longer
+                    // published (and so won't be re-indexed below) don't linger in the index
+                    await searchIndexer.DeleteAsync(publishedContent.Key);
+
+                    foreach (var publishedContentCulture in publishedContent.Cultures) {
+                        await searchIndexer.IndexAsync(publishedContent, publishedContentCulture.Value.Culture);
+                    }
+                } else {
+                    await searchIndexer.IndexAsync(publishedContent);
+                }
             }
         }
         

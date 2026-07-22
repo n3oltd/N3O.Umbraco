@@ -38,8 +38,10 @@ public class CreatePaymentIntentHandler :
             var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
             var customer = await _customers.CreateCustomerAsync(billingInfo);
             var service = new PaymentIntentService(_stripeClient);
-            var paymentIntentOptions = GetPaymentIntentOptions(parameters, req.Model, customer);
-            
+            var value = parameters.GetPaymentAmount(payment.Type);
+
+            var paymentIntentOptions = GetPaymentIntentOptions(parameters, req.Model, customer, value);
+
             var options = new RequestOptions();
             options.IdempotencyKey = parameters.GetTransactionId(settings, req.Model.PaymentMethodId);
 
@@ -53,12 +55,13 @@ public class CreatePaymentIntentHandler :
     
     private PaymentIntentCreateOptions GetPaymentIntentOptions(PaymentsParameters parameters,
                                                                PaymentIntentReq req,
-                                                               Customer customer) {
+                                                               Customer customer,
+                                                               Money value) {
         var settings = _contentCache.Single<StripeSettingsContent>();
         var options = new PaymentIntentCreateOptions();
 
-        options.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
-        options.Currency = req.Value.Currency.Code;
+        options.Amount = value.GetAmountInLowestDenomination();
+        options.Currency = value.Currency.Code;
         options.Description = parameters.GetTransactionDescription(settings);
         options.ErrorOnRequiresAction = false;
         options.Customer = customer.Id;

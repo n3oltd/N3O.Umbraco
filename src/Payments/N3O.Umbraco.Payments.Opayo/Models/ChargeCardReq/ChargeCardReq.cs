@@ -1,5 +1,4 @@
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Financial;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Lookups;
 
@@ -17,9 +16,6 @@ public class ChargeCardReq {
     
     [Name("ApplePay Token")]
     public ApplePayTokenReq ApplePayToken { get; set; }
-
-    [Name("Value")]
-    public MoneyReq Value { get; set; }
 
     [Name("Browser Parameters")]
     public BrowserParametersReq BrowserParameters { get; set; }

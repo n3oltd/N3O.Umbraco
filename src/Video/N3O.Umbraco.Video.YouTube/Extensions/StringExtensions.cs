@@ -5,7 +5,7 @@ namespace N3O.Umbraco.Video.YouTube.Extensions;
 public static class StringExtensions {
     public static string GetYouTubeVideoId(this string videoUrl) {
         try {
-            var match = Regex.Match(videoUrl, @"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)");
+            var match = Regex.Match(videoUrl, @"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/)|(?<=shorts/)|(?<=live/))([\w-]+)");
 
             if (match.Success) {
                 return match.Groups[0].Value;

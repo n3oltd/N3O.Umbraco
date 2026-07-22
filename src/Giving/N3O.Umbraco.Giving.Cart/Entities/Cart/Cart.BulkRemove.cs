@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
@@ -16,12 +17,14 @@ public partial class Cart {
                                       IForexConverter forexConverter,
                                       IPriceCalculator priceCalculator,
                                       ILookups lookups,
+                                      ICurrencyRounder currencyRounder,
                                       GivingType givingType,
                                       IEnumerable<int> allocationIndexes) {
         await ReplaceContentsAsync(contentLocator,
                                    forexConverter,
                                    priceCalculator,
                                    lookups,
+                                   currencyRounder,
                                    givingType,
                                    c => BulkRemoveContents(c, allocationIndexes.ToList()));
     }

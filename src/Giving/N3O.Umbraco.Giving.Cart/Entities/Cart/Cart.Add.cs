@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
@@ -16,6 +17,7 @@ public partial class Cart {
                                IForexConverter forexConverter,
                                IPriceCalculator priceCalculator,
                                ILookups lookups,
+                               ICurrencyRounder currencyRounder,
                                GivingType givingType,
                                IAllocation allocation,
                                int quantity = 1) {
@@ -24,6 +26,7 @@ public partial class Cart {
                                        forexConverter,
                                        priceCalculator,
                                        lookups,
+                                       currencyRounder,
                                        givingType,
                                        c => AddToContents(c, allocation));
 

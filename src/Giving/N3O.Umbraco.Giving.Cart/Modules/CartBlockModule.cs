@@ -35,6 +35,7 @@ public class CartBlockModule : IBlockModule {
     private readonly Lazy<IPriceCalculator> _priceCalculator;
     private readonly Lazy<IQueryStringAccessor> _queryStringAccessor;
     private readonly Lazy<ILookups> _lookups;
+    private readonly Lazy<ICurrencyRounder> _currencyRounder;
 
     public CartBlockModule(Lazy<ICartAccessor> cartAccessor,
                            Lazy<IFormatter> formatter,
@@ -43,7 +44,8 @@ public class CartBlockModule : IBlockModule {
                            Lazy<IForexConverter> forexConverter,
                            Lazy<IPriceCalculator> priceCalculator,
                            Lazy<IQueryStringAccessor> queryStringAccessor,
-                           Lazy<ILookups> lookups) {
+                           Lazy<ILookups> lookups,
+                           Lazy<ICurrencyRounder> currencyRounder) {
         _cartAccessor = cartAccessor;
         _formatter = formatter;
         _contentCache = contentCache;
@@ -52,6 +54,7 @@ public class CartBlockModule : IBlockModule {
         _priceCalculator = priceCalculator;
         _queryStringAccessor = queryStringAccessor;
         _lookups = lookups;
+        _currencyRounder = currencyRounder;
     }
     
     public bool ShouldExecute(IPublishedElement block) {
@@ -87,6 +90,7 @@ public class CartBlockModule : IBlockModule {
             upsellOffers.Add(await upsellOffersContent.ToUpsellOfferAsync(_forexConverter.Value,
                                                                           _priceCalculator.Value,
                                                                           _lookups.Value,
+                                                                          _currencyRounder.Value,
                                                                           currency,
                                                                           upsellOffersContent.GivingType,
                                                                           cart.GetTotalExcludingUpsells(upsellOffersContent.GivingType)));

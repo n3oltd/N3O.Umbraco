@@ -47,9 +47,9 @@ public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccess
 
             _localizationSettings = new LocalizationSettings(defaultLanguage?.IsoCode,
                                                              allLanguages.Select(x => x.IsoCode).ToList(),
-                                                             publishedLocalization.NumberFormat,
-                                                             publishedLocalization.DateFormat,
-                                                             publishedLocalization.TimeFormat,
+                                                             publishedLocalization.NumberFormat.ToNumberFormat(),
+                                                             publishedLocalization.DateFormat.ToDateFormat(),
+                                                             publishedLocalization.TimeFormat.ToTimeFormat(),
                                                              timezone);
         }
 

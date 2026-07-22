@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 [UmbracoContent(PlatformsConstants.Campaigns.CompositionAlias)]
 public class CampaignContent : UmbracoContent<CampaignContent> {
     private static readonly string QurbaniCampaignAlias = AliasHelper<QurbaniCampaignContent>.ContentTypeAlias();
-    private static readonly string ScheduledGivingCampaignAlias = AliasHelper<ScheduledGivingCampaignContent>.ContentTypeAlias();
+    private static readonly string GivingCampaignAlias = AliasHelper<GivingCampaignContent>.ContentTypeAlias();
     private static readonly string StandardCampaignAlias = AliasHelper<StandardCampaignContent>.ContentTypeAlias();
     private static readonly string TelethonCampaignAlias = AliasHelper<TelethonCampaignContent>.ContentTypeAlias();
     
@@ -33,9 +33,9 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
         } else if (Type == CampaignTypes.Qurbani) {
             Qurbani = new QurbaniCampaignContent();
             Qurbani.SetContent(content);
-        } else if (Type == CampaignTypes.ScheduledGiving) {
-            ScheduledGiving = new ScheduledGivingCampaignContent();
-            ScheduledGiving.SetContent(content);
+        } else if (Type == CampaignTypes.Giving) {
+            Giving = new GivingCampaignContent();
+            Giving.SetContent(content);
         } else if (Type == CampaignTypes.Telethon) {
             Telethon = new TelethonCampaignContent();
             Telethon.SetContent(content);
@@ -62,7 +62,7 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
         Qurbani?.SetVariationContext(variationContext);
         Standard?.SetVariationContext(variationContext);
         Telethon?.SetVariationContext(variationContext);
-        ScheduledGiving?.SetVariationContext(variationContext);
+        Giving?.SetVariationContext(variationContext);
     }
 
     public string Name => Content().Name;
@@ -83,7 +83,7 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     
     public DonationFormContentContent FormContent { get; private set; }
     public QurbaniCampaignContent Qurbani { get; private set; }
-    public ScheduledGivingCampaignContent ScheduledGiving { get; private set; }
+    public GivingCampaignContent Giving { get; private set; }
     public StandardCampaignContent Standard { get; private set; }
     public TelethonCampaignContent Telethon { get; private set; }
     
@@ -95,8 +95,8 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
                 return CampaignTypes.Standard;
             } else if (Content().ContentType.Alias.EqualsInvariant(QurbaniCampaignAlias)) {
                 return CampaignTypes.Qurbani;
-            } else if (Content().ContentType.Alias.EqualsInvariant(ScheduledGivingCampaignAlias)) {
-                return CampaignTypes.ScheduledGiving;
+            } else if (Content().ContentType.CompositionAliases.Any(x => x.EqualsInvariant(GivingCampaignAlias))) {
+                return CampaignTypes.Giving;
             } else if (Content().ContentType.Alias.EqualsInvariant(TelethonCampaignAlias)) {
                 return CampaignTypes.Telethon;
             } else {

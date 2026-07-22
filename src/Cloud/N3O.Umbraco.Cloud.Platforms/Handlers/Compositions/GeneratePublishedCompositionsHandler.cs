@@ -29,12 +29,14 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
         var compositionsDirectory = WebRoot.GetDirectory(_webHostEnvironment,
                                                          Path.Combine("platforms", "compositions"));
 
-        if (compositionsDirectory.Exists) {
-            _logger.LogWarning("Found Composition Directory {Directory}", compositionsDirectory.Name);
-        } else {
-            _logger.LogWarning("Could not fund the composition directory for path: {Path}", Path.Combine("platforms", "compositions"));
+        if (compositionsDirectory == null) {
+            _logger.LogWarning("Could not find the composition directory for path: {Path}", Path.Combine("platforms", "compositions"));
+
+            return None.Empty;
         }
-        
+
+        _logger.LogWarning("Found Composition Directory {Directory}", compositionsDirectory.Name);
+
         foreach (var directory in compositionsDirectory.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
             var publishedComposition = await GeneratePublishedCompositionAsync(directory, relativeUrlPath);
 
@@ -72,8 +74,8 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
             return null;
         }
     }
-    private Dictionary<long, PublishedAsset> GetAssets(DirectoryInfo directory, string relativeUrlPath) {
-        var publishedAssets = new Dictionary<long, PublishedAsset>();
+    private Dictionary<string, PublishedAsset> GetAssets(DirectoryInfo directory, string relativeUrlPath) {
+        var publishedAssets = new Dictionary<string, PublishedAsset>();
         
         var assetsDirectory = new DirectoryInfo(Path.Combine(directory.FullName, "assets"));
 
@@ -87,7 +89,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
                     publishedAsset.Number = assetNumber;
                     publishedAsset.Url = $"{relativeUrlPath}/{assetNumber}/{assetDirectory.GetFiles().Single().Name}";
 
-                    publishedAssets[assetNumber.GetValueOrThrow()] = publishedAsset;
+                    publishedAssets[assetDirectory.Name] = publishedAsset;
                 }
             }
         }

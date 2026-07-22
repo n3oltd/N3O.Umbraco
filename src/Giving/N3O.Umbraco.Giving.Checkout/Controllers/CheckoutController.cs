@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Checkout.Commands;
 using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Giving.Checkout.Models;

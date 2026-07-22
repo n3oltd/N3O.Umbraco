@@ -1,6 +1,7 @@
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Payments.Bambora.Clients;
 using N3O.Umbraco.Payments.Bambora.Commands;
@@ -37,7 +38,9 @@ public class ChargeCardHandler : PaymentsHandler<ChargeCardCommand, ChargeCardRe
                                               PaymentsParameters parameters,
                                               CancellationToken cancellationToken) {
         try {
-            var apiRequest = GetRequest(req.Model, parameters);
+            var value = parameters.GetPaymentAmount(payment.Type);
+
+            var apiRequest = GetRequest(req.Model, parameters, value);
 
             var apiPayment = await _paymentsClient.CreatePaymentAsync(apiRequest);
 
@@ -69,11 +72,11 @@ public class ChargeCardHandler : PaymentsHandler<ChargeCardCommand, ChargeCardRe
         }
     }
 
-    private ApiPaymentReq GetRequest(ChargeCardReq req, PaymentsParameters parameters) {
+    private ApiPaymentReq GetRequest(ChargeCardReq req, PaymentsParameters parameters, Money value) {
         var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
 
         var apiReq = new ApiPaymentReq();
-        apiReq.Amount = req.Value.Amount.GetValueOrThrow();
+        apiReq.Amount = value.Amount;
         apiReq.BillingAddress = billingInfo.GetApiBillingAddress();
         apiReq.PaymentMethod = "token";
         apiReq.CustomerIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
