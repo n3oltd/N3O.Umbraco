@@ -15,7 +15,6 @@ public class PublishedContentResult {
     }
 
     public bool NotFound { get; }
-    // True when the fetch failed for an infrastructure reason (timeout/5xx/network) rather than a genuine 404
     public bool Error { get; }
     public Guid? Id { get; }
     public PublishedFileKind Kind { get; }
