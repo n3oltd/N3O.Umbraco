@@ -21,15 +21,18 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     private readonly IContentCache _contentCache;
     private readonly ISlugHelper _slugHelper;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly ICampaignOfferingVisibility _visibility;
 
     public CampaignOfferingsSitemapEntriesProvider(ICdnClient cdnClient,
                                                    IContentCache contentCache,
                                                    ISlugHelper slugHelper,
-                                                   IWebHostEnvironment webHostEnvironment) {
+                                                   IWebHostEnvironment webHostEnvironment,
+                                                   ICampaignOfferingVisibility visibility) {
         _cdnClient = cdnClient;
         _contentCache = contentCache;
         _slugHelper = slugHelper;
         _webHostEnvironment = webHostEnvironment;
+        _visibility = visibility;
     }
 
     public async Task<IEnumerable<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default) {
@@ -40,10 +43,16 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
                                                                                                        cancellationToken);
 
         foreach (var publishedCampaign in publishedCampaigns.OrEmpty(x => x.Campaigns)) {
+            if (!_visibility.IsVisible(publishedCampaign)) {
+                continue;
+            }
+
             entries.Add(GetSitemapEntryForCampaign(publishedCampaign));
 
-            foreach (var publishedOffering in publishedCampaign.Offerings) {
-                entries.Add(GetSitemapEntryForOffering(publishedOffering, publishedCampaign));
+            foreach (var publishedOffering in publishedCampaign.Offerings.OrEmpty()) {
+                if (_visibility.IsVisible(publishedOffering)) {
+                    entries.Add(GetSitemapEntryForOffering(publishedOffering, publishedCampaign));
+                }
             }
         }
 
