@@ -22,7 +22,9 @@ public static class CdnClientExtensions {
         
         var publishedContentResult = await cdnClient.DownloadPublishedContentAsync(pagePath, cancellationToken);
 
-        if (publishedContentResult.NotFound) {
+        if (publishedContentResult.Error) {
+            return GetPageResult.ForError();
+        } else if (publishedContentResult.NotFound) {
             return null;
         } else {
             if (publishedContentResult.Kind == PublishedFileKinds.PageRedirect) {

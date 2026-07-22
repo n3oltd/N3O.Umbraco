@@ -22,6 +22,7 @@ public class PlatformsComposer : Composer {
         builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
         builder.Services.AddSingleton<ITagHelperComponent, PlatformsTagHelperComponent>();
         
+        builder.Services.AddScoped<PlatformsCdnFailureMiddleware>();
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();
         
         RegisterAll(t => t.ImplementsInterface<ICampaignIdProvider>(),
@@ -33,6 +34,20 @@ public class PlatformsComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IPreviewHtmlGenerator>(),
                     t => builder.Services.AddTransient(typeof(IPreviewHtmlGenerator), t));
         
+        builder.Services.Configure<UmbracoPipelineOptions>(opt => {
+            var filter = new UmbracoPipelineFilter(nameof(PlatformsCdnFailureMiddleware));
+
+            filter.PrePipeline = app => {
+                var runtimeState = app.ApplicationServices.GetRequiredService<IRuntimeState>();
+
+                if (runtimeState.Level == RuntimeLevel.Run) {
+                    app.UseMiddleware<PlatformsCdnFailureMiddleware>();
+                }
+            };
+
+            opt.AddFilter(filter);
+        });
+
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(nameof(PlatformsTemplatesMiddleware));
             
