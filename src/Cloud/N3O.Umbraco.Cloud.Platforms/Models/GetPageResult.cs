@@ -13,7 +13,6 @@ public class GetPageResult {
 
     public PlatformsPage Page { get; }
     public Redirect Redirect { get; }
-    // True when the page could not be resolved due to a transient CDN infrastructure failure (not a 404)
     public bool IsError { get; }
 
     [JsonIgnore]
