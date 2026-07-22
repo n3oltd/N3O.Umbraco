@@ -4,6 +4,7 @@ using N3O.Umbraco.Localization;
 using N3O.Umbraco.Search.Extensions;
 using N3O.Umbraco.Search.Models;
 using NodaTime.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -61,7 +62,7 @@ public class ContentSitemapEntriesProvider : ISitemapEntriesProvider {
             yield break;
         }
 
-        var cultureUrls = new Dictionary<string, string>();
+        var cultureUrls = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
         foreach (var cultureCode in publishedCultureCodes) {
             var url = content.AbsoluteUrl(cultureCode);
@@ -88,7 +89,7 @@ public class ContentSitemapEntriesProvider : ISitemapEntriesProvider {
                               : cultureUrls.Values.First();
 
         foreach (var cultureCode in cultureUrls.Keys) {
-            var alternateUrls = new Dictionary<string, string>(cultureUrls);
+            var alternateUrls = new Dictionary<string, string>(cultureUrls, StringComparer.InvariantCultureIgnoreCase);
             alternateUrls[SitemapEntryExtensions.XDefault] = xDefaultUrl;
 
             yield return new SitemapEntry(cultureUrls[cultureCode], cultureCode, section, lastModified, alternateUrls);

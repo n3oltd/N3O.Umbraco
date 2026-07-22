@@ -1,9 +1,11 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search.Models;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -16,23 +18,26 @@ public static class SitemapEntryExtensions {
     private const string XhtmlNamespace = "http://www.w3.org/1999/xhtml";
 
     public static string ToXml(this IEnumerable<SitemapEntry> entries) {
+        var entryLinks = entries.OrEmpty().Select(x => (Entry: x, HrefLangLinks: GetHrefLangLinks(x))).ToList();
+
         using (var stream = new MemoryStream()) {
             var settings = GetWriterSettings();
 
             using (var writer = XmlWriter.Create(stream, settings)) {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("urlset", SitemapNamespace);
-                writer.WriteAttributeString("xmlns", "xhtml", null, XhtmlNamespace);
 
-                foreach (var entry in entries) {
+                if (entryLinks.Any(x => x.HrefLangLinks.Count > 1)) {
+                    writer.WriteAttributeString("xmlns", "xhtml", null, XhtmlNamespace);
+                }
+
+                foreach (var (entry, hrefLangLinks) in entryLinks) {
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", entry.Url);
 
                     if (entry.LastModified.HasValue()) {
                         writer.WriteElementString("lastmod", FormatDate(entry.LastModified.GetValueOrThrow()));
                     }
-
-                    var hrefLangLinks = GetHrefLangLinks(entry);
 
                     if (hrefLangLinks.Count > 1) {
                         foreach (var (hrefLang, url) in hrefLangLinks) {
@@ -97,9 +102,7 @@ public static class SitemapEntryExtensions {
             return XDefault;
         }
 
-        var dashIndex = culture.IndexOf('-');
-
-        return (dashIndex > 0 ? culture.Substring(0, dashIndex) : culture).ToLowerInvariant();
+        return culture.ToLowerInvariant();
     }
 
     private static IReadOnlyDictionary<string, string> GetHrefLangLinks(SitemapEntry entry) {
@@ -118,7 +121,7 @@ public static class SitemapEntryExtensions {
         return links;
     }
 
-    private static string FormatDate(NodaTime.LocalDate date) {
+    private static string FormatDate(LocalDate date) {
         return date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 

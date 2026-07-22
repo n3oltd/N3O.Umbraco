@@ -1,3 +1,4 @@
+using Flurl;
 using Microsoft.AspNetCore.Hosting;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Features;
@@ -56,8 +57,17 @@ public class Sitemap : ISitemap {
         PruneStaleFiles(new HashSet<string>(StringComparer.OrdinalIgnoreCase) { SitemapFileName });
     }
 
-    private async Task PublishIndexAsync(IReadOnlyList<SitemapEntry> entries) {
-        var baseUrl = _urlBuilder.Root();
+    private async Task PublishIndexAsync(IEnumerable<SitemapEntry> entries) {
+        var baseUrl = GetBaseUrl();
+
+        // Without a base URL the index cannot reference its children, so fall back to the
+        // single urlset, which needs no absolute URL.
+        if (!baseUrl.HasValue()) {
+            await PublishSingleAsync(entries);
+
+            return;
+        }
+
         var writtenFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var indexEntries = new List<SitemapIndexEntry>();
 
@@ -70,13 +80,21 @@ public class Sitemap : ISitemap {
             await WebRoot.SaveTextAsync(_webHostEnvironment, fileName, groupEntries.ToXml());
 
             writtenFileNames.Add(fileName);
-            indexEntries.Add(new SitemapIndexEntry(baseUrl.AppendPathSegment(fileName), GetLastModified(groupEntries)));
+            indexEntries.Add(new SitemapIndexEntry(Url.Combine(baseUrl, fileName), GetLastModified(groupEntries)));
         }
 
         await WebRoot.SaveTextAsync(_webHostEnvironment, SitemapFileName, indexEntries.ToSitemapIndexXml());
         writtenFileNames.Add(SitemapFileName);
 
         PruneStaleFiles(writtenFileNames);
+    }
+
+    private string GetBaseUrl() {
+        try {
+            return _urlBuilder.Root().ToString();
+        } catch {
+            return null;
+        }
     }
 
     private void PruneStaleFiles(ISet<string> writtenFileNames) {
