@@ -92,6 +92,8 @@ Each is built, committed, and pushed; just needs a PR opened against `v17` (comp
 
 ## ⏳ Backlog — remaining migration work (pending / not yet scheduled)
 
+> **v13 → v17 forward-port (added 2026-07-22):** fixes/changes that landed on the **v13 line (`origin/main`)** after the migration branched (base `8f37f1dd8`) and need forward-porting into v17 — **19 logical items** (9 critical standalone fixes, 3 features, a client-regen cluster, 3 decisions). Full itemized list with commit hashes, v17 status, port locations and gotchas: **[`V13_FORWARD_PORT.md`](V13_FORWARD_PORT.md)**. Report-only so far — no code ported yet.
+
 > **Scoped (2026-06-15):** every item below was researched for achievability — scope, verdicts, file refs, and cited licensing sources are in [`BACKLOG_SCOPING.md`](BACKLOG_SCOPING.md). Corrections from that research are folded into the items below.
 
 - **N3O Image Cropper → Umbraco Image Cropper + Uploader** — replace the custom Cropper/Uploader plugins with Umbraco's built-in image cropper + upload editors.
