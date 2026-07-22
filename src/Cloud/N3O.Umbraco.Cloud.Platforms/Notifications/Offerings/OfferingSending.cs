@@ -56,9 +56,13 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
     
     private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
         if (variant.State == ContentSavedState.Published) {
-            var campaignName = _contentLocator.Value.ById(notification.Content.ParentId.GetValueOrThrow()).Name;
+            var campaign = _contentLocator.Value.ById(notification.Content.ParentId.GetValueOrThrow());
 
-            var offeringPath = _contentCache.Value.GetOfferingPath(_slugHelper.Value, campaignName, variant.Name);
+            if (campaign == null) {
+                return;
+            }
+
+            var offeringPath = _contentCache.Value.GetOfferingPath(_slugHelper.Value, campaign.Name, variant.Name);
             
             var urlSettings = _contentCache.Value.Single<UrlSettingsContent>();
 
