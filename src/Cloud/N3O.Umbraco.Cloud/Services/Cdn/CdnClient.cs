@@ -21,6 +21,7 @@ namespace N3O.Umbraco.Cloud;
 public class CdnClient : ICdnClient {
     private static readonly SemaphoreSlim ConcurrencyLimit = new(10, 10);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
+    private static readonly ConcurrentDictionary<string, Lazy<Task<CdnDownloadResult>>> Refreshes = new(StringComparer.InvariantCultureIgnoreCase);
 
     private readonly ICloudUrl _cloudUrl;
     private readonly IClock _clock;
@@ -84,16 +85,33 @@ public class CdnClient : ICdnClient {
 
     private async Task<CdnDownloadResult> FetchAsync(string publishedUrl, CancellationToken cancellationToken) {
         var download = Downloads.GetOrDefault(publishedUrl);
-            
-        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, cancellationToken);
 
-            if (download == null || cdnDownloadResult.Success || !download.Success) {
-                Downloads[publishedUrl] = cdnDownloadResult;
-            }
+        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
+            // Coalesce concurrent refreshes for the same URL so a slow or timing-out CDN cannot pile up
+            // in-flight fetches and exhaust the shared ConcurrencyLimit.
+            var refresh = Refreshes.GetOrAdd(publishedUrl,
+                                             url => new Lazy<Task<CdnDownloadResult>>(() => RefreshAsync(url)));
+
+            await refresh.Value.WaitAsync(cancellationToken);
         }
 
         return Downloads[publishedUrl];
+    }
+
+    private async Task<CdnDownloadResult> RefreshAsync(string publishedUrl) {
+        try {
+            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, CancellationToken.None);
+
+            // Store a success; refresh a still-failed entry to reset its retry cooldown; keep a cached
+            // success when the refresh failed. Evaluated atomically against the live entry.
+            return Downloads.AddOrUpdate(publishedUrl,
+                                         cdnDownloadResult,
+                                         (_, existing) => cdnDownloadResult.Success || !existing.Success
+                                                              ? cdnDownloadResult
+                                                              : existing);
+        } finally {
+            Refreshes.TryRemove(publishedUrl, out _);
+        }
     }
     
     private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
