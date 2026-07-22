@@ -19,4 +19,5 @@ public interface IJsonProvider {
     JsonSerializerSettings GetSettings();
     string SerializeObject(object value, Formatting formatting = Formatting.Indented);
     void SerializeObject(JsonWriter writer, object value, Formatting formatting = Formatting.Indented);
+    string SerializeObjectForScript(object value, Formatting formatting = Formatting.Indented);
 }
