@@ -1,5 +1,7 @@
 # v13 → v17 forward-port backlog
 
+> ✅ **DONE — merged into `v17` via [PR #905](https://github.com/n3oltd/umbraco-extensions/pull/905) (2026-07-22, merge `a132ff147`).** Every portable item below (all of "Group A") plus the follow-up v13 commit `104c48673` (#904 — day-of-week/month regular-giving filter + `CampaignValidator`) was ported and merged. The three decisions were resolved by doing them: Sentry → `SentryLoggerSettings` (errors reach Sentry **and** the Log Viewer), crowdfunding fixed fund-dimensions validator removed, offering embed codes implemented as `OfferingEmbedCodes` mirroring `CampaignEmbedCodes`. Build-verified 0 errors on `v17-Talha`. Excluded (N/A in v17): the `104c48673` `OfferingSending.cs` hunk (file refactored into `GetContentUrls`). **Runtime caveat still open:** offering embed codes need the offering doctype to carry the three embed-code property aliases (same as campaign) — a cloud/DB schema step, not code. This doc is retained as the record of what was ported.
+
 Fixes and changes that landed on the **v13 line (`origin/main`)** *after* the v17 migration branched, and which need forward-porting into the v17 tree (`v17-Talha` / `v17`). Compiled 2026-07-22 from a per-domain audit (6 read-only agents) of every non-dependabot commit since the divergence point.
 
 **Divergence base:** `v17` and `v17-Talha` both branched from `main` at **`8f37f1dd8`** (2026-06-08). Regenerate the candidate list with:
