@@ -15,7 +15,6 @@ import { BlockPreviewApp } from './block-preview-app';
 
 const elementName = 'n3o-block-preview';
 
-// Shape of the full BlockGrid value we POST to the preview endpoint.
 interface BlockGridValue {
     layout: { 'Umbraco.BlockGrid': UmbBlockLayoutBaseModel[] };
     contentData: UmbBlockDataModel[];
@@ -23,17 +22,8 @@ interface BlockGridValue {
     expose: UmbBlockExposeModel[];
 }
 
-// Web-component SHELL for the block grid custom view. The Lit base (UmbElementMixin) is kept ONLY for
-// context plumbing — it consumes the document workspace + block entry/manager contexts, POSTs the whole
-// block grid editor value to the backoffice preview endpoint, and pushes the returned server-rendered
-// HTML markup into the React app (BlockPreviewApp), which renders it. React itself is NOT bundled here —
-// it is external and resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
-//
-// Ported from the AngularJS "N3O.Umbraco.Blocks.Preview" controller (previewGridBlock endpoint).
 @customElement(elementName)
 export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbBlockEditorCustomViewElement {
-    // Properties provided by the block editor custom-view contract (UmbBlockEditorCustomViewElement).
-    // Setters re-render React so the preview reloads when the block's data or settings change.
     #content?: UmbBlockEditorCustomViewElement['content'];
     #settings?: UmbBlockEditorCustomViewElement['settings'];
 
@@ -80,7 +70,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
-            // Cast to a minimal structural interface covering only the fields we access.
             const ctx = context as {
                 unique: import('@umbraco-cms/backoffice/external/rxjs').Observable<string | undefined>;
                 splitView: { activeVariantsInfo: import('@umbraco-cms/backoffice/external/rxjs').Observable<UmbActiveVariant[]> };
@@ -104,7 +93,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             }
 
             this.observe(context.contentKey, (key) => { this.#contentKey = key; }, '_observeContentKey');
-            // The block element's content type key (matches the AngularJS ElementEditorContentComponentController.model.contentTypeKey).
             this.observe(context.contentElementTypeKey, (key) => { this.#documentTypeKey = key; }, '_observeContentElementTypeKey');
         });
 
@@ -113,7 +101,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         });
     }
 
-    // Re-render the preview when the shared authenticated fetch becomes available (mixin hook).
     authFetchChanged(_authFetch: AuthFetch | null): void {
         this.#scheduleReload(0);
     }
@@ -124,7 +111,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         this.#root ??= createRoot(this.#mount);
         this.#render();
 
-        // Defer until contexts have resolved on the next frame, mirroring the original loadPreview() call.
         this.#scheduleReload(0);
     }
 
@@ -140,7 +126,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         this.#root = undefined;
     }
 
-    // Re-render the preview when the block's data or settings change (matches the $watch debouncing).
     #onDataChanged(): void {
         if (this.#loaded) {
             this.#scheduleReload(500);
@@ -196,8 +181,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
 
         const url = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${nodeKey}&documentTypeKey=${this.#documentTypeKey}&contentUdi=${contentUdi}&culture=${culture}`;
 
-        // blockPreviewBackoffice is protected by BackofficeAuthorizedApiController ([Authorize]).
-        // Plain fetch() would return 401 — use the shared authenticated fetch from UmbAuthFetchMixin.
         const response = await this.authFetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -208,7 +191,6 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             return;
         }
 
-        // Endpoint returns the markup as a JSON-encoded string.
         const markup = (await response.json()) as string;
 
         this.#markup = markup;
