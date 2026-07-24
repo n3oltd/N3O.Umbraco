@@ -4,8 +4,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.PropertyEditors;
-using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 
@@ -14,26 +12,18 @@ namespace N3O.Umbraco.Blocks.Perplex;
 public class PerplexBlockTypesService : IPerplexBlockTypesService {
     private readonly IShortStringHelper _shortStringHelper;
     private readonly IContentTypeService _contentTypeService;
-    private readonly PropertyEditorCollection _propertyEditors;
-    private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
     private readonly IDataTypeService _dataTypeService;
 
     public PerplexBlockTypesService(IShortStringHelper shortStringHelper,
                                     IContentTypeService contentTypeService,
-                                    PropertyEditorCollection propertyEditors,
-                                    IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
                                     IDataTypeService dataTypeService) {
         _shortStringHelper = shortStringHelper;
         _contentTypeService = contentTypeService;
-        _propertyEditors = propertyEditors;
-        _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
         _dataTypeService = dataTypeService;
     }
 
     public async Task CreateTypesAsync(PerplexBlockDefinition definition) {
         await CreateContentTypeAsync(definition);
-        // TODO Migration Review: Data type creation removed in v17: DataType.Configuration no longer settable via property.
-        // In Perplex v4, data types are managed via the Perplex backoffice UI or uSync.
     }
 
     private async Task CreateContentTypeAsync(PerplexBlockDefinition definition) {
