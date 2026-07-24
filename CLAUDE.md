@@ -21,4 +21,8 @@ Read the orientation docs **first**, before planning or editing, so you know wha
 - **`NOT_REQUIRED_TO_RUN.md`** — optional / removable / dead items.
 - **`BELLISSIMA_MIGRATION_GUIDE.md`** / **`BELLISSIMA_MIGRATION_LOG.md`** — AngularJS→Bellissima migration guide + log.
 
+## Before removing anything, check the sites monorepo for usage
+
+These projects are **shared packages consumed by client sites in a separate repo** — the sites monorepo at `D:\Development\n3oltd\sites` (e.g. `site-mh`, `site-afh`). A public type/method/extension with **zero callers in this repo may still be used by a site.** Before deleting or removing any public API during the migration, **grep the sites monorepo** (`git grep <symbol> D:\Development\n3oltd\sites`, or ripgrep across `sites/src`) for usages. If a site uses it, **port it to a v17-compatible version** (rewritten against the v17 API) rather than deleting it — deletion is a breaking change for that site's own v17 upgrade. "Zero callers" is only true when it holds across **both** repos.
+
 > When you make a material change to migration state, update `SESSION_HANDOFF.md` (and `MIGRATION_PR_TRACKER.md` if it changes task/PR status) so future sessions stay oriented. Commits are handled by Talha — do not commit or push unless explicitly asked.
