@@ -175,13 +175,14 @@ public class ContentHelper : IContentHelper {
             return contentProperties;
         }
         
-        foreach (var block in blockContent["blocks"]) {
-            var content = block["content"];
-
-            if (content is JArray jArray) {
-                contentProperties.AddRange(GetContentPropertiesForNestedContent(jArray.Single()));
-            } else {
-                contentProperties.AddRange(GetContentPropertiesForNestedContent(content));
+        // Perplex ContentBlocks v4 stores each block's content as a native Block Editor element
+        // (contentTypeKey + values[]), not the v13 NestedContent shape (ncContentTypeAlias), so it is
+        // parsed by the same element parser used for Block List/Grid.
+        if (blockContent["blocks"] is JArray blocks) {
+            foreach (var block in blocks) {
+                if (block["content"] is JObject content) {
+                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(content));
+                }
             }
         }
 

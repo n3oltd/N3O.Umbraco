@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,27 +15,27 @@ namespace N3O.Umbraco.Blocks.Extensions;
 public static class BlockValueExtensions {
     private static readonly ConcurrentHashSet<IContentType> ContentTypes = [];
 
-    public static BlockEditorData DeserializeAndClean(this BlockValue blockValue,
+    public static BlockEditorData<BlockGridValue, BlockGridLayoutItem> DeserializeAndClean(this BlockGridValue blockValue,
                                                       IJsonSerializer jsonSerializer,
                                                       IContentTypeService contentTypeService) {
         var dataConverter = new BlockGridEditorDataConverter(jsonSerializer);
-        
+
         var blockValueAsString = blockValue.ToString();
 
         if (!blockValueAsString.HasValue()) {
             return null;
         }
-        
+
         if (!blockValueAsString.DetectIsJson()) {
             blockValueAsString = JsonConvert.SerializeObject(blockValue);
         }
 
         var blockEditorData = dataConverter.Deserialize(blockValueAsString);
-        
+
         return Clean(contentTypeService, blockEditorData);
     }
 
-    private static BlockEditorData Clean(IContentTypeService contentTypeService, BlockEditorData blockEditorData) {
+    private static BlockEditorData<BlockGridValue, BlockGridLayoutItem> Clean(IContentTypeService contentTypeService, BlockEditorData<BlockGridValue, BlockGridLayoutItem> blockEditorData) {
         if (blockEditorData.BlockValue.ContentData.Count == 0) {
             blockEditorData.BlockValue.SettingsData.Clear();
 
@@ -51,14 +51,14 @@ public static class BlockValueExtensions {
 
         var contentTypesDictionary = GetAllContentTypes(contentTypeService, contentTypeKeys).ToDictionary(x => x.Key);
 
-        foreach (var block in blockEditorData.BlockValue.ContentData.Where(x => blockEditorData.References.Any(r => x.Udi.HasValue() &&
-                                                                                                                    r.ContentUdi == x.Udi))) {
+        foreach (var block in blockEditorData.BlockValue.ContentData.Where(x => blockEditorData.References.Any(r => x.Key != Guid.Empty &&
+                                                                                                                    r.ContentKey == x.Key))) {
             ResolveBlockItemData(block, contentTypePropertyTypes, contentTypesDictionary);
         }
 
-        foreach (var block in blockEditorData.BlockValue.SettingsData.Where(x => blockEditorData.References.Any(r => r.SettingsUdi.HasValue() &&
-                                                                                                                     x.Udi.HasValue() &&
-                                                                                                                     r.SettingsUdi == x.Udi))) {
+        foreach (var block in blockEditorData.BlockValue.SettingsData.Where(x => blockEditorData.References.Any(r => r.SettingsKey.HasValue &&
+                                                                                                                     x.Key != Guid.Empty &&
+                                                                                                                     r.SettingsKey == x.Key))) {
             ResolveBlockItemData(block, contentTypePropertyTypes, contentTypesDictionary);
         }
 
@@ -69,7 +69,7 @@ public static class BlockValueExtensions {
     }
 
     private static void ResolveBlockItemData(BlockItemData block,
-                                             Dictionary<string, Dictionary<string, IPropertyType>> contentTypePropertyTypes, 
+                                             Dictionary<string, Dictionary<string, IPropertyType>> contentTypePropertyTypes,
                                              IDictionary<Guid, IContentType> contentTypesDictionary) {
         if (!contentTypesDictionary.TryGetValue(block.ContentTypeKey, out var contentType)) {
             return;
@@ -79,18 +79,17 @@ public static class BlockValueExtensions {
             propertyTypes = contentTypePropertyTypes[contentType.Alias] = contentType.CompositionPropertyTypes.ToDictionary(x => x.Alias, x => x);
         }
 
-        var propValues = new Dictionary<string, BlockItemData.BlockPropertyValue>();
+        var sourceValues = block.Values.ToList();
 
-        foreach (var prop in block.RawPropertyValues.ToList()) {
-            if (!propertyTypes.TryGetValue(prop.Key, out var propType)) {
-                block.RawPropertyValues.Remove(prop.Key);
-            } else {
-                propValues[prop.Key] = new BlockItemData.BlockPropertyValue(prop.Value, propType);
+        block.Values.Clear();
+
+        foreach (var prop in sourceValues) {
+            if (propertyTypes.TryGetValue(prop.Alias, out var propType)) {
+                block.Values.Add(new BlockPropertyValue { Alias = prop.Alias, Value = prop.Value, PropertyType = propType });
             }
         }
 
         block.ContentTypeAlias = contentType.Alias;
-        block.PropertyValues = propValues;
     }
 
     private static IEnumerable<IContentType> GetAllContentTypes(IContentTypeService contentTypeService,
