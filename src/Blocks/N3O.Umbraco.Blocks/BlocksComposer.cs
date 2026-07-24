@@ -22,8 +22,6 @@ public class BlocksComposer : Composer {
     }
 
     private void ConfigureRazorTemplating(IUmbracoBuilder builder) {
-        // Runtime Razor compilation is enabled once at the framework level (CmsStartup); we only need
-        // to register this project's content-root file provider with the shared compilation options.
         builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
             options.FileProviders.Add(new PhysicalFileProvider(WebHostEnvironment.ContentRootPath));
         });
