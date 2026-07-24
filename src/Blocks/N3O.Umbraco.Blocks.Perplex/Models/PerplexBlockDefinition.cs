@@ -1,4 +1,3 @@
-using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
 using Perplex.ContentBlocks.Definitions;
 using System;
@@ -28,7 +27,6 @@ public class PerplexBlockDefinition : Value, IContentBlockDefinition {
         Icon = icon;
         Folder = folder;
         PreviewImage = previewImage;
-        DataTypeKey = UmbracoId.Generate(IdScope.BlockDataType, alias);
         BlockCategories = blockCategories.ToList();
         Layouts = layouts.ToList();
         LimitToDocumentTypes = limitToContentTypes;
@@ -44,8 +42,6 @@ public class PerplexBlockDefinition : Value, IContentBlockDefinition {
     public string Icon { get; }
     public string Folder { get; }
     public string PreviewImage { get; }
-    public Guid? DataTypeKey { get; }
-    public int? DataTypeId => null;
     public Guid ElementTypeKey => Id;
     public string BlockNameTemplate => null;
     public IReadOnlyList<PerplexBlockCategory> BlockCategories { get; }
