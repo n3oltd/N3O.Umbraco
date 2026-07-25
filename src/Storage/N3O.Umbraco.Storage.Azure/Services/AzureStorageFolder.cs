@@ -18,7 +18,9 @@ public class AzureStorageFolder : IStorageFolder {
     }
     
     public async Task AddFileAsync(string filename, Stream stream) {
-        await _container.UploadBlobAsync(GetBlobName(filename), stream);
+        var blobClient = _container.GetBlobClient(GetBlobName(filename));
+
+        await blobClient.UploadAsync(stream, overwrite: true);
     }
 
     public async Task AddFileAsync(string name, byte[] contents) {
