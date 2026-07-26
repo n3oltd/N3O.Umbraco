@@ -178,7 +178,11 @@ public class ContentHelper : IContentHelper {
         if (blockContent["blocks"] is JArray blocks) {
             foreach (var block in blocks) {
                 if (block["content"] is JObject content) {
-                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(content));
+                    var elementProperties = GetContentPropertiesForBlockListOrGridElement(content);
+
+                    if (elementProperties != null) {
+                        contentProperties.Add(elementProperties);
+                    }
                 }
             }
         }
@@ -192,7 +196,11 @@ public class ContentHelper : IContentHelper {
         if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
             foreach (var block in contentData.OrEmpty()) {
                 if (block is JObject jObject) {
-                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
+                    var elementProperties = GetContentPropertiesForBlockListOrGridElement(jObject);
+
+                    if (elementProperties != null) {
+                        contentProperties.Add(elementProperties);
+                    }
                 }
             }
         }
@@ -201,9 +209,19 @@ public class ContentHelper : IContentHelper {
     }
     
     private ContentProperties GetContentPropertiesForBlockListOrGridElement(JObject element) {
-        var id = GetBlockElementKey(element);
-        var contentTypeKey = Guid.Parse((string) element["contentTypeKey"]);
+        if (!TryGetBlockElementKey(element, out var id)) {
+            return null;
+        }
+
+        if (!Guid.TryParse((string) element["contentTypeKey"], out var contentTypeKey)) {
+            return null;
+        }
+
         var contentType = _contentTypeService.Value.Get(contentTypeKey);
+
+        if (contentType == null) {
+            return null;
+        }
 
         var valuesByAlias = GetBlockElementValuesByAlias(element);
 
@@ -218,20 +236,24 @@ public class ContentHelper : IContentHelper {
         return GetContentProperties(id, null, -1, contentType.Alias, properties);
     }
 
-    private static Guid GetBlockElementKey(JObject element) {
-        var key = (string) element["key"];
+    private static bool TryGetBlockElementKey(JObject element, out Guid key) {
+        var keyValue = (string) element["key"];
 
-        if (key.HasValue()) {
-            return Guid.Parse(key);
+        if (keyValue.HasValue() && Guid.TryParse(keyValue, out key)) {
+            return true;
         }
 
         var udi = (string) element["udi"];
 
         if (udi.HasValue() && UdiParser.TryParse(udi, out var parsedUdi) && parsedUdi is GuidUdi guidUdi) {
-            return guidUdi.Guid;
+            key = guidUdi.Guid;
+
+            return true;
         }
 
-        throw new InvalidOperationException("Block item is missing both 'key' and a parseable legacy 'udi'");
+        key = Guid.Empty;
+
+        return false;
     }
 
     private static IReadOnlyDictionary<string, JToken> GetBlockElementValuesByAlias(JObject element) {
