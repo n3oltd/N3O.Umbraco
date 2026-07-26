@@ -50,8 +50,8 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         this.#onDataChanged();
     }
 
-    // Resizing a block changes its layout entry rather than its content, and the preview is rendered from the
-    // whole grid value, so column and row spans have to re-render it too.
+    // The preview is rendered from the whole grid value, so a block's column and row spans change it as much
+    // as its content does.
     get layout(): UmbBlockEditorCustomViewElement['layout'] {
         return this.#layout;
     }
@@ -91,9 +91,8 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
-            // Re-subscribing replays the current value, and consumeContext can run more than once, so each
-            // observer reloads only when the value it feeds into the request has actually moved. The abort is
-            // client-side, so a redundant request still costs a server-side Razor render.
+            // Re-subscribing replays the current value, so each observer reloads only when its own request
+            // parameter changes. Aborting is client-side; a redundant request still costs a server render.
             this.observe(context.unique, (unique) => {
                 if (unique === this.#nodeKey) {
                     return;
@@ -209,8 +208,7 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         };
     }
 
-    // documentTypeKey is the wire name of the query parameter; the value the endpoint wants is the block's
-    // element type key.
+    // The endpoint's documentTypeKey parameter receives the block's element type key.
     #buildPreviewUrl(contentKey: string, contentElementTypeKey: string): string {
         const query = new URLSearchParams({
             nodeKey: this.#nodeKey ?? '',
@@ -262,8 +260,7 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
 
             console.error('Block preview failed', error);
 
-            // A block that keeps failing reloads on every edit, so only the transition into failure is
-            // announced; backoffice toasts stack and would otherwise pile up as the editor types.
+            // Backoffice toasts stack, so only the transition into failure is announced.
             if (this.#state.status !== 'error') {
                 this.#notificationContext?.peek('danger', {
                     data: { headline: 'Block preview', message: previewFailedMessage },

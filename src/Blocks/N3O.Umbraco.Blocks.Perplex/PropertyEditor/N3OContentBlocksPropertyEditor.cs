@@ -6,8 +6,8 @@ using Umbraco.Cms.Core.Serialization;
 
 namespace N3O.Umbraco.Blocks.Perplex;
 
-// Registers under the same alias as Perplex's own editor (which PerplexBlocksComposer excludes) so the framework
-// resolves N3OContentBlocksValueEditor instead of the defective Perplex one. See N3OContentBlocksValueEditor.
+// Claims Perplex's editor alias, which the composer frees by excluding Perplex's own editor, so
+// N3OContentBlocksValueEditor is the value editor in play.
 [DataEditor("Perplex.ContentBlocks", ValueEditorIsReusable = false, ValueType = ValueTypes.Json)]
 public class N3OContentBlocksPropertyEditor : PerplexContentBlocksPropertyEditor {
     public N3OContentBlocksPropertyEditor(IDataValueEditorFactory dataValueEditorFactory,

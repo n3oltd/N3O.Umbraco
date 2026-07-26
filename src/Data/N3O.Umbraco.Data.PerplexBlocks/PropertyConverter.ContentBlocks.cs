@@ -45,9 +45,8 @@ public class ContentBlocksPropertyConverter : PropertyConverter<string> {
         }
     }
 
-    // The cell is written to the property verbatim, so it is checked for well-formedness and for the one member
-    // every content blocks value has. Shape beyond that is deliberately not asserted: both the v3 and the v4
-    // layouts are valid here, and Perplex owns which of them it can read.
+    // The cell is stored verbatim, so it is checked only for well-formedness and the member every content
+    // blocks value carries. More than one layout is valid, and Perplex owns which of them it reads.
     private static bool IsContentBlocksJson(string json) {
         try {
             return JsonNode.Parse(json) is JsonObject jsonObject && jsonObject.ContainsKey("blocks");

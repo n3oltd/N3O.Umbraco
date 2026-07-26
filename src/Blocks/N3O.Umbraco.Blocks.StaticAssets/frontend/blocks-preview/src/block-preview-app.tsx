@@ -6,22 +6,19 @@ interface BlockPreviewAppProps {
     state: PreviewState;
 }
 
-// The preview is drawn slightly smaller than life so more of the block fits in the editor. transform does not
-// affect layout, so the surface is given the scaled height and the frame is widened to compensate; otherwise
-// every block reserves its full unscaled height and leaves a gap beneath.
+// transform does not affect layout, so the surface carries the scaled height and the frame is widened to
+// compensate.
 const previewScale = 0.9;
 
-// The markup is a whole rendered page, so it goes in an iframe rather than into the backoffice document:
-// scripts a block needs in order to render run, and the site's own stylesheet applies as it does on the live
-// page. srcDoc keeps the frame same-origin, so its content height can be measured to size the frame.
+// The markup is a whole rendered page: in a frame its scripts run and the site stylesheet applies as it does
+// live. srcDoc keeps the frame same-origin, so its content height is measurable.
 function PreviewFrame({ markup }: { markup: string }) {
     const frameRef = useRef<HTMLIFrameElement>(null);
     const observerRef = useRef<ResizeObserver | null>(null);
     const [height, setHeight] = useState(0);
 
-    // srcDoc navigates the frame, and the navigation is queued rather than synchronous, so an effect runs
-    // while contentDocument is still the outgoing document - or, on the first render, the initial about:blank
-    // one. load is the point at which contentDocument is the document being measured.
+    // srcDoc navigates the frame and the navigation is queued, so during an effect contentDocument is still
+    // the outgoing document, or initially about:blank. load is when it is the document being measured.
     const observeFrame = useCallback(() => {
         observerRef.current?.disconnect();
 

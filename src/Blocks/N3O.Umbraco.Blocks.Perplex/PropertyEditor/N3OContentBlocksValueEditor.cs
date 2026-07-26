@@ -12,16 +12,12 @@ using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Blocks.Perplex;
 
-// Workaround for a Perplex.ContentBlocks v4 defect: ContentBlocksValueEditor.FromEditor builds the inner
-// ContentPropertyData without ContentKey/PropertyTypeKey, so editors that store a file against the content key
-// (Image Cropper and File Upload) receive Guid.Empty and throw "Invalid content key" on save. This repeats
-// Perplex's FromEditor but threads the owning content key down to each inner property, as Umbraco's own block
-// editor does (BlockValuePropertyValueEditorBase.MapBlockItemDataFromEditor) and as the upstream fix does.
+// Perplex's ContentBlocksValueEditor.FromEditor builds each inner ContentPropertyData without a ContentKey or
+// PropertyTypeKey, so property editors that store a file against them throw "Invalid content key" on save.
+// This repeats that method with both keys threaded down.
 //
-// TODO Remove this folder, the Exclude<> in PerplexBlocksComposer and the exact Perplex.ContentBlocks version
-// pin once the fix ships in a release we can upgrade to:
-//   Issue: https://github.com/PerplexDigital/Perplex.ContentBlocks/issues/102
-//   PR:    https://github.com/PerplexDigital/Perplex.ContentBlocks/pull/103
+// TODO Remove this folder, the Exclude<> in PerplexBlocksComposer and the Perplex.ContentBlocks version
+// pin once https://github.com/PerplexDigital/Perplex.ContentBlocks/issues/102 ships
 public class N3OContentBlocksValueEditor : ContentBlocksValueEditor {
     private readonly IJsonSerializer _jsonSerializer;
     private readonly ContentBlocksValueDeserializer _deserializer;

@@ -13,13 +13,13 @@ public class ContentBlocksPropertyBuilder : PropertyBuilder {
         _jsonSerializer = jsonSerializer;
     }
 
+    // Perplex reads the stored value with Umbraco's IJsonSerializer, so it is written with the same one.
     public void Set(ContentBlocksValue modelValue) {
         Value = _jsonSerializer.Serialize(modelValue);
     }
 
-    // Perplex reads the stored value with Umbraco's IJsonSerializer, so content blocks JSON that is already
-    // serialised is written through verbatim rather than round-tripped through ContentBlocksValue, which would
-    // rewrite it in the v4 shape and drop anything the model does not represent.
+    // ContentBlocksValue does not represent every stored shape, so already-serialised JSON is written through
+    // as-is rather than round-tripped through it.
     public void SetJson(string json) {
         Value = json;
     }
