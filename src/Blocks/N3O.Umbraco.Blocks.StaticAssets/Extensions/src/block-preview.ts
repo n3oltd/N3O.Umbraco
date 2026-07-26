@@ -6,8 +6,8 @@ import type { UmbBlockEditorCustomViewElement } from '@umbraco-cms/backoffice/bl
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
 import type { UmbActiveVariant } from '@umbraco-cms/backoffice/workspace';
 
-import { UmbAuthFetchMixin, UmbElementMixin } from '@n3o/backoffice-core';
-import type { AuthFetch } from '@n3o/backoffice-core';
+import { UmbAuthFetchMixin, UmbElementMixin } from '@n3oltd/backoffice-core';
+import type { AuthFetch } from '@n3oltd/backoffice-core';
 
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';

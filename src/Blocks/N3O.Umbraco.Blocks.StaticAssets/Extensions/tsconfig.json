@@ -1,5 +1,5 @@
 {
-    "extends": "@n3o/build/tsconfig",
+    "extends": "@repo/build-config/tsconfig",
     "compilerOptions": {
         "jsx": "react-jsx"
     },
