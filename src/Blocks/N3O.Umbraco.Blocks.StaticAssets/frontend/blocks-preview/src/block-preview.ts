@@ -17,6 +17,7 @@ import type { PreviewState } from './types';
 const elementName = 'n3o-block-preview';
 const previewEndpoint = '/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock';
 const editDebounceMs = 500;
+const previewFailedMessage = 'Failed getting block preview markup';
 
 interface BlockGridValue {
     layout: { 'Umbraco.BlockGrid': UmbBlockLayoutBaseModel[] };
@@ -222,13 +223,17 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
-            const message = error instanceof Error ? error.message : String(error);
+            console.error('Block preview failed', error);
 
-            this.#notificationContext?.peek('danger', {
-                data: { headline: 'Block preview', message: 'Failed getting block preview markup' },
-            });
+            // A block that keeps failing reloads on every edit, so only the transition into failure is
+            // announced; backoffice toasts stack and would otherwise pile up as the editor types.
+            if (this.#state.status !== 'error') {
+                this.#notificationContext?.peek('danger', {
+                    data: { headline: 'Block preview', message: previewFailedMessage },
+                });
+            }
 
-            this.#setState({ status: 'error', message });
+            this.#setState({ status: 'error', message: previewFailedMessage });
         } finally {
             if (this.#inFlight === abort) {
                 this.#inFlight = undefined;
