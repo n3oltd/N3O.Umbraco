@@ -2,11 +2,15 @@
     display: block;
 }
 
-.block-preview-frame {
+.block-preview-surface {
     display: block;
     width: 100%;
+    overflow: hidden;
+}
+
+.block-preview-frame {
+    display: block;
     border: none;
-    transform: scale(0.9);
     transform-origin: top left;
 }
 
