@@ -16,31 +16,37 @@ const previewScale = 0.9;
 // page. srcDoc keeps the frame same-origin, so its content height can be measured to size the frame.
 function PreviewFrame({ markup }: { markup: string }) {
     const frameRef = useRef<HTMLIFrameElement>(null);
+    const observerRef = useRef<ResizeObserver | null>(null);
     const [height, setHeight] = useState(0);
 
-    const measure = useCallback(() => {
-        const body = frameRef.current?.contentDocument?.body;
+    // srcDoc navigates the frame, and the navigation is queued rather than synchronous, so an effect runs
+    // while contentDocument is still the outgoing document - or, on the first render, the initial about:blank
+    // one. load is the point at which contentDocument is the document being measured.
+    const observeFrame = useCallback(() => {
+        observerRef.current?.disconnect();
 
-        if (body) {
-            setHeight(body.scrollHeight);
-        }
-    }, []);
-
-    useEffect(() => {
         const body = frameRef.current?.contentDocument?.body;
 
         if (!body) {
             return;
         }
 
-        const observer = new ResizeObserver(measure);
-        observer.observe(body);
+        // Sizing the frame resizes the content viewport, so any vh or percentage height feeds back into
+        // scrollHeight. The threshold settles that instead of letting it oscillate.
+        const observer = new ResizeObserver(() => {
+            setHeight((current) => (Math.abs(body.scrollHeight - current) > 1 ? body.scrollHeight : current));
+        });
 
-        return () => observer.disconnect();
-    }, [markup, measure]);
+        observer.observe(body);
+        observerRef.current = observer;
+
+        setHeight(body.scrollHeight);
+    }, []);
+
+    useEffect(() => () => observerRef.current?.disconnect(), []);
 
     return (
-        <div className="block-preview-surface" style={{ height: `${Math.round(height * previewScale)}px` }}>
+        <div className="block-preview-surface" style={{ height: `${Math.ceil(height * previewScale)}px` }}>
             <iframe
                 ref={frameRef}
                 className="block-preview-frame"
@@ -51,7 +57,7 @@ function PreviewFrame({ markup }: { markup: string }) {
                     width: `${100 / previewScale}%`,
                     transform: `scale(${previewScale})`,
                 }}
-                onLoad={measure}
+                onLoad={observeFrame}
             />
         </div>
     );
