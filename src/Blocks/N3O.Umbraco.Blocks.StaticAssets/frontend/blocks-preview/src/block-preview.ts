@@ -4,7 +4,6 @@ import type { UmbBlockManagerContext, UmbBlockLayoutBaseModel, UmbBlockDataModel
 import type { UmbBlockEditorCustomViewElement } from '@umbraco-cms/backoffice/block-custom-view';
 
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
-import type { UmbActiveVariant } from '@umbraco-cms/backoffice/workspace';
 
 import { UmbAuthFetchMixin, UmbElementMixin } from '@n3oltd/backoffice-core';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
@@ -14,6 +13,8 @@ import { createRoot, type Root } from 'react-dom/client';
 import { BlockPreviewApp } from './block-preview-app';
 
 const elementName = 'n3o-block-preview';
+const previewEndpoint = '/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock';
+const editDebounceMs = 500;
 
 interface BlockGridValue {
     layout: { 'Umbraco.BlockGrid': UmbBlockLayoutBaseModel[] };
@@ -51,8 +52,8 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
     #loaded = false;
     #markup = '';
 
-    #nodeKey: string | undefined;
-    #documentTypeKey: string | undefined;
+    #nodeKey: string | null = null;
+    #contentElementTypeKey: string | undefined;
     #culture = '';
     #contentKey: string | undefined;
     #reloadHandle: ReturnType<typeof setTimeout> | undefined;
@@ -65,24 +66,16 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         this.#mount = document.createElement('div');
         shadow.appendChild(this.#mount);
 
-        this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (context: unknown) => {
+        this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (context) => {
             if (!context) {
                 return;
             }
 
-            const ctx = context as {
-                unique: import('@umbraco-cms/backoffice/external/rxjs').Observable<string | undefined>;
-                splitView: { activeVariantsInfo: import('@umbraco-cms/backoffice/external/rxjs').Observable<UmbActiveVariant[]> };
-            };
-
-            this.observe(ctx.unique, (unique) => { this.#nodeKey = unique; }, '_observeUnique');
+            this.observe(context.unique, (unique) => { this.#nodeKey = unique; }, '_observeUnique');
 
             this.observe(
-                ctx.splitView.activeVariantsInfo,
-                (infos) => {
-                    const culture = infos?.[0]?.culture;
-                    this.#culture = culture ?? '';
-                },
+                context.splitView.activeVariantsInfo,
+                (infos) => { this.#culture = infos[0]?.culture ?? ''; },
                 '_observeCulture'
             );
         });
@@ -93,7 +86,9 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             }
 
             this.observe(context.contentKey, (key) => { this.#contentKey = key; }, '_observeContentKey');
-            this.observe(context.contentElementTypeKey, (key) => { this.#documentTypeKey = key; }, '_observeContentElementTypeKey');
+            this.observe(context.contentElementTypeKey,
+                         (key) => { this.#contentElementTypeKey = key; },
+                         '_observeContentElementTypeKey');
         });
 
         this.consumeContext(UMB_BLOCK_MANAGER_CONTEXT, (context) => {
@@ -128,14 +123,12 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
 
     #onDataChanged(): void {
         if (this.#loaded) {
-            this.#scheduleReload(500);
+            this.#scheduleReload(editDebounceMs);
         }
     }
 
     #scheduleReload(delay: number): void {
-        if (this.#reloadHandle !== undefined) {
-            clearTimeout(this.#reloadHandle);
-        }
+        clearTimeout(this.#reloadHandle);
 
         this.#reloadHandle = setTimeout(() => { void this.#loadPreview(); }, delay);
     }
@@ -160,30 +153,31 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         };
     }
 
-    #toElementUdi(key: string | undefined): string {
-        if (!key) {
-            return '';
-        }
+    // documentTypeKey is the wire name of the query parameter; the value the endpoint wants is the block's
+    // element type key.
+    #buildPreviewUrl(contentKey: string, contentElementTypeKey: string): string {
+        const query = new URLSearchParams({
+            nodeKey: this.#nodeKey ?? '',
+            documentTypeKey: contentElementTypeKey,
+            contentUdi: `umb://element/${contentKey.replaceAll('-', '')}`,
+            culture: this.#culture,
+        });
 
-        return `umb://element/${key.replace(/-/g, '')}`;
+        return `${previewEndpoint}?${query}`;
     }
 
     async #loadPreview(): Promise<void> {
         const blockData = this.#buildBlockData();
 
-        if (!blockData || !this.#documentTypeKey || !this.authFetch) {
+        if (!blockData || !this.#contentKey || !this.#contentElementTypeKey || !this.authFetch) {
             return;
         }
 
-        const nodeKey = this.#nodeKey ?? '';
-        const contentUdi = this.#toElementUdi(this.#contentKey);
-        const culture = this.#culture ?? '';
-
-        const url = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${nodeKey}&documentTypeKey=${this.#documentTypeKey}&contentUdi=${contentUdi}&culture=${culture}`;
+        const url = this.#buildPreviewUrl(this.#contentKey, this.#contentElementTypeKey);
 
         const response = await this.authFetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify(blockData),
         });
 
