@@ -177,17 +177,28 @@ public class ContentHelper : IContentHelper {
         
         if (blockContent["blocks"] is JArray blocks) {
             foreach (var block in blocks) {
-                if (block["content"] is JObject content) {
-                    var elementProperties = GetContentPropertiesForBlockListOrGridElement(content);
-
-                    if (elementProperties != null) {
-                        contentProperties.Add(elementProperties);
-                    }
-                }
+                contentProperties.AddRange(GetContentPropertiesForPerplexBlock(block));
             }
         }
 
         return contentProperties;
+    }
+
+    // Perplex ContentBlocks holds each block's content as a v4 Block Editor element (contentTypeKey plus
+    // values) once its own v3-to-v4 migration has run, and as the v3 NestedContent shape until then. Either
+    // shape can be stored, so the payload is dispatched to the element parser matching it.
+    private IReadOnlyList<ContentProperties> GetContentPropertiesForPerplexBlock(JToken block) {
+        var content = block?["content"];
+
+        if (content == null) {
+            return [];
+        } else if (content is JObject element && element["contentTypeKey"] != null) {
+            var elementProperties = GetContentPropertiesForBlockListOrGridElement(element);
+
+            return elementProperties == null ? [] : [elementProperties];
+        } else {
+            return GetContentPropertiesForNestedContent(content);
+        }
     }
     
     private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
@@ -283,19 +294,43 @@ public class ContentHelper : IContentHelper {
             }
         } else if (nestedContent is JArray jArray) {
             foreach (var element in jArray.OrEmpty()) {
-                contentProperties.Add(GetContentPropertiesForNestedContentElement((JObject) element));
+                AddNestedContentElement(contentProperties, element);
             }
         } else {
-            contentProperties.Add(GetContentPropertiesForNestedContentElement((JObject) nestedContent));
+            AddNestedContentElement(contentProperties, nestedContent);
         }
 
         return contentProperties;
     }
 
+    private void AddNestedContentElement(List<ContentProperties> contentProperties, JToken element) {
+        if (element is not JObject jObject) {
+            return;
+        }
+
+        var elementProperties = GetContentPropertiesForNestedContentElement(jObject);
+
+        if (elementProperties != null) {
+            contentProperties.Add(elementProperties);
+        }
+    }
+
     private ContentProperties GetContentPropertiesForNestedContentElement(JObject element) {
-        var id = Guid.Parse((string) element["key"]);
+        if (!Guid.TryParse((string) element["key"], out var id)) {
+            return null;
+        }
+
         var contentTypeAlias = (string) element["ncContentTypeAlias"];
+
+        if (!contentTypeAlias.HasValue()) {
+            return null;
+        }
+
         var contentType = _contentTypeService.Value.Get(contentTypeAlias);
+
+        if (contentType == null) {
+            return null;
+        }
 
         var properties = new List<(IPropertyType, object)>();
             
