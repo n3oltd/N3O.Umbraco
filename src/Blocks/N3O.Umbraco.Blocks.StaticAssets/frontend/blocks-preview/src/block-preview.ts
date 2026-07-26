@@ -79,7 +79,14 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
+            // Re-subscribing replays the current value, and consumeContext can run more than once, so each
+            // observer reloads only when the value it feeds into the request has actually moved. The abort is
+            // client-side, so a redundant request still costs a server-side Razor render.
             this.observe(context.unique, (unique) => {
+                if (unique === this.#nodeKey) {
+                    return;
+                }
+
                 this.#nodeKey = unique;
                 this.#scheduleReload(0);
             }, '_observeUnique');
@@ -87,7 +94,13 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             this.observe(
                 context.splitView.activeVariantsInfo,
                 (infos) => {
-                    this.#culture = infos[0]?.culture ?? '';
+                    const culture = infos[0]?.culture ?? '';
+
+                    if (culture === this.#culture) {
+                        return;
+                    }
+
+                    this.#culture = culture;
                     this.#scheduleReload(0);
                 },
                 '_observeCulture'
@@ -100,17 +113,29 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             }
 
             this.observe(context.contentKey, (key) => {
+                if (key === this.#contentKey) {
+                    return;
+                }
+
                 this.#contentKey = key;
                 this.#scheduleReload(0);
             }, '_observeContentKey');
 
             this.observe(context.contentElementTypeKey, (key) => {
+                if (key === this.#contentElementTypeKey) {
+                    return;
+                }
+
                 this.#contentElementTypeKey = key;
                 this.#scheduleReload(0);
             }, '_observeContentElementTypeKey');
         });
 
         this.consumeContext(UMB_BLOCK_MANAGER_CONTEXT, (context) => {
+            if (!context || context === this.#blockManager) {
+                return;
+            }
+
             this.#blockManager = context;
             this.#scheduleReload(0);
         });
