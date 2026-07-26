@@ -5,5 +5,5 @@ using Umbraco.Cms.Core.Models.Blocks;
 namespace N3O.Umbraco.Blocks;
 
 public interface IBlockPreviewer {
-    Task<string> PreviewBlockAsync(Guid blockId, string contentTypeAlias, BlockEditorData blockEditorData);
+    Task<string> PreviewBlockAsync(Guid blockId, string contentTypeAlias, BlockEditorData<BlockGridValue, BlockGridLayoutItem> blockEditorData);
 }

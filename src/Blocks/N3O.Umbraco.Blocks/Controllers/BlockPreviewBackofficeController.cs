@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Blocks.Exceptions;
 using N3O.Umbraco.Blocks.Extensions;
@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -24,9 +23,8 @@ namespace N3O.Umbraco.Blocks.Controllers;
 
 public class BlockPreviewBackofficeController : BackofficeAuthorizedApiController {
     private readonly IPublishedRouter _publishedRouter;
-    private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
     private readonly IBlockPreviewer _blockPreviewer;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILanguageService _languageService;
     private readonly IVariationContextAccessor _variationContextAccessor;
     private readonly IContentLocator _contentLocator;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
@@ -34,31 +32,29 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
     private readonly IContentTypeService _contentTypeService;
 
     public BlockPreviewBackofficeController(IPublishedRouter publishedRouter,
-                                            IPublishedSnapshotAccessor publishedSnapshotAccessor,
                                             IBlockPreviewer blockPreviewer,
-                                            ILocalizationService localizationService,
+                                            ILanguageService languageService,
                                             IVariationContextAccessor variationContextAccessor,
                                             IContentLocator contentLocator,
                                             IUmbracoContextAccessor umbracoContextAccessor,
                                             IJsonSerializer jsonSerializer,
                                             IContentTypeService contentTypeService) {
         _publishedRouter = publishedRouter;
-        _publishedSnapshotAccessor = publishedSnapshotAccessor;
         _blockPreviewer = blockPreviewer;
-        _localizationService = localizationService;
+        _languageService = languageService;
         _variationContextAccessor = variationContextAccessor;
         _contentLocator = contentLocator;
         _umbracoContextAccessor = umbracoContextAccessor;
         _jsonSerializer = jsonSerializer;
         _contentTypeService = contentTypeService;
     }
-    
+
     [HttpPost("previewGridBlock")]
     public async Task<IActionResult> PreviewGridBlock([FromQuery(Name = "nodeKey")] Guid? contentId,
                                                       [FromQuery(Name = "documentTypeKey")] Guid contentTypeId,
                                                       [FromQuery(Name = "contentUdi")] string blockUdi,
                                                       [FromQuery] string culture,
-                                                      [FromBody] BlockValue blockData) {
+                                                      [FromBody] BlockGridValue blockData) {
         string markup;
 
         try {
@@ -67,7 +63,7 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
             if (publishedContent == null) {
                 throw new BlockPreviewWarningException("No published content found");
             } else {
-                SetCulture(publishedContent, culture);
+                await SetCultureAsync(publishedContent, culture);
 
                 await SetupPublishedRequest(publishedContent);
 
@@ -85,7 +81,7 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
                                                                      blockEditorData);
                 }
             }
-            
+
             markup = markup.CleanUpMarkupForPreview();
         } catch (BlockPreviewException ex) {
             markup = ex.Markup;
@@ -94,7 +90,7 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
 
             markup = blockPreviewException.Markup;
         }
-        
+
         return Ok(markup);
     }
 
@@ -109,7 +105,6 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
         }
 
         context.PublishedRequest = requestBuilder.Build();
-        context.ForcedPreview(true);
     }
 
     private IPublishedContent GetPublishedContent(Guid? contentId, Guid contentTypeId) {
@@ -119,20 +114,19 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
             return content;
         }
 
-        var publishedContentCache = _publishedSnapshotAccessor.GetRequiredPublishedSnapshot().Content;
+        var contentType = _contentTypeService.Get(contentTypeId);
 
-        var contentType = publishedContentCache.GetContentType(contentTypeId);
-
-        return publishedContentCache.GetByContentType(contentType).FirstOrDefault();
+        return contentType != null ? _contentLocator.All(contentType.Alias).FirstOrDefault() : null;
     }
 
-    private void SetCulture(IPublishedContent content, string culture) {
+    private async Task SetCultureAsync(IPublishedContent content, string culture) {
         var currentCulture = culture.HasValue() ? culture : content?.GetCultureFromDomains();
 
         if (!currentCulture.HasValue() || currentCulture == "undefined") {
-            currentCulture = _localizationService.GetDefaultLanguageIsoCode();
+            var defaultLanguage = await _languageService.GetDefaultLanguageAsync();
+            currentCulture = defaultLanguage?.IsoCode;
         }
-        
+
         _variationContextAccessor.VariationContext = new VariationContext(currentCulture);
 
         var cultureInfo = new CultureInfo(currentCulture);

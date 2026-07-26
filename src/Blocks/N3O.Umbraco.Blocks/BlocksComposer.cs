@@ -22,8 +22,6 @@ public class BlocksComposer : Composer {
     }
 
     private void ConfigureRazorTemplating(IUmbracoBuilder builder) {
-        builder.Services.AddMvcCore().AddRazorRuntimeCompilation();
-        
         builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
             options.FileProviders.Add(new PhysicalFileProvider(WebHostEnvironment.ContentRootPath));
         });
