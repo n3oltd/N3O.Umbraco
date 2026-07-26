@@ -30,6 +30,7 @@ interface BlockGridValue {
 export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbBlockEditorCustomViewElement {
     #content?: UmbBlockEditorCustomViewElement['content'];
     #settings?: UmbBlockEditorCustomViewElement['settings'];
+    #layout?: UmbBlockEditorCustomViewElement['layout'];
 
     get content(): UmbBlockEditorCustomViewElement['content'] {
         return this.#content;
@@ -46,6 +47,17 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
 
     set settings(value: UmbBlockEditorCustomViewElement['settings']) {
         this.#settings = value;
+        this.#onDataChanged();
+    }
+
+    // Resizing a block changes its layout entry rather than its content, and the preview is rendered from the
+    // whole grid value, so column and row spans have to re-render it too.
+    get layout(): UmbBlockEditorCustomViewElement['layout'] {
+        return this.#layout;
+    }
+
+    set layout(value: UmbBlockEditorCustomViewElement['layout']) {
+        this.#layout = value;
         this.#onDataChanged();
     }
 
