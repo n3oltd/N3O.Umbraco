@@ -43,7 +43,7 @@ public class PerplexBlockDefinition : Value, IContentBlockDefinition {
     public string Folder { get; }
     public string PreviewImage { get; }
     public Guid ElementTypeKey => Id;
-    public string BlockNameTemplate => Name;
+    public string BlockNameTemplate => null;
     public IReadOnlyList<PerplexBlockCategory> BlockCategories { get; }
     public IEnumerable<Guid> CategoryIds => _categoryIds;
     public IReadOnlyList<LayoutDefinition> Layouts { get; }
