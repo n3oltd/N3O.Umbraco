@@ -4,6 +4,7 @@ import type { UmbBlockManagerContext, UmbBlockLayoutBaseModel, UmbBlockDataModel
 import type { UmbBlockEditorCustomViewElement } from '@umbraco-cms/backoffice/block-custom-view';
 
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
+import { UMB_NOTIFICATION_CONTEXT, type UmbNotificationContext } from '@umbraco-cms/backoffice/notification';
 
 import { UmbAuthFetchMixin, UmbElementMixin } from '@n3oltd/backoffice-core';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
@@ -11,6 +12,7 @@ import type { AuthFetch } from '@n3oltd/backoffice-core';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { BlockPreviewApp } from './block-preview-app';
+import type { PreviewState } from './types';
 
 const elementName = 'n3o-block-preview';
 const previewEndpoint = '/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock';
@@ -49,8 +51,9 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
     #root?: Root;
     #mount: HTMLDivElement;
 
-    #loaded = false;
-    #markup = '';
+    #state: PreviewState = { status: 'loading' };
+    #notificationContext?: UmbNotificationContext;
+    #inFlight?: AbortController;
 
     #nodeKey: string | null = null;
     #contentElementTypeKey: string | undefined;
@@ -65,6 +68,10 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         const shadow = this.attachShadow({ mode: 'open' });
         this.#mount = document.createElement('div');
         shadow.appendChild(this.#mount);
+
+        this.consumeContext(UMB_NOTIFICATION_CONTEXT, (context) => {
+            this.#notificationContext = context ?? undefined;
+        });
 
         this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (context) => {
             if (!context) {
@@ -124,19 +131,18 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
     disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        if (this.#reloadHandle !== undefined) {
-            clearTimeout(this.#reloadHandle);
-            this.#reloadHandle = undefined;
-        }
+        clearTimeout(this.#reloadHandle);
+        this.#reloadHandle = undefined;
+
+        this.#inFlight?.abort();
+        this.#inFlight = undefined;
 
         this.#root?.unmount();
         this.#root = undefined;
     }
 
     #onDataChanged(): void {
-        if (this.#loaded) {
-            this.#scheduleReload(editDebounceMs);
-        }
+        this.#scheduleReload(editDebounceMs);
     }
 
     #scheduleReload(delay: number): void {
@@ -187,30 +193,56 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
 
         const url = this.#buildPreviewUrl(this.#contentKey, this.#contentElementTypeKey);
 
-        const response = await this.authFetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify(blockData),
-        });
+        this.#inFlight?.abort();
 
-        if (!response.ok) {
-            return;
+        const abort = new AbortController();
+        this.#inFlight = abort;
+
+        try {
+            const response = await this.authFetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify(blockData),
+                signal: abort.signal,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Preview request failed with status ${response.status}`);
+            }
+
+            const payload: unknown = await response.json();
+
+            if (typeof payload !== 'string') {
+                throw new Error('Preview response was not markup');
+            }
+
+            this.#setState({ status: 'ready', markup: payload });
+        } catch (error) {
+            if (abort.signal.aborted) {
+                return;
+            }
+
+            const message = error instanceof Error ? error.message : String(error);
+
+            this.#notificationContext?.peek('danger', {
+                data: { headline: 'Block preview', message: 'Failed getting block preview markup' },
+            });
+
+            this.#setState({ status: 'error', message });
+        } finally {
+            if (this.#inFlight === abort) {
+                this.#inFlight = undefined;
+            }
         }
+    }
 
-        const markup = (await response.json()) as string;
-
-        this.#markup = markup;
-        this.#loaded = true;
+    #setState(state: PreviewState): void {
+        this.#state = state;
         this.#render();
     }
 
     #render(): void {
-        this.#root?.render(
-            createElement(BlockPreviewApp, {
-                loaded: this.#loaded,
-                markup: this.#markup,
-            }),
-        );
+        this.#root?.render(createElement(BlockPreviewApp, { state: this.#state }));
     }
 }
 
