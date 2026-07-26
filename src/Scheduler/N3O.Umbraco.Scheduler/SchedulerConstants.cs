@@ -1,6 +1,17 @@
 ﻿namespace N3O.Umbraco.Scheduler;
 
 public static class SchedulerConstants {
+    public static class Config {
+        public const string DefaultWorkerCount = "N3O:Scheduler:DefaultWorkerCount";
+        public const string LongJobsWorkerCount = "N3O:Scheduler:LongJobsWorkerCount";
+        public const string JobTimeoutMinutes = "N3O:Scheduler:JobTimeoutMinutes";
+    }
+
+    public static class Defaults {
+        public const int WorkerCount = 1;
+        public const int JobTimeoutMinutes = 30;
+    }
+
     public static class Parameters {
         public const string Culture = "culture";
     }

@@ -55,16 +55,21 @@ public class SchedulerComposer : IComposer {
                    .UseMaxLinesInExceptionDetails(200);
             });
             
+            var defaultWorkerCount = builder.Config.GetValue<int?>(SchedulerConstants.Config.DefaultWorkerCount) ??
+                                     SchedulerConstants.Defaults.WorkerCount;
+            var longJobsWorkerCount = builder.Config.GetValue<int?>(SchedulerConstants.Config.LongJobsWorkerCount) ??
+                                      SchedulerConstants.Defaults.WorkerCount;
+
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.DefaultWorker;
                 opt.Queues = [SchedulerConstants.Queues.Default];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = defaultWorkerCount;
             });
 
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.LongJobsWorker;
                 opt.Queues = [SchedulerConstants.Queues.LongJobs];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = longJobsWorkerCount;
             });
 
             AddAuthorizedUmbracoDashboard(builder);
