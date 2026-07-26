@@ -10,8 +10,7 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
+        <N3OReactPlugin>true</N3OReactPlugin>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Blocks.StaticAssets</PackageId>
