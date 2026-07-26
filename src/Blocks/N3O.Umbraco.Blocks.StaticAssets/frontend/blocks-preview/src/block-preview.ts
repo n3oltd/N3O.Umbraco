@@ -17,6 +17,7 @@ import type { PreviewState } from './types';
 const elementName = 'n3o-block-preview';
 const previewEndpoint = '/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock';
 const editDebounceMs = 500;
+const previewFailedMessage = 'Failed getting block preview markup';
 
 interface BlockGridValue {
     layout: { 'Umbraco.BlockGrid': UmbBlockLayoutBaseModel[] };
@@ -29,6 +30,7 @@ interface BlockGridValue {
 export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbBlockEditorCustomViewElement {
     #content?: UmbBlockEditorCustomViewElement['content'];
     #settings?: UmbBlockEditorCustomViewElement['settings'];
+    #layout?: UmbBlockEditorCustomViewElement['layout'];
 
     get content(): UmbBlockEditorCustomViewElement['content'] {
         return this.#content;
@@ -45,6 +47,17 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
 
     set settings(value: UmbBlockEditorCustomViewElement['settings']) {
         this.#settings = value;
+        this.#onDataChanged();
+    }
+
+    // The preview is rendered from the whole grid value, so a block's column and row spans change it as much
+    // as its content does.
+    get layout(): UmbBlockEditorCustomViewElement['layout'] {
+        return this.#layout;
+    }
+
+    set layout(value: UmbBlockEditorCustomViewElement['layout']) {
+        this.#layout = value;
         this.#onDataChanged();
     }
 
@@ -78,7 +91,13 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
+            // Re-subscribing replays the current value, so each observer reloads only when its own request
+            // parameter changes. Aborting is client-side; a redundant request still costs a server render.
             this.observe(context.unique, (unique) => {
+                if (unique === this.#nodeKey) {
+                    return;
+                }
+
                 this.#nodeKey = unique;
                 this.#scheduleReload(0);
             }, '_observeUnique');
@@ -86,7 +105,13 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             this.observe(
                 context.splitView.activeVariantsInfo,
                 (infos) => {
-                    this.#culture = infos[0]?.culture ?? '';
+                    const culture = infos[0]?.culture ?? '';
+
+                    if (culture === this.#culture) {
+                        return;
+                    }
+
+                    this.#culture = culture;
                     this.#scheduleReload(0);
                 },
                 '_observeCulture'
@@ -99,17 +124,29 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
             }
 
             this.observe(context.contentKey, (key) => {
+                if (key === this.#contentKey) {
+                    return;
+                }
+
                 this.#contentKey = key;
                 this.#scheduleReload(0);
             }, '_observeContentKey');
 
             this.observe(context.contentElementTypeKey, (key) => {
+                if (key === this.#contentElementTypeKey) {
+                    return;
+                }
+
                 this.#contentElementTypeKey = key;
                 this.#scheduleReload(0);
             }, '_observeContentElementTypeKey');
         });
 
         this.consumeContext(UMB_BLOCK_MANAGER_CONTEXT, (context) => {
+            if (!context || context === this.#blockManager) {
+                return;
+            }
+
             this.#blockManager = context;
             this.#scheduleReload(0);
         });
@@ -171,8 +208,7 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
         };
     }
 
-    // documentTypeKey is the wire name of the query parameter; the value the endpoint wants is the block's
-    // element type key.
+    // The endpoint's documentTypeKey parameter receives the block's element type key.
     #buildPreviewUrl(contentKey: string, contentElementTypeKey: string): string {
         const query = new URLSearchParams({
             nodeKey: this.#nodeKey ?? '',
@@ -222,13 +258,16 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
-            const message = error instanceof Error ? error.message : String(error);
+            console.error('Block preview failed', error);
 
-            this.#notificationContext?.peek('danger', {
-                data: { headline: 'Block preview', message: 'Failed getting block preview markup' },
-            });
+            // Backoffice toasts stack, so only the transition into failure is announced.
+            if (this.#state.status !== 'error') {
+                this.#notificationContext?.peek('danger', {
+                    data: { headline: 'Block preview', message: previewFailedMessage },
+                });
+            }
 
-            this.#setState({ status: 'error', message });
+            this.#setState({ status: 'error', message: previewFailedMessage });
         } finally {
             if (this.#inFlight === abort) {
                 this.#inFlight = undefined;

@@ -26,8 +26,7 @@ namespace N3O.Umbraco.Blocks.Perplex;
 [ComposeAfter(typeof(BlocksComposer))]
 public class PerplexBlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        // Replace Perplex's ContentBlocks editor with N3OContentBlocksPropertyEditor (same alias) so the fixed
-        // value editor is used — see N3OContentBlocksValueEditor.
+        // N3OContentBlocksPropertyEditor claims the same alias, so only one of the two can be registered.
         builder.WithCollectionBuilder<DataEditorCollectionBuilder>().Exclude<PerplexContentBlocksPropertyEditor>();
 
         BlocksComponent.LoadDefinitions(builder, WebHostEnvironment);

@@ -184,9 +184,8 @@ public class ContentHelper : IContentHelper {
         return contentProperties;
     }
 
-    // Perplex ContentBlocks holds each block's content as a v4 Block Editor element (contentTypeKey plus
-    // values) once its own v3-to-v4 migration has run, and as the v3 NestedContent shape until then. Either
-    // shape can be stored, so the payload is dispatched to the element parser matching it.
+    // Block content is stored either as a Block Editor element carrying a contentTypeKey, or as a
+    // NestedContent array.
     private IReadOnlyList<ContentProperties> GetContentPropertiesForPerplexBlock(JToken block) {
         var content = block?["content"];
 
