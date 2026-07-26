@@ -1,5 +1,4 @@
 using Flurl;
-using Microsoft.Extensions.Configuration;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using System;
@@ -15,16 +14,16 @@ public class JobTrigger {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IJsonProvider _jsonProvider;
     private readonly IJobUrlProvider _jobUrlProvider;
-    private readonly IConfiguration _config;
+    private readonly SchedulerSettings _settings;
 
     public JobTrigger(IHttpClientFactory httpClientFactory,
                       IJsonProvider jsonProvider,
                       IJobUrlProvider jobUrlProvider,
-                      IConfiguration config) {
+                      SchedulerSettings settings) {
         _httpClientFactory = httpClientFactory;
         _jsonProvider = jsonProvider;
         _jobUrlProvider = jobUrlProvider;
-        _config = config;
+        _settings = settings;
     }
 
     [DisplayName("{0}")]
@@ -32,11 +31,8 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
-        var timeoutMinutes = _config.GetValue<int?>(SchedulerConstants.Config.JobTimeoutMinutes) ??
-                             SchedulerConstants.Defaults.JobTimeoutMinutes;
-
         var httpClient = _httpClientFactory.CreateClient();
-        httpClient.Timeout = TimeSpan.FromMinutes(timeoutMinutes);
+        httpClient.Timeout = TimeSpan.FromMinutes(_settings.JobTimeoutMinutes);
         var req = GetProxyReq(triggerKey, modelJson, parameterData);
         var url = GetUrl();
         var reqStr = _jsonProvider.SerializeObject(req);
