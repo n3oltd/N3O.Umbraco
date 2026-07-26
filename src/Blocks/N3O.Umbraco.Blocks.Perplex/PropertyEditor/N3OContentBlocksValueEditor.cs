@@ -18,8 +18,8 @@ namespace N3O.Umbraco.Blocks.Perplex;
 // Perplex's FromEditor but threads the owning content key down to each inner property, as Umbraco's own block
 // editor does (BlockValuePropertyValueEditorBase.MapBlockItemDataFromEditor) and as the upstream fix does.
 //
-// Reported upstream — remove this folder (and the Exclude<> in PerplexBlocksComposer) once the fix ships in a
-// Perplex.ContentBlocks release we can upgrade to:
+// TODO Remove this folder, the Exclude<> in PerplexBlocksComposer and the exact Perplex.ContentBlocks version
+// pin once the fix ships in a release we can upgrade to:
 //   Issue: https://github.com/PerplexDigital/Perplex.ContentBlocks/issues/102
 //   PR:    https://github.com/PerplexDigital/Perplex.ContentBlocks/pull/103
 public class N3OContentBlocksValueEditor : ContentBlocksValueEditor {
