@@ -1,5 +1,6 @@
 using Perplex.ContentBlocks.PropertyEditor;
 using Perplex.ContentBlocks.PropertyEditor.Value;
+using System;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Models;
@@ -14,8 +15,8 @@ namespace N3O.Umbraco.Blocks.Perplex;
 // Workaround for a Perplex.ContentBlocks v4 defect: ContentBlocksValueEditor.FromEditor builds the inner
 // ContentPropertyData without ContentKey/PropertyTypeKey, so editors that store a file against the content key
 // (Image Cropper and File Upload) receive Guid.Empty and throw "Invalid content key" on save. This repeats
-// Perplex's FromEditor but sets both keys, exactly as Umbraco's own block editor does
-// (BlockValuePropertyValueEditorBase.MapBlockItemDataFromEditor).
+// Perplex's FromEditor but threads the owning content key down to each inner property, as Umbraco's own block
+// editor does (BlockValuePropertyValueEditorBase.MapBlockItemDataFromEditor) and as the upstream fix does.
 //
 // Reported upstream — remove this folder (and the Exclude<> in PerplexBlocksComposer) once the fix ships in a
 // Perplex.ContentBlocks release we can upgrade to:
@@ -49,12 +50,12 @@ public class N3OContentBlocksValueEditor : ContentBlocksValueEditor {
             return base.FromEditor(editorValue, currentValue);
         }
 
-        ContentBlocksValueUtils.Iterate(model, block => FromEditorBlock(block.Content));
+        ContentBlocksValueUtils.Iterate(model, block => FromEditorBlock(block.Content, editorValue.ContentKey));
 
         return _jsonSerializer.Serialize(model);
     }
 
-    private void FromEditorBlock(BlockItemData data) {
+    private void FromEditorBlock(BlockItemData data, Guid contentKey) {
         if (data == null) {
             return;
         }
@@ -72,10 +73,9 @@ public class N3OContentBlocksValueEditor : ContentBlocksValueEditor {
                 continue;
             }
 
-            var propData = new ContentPropertyData(prop.Value, configuration) {
-                ContentKey = data.Key,
-                PropertyTypeKey = prop.PropertyType.Key
-            };
+            var propData = new ContentPropertyData(prop.Value, configuration);
+            propData.ContentKey = contentKey;
+            propData.PropertyTypeKey = prop.PropertyType.Key;
 
             prop.Value = valueEditor.FromEditor(propData, prop.Value);
         }
