@@ -39,7 +39,6 @@
         <PackageReference Include="Auth0.AuthenticationApi" Version="7.48.0" />
         <PackageReference Include="Auth0.ManagementApi" Version="8.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.10" />
-        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.21.0" />
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.21.0" />
         <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.21.0" />
     </ItemGroup>
