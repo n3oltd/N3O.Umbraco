@@ -34,6 +34,10 @@ public class SchedulerComposer : IComposer {
         builder.Services.AddSingleton<IJobUrlProvider, JobUrlProvider>();
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
         
+        var settings = builder.Config.GetSection(SchedulerSettings.SectionName).Get<SchedulerSettings>() ??
+                       new SchedulerSettings();
+        builder.Services.AddSingleton(settings);
+
         var connectionString = builder.Config.GetConnectionString(UmbracoConstants.System.UmbracoConnectionName);
 
         if (connectionString.HasValue()) {
@@ -58,13 +62,13 @@ public class SchedulerComposer : IComposer {
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.DefaultWorker;
                 opt.Queues = [SchedulerConstants.Queues.Default];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = settings.DefaultWorkerCount;
             });
 
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.LongJobsWorker;
                 opt.Queues = [SchedulerConstants.Queues.LongJobs];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = settings.LongJobsWorkerCount;
             });
 
             AddAuthorizedUmbracoDashboard(builder);
