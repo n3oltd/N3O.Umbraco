@@ -71,11 +71,17 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
-            this.observe(context.unique, (unique) => { this.#nodeKey = unique; }, '_observeUnique');
+            this.observe(context.unique, (unique) => {
+                this.#nodeKey = unique;
+                this.#scheduleReload(0);
+            }, '_observeUnique');
 
             this.observe(
                 context.splitView.activeVariantsInfo,
-                (infos) => { this.#culture = infos[0]?.culture ?? ''; },
+                (infos) => {
+                    this.#culture = infos[0]?.culture ?? '';
+                    this.#scheduleReload(0);
+                },
                 '_observeCulture'
             );
         });
@@ -85,14 +91,20 @@ export class N3oBlockPreviewElement extends UmbAuthFetchMixin(UmbElementMixin(HT
                 return;
             }
 
-            this.observe(context.contentKey, (key) => { this.#contentKey = key; }, '_observeContentKey');
-            this.observe(context.contentElementTypeKey,
-                         (key) => { this.#contentElementTypeKey = key; },
-                         '_observeContentElementTypeKey');
+            this.observe(context.contentKey, (key) => {
+                this.#contentKey = key;
+                this.#scheduleReload(0);
+            }, '_observeContentKey');
+
+            this.observe(context.contentElementTypeKey, (key) => {
+                this.#contentElementTypeKey = key;
+                this.#scheduleReload(0);
+            }, '_observeContentElementTypeKey');
         });
 
         this.consumeContext(UMB_BLOCK_MANAGER_CONTEXT, (context) => {
             this.#blockManager = context;
+            this.#scheduleReload(0);
         });
     }
 
