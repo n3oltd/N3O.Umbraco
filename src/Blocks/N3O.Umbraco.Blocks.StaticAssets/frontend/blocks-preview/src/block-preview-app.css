@@ -2,11 +2,15 @@
     display: block;
 }
 
-.block-preview-frame {
+.block-preview-surface {
     display: block;
     width: 100%;
+    overflow: hidden;
+}
+
+.block-preview-frame {
+    display: block;
     border: none;
-    transform: scale(0.9);
     transform-origin: top left;
 }
 
@@ -33,19 +37,12 @@
     white-space: normal;
 }
 
-.preview-alert-warning {
-    background-color: #f0ac00;
-    border-color: transparent;
-    color: #fff;
-}
-
 .preview-alert-info {
     background-color: #3544b1;
     border-color: transparent;
     color: #fff;
 }
 
-.preview-alert-danger,
 .preview-alert-error {
     background-color: #d42054;
     border-color: transparent;

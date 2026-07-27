@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Blocks.Perplex.Extensions;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
@@ -26,8 +27,7 @@ namespace N3O.Umbraco.Blocks.Perplex;
 [ComposeAfter(typeof(BlocksComposer))]
 public class PerplexBlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        // Replace Perplex's ContentBlocks editor with N3OContentBlocksPropertyEditor (same alias) so the fixed
-        // value editor is used — see N3OContentBlocksValueEditor.
+        // N3OContentBlocksPropertyEditor claims the same alias, so only one of the two can be registered.
         builder.WithCollectionBuilder<DataEditorCollectionBuilder>().Exclude<PerplexContentBlocksPropertyEditor>();
 
         BlocksComponent.LoadDefinitions(builder, WebHostEnvironment);
@@ -57,17 +57,20 @@ public class BlocksComponent : IAsyncComponent {
     public static IReadOnlyList<PerplexBlockDefinition> BlockDefinitions { get; private set; }
 
     private readonly IRuntimeState _runtimeState;
+    private readonly ILogger<BlocksComponent> _logger;
     private readonly Lazy<IPerplexBlockTypesService> _blockTypesService;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IContentBlockDefinitionRepository> _blockDefinitionsRepository;
     private readonly Lazy<IContentBlockCategoryRepository> _blockCategoriesRepository;
 
     public BlocksComponent(IRuntimeState runtimeState,
+                           ILogger<BlocksComponent> logger,
                            Lazy<IPerplexBlockTypesService> blockTypesService,
                            Lazy<ILookups> lookups,
                            Lazy<IContentBlockDefinitionRepository> blockDefinitionsRepository,
                            Lazy<IContentBlockCategoryRepository> blockCategoriesRepository) {
         _runtimeState = runtimeState;
+        _logger = logger;
         _blockTypesService = blockTypesService;
         _lookups = lookups;
         _blockDefinitionsRepository = blockDefinitionsRepository;
@@ -83,9 +86,17 @@ public class BlocksComponent : IAsyncComponent {
 
             blockCategories.Do(x => _blockCategoriesRepository.Value.Add(x));
 
+            // Component initialisation runs outside any handler in the Umbraco runtime, so an exception here
+            // fails host startup and the site serves nothing. One unusable block definition is contained to
+            // itself instead.
             foreach (var x in BlockDefinitions) {
-                await _blockTypesService.Value.CreateTypesAsync(x);
-                _blockDefinitionsRepository.Value.Add(x);
+                try {
+                    await _blockTypesService.Value.CreateTypesAsync(x);
+
+                    _blockDefinitionsRepository.Value.Add(x);
+                } catch (Exception ex) {
+                    _logger.LogError(ex, "Failed to create block types for {Alias}", x.Alias);
+                }
             }
         }
     }

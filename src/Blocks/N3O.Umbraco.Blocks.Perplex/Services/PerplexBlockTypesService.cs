@@ -60,7 +60,12 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
         contentType.PropertyGroups = [];
         contentType.ContentTypeComposition = [compositionType];
 
-        await _contentTypeService.CreateAsync(contentType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
+        var attempt = await _contentTypeService.CreateAsync(contentType,
+                                                            global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
+
+        if (!attempt.Success) {
+            throw new Exception($"Failed to create block element type {definition.Alias.Quote()}: {attempt.Result}");
+        }
     }
 
     private async Task<IContentType> GetOrCreateContentTypeCompositionAsync(EntityContainer container) {
@@ -85,7 +90,12 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
             contentType.Icon = "icon-brick";
             contentType.AddPropertyType(propertyType, "general", "General");
 
-            await _contentTypeService.CreateAsync(contentType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
+            var attempt = await _contentTypeService.CreateAsync(contentType,
+                                                                global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
+
+            if (!attempt.Success) {
+                throw new Exception($"Failed to create block composition content type {alias.Quote()}: {attempt.Result}");
+            }
         }
 
         return contentType;

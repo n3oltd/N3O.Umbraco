@@ -4,10 +4,10 @@ using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
-using Newtonsoft.Json;
-using Perplex.ContentBlocks.PropertyEditor.Value;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Umbraco.Extensions;
 using ContentBlocksConstants = Perplex.ContentBlocks.Constants;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
@@ -33,12 +33,25 @@ public class ContentBlocksPropertyConverter : PropertyConverter<string> {
                                 string columnTitlePrefix,
                                 UmbracoPropertyInfo propertyInfo,
                                 IEnumerable<ImportField> fields) {
-        var parseResult = parser.String.Parse(fields.Single().Value, OurDataTypes.String.GetClrType());
+        var field = fields.Single();
+        var parseResult = parser.String.Parse(field.Value, OurDataTypes.String.GetClrType());
 
-        if (parseResult.Value.HasValue()) {
-            var modelValue = JsonConvert.DeserializeObject<ContentBlocksValue>(parseResult.Value);
-            
-            contentBuilder.PerplexBlocks(propertyInfo.Type.Alias).Set(modelValue);
+        if (!parseResult.Value.HasValue()) {
+            return;
+        } else if (IsContentBlocksJson(parseResult.Value)) {
+            contentBuilder.PerplexBlocks(propertyInfo.Type.Alias).SetJson(parseResult.Value);
+        } else {
+            errorLog.AddError<PropertyConverterStrings>(s => s.ParsingFailed_2, field.Value, field.Name);
+        }
+    }
+
+    // The cell is stored verbatim, so it is checked only for well-formedness and the member every content
+    // blocks value carries. More than one layout is valid, and Perplex owns which of them it reads.
+    private static bool IsContentBlocksJson(string json) {
+        try {
+            return JsonNode.Parse(json) is JsonObject jsonObject && jsonObject.ContainsKey("blocks");
+        } catch (JsonException) {
+            return false;
         }
     }
 }

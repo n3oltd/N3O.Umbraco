@@ -1,7 +1,0 @@
-{
-    "extends": "@n3o/build/tsconfig",
-    "compilerOptions": {
-        "jsx": "react-jsx"
-    },
-    "include": ["src"]
-}
