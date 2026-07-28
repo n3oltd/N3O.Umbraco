@@ -175,6 +175,10 @@ public class ContentHelper : IContentHelper {
             return contentProperties;
         }
         
+        if (blockContent["header"] is JObject header) {
+            contentProperties.AddRange(GetContentPropertiesForPerplexBlock(header));
+        }
+
         if (blockContent["blocks"] is JArray blocks) {
             foreach (var block in blocks) {
                 contentProperties.AddRange(GetContentPropertiesForPerplexBlock(block));
@@ -203,8 +207,17 @@ public class ContentHelper : IContentHelper {
     private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
         var contentProperties = new List<ContentProperties>();
 
-        if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
-            foreach (var block in contentData.OrEmpty()) {
+        AddBlockListOrGridElements(blockListOrGrid, "contentData", contentProperties);
+        AddBlockListOrGridElements(blockListOrGrid, "settingsData", contentProperties);
+
+        return contentProperties;
+    }
+
+    private void AddBlockListOrGridElements(JObject blockListOrGrid,
+                                            string arrayName,
+                                            List<ContentProperties> contentProperties) {
+        if (blockListOrGrid?.TryGetValue(arrayName, StringComparison.InvariantCultureIgnoreCase, out var data) == true) {
+            foreach (var block in data.OrEmpty()) {
                 if (block is JObject jObject) {
                     var elementProperties = GetContentPropertiesForBlockListOrGridElement(jObject);
 
@@ -214,8 +227,6 @@ public class ContentHelper : IContentHelper {
                 }
             }
         }
-
-        return contentProperties;
     }
     
     private ContentProperties GetContentPropertiesForBlockListOrGridElement(JObject element) {
@@ -334,11 +345,11 @@ public class ContentHelper : IContentHelper {
         var properties = new List<(IPropertyType, object)>();
             
         foreach (var propertyType in contentType.CompositionPropertyTypes) {
-            var propertyValue = element[propertyType.Alias];
+            element.TryGetValue(propertyType.Alias, StringComparison.InvariantCultureIgnoreCase, out var propertyValue);
 
             properties.Add((propertyType, propertyValue?.ConvertToObject()));
         }
-            
+
         return GetContentProperties(id, null, -1, contentTypeAlias, properties);
     }
     
@@ -347,15 +358,14 @@ public class ContentHelper : IContentHelper {
             return (null, null);
         }
         
-        JToken obj;
-
+        // When the value is already the stored JSON string, return it verbatim rather than round-tripping it
+        // through Newtonsoft — re-serialising coerces ISO date strings to the server timezone and loses
+        // precision on large / high-precision numbers.
         if (propertyValue is string str) {
-            obj = (JToken) JsonConvert.DeserializeObject(str);
-        } else if (propertyValue is JToken jToken) {
-            obj = jToken;
-        } else {
-            obj = JToken.FromObject(propertyValue);
+            return ((JToken) JsonConvert.DeserializeObject(str), str);
         }
+
+        var obj = propertyValue is JToken jToken ? jToken : JToken.FromObject(propertyValue);
 
         return (obj, JsonConvert.SerializeObject(obj));
     }

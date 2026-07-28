@@ -21,6 +21,12 @@ public class BlocksComposer : Composer {
         ConfigureRazorTemplating(builder);
     }
 
+    // Block preview renders site-supplied Razor partials at runtime, so it depends on ASP.NET runtime Razor
+    // compilation being enabled on the host. We deliberately do NOT enable it here: calling
+    // AddMvcCore().AddRazorRuntimeCompilation() would create a second MVC builder alongside Umbraco's own
+    // AddControllersWithViews() and conflict at startup. N3O.Umbraco.Cms enables it once for the host
+    // (CmsStartup: AddControllersWithViews().AddRazorRuntimeCompilation()) and every N3O site installs Cms;
+    // the file-provider registration below only takes effect once the host has enabled it.
     private void ConfigureRazorTemplating(IUmbracoBuilder builder) {
         builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
             options.FileProviders.Add(new PhysicalFileProvider(WebHostEnvironment.ContentRootPath));
