@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Constants;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Monitoring.Sentry.Configuration;
 using N3O.Umbraco.Monitoring.Sentry.Extensions;

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Hosting;
