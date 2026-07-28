@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Bundling</RootNamespace>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>1591;NU1605;NU1504</NoWarn>
@@ -21,7 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
-        <Version>13.0.0</Version>
+        <Version>17.0.0</Version>
         <AssemblyVersion>$(Version)</AssemblyVersion>
         <FileVersion>$(Version)</FileVersion>
         <RepositoryType>git</RepositoryType>
@@ -40,6 +40,19 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
+    <!--
+        v17 migration: Umbraco 17 removed Smidge from the CMS core, so it is no longer available transitively
+        (Umbraco 13 supplied it via Umbraco.Cms). Smidge is KEPT rather than dropped because 5 sites still
+        render their CSS/JS through this package's <n3o-css-bundle> / <n3o-js-bundle> tag helpers
+        (site-mth, site-mr, site-mpb, site-afh, site-mh) and configure Smidge directly via
+        IConfigureOptions<SmidgeOptions>. Umbraco.Community.Smidge re-wires Smidge for Umbraco 17
+        (its AddRuntimeMinifier() calls AddSmidge, registering the SmidgeHelper this package's Bundler uses);
+        Smidge is referenced explicitly for the SmidgeHelper / ISmidgeRequire types used here.
+        Chosen over WebOptimizer (would break each site's Smidge config) and Vite (per-site migration).
+        See n3oltd/work#3211.
+    -->
     <ItemGroup>
+        <PackageReference Include="Smidge" Version="4.6.0" />
+        <PackageReference Include="Umbraco.Community.Smidge" Version="2.0.0" />
     </ItemGroup>
 </Project>
