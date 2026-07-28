@@ -40,17 +40,9 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-    <!--
-        v17 migration: Umbraco 17 removed Smidge from the CMS core, so it is no longer available transitively
-        (Umbraco 13 supplied it via Umbraco.Cms). Smidge is KEPT rather than dropped because 5 sites still
-        render their CSS/JS through this package's <n3o-css-bundle> / <n3o-js-bundle> tag helpers
-        (site-mth, site-mr, site-mpb, site-afh, site-mh) and configure Smidge directly via
-        IConfigureOptions<SmidgeOptions>. Umbraco.Community.Smidge re-wires Smidge for Umbraco 17
-        (its AddRuntimeMinifier() calls AddSmidge, registering the SmidgeHelper this package's Bundler uses);
-        Smidge is referenced explicitly for the SmidgeHelper / ISmidgeRequire types used here.
-        Chosen over WebOptimizer (would break each site's Smidge config) and Vite (per-site migration).
-        See n3oltd/work#3211.
-    -->
+    <!-- Umbraco 17 dropped Smidge from core; kept because 5 sites use this package's
+         <n3o-css-bundle> / <n3o-js-bundle> tag helpers. Re-wired via Umbraco.Community.Smidge —
+         runtime wiring to be verified in the next phase. n3oltd/work#3211 -->
     <ItemGroup>
         <PackageReference Include="Smidge" Version="4.6.0" />
         <PackageReference Include="Umbraco.Community.Smidge" Version="2.0.0" />
