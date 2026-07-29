@@ -31,7 +31,7 @@ public class PlatformsCanonicalUrlProvider : ICanonicalUrlProvider {
         return getPageResult.Page.AbsoluteUrl(_urlBuilder);
     }
 
-    public Task<bool> IsProviderForAsync(IPublishedContent content) {
-        return Task.FromResult(content.IsPlatformsPage(_contentCache));
+    public bool IsProviderFor(IPublishedContent content) {
+        return content.IsPlatformsPage(_contentCache);
     }
 }

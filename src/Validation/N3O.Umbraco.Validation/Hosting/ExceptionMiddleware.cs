@@ -53,7 +53,8 @@ public class ExceptionMiddleware : IMiddleware {
                                      endpoint?.ActionName,
                                      ex.Message);
                 }
-                
+
+                // Headers are already sent, so Response.Clear() below would throw and mask the original exception
                 if (context.Response.HasStarted) {
                     throw;
                 }
