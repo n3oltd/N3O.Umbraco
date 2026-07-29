@@ -75,12 +75,12 @@ public class ContentHelper : IContentHelper {
             if (property.Type.IsBlockList() || property.Type.IsBlockGrid()) {
                 var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
-                var elements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "contentData");
+                var contentElements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "contentData");
                 var settingsElements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "settingsData");
 
                 var elementsProperty = new ElementsProperty(contentType,
                                                             property.Type,
-                                                            elements,
+                                                            contentElements,
                                                             settingsElements,
                                                             json);
 
