@@ -12,7 +12,5 @@ public class SyncExtensionsComposer : Composer {
         
         RegisterAll(t => t.ImplementsInterface<IDataSyncProducer>(),
                     t => builder.Services.AddTransient(typeof(IDataSyncProducer), t));
-
-        builder.Services.AddTransient<uSync.Publisher.Strategies.Processor.PublisherProcessor>();
     }
 }
