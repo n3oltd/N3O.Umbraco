@@ -40,11 +40,12 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-    <!-- Umbraco 17 dropped Smidge from core; kept because 5 sites use this package's
-         <n3o-css-bundle> / <n3o-js-bundle> tag helpers. Re-wired via Umbraco.Community.Smidge —
-         runtime wiring to be verified in the next phase. n3oltd/work#3211 -->
+    <!-- Umbraco 17 dropped Smidge from core; kept because 4 sites reference this package's
+         <n3o-css-bundle> / <n3o-js-bundle> tag helpers. Re-wired via Umbraco.Community.Smidge; Smidge and
+         Smidge.Nuglify are explicit because the types and middleware here are used directly. n3oltd/work#3211 -->
     <ItemGroup>
         <PackageReference Include="Smidge" Version="4.6.0" />
+        <PackageReference Include="Smidge.Nuglify" Version="4.6.0" />
         <PackageReference Include="Umbraco.Community.Smidge" Version="2.0.0" />
     </ItemGroup>
 </Project>
