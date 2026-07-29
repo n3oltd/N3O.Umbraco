@@ -1,5 +1,6 @@
-using Flurl;
 using N3O.Umbraco.Canonical;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System.Threading.Tasks;
@@ -8,10 +9,14 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public class PlatformsCanonicalUrlProvider : ICanonicalUrlProvider {
+    private readonly IContentCache _contentCache;
     private readonly IPlatformsPageAccessor _platformsPageAccessor;
     private readonly IUrlBuilder _urlBuilder;
 
-    public PlatformsCanonicalUrlProvider(IPlatformsPageAccessor platformsPageAccessor, IUrlBuilder urlBuilder) {
+    public PlatformsCanonicalUrlProvider(IContentCache contentCache,
+                                         IPlatformsPageAccessor platformsPageAccessor,
+                                         IUrlBuilder urlBuilder) {
+        _contentCache = contentCache;
         _platformsPageAccessor = platformsPageAccessor;
         _urlBuilder = urlBuilder;
     }
@@ -19,23 +24,14 @@ public class PlatformsCanonicalUrlProvider : ICanonicalUrlProvider {
     public async Task<string> GetUrlAsync(IPublishedContent content) {
         var getPageResult = await _platformsPageAccessor.GetAsync();
 
-        if (!getPageResult.HasValue(x => x.Page?.Url)) {
+        if (!getPageResult.HasValue(x => x.Page)) {
             return null;
         }
 
-        var rootUrl = _urlBuilder.Root();
-        var url = new Url(getPageResult.Page.Url.AbsolutePath);
-
-        url.Scheme = rootUrl.Scheme;
-        url.Host = rootUrl.Host;
-        url.Port = rootUrl.Port;
-
-        return url;
+        return getPageResult.Page.AbsoluteUrl(_urlBuilder);
     }
 
-    public async Task<bool> IsProviderForAsync(IPublishedContent content) {
-        var getPageResult = await _platformsPageAccessor.GetAsync();
-
-        return getPageResult.HasValue(x => x.Page);
+    public Task<bool> IsProviderForAsync(IPublishedContent content) {
+        return Task.FromResult(content.IsPlatformsPage(_contentCache));
     }
 }
