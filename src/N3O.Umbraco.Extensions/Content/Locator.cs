@@ -70,7 +70,7 @@ public abstract class Locator : ILocator {
 
             foreach (var rootContent in c.GetAtRoot()) {
                 if (contentTypeAlias == null) {
-                    allContent.AddRange(rootContent.Descendants());
+                    allContent.AddRange(rootContent.DescendantsOrSelf());
                 } else {
                     if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
                         allContent.Add(rootContent);
