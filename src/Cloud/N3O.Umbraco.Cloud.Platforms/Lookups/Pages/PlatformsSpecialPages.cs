@@ -6,4 +6,6 @@ public class PlatformsSpecialPages : ISpecialContents {
     public static readonly SpecialContent Campaign = new("campaignPage", "Campaign Page", "campaignPage");
     public static readonly SpecialContent Crowdfunder = new("crowdfunderPage", "Crowdfunder Page", "crowdfunderPage");
     public static readonly SpecialContent Offering = new("offeringPage", "Offering Page", "offeringPage");
+
+    public static readonly SpecialContent[] All = [Campaign, Crowdfunder, Offering];
 }

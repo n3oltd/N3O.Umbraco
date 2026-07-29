@@ -18,8 +18,6 @@ public static class PublishedContentExtensions {
             return false;
         }
 
-        return content.Id == contentCache.Special(PlatformsSpecialPages.Campaign)?.Id ||
-               content.Id == contentCache.Special(PlatformsSpecialPages.Crowdfunder)?.Id ||
-               content.Id == contentCache.Special(PlatformsSpecialPages.Offering)?.Id;
+        return PlatformsSpecialPages.All.Any(x => content.Id == contentCache.Special(x)?.Id);
     }
 }

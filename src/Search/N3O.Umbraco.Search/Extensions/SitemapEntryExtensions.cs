@@ -128,7 +128,7 @@ public static class SitemapEntryExtensions {
     private static XmlWriterSettings GetWriterSettings() {
         var settings = new XmlWriterSettings();
 
-        // Encoding.UTF8 emits a preamble, which GetString below keeps, leaving a BOM ahead of the XML declaration
+        // Encoding.UTF8 emits a preamble, which the GetString calls above keep, leaving a BOM ahead of the declaration
         settings.Encoding = new UTF8Encoding(false);
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;

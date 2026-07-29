@@ -31,7 +31,7 @@ public class CanonicalUrlTagHelper : TagHelper {
     }
 
     private async Task<string> GetUrlAsync() {
-        var providers = _allProviders.OrEmpty().Where(x => x.IsProviderFor(Model.Content));
+        var providers = _allProviders.Where(x => x.IsProviderFor(Model.Content));
 
         foreach (var provider in providers) {
             var url = await provider.GetUrlAsync(Model.Content);
