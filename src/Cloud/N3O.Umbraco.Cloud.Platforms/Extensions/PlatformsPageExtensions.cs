@@ -1,5 +1,4 @@
-﻿using Flurl;
-using Humanizer;
+﻿using Humanizer;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Models;
@@ -15,14 +14,7 @@ public static class PlatformsPageExtensions {
             return null;
         }
 
-        var rootUrl = urlBuilder.Root();
-        var url = new Url(page.Url.AbsolutePath);
-
-        url.Scheme = rootUrl.Scheme;
-        url.Host = rootUrl.Host;
-        url.Port = rootUrl.Port;
-
-        return url;
+        return page.Url.RebaseOnSiteRoot(urlBuilder);
     }
 
     public static string GetCampaignId(this PlatformsPage page) {
