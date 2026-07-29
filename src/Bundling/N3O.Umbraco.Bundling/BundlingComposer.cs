@@ -13,6 +13,9 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Bundling;
 
+// Umbraco removed the runtime minifier in v14 and points at frontend build tooling (Vite) instead, so this
+// package is a migration candidate: it stays on Smidge only to unblock the v17 migration, and moving the sites
+// to Vite bundling is a per-site job to be done once that migration has landed. n3oltd/work#3211
 public class BundlingComposer : Composer {
     // Umbraco 13 bound Smidge to this section, but Umbraco.Community.Smidge binds a top-level "smidge" section
     // instead, so bind it back to keep the sites' existing settings applying. n3oltd/work#3211
