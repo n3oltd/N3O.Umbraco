@@ -1,7 +1,11 @@
+using N3O.Umbraco.Constants;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
+using N3O.Umbraco.Scheduler.Attributes;
 using NodaTime;
 using System;
 
@@ -47,6 +51,12 @@ public class BackgroundJob : IBackgroundJob {
         addParameters?.Invoke(_fluentParametersBuilder);
 
         _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Culture, LocalizationSettings.CultureCode);
+
+        if (typeof(TRequest).HasAttribute<VersionFencedAttribute>()) {
+            _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Queue, queue);
+            _fluentParametersBuilder.Add(SchedulerConstants.Parameters.SiteVersion,
+                                         EnvironmentData.GetOurValue(EnvironmentVariables.Version));
+        }
 
         var parameterData = _fluentParametersBuilder.Build();
         var modelJson = _jsonProvider.SerializeObject(model);

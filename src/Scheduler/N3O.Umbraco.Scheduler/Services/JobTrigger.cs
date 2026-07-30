@@ -1,6 +1,11 @@
 using Flurl;
+using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Constants;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,19 +16,35 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Scheduler;
 
 public class JobTrigger {
+    private const int MaxDeferAttempts = 20;
+
+    private static readonly Duration DeferInterval = Duration.FromSeconds(30);
+
+    private static readonly IReadOnlyList<string> InternalParameters = [
+        SchedulerConstants.Parameters.Attempt,
+        SchedulerConstants.Parameters.Queue,
+        SchedulerConstants.Parameters.SiteVersion
+    ];
+
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IJsonProvider _jsonProvider;
     private readonly IJobUrlProvider _jobUrlProvider;
     private readonly SchedulerSettings _settings;
+    private readonly IClock _clock;
+    private readonly ILogger<JobTrigger> _logger;
 
     public JobTrigger(IHttpClientFactory httpClientFactory,
                       IJsonProvider jsonProvider,
                       IJobUrlProvider jobUrlProvider,
-                      SchedulerSettings settings) {
+                      SchedulerSettings settings,
+                      IClock clock,
+                      ILogger<JobTrigger> logger) {
         _httpClientFactory = httpClientFactory;
         _jsonProvider = jsonProvider;
         _jobUrlProvider = jobUrlProvider;
         _settings = settings;
+        _clock = clock;
+        _logger = logger;
     }
 
     [DisplayName("{0}")]
@@ -31,6 +52,17 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
+        var scheduledVersion = GetParameter(parameterData, SchedulerConstants.Parameters.SiteVersion);
+        var currentVersion = EnvironmentData.GetOurValue(EnvironmentVariables.Version);
+
+        if (IsForAnotherVersion(scheduledVersion, currentVersion)) {
+            var deferred = TryDefer(jobName, triggerKey, modelJson, parameterData, scheduledVersion, currentVersion);
+
+            if (deferred) {
+                return;
+            }
+        }
+
         var httpClient = _httpClientFactory.CreateClient();
         httpClient.Timeout = TimeSpan.FromMinutes(_settings.JobTimeoutMinutes);
         var req = GetProxyReq(triggerKey, modelJson, parameterData);
@@ -56,6 +88,49 @@ public class JobTrigger {
         }
     }
 
+    private bool TryDefer(string jobName,
+                          string triggerKey,
+                          string modelJson,
+                          IReadOnlyDictionary<string, string> parameterData,
+                          string scheduledVersion,
+                          string currentVersion) {
+        var attempt = GetAttempt(parameterData);
+
+        if (attempt >= MaxDeferAttempts) {
+            _logger.LogWarning("Running job {JobName} for version {ScheduledVersion} after {Attempts} deferrals",
+                               jobName,
+                               scheduledVersion,
+                               attempt);
+
+            return false;
+        }
+
+        _logger.LogInformation("Deferring job {JobName} for version {ScheduledVersion}, current is {CurrentVersion}",
+                               jobName,
+                               scheduledVersion,
+                               currentVersion);
+
+        var queue = GetParameter(parameterData, SchedulerConstants.Parameters.Queue);
+
+        if (!queue.HasValue()) {
+            queue = SchedulerConstants.Queues.Default;
+        }
+
+        var deferredParameterData = parameterData.OrEmpty().ToDictionary(x => x.Key, x => x.Value);
+        deferredParameterData[SchedulerConstants.Parameters.Attempt] = (attempt + 1).ToString();
+
+        var enqueueAt = _clock.GetCurrentInstant().Plus(DeferInterval).ToDateTimeOffset();
+
+        Hangfire.BackgroundJob.Schedule<JobTrigger>(queue,
+                                                   j => j.TriggerAsync(jobName,
+                                                                       triggerKey,
+                                                                       modelJson,
+                                                                       deferredParameterData),
+                                                   enqueueAt);
+
+        return true;
+    }
+
     private ProxyReq GetProxyReq(string triggerKey,
                                  string modelJson,
                                  IReadOnlyDictionary<string, string> parameterData) {
@@ -66,7 +141,9 @@ public class JobTrigger {
         req.CommandType = requestType;
         req.RequestType = modelType;
         req.RequestBody = modelJson;
-        req.ParameterData = parameterData?.ToDictionary();
+        req.ParameterData = parameterData.OrEmpty()
+                                         .Where(x => !InternalParameters.Contains(x.Key))
+                                         .ToDictionary(x => x.Key, x => x.Value);
 
         return req;
     }
@@ -76,5 +153,27 @@ public class JobTrigger {
         var url = new Url(baseUrl).AppendPathSegment("/umbraco/api/JobProxy/executeProxied");
 
         return url;
+    }
+
+    private static int GetAttempt(IReadOnlyDictionary<string, string> parameterData) {
+        var attempt = GetParameter(parameterData, SchedulerConstants.Parameters.Attempt);
+
+        if (int.TryParse(attempt, out var parsedAttempt)) {
+            return parsedAttempt;
+        }
+
+        return 0;
+    }
+
+    private static string GetParameter(IReadOnlyDictionary<string, string> parameterData, string name) {
+        if (parameterData == null) {
+            return null;
+        }
+
+        return parameterData.GetValueOrDefault(name);
+    }
+
+    private static bool IsForAnotherVersion(string scheduledVersion, string currentVersion) {
+        return scheduledVersion.HasValue() && currentVersion.HasValue() && scheduledVersion != currentVersion;
     }
 }

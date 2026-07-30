@@ -2,7 +2,10 @@
 
 public static class SchedulerConstants {
     public static class Parameters {
+        public const string Attempt = "attempt";
         public const string Culture = "culture";
+        public const string Queue = "queue";
+        public const string SiteVersion = "siteVersion";
     }
     
     public static class Queues {
