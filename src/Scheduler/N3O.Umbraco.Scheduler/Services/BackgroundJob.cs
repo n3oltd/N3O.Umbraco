@@ -1,6 +1,4 @@
-using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
@@ -14,13 +12,16 @@ namespace N3O.Umbraco.Scheduler;
 public class BackgroundJob : IBackgroundJob {
     private readonly IFluentParametersBuilder _fluentParametersBuilder;
     private readonly IJsonProvider _jsonProvider;
+    private readonly IJobSignatureProvider _jobSignatureProvider;
     private readonly IClock _clock;
 
     public BackgroundJob(IFluentParametersBuilder fluentParametersBuilder,
                          IJsonProvider jsonProvider,
+                         IJobSignatureProvider jobSignatureProvider,
                          IClock clock) {
         _fluentParametersBuilder = fluentParametersBuilder;
         _jsonProvider = jsonProvider;
+        _jobSignatureProvider = jobSignatureProvider;
         _clock = clock;
     }
 
@@ -52,10 +53,10 @@ public class BackgroundJob : IBackgroundJob {
 
         _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Culture, LocalizationSettings.CultureCode);
 
-        if (typeof(TRequest).HasAttribute<VersionFencedAttribute>()) {
+        if (typeof(TRequest).HasAttribute<SignatureFencedAttribute>()) {
             _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Queue, queue);
-            _fluentParametersBuilder.Add(SchedulerConstants.Parameters.SiteVersion,
-                                         EnvironmentData.GetOurValue(EnvironmentVariables.Version));
+            _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Signature,
+                                         _jobSignatureProvider.GetSignature());
         }
 
         var parameterData = _fluentParametersBuilder.Build();

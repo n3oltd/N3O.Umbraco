@@ -3,5 +3,5 @@ using N3O.Umbraco.Scheduler.Attributes;
 
 namespace N3O.Umbraco.Search.Commands;
 
-[VersionFenced]
+[SignatureFenced]
 public class GenerateSitemapCommand : Request<None, None> { }

@@ -3,5 +3,5 @@ using N3O.Umbraco.Scheduler.Attributes;
 
 namespace N3O.Umbraco.Cloud.Platforms.Commands;
 
-[VersionFenced]
+[SignatureFenced]
 public class GeneratePublishedCompositionsCommand : Request<None, None> { }

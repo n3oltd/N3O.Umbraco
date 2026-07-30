@@ -32,6 +32,7 @@ public class SchedulerComposer : IComposer {
 
     public void Compose(IUmbracoBuilder builder) {
         builder.Services.AddSingleton<IJobUrlProvider, JobUrlProvider>();
+        builder.Services.AddSingleton<IJobSignatureProvider, JobSignatureProvider>();
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
         
         var settings = builder.Config.GetSection(SchedulerSettings.SectionName).Get<SchedulerSettings>() ??

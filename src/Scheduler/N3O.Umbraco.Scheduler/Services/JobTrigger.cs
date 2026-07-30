@@ -1,8 +1,6 @@
 using Flurl;
 using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using NodaTime;
@@ -23,12 +21,13 @@ public class JobTrigger {
     private static readonly IReadOnlyList<string> InternalParameters = [
         SchedulerConstants.Parameters.Attempt,
         SchedulerConstants.Parameters.Queue,
-        SchedulerConstants.Parameters.SiteVersion
+        SchedulerConstants.Parameters.Signature
     ];
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IJsonProvider _jsonProvider;
     private readonly IJobUrlProvider _jobUrlProvider;
+    private readonly IJobSignatureProvider _jobSignatureProvider;
     private readonly SchedulerSettings _settings;
     private readonly IClock _clock;
     private readonly ILogger<JobTrigger> _logger;
@@ -36,12 +35,14 @@ public class JobTrigger {
     public JobTrigger(IHttpClientFactory httpClientFactory,
                       IJsonProvider jsonProvider,
                       IJobUrlProvider jobUrlProvider,
+                      IJobSignatureProvider jobSignatureProvider,
                       SchedulerSettings settings,
                       IClock clock,
                       ILogger<JobTrigger> logger) {
         _httpClientFactory = httpClientFactory;
         _jsonProvider = jsonProvider;
         _jobUrlProvider = jobUrlProvider;
+        _jobSignatureProvider = jobSignatureProvider;
         _settings = settings;
         _clock = clock;
         _logger = logger;
@@ -52,11 +53,16 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
-        var scheduledVersion = GetParameter(parameterData, SchedulerConstants.Parameters.SiteVersion);
-        var currentVersion = EnvironmentData.GetOurValue(EnvironmentVariables.Version);
+        var scheduledSignature = GetParameter(parameterData, SchedulerConstants.Parameters.Signature);
+        var currentSignature = _jobSignatureProvider.GetSignature();
 
-        if (IsForAnotherVersion(scheduledVersion, currentVersion)) {
-            var deferred = TryDefer(jobName, triggerKey, modelJson, parameterData, scheduledVersion, currentVersion);
+        if (IsForAnotherRuntime(scheduledSignature, currentSignature)) {
+            var deferred = TryDefer(jobName,
+                                    triggerKey,
+                                    modelJson,
+                                    parameterData,
+                                    scheduledSignature,
+                                    currentSignature);
 
             if (deferred) {
                 return;
@@ -92,23 +98,23 @@ public class JobTrigger {
                           string triggerKey,
                           string modelJson,
                           IReadOnlyDictionary<string, string> parameterData,
-                          string scheduledVersion,
-                          string currentVersion) {
+                          string scheduledSignature,
+                          string currentSignature) {
         var attempt = GetAttempt(parameterData);
 
         if (attempt >= MaxDeferAttempts) {
-            _logger.LogWarning("Running job {JobName} for version {ScheduledVersion} after {Attempts} deferrals",
+            _logger.LogWarning("Running job {JobName} for {ScheduledSignature} after {Attempts} deferrals",
                                jobName,
-                               scheduledVersion,
+                               scheduledSignature,
                                attempt);
 
             return false;
         }
 
-        _logger.LogInformation("Deferring job {JobName} for version {ScheduledVersion}, current is {CurrentVersion}",
+        _logger.LogInformation("Deferring job {JobName} for {ScheduledSignature}, current is {CurrentSignature}",
                                jobName,
-                               scheduledVersion,
-                               currentVersion);
+                               scheduledSignature,
+                               currentSignature);
 
         var queue = GetParameter(parameterData, SchedulerConstants.Parameters.Queue);
 
@@ -173,7 +179,9 @@ public class JobTrigger {
         return parameterData.GetValueOrDefault(name);
     }
 
-    private static bool IsForAnotherVersion(string scheduledVersion, string currentVersion) {
-        return scheduledVersion.HasValue() && currentVersion.HasValue() && scheduledVersion != currentVersion;
+    private static bool IsForAnotherRuntime(string scheduledSignature, string currentSignature) {
+        return scheduledSignature.HasValue() &&
+               currentSignature.HasValue() &&
+               scheduledSignature != currentSignature;
     }
 }

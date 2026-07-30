@@ -5,7 +5,7 @@ public static class SchedulerConstants {
         public const string Attempt = "attempt";
         public const string Culture = "culture";
         public const string Queue = "queue";
-        public const string SiteVersion = "siteVersion";
+        public const string Signature = "signature";
     }
     
     public static class Queues {
