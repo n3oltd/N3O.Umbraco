@@ -2,15 +2,7 @@ using System;
 
 namespace N3O.Umbraco.Scheduler.Attributes;
 
-/// <summary>
-/// Marks a command whose handler mutates state local to the process that runs it. The job is stamped with the
-/// signature of the runtime that queued it, and any other runtime defers it rather than running it.
-/// </summary>
-/// <remarks>
-/// Only apply to commands that are idempotent and re-scheduled on every startup. Deferral is bounded at 20
-/// attempts 30 seconds apart, after which the job runs wherever it is held, so the fence delays work but never
-/// discards it. Deferring completes the original job and schedules a new one, so the returned job id does not
-/// survive it. The fence assumes one replica per deployment; at two or more it cannot converge.
-/// </remarks>
+// Apply only to commands whose handlers mutate process-local state, are idempotent, and are re-scheduled on
+// every startup; a fenced job can run late or more than once but is never discarded.
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class SignatureFencedAttribute : Attribute { }
