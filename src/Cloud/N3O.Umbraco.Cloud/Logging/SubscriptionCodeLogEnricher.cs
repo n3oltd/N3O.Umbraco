@@ -14,7 +14,7 @@ public class SubscriptionCodeLogEnricher : LogEnricher {
     public override IReadOnlyDictionary<string, string> GetTags() {
         var data = new Dictionary<string, string>();
 
-        var code = _subscriptionAccessor.GetSubscription()?.SubscriptionId?.Code;
+        var code = _subscriptionAccessor.GetSubscription()?.Id?.Code;
 
         if (code.HasValue() && code != "0") {
             data["subscriptionCode"] = code;

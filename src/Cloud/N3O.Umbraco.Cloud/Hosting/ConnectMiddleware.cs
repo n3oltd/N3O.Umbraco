@@ -19,7 +19,7 @@ public class ConnectMiddleware : IMiddleware {
         var requestPath = context.Request.Path.Value;
         var subscription = _subscriptionAccessor.GetSubscription();
 
-        var connectPath = subscription.HasValue() ? $"/connect-{subscription.SubscriptionId.Code}/" : null;
+        var connectPath = subscription.HasValue() ? $"/connect-{subscription.Id.Code}/" : null;
         
         if (requestPath != null &&
             connectPath != null &&
