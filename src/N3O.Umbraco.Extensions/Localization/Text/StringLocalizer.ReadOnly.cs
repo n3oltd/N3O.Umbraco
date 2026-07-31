@@ -10,9 +10,9 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Localization;
 
 public class ReadOnlyStringLocalizer : ContentStringLocalizer {
-    public ReadOnlyStringLocalizer(ICultureAccessor cultureAccessor,
+    public ReadOnlyStringLocalizer(IContentCache contentCache,
+                                   ICultureAccessor cultureAccessor,
                                    ILocalizationSettingsAccessor localizationSettingsAccessor,
-                                   IContentCache contentCache,
                                    AsyncKeyedLocker<string> locker)
         : base(contentCache, cultureAccessor, localizationSettingsAccessor, locker) { }
 

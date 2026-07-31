@@ -23,9 +23,9 @@ public class ReadWriteStringLocalizer : ContentStringLocalizer {
     private readonly ConcurrentDictionary<string, int> _cache = new();
     private string _defaultCultureCode;
     
-    public ReadWriteStringLocalizer(ICultureAccessor cultureAccessor,
+    public ReadWriteStringLocalizer(IContentCache contentCache,
+                                    ICultureAccessor cultureAccessor,
                                     ILocalizationSettingsAccessor localizationSettingsAccessor,
-                                    IContentCache contentCache,
                                     IContentService contentService,
                                     IContentTypeService contentTypeService,
                                     ICoreScopeProvider coreScopeProvider,
