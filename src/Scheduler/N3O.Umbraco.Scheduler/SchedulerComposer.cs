@@ -78,6 +78,7 @@ public class SchedulerComposer : IComposer {
 
             builder.Components().Append<CleanupStaleRecurringJobsComponent>();
             builder.Components().Append<RegisterRecurringJobsComponent>();
+            builder.Components().Append<ValidateRunsWhereQueuedComponent>();
         }
     }
 
@@ -165,5 +166,29 @@ public class SchedulerComposer : IComposer {
     // https://github.com/nul800sebastiaan/Cultiv.Hangfire/issues/5
     public class UmbracoAuthorizationFilter : IDashboardAuthorizationFilter {
         public bool Authorize(DashboardContext context) => true;
+    }
+
+    public class ValidateRunsWhereQueuedComponent : IComponent {
+        private readonly IRuntimeState _runtimeState;
+
+        public ValidateRunsWhereQueuedComponent(IRuntimeState runtimeState) {
+            _runtimeState = runtimeState;
+        }
+
+        public void Initialize() {
+            if (_runtimeState.Level == RuntimeLevel.Run) {
+                var runsWhereQueuedTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                                       t.HasAttribute<RunsWhereQueuedAttribute>());
+
+                foreach (var commandType in runsWhereQueuedTypes) {
+                    if (!commandType.InheritsGenericClass(typeof(Request<,>))) {
+                        throw new Exception("Runs where queued attribute can only be applied to classes that " +
+                                            $"inherit Request<,> but was applied to {commandType.Name}");
+                    }
+                }
+            }
+        }
+
+        public void Terminate() { }
     }
 }

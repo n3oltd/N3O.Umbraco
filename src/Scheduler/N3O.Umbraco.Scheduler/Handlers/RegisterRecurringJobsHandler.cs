@@ -1,10 +1,13 @@
 using Hangfire;
 using Hangfire.Storage;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Scheduler.Attributes;
 using N3O.Umbraco.Scheduler.Commands;
 using N3O.Umbraco.Scheduler.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,12 +36,32 @@ public class RegisterRecurringJobsHandler :
             options.MisfireHandling = MisfireHandlingMode.Relaxed;
             options.TimeZone = TimeZoneInfo.Utc;
             
+            var parameterData = GetParameterData(job);
+
             RecurringJob.AddOrUpdate<JobTrigger>(job.GetJobId(),
-                                                 j => j.TriggerAsync(job.JobName, job.TriggerKey, modelJson, null),
+                                                 j => j.TriggerAsync(job.JobName,
+                                                                     job.TriggerKey,
+                                                                     modelJson,
+                                                                     parameterData),
                                                  job.CronExpression,
                                                  options);
         }
 
         return Task.FromResult(None.Empty);
+    }
+
+    private IReadOnlyDictionary<string, string> GetParameterData(QueueRecurringJobReq job) {
+        var requestType = TriggerKey.ParseRequestType(job.TriggerKey);
+
+        if (!requestType.HasAttribute<RunsWhereQueuedAttribute>()) {
+            return null;
+        }
+
+        var parameterData = new Dictionary<string, string>();
+
+        parameterData[SchedulerConstants.Parameters.Origin] = JobOriginProvider.GetOrigin();
+        parameterData[SchedulerConstants.Parameters.Queue] = SchedulerConstants.Queues.Default;
+
+        return parameterData;
     }
 }
