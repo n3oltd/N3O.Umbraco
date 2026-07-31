@@ -9,7 +9,6 @@ using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
 using Perplex.ContentBlocks.Categories;
 using Perplex.ContentBlocks.Definitions;
-using Perplex.ContentBlocks.PropertyEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,6 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Blocks.Perplex;
@@ -27,9 +25,6 @@ namespace N3O.Umbraco.Blocks.Perplex;
 [ComposeAfter(typeof(BlocksComposer))]
 public class PerplexBlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        // N3OContentBlocksPropertyEditor claims the same alias, so only one of the two can be registered.
-        builder.WithCollectionBuilder<DataEditorCollectionBuilder>().Exclude<PerplexContentBlocksPropertyEditor>();
-
         BlocksComponent.LoadDefinitions(builder, WebHostEnvironment);
 
         builder.Services.AddTransient<IBlocksRenderer, PerplexBlocksRenderer>();

@@ -75,15 +75,22 @@ public class ContentHelper : IContentHelper {
             if (property.Type.IsBlockList() || property.Type.IsBlockGrid()) {
                 var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
-                var elements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
-                
+                var contentElements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "contentData");
+                var settingsElements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "settingsData");
+
+                var elementsProperty = new ElementsProperty(contentType,
+                                                            property.Type,
+                                                            contentElements,
+                                                            settingsElements,
+                                                            json);
+
                 elementsProperties.Add(elementsProperty);
             } else if (property.Type.IsPerplexBlocks()) {
                 var (blockContent, json) = GetJsonPropertyValue(property.Value);
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
+
+                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, [], json);
                 
                 elementsProperties.Add(elementsProperty);
             } else {
@@ -175,6 +182,10 @@ public class ContentHelper : IContentHelper {
             return contentProperties;
         }
         
+        if (blockContent["header"] is JObject header) {
+            contentProperties.AddRange(GetContentPropertiesForPerplexBlock(header));
+        }
+
         if (blockContent["blocks"] is JArray blocks) {
             foreach (var block in blocks) {
                 contentProperties.AddRange(GetContentPropertiesForPerplexBlock(block));
@@ -200,11 +211,16 @@ public class ContentHelper : IContentHelper {
         }
     }
     
-    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
+    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid,
+                                                                                    string dataPropertyName) {
         var contentProperties = new List<ContentProperties>();
 
-        if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
-            foreach (var block in contentData.OrEmpty()) {
+        if (blockListOrGrid == null) {
+            return contentProperties;
+        }
+
+        if (blockListOrGrid.TryGetValue(dataPropertyName, StringComparison.InvariantCultureIgnoreCase, out var data)) {
+            foreach (var block in data.OrEmpty()) {
                 if (block is JObject jObject) {
                     var elementProperties = GetContentPropertiesForBlockListOrGridElement(jObject);
 
@@ -334,11 +350,11 @@ public class ContentHelper : IContentHelper {
         var properties = new List<(IPropertyType, object)>();
             
         foreach (var propertyType in contentType.CompositionPropertyTypes) {
-            var propertyValue = element[propertyType.Alias];
+            element.TryGetValue(propertyType.Alias, StringComparison.InvariantCultureIgnoreCase, out var propertyValue);
 
             properties.Add((propertyType, propertyValue?.ConvertToObject()));
         }
-            
+
         return GetContentProperties(id, null, -1, contentTypeAlias, properties);
     }
     
@@ -347,15 +363,11 @@ public class ContentHelper : IContentHelper {
             return (null, null);
         }
         
-        JToken obj;
-
         if (propertyValue is string str) {
-            obj = (JToken) JsonConvert.DeserializeObject(str);
-        } else if (propertyValue is JToken jToken) {
-            obj = jToken;
-        } else {
-            obj = JToken.FromObject(propertyValue);
+            return ((JToken) JsonConvert.DeserializeObject(str), str);
         }
+
+        var obj = propertyValue is JToken jToken ? jToken : JToken.FromObject(propertyValue);
 
         return (obj, JsonConvert.SerializeObject(obj));
     }
