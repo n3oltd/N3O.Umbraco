@@ -1,4 +1,4 @@
-using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Concurrent;
@@ -17,7 +17,8 @@ public static class SpecialContentPathParser {
     public static string GetPath(IContentCache contentCache, SpecialContent specialContent, string culture = null) {
         var cacheKey = GetCacheKey(specialContent, culture);
 
-        if (SpecialPaths.TryGetValue(cacheKey, out var cachedPath)) {
+        // An ambient resolution varies with the caller's context, so only an explicit culture's path is cached.
+        if (culture.HasValue() && SpecialPaths.TryGetValue(cacheKey, out var cachedPath)) {
             return cachedPath;
         }
 
@@ -33,7 +34,9 @@ public static class SpecialContentPathParser {
             return null;
         }
 
-        SpecialPaths.TryAdd(cacheKey, path);
+        if (culture.HasValue()) {
+            SpecialPaths.TryAdd(cacheKey, path);
+        }
 
         return path;
     }
