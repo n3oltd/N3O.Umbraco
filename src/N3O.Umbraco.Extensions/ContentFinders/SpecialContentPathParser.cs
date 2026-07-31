@@ -34,7 +34,7 @@ public static class SpecialContentPathParser {
         var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
 
         foreach (var specialPath in GetPaths(contentCache, specialContent).OrderByDescending(x => x.Length)) {
-            if (requestedPath.StartsWith(specialPath, StringComparison.OrdinalIgnoreCase)) {
+            if (requestedPath.StartsWith(specialPath, StringComparison.InvariantCultureIgnoreCase)) {
                 return requestedPath.Substring(specialPath.Length).EnsureTrailingSlash();
             }
         }
@@ -49,7 +49,7 @@ public static class SpecialContentPathParser {
 
         var path = url.StripTrailingSlash();
 
-        if (IsRoutable(path) && !specialPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) {
+        if (IsRoutable(path) && !specialPaths.Contains(path, StringComparer.InvariantCultureIgnoreCase)) {
             specialPaths.Add(path);
         }
     }
@@ -57,7 +57,7 @@ public static class SpecialContentPathParser {
     private static IReadOnlyList<string> GetCultures(IPublishedContent specialPage) {
         return specialPage.AncestorsOrSelf()
                           .SelectMany(x => x.Cultures.Keys)
-                          .Distinct()
+                          .Distinct(StringComparer.InvariantCultureIgnoreCase)
                           .ToList();
     }
 
