@@ -15,15 +15,18 @@ public class CultureAccessor : ICultureAccessor {
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly IVariationContextAccessor _variationContextAccessor;
     private readonly IDefaultCultureAccessor _defaultCultureAccessor;
+    private readonly UmbracoRequestPaths _umbracoRequestPaths;
 
     public CultureAccessor(IHttpContextAccessor httpContextAccessor,
                            IUmbracoContextAccessor umbracoContextAccessor,
                            IVariationContextAccessor variationContextAccessor,
-                           IDefaultCultureAccessor defaultCultureAccessor) {
+                           IDefaultCultureAccessor defaultCultureAccessor,
+                           UmbracoRequestPaths umbracoRequestPaths) {
         _httpContextAccessor = httpContextAccessor;
         _umbracoContextAccessor = umbracoContextAccessor;
         _variationContextAccessor = variationContextAccessor;
         _defaultCultureAccessor = defaultCultureAccessor;
+        _umbracoRequestPaths = umbracoRequestPaths;
     }
 
     public string GetCulture(string culture = null) {
@@ -31,22 +34,25 @@ public class CultureAccessor : ICultureAccessor {
             return culture;
         }
 
-        var routedCulture = GetRoutedCulture();
+        // The request-localization and domain signals describe the staff member on backoffice requests.
+        if (!IsBackOfficeRequest()) {
+            var routedCulture = GetRoutedCulture();
 
-        if (routedCulture.HasValue()) {
-            return routedCulture;
-        }
+            if (routedCulture.HasValue()) {
+                return routedCulture;
+            }
 
-        var requestCulture = GetRequestCulture();
+            var requestCulture = GetRequestCulture();
 
-        if (requestCulture.HasValue()) {
-            return requestCulture;
-        }
+            if (requestCulture.HasValue()) {
+                return requestCulture;
+            }
 
-        var domainCulture = GetDomainCulture();
+            var domainCulture = GetDomainCulture();
 
-        if (domainCulture.HasValue()) {
-            return domainCulture;
+            if (domainCulture.HasValue()) {
+                return domainCulture;
+            }
         }
 
         var variationCulture = GetVariationCulture();
@@ -98,5 +104,15 @@ public class CultureAccessor : ICultureAccessor {
 
     private string GetVariationCulture() {
         return _variationContextAccessor.VariationContext?.Culture;
+    }
+
+    private bool IsBackOfficeRequest() {
+        var httpContext = _httpContextAccessor.HttpContext;
+
+        if (httpContext == null) {
+            return false;
+        }
+
+        return _umbracoRequestPaths.IsBackOfficeRequest(httpContext.Request.Path.ToString());
     }
 }
