@@ -53,7 +53,7 @@ public class JobTrigger {
         var scheduledSignature = GetParameter(parameterData, SchedulerConstants.Parameters.Signature);
         var attempt = GetAttempt(parameterData);
 
-        if (JobSignatureProvider.IsConcurrentRuntime(scheduledSignature)) {
+        if (JobSignatureProvider.ShouldDefer(scheduledSignature)) {
             var deferred = TryDefer(jobName,
                                     triggerKey,
                                     modelJson,
@@ -127,7 +127,8 @@ public class JobTrigger {
                           string scheduledSignature,
                           int attempt) {
         if (attempt >= MaxDeferAttempts) {
-            _logger.LogWarning("Running job {JobName} for {ScheduledSignature} after {Attempts} deferrals",
+            _logger.LogWarning("Running job {JobName} for {ScheduledSignature} after exhausting {Attempts} " +
+                               "deferrals",
                                jobName,
                                scheduledSignature,
                                attempt);

@@ -15,14 +15,32 @@ public static class JobSignatureProvider {
         return $"{host}{VersionSeparator}{version}";
     }
 
-    public static bool IsConcurrentRuntime(string signature) {
+    /// <summary>
+    /// Whether a job stamped with the given signature should wait for the runtime that queued it rather than run
+    /// on this one. True when that runtime is a newer version, because this runtime is then the one being
+    /// replaced, or when it is the same version on another host, because either runtime could be the one
+    /// leaving. False when it is an older version, since that runtime is being replaced and will not return.
+    /// </summary>
+    public static bool ShouldDefer(string signature) {
         var currentSignature = GetSignature();
 
         if (!signature.HasValue() || signature.EqualsInvariant(currentSignature)) {
             return false;
         }
 
-        return ParseVersion(signature).EqualsInvariant(ParseVersion(currentSignature));
+        var scheduledVersion = ParseVersion(signature);
+        var currentVersion = ParseVersion(currentSignature);
+
+        if (scheduledVersion.EqualsInvariant(currentVersion)) {
+            return true;
+        }
+
+        if (Version.TryParse(scheduledVersion, out var scheduled) &&
+            Version.TryParse(currentVersion, out var current)) {
+            return scheduled > current;
+        }
+
+        return false;
     }
 
     private static string ParseVersion(string signature) {
