@@ -1,98 +1,72 @@
-﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.ContentFinders;
 
 public static class SpecialContentPathParser {
-    private static readonly ConcurrentDictionary<SpecialContent, IReadOnlyList<string>> SpecialPaths = new();
+    private static readonly ConcurrentDictionary<(SpecialContent, string), string> SpecialPaths = new();
 
     public static void Flush() {
         SpecialPaths.Clear();
     }
 
-    public static string GetPath(IContentCache contentCache, SpecialContent specialContent) {
-        var specialPage = contentCache.Special(specialContent);
+    public static string GetPath(IContentCache contentCache, SpecialContent specialContent, string culture = null) {
+        var cacheKey = GetCacheKey(specialContent, culture);
 
-        if (specialPage.HasValue()) {
-            var ambientPath = specialPage.RelativeUrl().StripTrailingSlash();
-
-            if (IsRoutable(ambientPath)) {
-                return ambientPath;
-            }
-        }
-
-        return GetPaths(contentCache, specialContent).FirstOrDefault();
-    }
-
-    public static string ParseUri(IContentCache contentCache, SpecialContent specialContent, Uri requestUri) {
-        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
-
-        foreach (var specialPath in GetPaths(contentCache, specialContent).OrderByDescending(x => x.Length)) {
-            if (requestedPath.StartsWith(specialPath, StringComparison.InvariantCultureIgnoreCase)) {
-                return requestedPath.Substring(specialPath.Length).EnsureTrailingSlash();
-            }
-        }
-
-        return null;
-    }
-
-    private static void AddPathIfRoutable(ICollection<string> specialPaths, string url) {
-        if (!url.HasValue()) {
-            return;
-        }
-
-        var path = url.StripTrailingSlash();
-
-        if (IsRoutable(path) && !specialPaths.Contains(path, StringComparer.InvariantCultureIgnoreCase)) {
-            specialPaths.Add(path);
-        }
-    }
-
-    private static IReadOnlyList<string> GetCultures(IPublishedContent specialPage) {
-        return specialPage.AncestorsOrSelf()
-                          .SelectMany(x => x.Cultures.Keys)
-                          .Distinct(StringComparer.InvariantCultureIgnoreCase)
-                          .ToList();
-    }
-
-    private static IReadOnlyList<string> GetPaths(IContentCache contentCache, SpecialContent specialContent) {
-        if (SpecialPaths.TryGetValue(specialContent, out var cachedPaths)) {
-            return cachedPaths;
+        if (SpecialPaths.TryGetValue(cacheKey, out var cachedPath)) {
+            return cachedPath;
         }
 
         var specialPage = contentCache.Special(specialContent);
 
         if (!specialPage.HasValue()) {
-            return [];
+            return null;
         }
 
-        var specialPaths = GetRoutablePaths(specialPage);
+        var path = GetUrl(specialPage, culture).StripTrailingSlash();
 
-        if (specialPaths.None()) {
-            return [];
+        if (!IsRoutable(path)) {
+            return null;
         }
 
-        SpecialPaths.TryAdd(specialContent, specialPaths);
+        SpecialPaths.TryAdd(cacheKey, path);
 
-        return specialPaths;
+        return path;
     }
 
-    private static IReadOnlyList<string> GetRoutablePaths(IPublishedContent specialPage) {
-        var specialPaths = new List<string>();
+    public static string ParseUri(IContentCache contentCache,
+                                  SpecialContent specialContent,
+                                  Uri requestUri,
+                                  string culture = null) {
+        var specialPath = GetPath(contentCache, specialContent, culture);
 
-        AddPathIfRoutable(specialPaths, specialPage.RelativeUrl());
-
-        foreach (var culture in GetCultures(specialPage)) {
-            AddPathIfRoutable(specialPaths, specialPage.Url(culture, UrlMode.Relative));
+        if (!specialPath.HasValue()) {
+            return null;
         }
 
-        return specialPaths;
+        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
+
+        if (requestedPath.StartsWith(specialPath, StringComparison.InvariantCultureIgnoreCase)) {
+            return requestedPath.Substring(specialPath.Length).EnsureTrailingSlash();
+        }
+
+        return null;
+    }
+
+    private static (SpecialContent, string) GetCacheKey(SpecialContent specialContent, string culture) {
+        return (specialContent, culture?.ToLowerInvariant());
+    }
+
+    private static string GetUrl(IPublishedContent specialPage, string culture) {
+        if (culture.HasValue()) {
+            return specialPage.Url(culture, UrlMode.Relative);
+        }
+
+        return specialPage.RelativeUrl();
     }
 
     private static bool IsRoutable(string path) {
