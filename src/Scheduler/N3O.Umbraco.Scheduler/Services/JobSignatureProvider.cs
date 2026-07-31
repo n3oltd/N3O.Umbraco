@@ -17,39 +17,12 @@ public static class JobSignatureProvider {
 
     /// <summary>
     /// Whether a job stamped with the given signature should wait for the runtime that queued it rather than run
-    /// on this one. True when that runtime is a newer version, because this runtime is then the one being
-    /// replaced, or when it is the same version on another host, because either runtime could be the one
-    /// leaving. False when it is an older version, since that runtime is being replaced and will not return.
+    /// on this one. Any runtime other than the one that queued a job defers it, in either direction, because a
+    /// signature cannot tell which of two overlapping runtimes is the one being replaced: an upgrade and a
+    /// rollback are indistinguishable. Deferral is bounded, so deferring needlessly costs lateness, whereas
+    /// running on a runtime that is about to be replaced loses the work outright.
     /// </summary>
     public static bool ShouldDefer(string signature) {
-        var currentSignature = GetSignature();
-
-        if (!signature.HasValue() || signature.EqualsInvariant(currentSignature)) {
-            return false;
-        }
-
-        var scheduledVersion = ParseVersion(signature);
-        var currentVersion = ParseVersion(currentSignature);
-
-        if (scheduledVersion.EqualsInvariant(currentVersion)) {
-            return true;
-        }
-
-        if (Version.TryParse(scheduledVersion, out var scheduled) &&
-            Version.TryParse(currentVersion, out var current)) {
-            return scheduled > current;
-        }
-
-        return false;
-    }
-
-    private static string ParseVersion(string signature) {
-        var separatorIndex = signature.IndexOf(VersionSeparator);
-
-        if (separatorIndex < 0) {
-            return null;
-        }
-
-        return signature.Substring(separatorIndex + 1);
+        return signature.HasValue() && !signature.EqualsInvariant(GetSignature());
     }
 }
