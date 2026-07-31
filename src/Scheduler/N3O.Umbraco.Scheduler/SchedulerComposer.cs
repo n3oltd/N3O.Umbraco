@@ -183,7 +183,7 @@ public class SchedulerComposer : IComposer {
                 foreach (var fencedType in fencedTypes) {
                     if (!fencedType.ImplementsGenericInterface(typeof(IRequest<,>))) {
                         throw new Exception("Signature fenced attribute can only be applied to classes that " +
-                                            $"inherit Request<,> but was applied to {fencedType.Name}");
+                                            $"inherit IRequest<,> but was applied to {fencedType.Name}");
                     }
                 }
             }
