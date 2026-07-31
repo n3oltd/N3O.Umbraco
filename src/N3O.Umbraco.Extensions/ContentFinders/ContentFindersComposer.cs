@@ -10,6 +10,8 @@ public class ContentFindersComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.SetContentLastChanceFinder<LastChanceFinder>();
 
+        builder.Components().Append<FlushSpecialContentPathsComponent>();
+
         RegisterAll(t => t.ImplementsInterface<IContentFinder>() &&
                          !t.ImplementsInterface<IContentLastChanceFinder>(),
                     (type, index) => builder.ContentFinders().Insert(index, type));

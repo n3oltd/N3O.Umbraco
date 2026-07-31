@@ -12,6 +12,10 @@ namespace N3O.Umbraco.ContentFinders;
 public static class SpecialContentPathParser {
     private static readonly ConcurrentDictionary<SpecialContent, IReadOnlyList<string>> SpecialPaths = new();
 
+    public static void Flush() {
+        SpecialPaths.Clear();
+    }
+
     public static string GetPath(IContentCache contentCache, SpecialContent specialContent) {
         var specialPage = contentCache.Special(specialContent);
 
