@@ -32,7 +32,7 @@ public class Searcher<TDocument> : ISearcher<TDocument> where TDocument : class 
                                            results.OutOf,
                                            results.Page,
                                            results.SearchTimeMs,
-                                           results.TookMs,
+                                           results.SearchTimeMs,
                                            typedHits);
     }
 
