@@ -128,7 +128,7 @@ public static class SitemapEntryExtensions {
     private static XmlWriterSettings GetWriterSettings() {
         var settings = new XmlWriterSettings();
 
-        settings.Encoding = Encoding.UTF8;
+        settings.Encoding = new UTF8Encoding(false);
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
