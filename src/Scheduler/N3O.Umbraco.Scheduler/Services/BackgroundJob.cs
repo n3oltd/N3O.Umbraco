@@ -12,16 +12,13 @@ namespace N3O.Umbraco.Scheduler;
 public class BackgroundJob : IBackgroundJob {
     private readonly IFluentParametersBuilder _fluentParametersBuilder;
     private readonly IJsonProvider _jsonProvider;
-    private readonly IJobSignatureProvider _jobSignatureProvider;
     private readonly IClock _clock;
 
     public BackgroundJob(IFluentParametersBuilder fluentParametersBuilder,
                          IJsonProvider jsonProvider,
-                         IJobSignatureProvider jobSignatureProvider,
                          IClock clock) {
         _fluentParametersBuilder = fluentParametersBuilder;
         _jsonProvider = jsonProvider;
-        _jobSignatureProvider = jobSignatureProvider;
         _clock = clock;
     }
 
@@ -53,13 +50,13 @@ public class BackgroundJob : IBackgroundJob {
 
         _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Culture, LocalizationSettings.CultureCode);
 
+        var parameterData = _fluentParametersBuilder.Build().ToDictionary();
+
         if (typeof(TRequest).HasAttribute<SignatureFencedAttribute>()) {
-            _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Queue, queue);
-            _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Signature,
-                                         _jobSignatureProvider.GetSignature());
+            parameterData[SchedulerConstants.Parameters.Queue] = queue;
+            parameterData[SchedulerConstants.Parameters.Signature] = JobSignatureProvider.GetSignature();
         }
 
-        var parameterData = _fluentParametersBuilder.Build();
         var modelJson = _jsonProvider.SerializeObject(model);
 
         var enqueueAt = at.ToDateTimeOffset();

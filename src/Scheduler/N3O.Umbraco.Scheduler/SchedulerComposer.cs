@@ -32,7 +32,6 @@ public class SchedulerComposer : IComposer {
 
     public void Compose(IUmbracoBuilder builder) {
         builder.Services.AddSingleton<IJobUrlProvider, JobUrlProvider>();
-        builder.Services.AddSingleton<IJobSignatureProvider, JobSignatureProvider>();
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
         
         var settings = builder.Config.GetSection(SchedulerSettings.SectionName).Get<SchedulerSettings>() ??
@@ -77,6 +76,7 @@ public class SchedulerComposer : IComposer {
             // https://discuss.hangfire.io/t/jobstorage-current-property-value-has-not-been-initialized/884
             JobStorage.Current = new SqlServerStorage(connectionString);
 
+            builder.Components().Append<ValidateSignatureFencedComponent>();
             builder.Components().Append<CleanupStaleRecurringJobsComponent>();
             builder.Components().Append<RegisterRecurringJobsComponent>();
         }
@@ -166,5 +166,29 @@ public class SchedulerComposer : IComposer {
     // https://github.com/nul800sebastiaan/Cultiv.Hangfire/issues/5
     public class UmbracoAuthorizationFilter : IDashboardAuthorizationFilter {
         public bool Authorize(DashboardContext context) => true;
+    }
+
+    public class ValidateSignatureFencedComponent : IComponent {
+        private readonly IRuntimeState _runtimeState;
+
+        public ValidateSignatureFencedComponent(IRuntimeState runtimeState) {
+            _runtimeState = runtimeState;
+        }
+
+        public void Initialize() {
+            if (_runtimeState.Level == RuntimeLevel.Run) {
+                var fencedTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                              t.HasAttribute<SignatureFencedAttribute>());
+
+                foreach (var fencedType in fencedTypes) {
+                    if (!fencedType.ImplementsGenericInterface(typeof(IRequest<,>))) {
+                        throw new Exception("Signature fenced attribute can only be applied to classes that " +
+                                            $"inherit Request<,> but was applied to {fencedType.Name}");
+                    }
+                }
+            }
+        }
+
+        public void Terminate() { }
     }
 }

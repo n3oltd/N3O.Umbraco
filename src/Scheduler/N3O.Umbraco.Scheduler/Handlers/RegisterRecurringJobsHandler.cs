@@ -17,11 +17,9 @@ namespace N3O.Umbraco.Scheduler.Handlers;
 public class RegisterRecurringJobsHandler :
     IRequestHandler<RegisterRecurringJobsCommand, RegisterRecurringJobsReq, None> {
     private readonly IJsonProvider _jsonProvider;
-    private readonly IJobSignatureProvider _jobSignatureProvider;
 
-    public RegisterRecurringJobsHandler(IJsonProvider jsonProvider, IJobSignatureProvider jobSignatureProvider) {
+    public RegisterRecurringJobsHandler(IJsonProvider jsonProvider) {
         _jsonProvider = jsonProvider;
-        _jobSignatureProvider = jobSignatureProvider;
     }
 
     public Task<None> Handle(RegisterRecurringJobsCommand req, CancellationToken cancellationToken) {
@@ -62,7 +60,7 @@ public class RegisterRecurringJobsHandler :
         var parameterData = new Dictionary<string, string>();
 
         parameterData[SchedulerConstants.Parameters.Queue] = SchedulerConstants.Queues.Default;
-        parameterData[SchedulerConstants.Parameters.Signature] = _jobSignatureProvider.GetSignature();
+        parameterData[SchedulerConstants.Parameters.Signature] = JobSignatureProvider.GetSignature();
 
         return parameterData;
     }

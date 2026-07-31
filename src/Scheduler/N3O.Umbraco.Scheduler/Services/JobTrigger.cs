@@ -27,7 +27,6 @@ public class JobTrigger {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IJsonProvider _jsonProvider;
     private readonly IJobUrlProvider _jobUrlProvider;
-    private readonly IJobSignatureProvider _jobSignatureProvider;
     private readonly SchedulerSettings _settings;
     private readonly IClock _clock;
     private readonly ILogger<JobTrigger> _logger;
@@ -35,14 +34,12 @@ public class JobTrigger {
     public JobTrigger(IHttpClientFactory httpClientFactory,
                       IJsonProvider jsonProvider,
                       IJobUrlProvider jobUrlProvider,
-                      IJobSignatureProvider jobSignatureProvider,
                       SchedulerSettings settings,
                       IClock clock,
                       ILogger<JobTrigger> logger) {
         _httpClientFactory = httpClientFactory;
         _jsonProvider = jsonProvider;
         _jobUrlProvider = jobUrlProvider;
-        _jobSignatureProvider = jobSignatureProvider;
         _settings = settings;
         _clock = clock;
         _logger = logger;
@@ -54,19 +51,24 @@ public class JobTrigger {
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
         var scheduledSignature = GetParameter(parameterData, SchedulerConstants.Parameters.Signature);
-        var currentSignature = _jobSignatureProvider.GetSignature();
+        var attempt = GetAttempt(parameterData);
 
-        if (IsForAnotherRuntime(scheduledSignature, currentSignature)) {
+        if (JobSignatureProvider.IsConcurrentRuntime(scheduledSignature)) {
             var deferred = TryDefer(jobName,
                                     triggerKey,
                                     modelJson,
                                     parameterData,
                                     scheduledSignature,
-                                    currentSignature);
+                                    attempt);
 
             if (deferred) {
                 return;
             }
+        } else if (attempt > 0) {
+            _logger.LogInformation("Running job {JobName} for {ScheduledSignature} after {Attempts} deferrals",
+                                   jobName,
+                                   scheduledSignature,
+                                   attempt);
         }
 
         var httpClient = _httpClientFactory.CreateClient();
@@ -94,49 +96,6 @@ public class JobTrigger {
         }
     }
 
-    private bool TryDefer(string jobName,
-                          string triggerKey,
-                          string modelJson,
-                          IReadOnlyDictionary<string, string> parameterData,
-                          string scheduledSignature,
-                          string currentSignature) {
-        var attempt = GetAttempt(parameterData);
-
-        if (attempt >= MaxDeferAttempts) {
-            _logger.LogWarning("Running job {JobName} for {ScheduledSignature} after {Attempts} deferrals",
-                               jobName,
-                               scheduledSignature,
-                               attempt);
-
-            return false;
-        }
-
-        _logger.LogInformation("Deferring job {JobName} for {ScheduledSignature}, current is {CurrentSignature}",
-                               jobName,
-                               scheduledSignature,
-                               currentSignature);
-
-        var queue = GetParameter(parameterData, SchedulerConstants.Parameters.Queue);
-
-        if (!queue.HasValue()) {
-            queue = SchedulerConstants.Queues.Default;
-        }
-
-        var deferredParameterData = parameterData.OrEmpty().ToDictionary(x => x.Key, x => x.Value);
-        deferredParameterData[SchedulerConstants.Parameters.Attempt] = (attempt + 1).ToString();
-
-        var enqueueAt = _clock.GetCurrentInstant().Plus(DeferInterval).ToDateTimeOffset();
-
-        Hangfire.BackgroundJob.Schedule<JobTrigger>(queue,
-                                                   j => j.TriggerAsync(jobName,
-                                                                       triggerKey,
-                                                                       modelJson,
-                                                                       deferredParameterData),
-                                                   enqueueAt);
-
-        return true;
-    }
-
     private ProxyReq GetProxyReq(string triggerKey,
                                  string modelJson,
                                  IReadOnlyDictionary<string, string> parameterData) {
@@ -161,6 +120,47 @@ public class JobTrigger {
         return url;
     }
 
+    private bool TryDefer(string jobName,
+                          string triggerKey,
+                          string modelJson,
+                          IReadOnlyDictionary<string, string> parameterData,
+                          string scheduledSignature,
+                          int attempt) {
+        if (attempt >= MaxDeferAttempts) {
+            _logger.LogWarning("Running job {JobName} for {ScheduledSignature} after {Attempts} deferrals",
+                               jobName,
+                               scheduledSignature,
+                               attempt);
+
+            return false;
+        }
+
+        _logger.LogInformation("Deferring job {JobName} for {ScheduledSignature}, current is {CurrentSignature}",
+                               jobName,
+                               scheduledSignature,
+                               JobSignatureProvider.GetSignature());
+
+        var queue = GetParameter(parameterData, SchedulerConstants.Parameters.Queue);
+
+        if (!queue.HasValue()) {
+            queue = SchedulerConstants.Queues.Default;
+        }
+
+        var deferredParameterData = parameterData.OrEmpty().ToDictionary(x => x.Key, x => x.Value);
+        deferredParameterData[SchedulerConstants.Parameters.Attempt] = (attempt + 1).ToString();
+
+        var enqueueAt = _clock.GetCurrentInstant().Plus(DeferInterval).ToDateTimeOffset();
+
+        Hangfire.BackgroundJob.Schedule<JobTrigger>(queue,
+                                                    j => j.TriggerAsync(jobName,
+                                                                        triggerKey,
+                                                                        modelJson,
+                                                                        deferredParameterData),
+                                                    enqueueAt);
+
+        return true;
+    }
+
     private static int GetAttempt(IReadOnlyDictionary<string, string> parameterData) {
         var attempt = GetParameter(parameterData, SchedulerConstants.Parameters.Attempt);
 
@@ -177,11 +177,5 @@ public class JobTrigger {
         }
 
         return parameterData.GetValueOrDefault(name);
-    }
-
-    private static bool IsForAnotherRuntime(string scheduledSignature, string currentSignature) {
-        return scheduledSignature.HasValue() &&
-               currentSignature.HasValue() &&
-               scheduledSignature != currentSignature;
     }
 }
