@@ -4,8 +4,7 @@ namespace N3O.Umbraco.Scheduler.Attributes;
 
 /// <summary>
 /// Marks a command whose handler mutates state local to the process that runs it. The job is stamped with the
-/// signature of the runtime that queued it, and a concurrent runtime of the same version defers it rather than
-/// running it; a runtime of a different version runs it immediately, since the stamping runtime is going away.
+/// signature of the runtime that queued it, and any other runtime defers it rather than running it.
 /// </summary>
 /// <remarks>
 /// Only apply to commands that are idempotent and re-scheduled on every startup. Deferral is bounded at 20
