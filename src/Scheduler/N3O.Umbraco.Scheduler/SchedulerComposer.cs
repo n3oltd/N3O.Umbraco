@@ -181,9 +181,9 @@ public class SchedulerComposer : IComposer {
                                                                        t.HasAttribute<RunsWhereQueuedAttribute>());
 
                 foreach (var commandType in runsWhereQueuedTypes) {
-                    if (!commandType.ImplementsGenericInterface(typeof(IRequest<,>))) {
+                    if (!commandType.InheritsGenericClass(typeof(Request<,>))) {
                         throw new Exception("Runs where queued attribute can only be applied to classes that " +
-                                            $"inherit IRequest<,> but was applied to {commandType.Name}");
+                                            $"inherit Request<,> but was applied to {commandType.Name}");
                     }
                 }
             }
