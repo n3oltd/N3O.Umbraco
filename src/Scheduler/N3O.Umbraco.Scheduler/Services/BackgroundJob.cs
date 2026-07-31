@@ -52,9 +52,9 @@ public class BackgroundJob : IBackgroundJob {
 
         var parameterData = _fluentParametersBuilder.Build().ToDictionary();
 
-        if (typeof(TRequest).HasAttribute<SignatureFencedAttribute>()) {
+        if (typeof(TRequest).HasAttribute<RunsWhereQueuedAttribute>()) {
+            parameterData[SchedulerConstants.Parameters.Origin] = JobOriginProvider.GetOrigin();
             parameterData[SchedulerConstants.Parameters.Queue] = queue;
-            parameterData[SchedulerConstants.Parameters.Signature] = JobSignatureProvider.GetSignature();
         }
 
         var modelJson = _jsonProvider.SerializeObject(model);

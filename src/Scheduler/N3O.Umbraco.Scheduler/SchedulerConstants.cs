@@ -4,8 +4,8 @@ public static class SchedulerConstants {
     public static class Parameters {
         public const string Attempt = "n3o_attempt";
         public const string Culture = "culture";
+        public const string Origin = "n3o_origin";
         public const string Queue = "n3o_queue";
-        public const string Signature = "n3o_signature";
     }
     
     public static class Queues {

@@ -3,5 +3,5 @@ using N3O.Umbraco.Scheduler.Attributes;
 
 namespace N3O.Umbraco.Redirects.Commands;
 
-[SignatureFenced]
+[RunsWhereQueued]
 public class PopulateUmbracoRedirectsCommand : Request<None, None> { }

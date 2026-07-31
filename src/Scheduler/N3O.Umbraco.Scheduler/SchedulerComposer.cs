@@ -76,7 +76,7 @@ public class SchedulerComposer : IComposer {
             // https://discuss.hangfire.io/t/jobstorage-current-property-value-has-not-been-initialized/884
             JobStorage.Current = new SqlServerStorage(connectionString);
 
-            builder.Components().Append<ValidateSignatureFencedComponent>();
+            builder.Components().Append<ValidateRunsWhereQueuedComponent>();
             builder.Components().Append<CleanupStaleRecurringJobsComponent>();
             builder.Components().Append<RegisterRecurringJobsComponent>();
         }
@@ -168,22 +168,22 @@ public class SchedulerComposer : IComposer {
         public bool Authorize(DashboardContext context) => true;
     }
 
-    public class ValidateSignatureFencedComponent : IComponent {
+    public class ValidateRunsWhereQueuedComponent : IComponent {
         private readonly IRuntimeState _runtimeState;
 
-        public ValidateSignatureFencedComponent(IRuntimeState runtimeState) {
+        public ValidateRunsWhereQueuedComponent(IRuntimeState runtimeState) {
             _runtimeState = runtimeState;
         }
 
         public void Initialize() {
             if (_runtimeState.Level == RuntimeLevel.Run) {
-                var fencedTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
-                                                              t.HasAttribute<SignatureFencedAttribute>());
+                var runsWhereQueuedTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                                       t.HasAttribute<RunsWhereQueuedAttribute>());
 
-                foreach (var fencedType in fencedTypes) {
-                    if (!fencedType.ImplementsGenericInterface(typeof(IRequest<,>))) {
-                        throw new Exception("Signature fenced attribute can only be applied to classes that " +
-                                            $"inherit IRequest<,> but was applied to {fencedType.Name}");
+                foreach (var commandType in runsWhereQueuedTypes) {
+                    if (!commandType.ImplementsGenericInterface(typeof(IRequest<,>))) {
+                        throw new Exception("Runs where queued attribute can only be applied to classes that " +
+                                            $"inherit IRequest<,> but was applied to {commandType.Name}");
                     }
                 }
             }

@@ -20,8 +20,8 @@ public class JobTrigger {
 
     private static readonly IReadOnlyList<string> InternalParameters = [
         SchedulerConstants.Parameters.Attempt,
-        SchedulerConstants.Parameters.Queue,
-        SchedulerConstants.Parameters.Signature
+        SchedulerConstants.Parameters.Origin,
+        SchedulerConstants.Parameters.Queue
     ];
 
     private readonly IHttpClientFactory _httpClientFactory;
@@ -50,24 +50,24 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
-        var scheduledSignature = GetParameter(parameterData, SchedulerConstants.Parameters.Signature);
+        var origin = GetParameter(parameterData, SchedulerConstants.Parameters.Origin);
         var attempt = GetAttempt(parameterData);
 
-        if (JobSignatureProvider.ShouldDefer(scheduledSignature)) {
+        if (JobOriginProvider.ShouldDefer(origin)) {
             var deferred = TryDefer(jobName,
                                     triggerKey,
                                     modelJson,
                                     parameterData,
-                                    scheduledSignature,
+                                    origin,
                                     attempt);
 
             if (deferred) {
                 return;
             }
         } else if (attempt > 0) {
-            _logger.LogInformation("Running job {JobName} for {ScheduledSignature} after {Attempts} deferrals",
+            _logger.LogInformation("Running job {JobName} queued by {Origin} after {Attempts} deferrals",
                                    jobName,
-                                   scheduledSignature,
+                                   origin,
                                    attempt);
         }
 
@@ -124,22 +124,22 @@ public class JobTrigger {
                           string triggerKey,
                           string modelJson,
                           IReadOnlyDictionary<string, string> parameterData,
-                          string scheduledSignature,
+                          string origin,
                           int attempt) {
         if (attempt >= MaxDeferAttempts) {
-            _logger.LogWarning("Running job {JobName} for {ScheduledSignature} after exhausting {Attempts} " +
+            _logger.LogWarning("Running job {JobName} queued by {Origin} after exhausting {Attempts} " +
                                "deferrals",
                                jobName,
-                               scheduledSignature,
+                               origin,
                                attempt);
 
             return false;
         }
 
-        _logger.LogInformation("Deferring job {JobName} for {ScheduledSignature}, current is {CurrentSignature}",
+        _logger.LogInformation("Deferring job {JobName} queued by {Origin}, this runtime is {CurrentRuntime}",
                                jobName,
-                               scheduledSignature,
-                               JobSignatureProvider.GetSignature());
+                               origin,
+                               JobOriginProvider.GetOrigin());
 
         var queue = GetParameter(parameterData, SchedulerConstants.Parameters.Queue);
 

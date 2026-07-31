@@ -53,14 +53,14 @@ public class RegisterRecurringJobsHandler :
     private IReadOnlyDictionary<string, string> GetParameterData(QueueRecurringJobReq job) {
         var requestType = TriggerKey.ParseRequestType(job.TriggerKey);
 
-        if (!requestType.HasAttribute<SignatureFencedAttribute>()) {
+        if (!requestType.HasAttribute<RunsWhereQueuedAttribute>()) {
             return null;
         }
 
         var parameterData = new Dictionary<string, string>();
 
+        parameterData[SchedulerConstants.Parameters.Origin] = JobOriginProvider.GetOrigin();
         parameterData[SchedulerConstants.Parameters.Queue] = SchedulerConstants.Queues.Default;
-        parameterData[SchedulerConstants.Parameters.Signature] = JobSignatureProvider.GetSignature();
 
         return parameterData;
     }

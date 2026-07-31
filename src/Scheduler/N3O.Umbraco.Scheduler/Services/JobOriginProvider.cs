@@ -5,17 +5,17 @@ using System;
 
 namespace N3O.Umbraco.Scheduler;
 
-public static class JobSignatureProvider {
+public static class JobOriginProvider {
     private const char VersionSeparator = ':';
 
-    public static string GetSignature() {
+    public static string GetOrigin() {
         var host = Environment.MachineName;
         var version = EnvironmentData.GetOurValue(EnvironmentVariables.Version);
 
         return $"{host}{VersionSeparator}{version}";
     }
 
-    public static bool ShouldDefer(string signature) {
-        return signature.HasValue() && !signature.EqualsInvariant(GetSignature());
+    public static bool ShouldDefer(string origin) {
+        return origin.HasValue() && !origin.EqualsInvariant(GetOrigin());
     }
 }
