@@ -9,9 +9,10 @@ namespace N3O.Umbraco.Extensions;
 public static class UrlBuilderExtensions {
     public static Url SpecialPage(this UrlBuilder urlBuilder,
                                   IContentCache contentCache,
-                                  SpecialContent specialContent) {
+                                  SpecialContent specialContent,
+                                  string culture = null) {
         var url = urlBuilder.Root();
-        var path = SpecialContentPathParser.GetPath(contentCache, specialContent);
+        var path = SpecialContentPathParser.GetPath(contentCache, specialContent, culture);
 
         if (!path.HasValue()) {
             throw new Exception($"Could not resolve path for {specialContent.Id.Quote()}");

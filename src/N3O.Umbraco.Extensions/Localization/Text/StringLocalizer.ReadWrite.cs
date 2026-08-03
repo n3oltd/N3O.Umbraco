@@ -1,5 +1,6 @@
 using AsyncKeyedLock;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
@@ -22,13 +23,14 @@ public class ReadWriteStringLocalizer : ContentStringLocalizer {
     private readonly ConcurrentDictionary<string, int> _cache = new();
     private string _defaultCultureCode;
     
-    public ReadWriteStringLocalizer(ILocalizationSettingsAccessor localizationSettingsAccessor,
-                                    IContentCache contentCache,
+    public ReadWriteStringLocalizer(IContentCache contentCache,
+                                    ICultureAccessor cultureAccessor,
+                                    ILocalizationSettingsAccessor localizationSettingsAccessor,
                                     IContentService contentService,
                                     IContentTypeService contentTypeService,
                                     ICoreScopeProvider coreScopeProvider,
                                     AsyncKeyedLocker<string> locker)
-        : base(contentCache, localizationSettingsAccessor, locker) {
+        : base(contentCache, cultureAccessor, localizationSettingsAccessor, locker) {
         _localizationSettingsAccessor = localizationSettingsAccessor;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
@@ -143,7 +145,7 @@ public class ReadWriteStringLocalizer : ContentStringLocalizer {
                 }
             }
 
-            var culture = containerContent.ContentType.VariesByCulture() ? LocalizationSettings.CultureCode : null;
+            var culture = containerContent.ContentType.VariesByCulture() ? CultureAccessor.GetCulture() : null;
 
             var resources = GetTextResources(containerContent, culture);
 

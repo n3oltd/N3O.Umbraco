@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 
 namespace N3O.Umbraco.Localization;
 
@@ -26,8 +25,6 @@ public class LocalizationSettings : Value {
     public DateFormat DateFormat { get; }
     public TimeFormat TimeFormat { get; }
     public Timezone Timezone { get; }
-    
-    public static string CultureCode => Thread.CurrentThread.CurrentCulture.ToString();
 
     public static string GetLanguageName(string cultureCode) {
         try {

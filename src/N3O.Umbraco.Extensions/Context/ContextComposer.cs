@@ -11,6 +11,7 @@ public class ContextComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddSingleton<IBaseCurrencyAccessor, BaseCurrencyAccessor>();
         builder.Services.AddSingleton<IBrowserInfoAccessor, BrowserInfoAccessor>();
+        builder.Services.AddSingleton<ICultureAccessor, CultureAccessor>();
         builder.Services.AddScoped<ICurrencyAccessor, CurrencyAccessor>();
         builder.Services.AddScoped<ICurrencyCodeAccessor, CurrencyCodeAccessor>();
         builder.Services.AddScoped<IDefaultCurrencyProvider, LookupsDefaultCurrencyProvider>();
