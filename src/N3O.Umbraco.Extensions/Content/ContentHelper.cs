@@ -75,15 +75,22 @@ public class ContentHelper : IContentHelper {
             if (property.Type.IsBlockList() || property.Type.IsBlockGrid()) {
                 var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
-                var elements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
-                
+                var contentElements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "contentData");
+                var settingsElements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid, "settingsData");
+
+                var elementsProperty = new ElementsProperty(contentType,
+                                                            property.Type,
+                                                            contentElements,
+                                                            settingsElements,
+                                                            json);
+
                 elementsProperties.Add(elementsProperty);
             } else if (property.Type.IsPerplexBlocks()) {
                 var (blockContent, json) = GetJsonPropertyValue(property.Value);
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
+
+                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, [], json);
                 
                 elementsProperties.Add(elementsProperty);
             } else {
@@ -204,19 +211,15 @@ public class ContentHelper : IContentHelper {
         }
     }
     
-    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
+    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid,
+                                                                                    string dataPropertyName) {
         var contentProperties = new List<ContentProperties>();
 
-        AddBlockListOrGridElements(blockListOrGrid, "contentData", contentProperties);
-        AddBlockListOrGridElements(blockListOrGrid, "settingsData", contentProperties);
+        if (blockListOrGrid == null) {
+            return contentProperties;
+        }
 
-        return contentProperties;
-    }
-
-    private void AddBlockListOrGridElements(JObject blockListOrGrid,
-                                            string arrayName,
-                                            List<ContentProperties> contentProperties) {
-        if (blockListOrGrid?.TryGetValue(arrayName, StringComparison.InvariantCultureIgnoreCase, out var data) == true) {
+        if (blockListOrGrid.TryGetValue(dataPropertyName, StringComparison.InvariantCultureIgnoreCase, out var data)) {
             foreach (var block in data.OrEmpty()) {
                 if (block is JObject jObject) {
                     var elementProperties = GetContentPropertiesForBlockListOrGridElement(jObject);
@@ -227,6 +230,8 @@ public class ContentHelper : IContentHelper {
                 }
             }
         }
+
+        return contentProperties;
     }
     
     private ContentProperties GetContentPropertiesForBlockListOrGridElement(JObject element) {

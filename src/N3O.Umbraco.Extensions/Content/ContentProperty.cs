@@ -1,4 +1,6 @@
+using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Content;
@@ -28,10 +30,14 @@ public class ElementsProperty : ContentProperty<IReadOnlyList<ContentProperties>
     public ElementsProperty(IContentType contentType,
                             IPropertyType type,
                             IReadOnlyList<ContentProperties> value,
+                            IReadOnlyList<ContentProperties> settingsElements,
                             string json)
         : base(contentType, type, value) {
+        SettingsElements = settingsElements.OrEmpty().ToList();
         Json = json;
     }
-    
+
     public string Json { get; }
+    public IReadOnlyList<ContentProperties> SettingsElements { get; }
+    public IReadOnlyList<ContentProperties> AllElements => Value.OrEmpty().Concat(SettingsElements).ToList();
 }
