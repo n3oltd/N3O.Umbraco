@@ -45,7 +45,7 @@ public class AzureStorageComposer : Composer {
     }
 
     private void ComposeWithIdentity(IUmbracoBuilder builder) {
-        var container = AzureBlobStorage.GetContainerClient(builder.Config);
+        var container = AzureBlobStorage.GetMediaContainerClient(builder.Config);
 
         builder.SetMediaFileSystem(provider => {
             var hostingEnvironment = provider.GetRequiredService<IHostingEnvironment>();
