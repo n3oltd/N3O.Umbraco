@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
@@ -46,6 +47,10 @@ public class AzureStorageComposer : Composer {
 
     private void ComposeWithIdentity(IUmbracoBuilder builder) {
         var container = AzureBlobStorage.GetMediaContainerClient(builder.Config);
+
+        // Umbraco does not register a content type provider; the stock Azure provider
+        // constructs its own, so the credential path must supply one the same way.
+        builder.Services.TryAddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();
 
         builder.SetMediaFileSystem(provider => {
             var hostingEnvironment = provider.GetRequiredService<IHostingEnvironment>();
