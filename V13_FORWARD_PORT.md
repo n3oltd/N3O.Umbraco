@@ -69,3 +69,23 @@ These will **not compile** against v17's current generated clients (generated fr
 ---
 
 *Generated 2026-07-22. Cross-referenced from `SESSION_HANDOFF.md` and `MIGRATION_PR_TRACKER.md`. Once porting begins, tick items here and reflect status on issue [n3oltd/work#729](https://github.com/n3oltd/work/issues/729).*
+
+---
+
+## Post-#905 forward-port (backlog compiled 2026-08-04)
+
+Fixes/changes on `origin/main` **since #905 merged (2026-07-22)** — 9 PRs. **5 landed on `v17-Talha` + pushed; 4 deferred to focused follow-ups.** Same caveat as above: `main` is net8/v13, v17 has diverged — adapt, do not cherry-pick mechanically.
+
+| PR | Commit | What | Status |
+|----|--------|------|--------|
+| #907 | `bbdf3366a` | Storage.Azure `AddFileAsync` → `GetBlobClient` + `UploadAsync(overwrite: true)` | ✅ ported + verified |
+| #920 | `349b866bf` | `ContentCache` `GetOrAdd` factory overload (compute only on miss) | ✅ ported + verified |
+| #908 | `4f86bebc2` | `SchedulerSettings` (worker counts + job timeout configurable) | ✅ ported + verified |
+| #919 | `1cb02e9f7` | culture-aware `SpecialContentPathParser` + `FlushSpecialContentPathsComponent` | ✅ ported + verified |
+| #913 | `32b509f5a` | RegularGiving in `CampaignSending` | ✅ **N/A** — v17 `IsCampaign` is composition-based (`HasComposition(CampaignContent)`), already covers RegularGiving; v13's flat-alias-list add is subsumed by the #905 unified-Giving restructure |
+| #918 | `a9dad34b4` | run background jobs where queued (deploy-ordering deferral) | ⏳ **deferred** — intricate (~6 upstream review iterations); ~106-line `JobTrigger` change overlaps the #908 settings injection **and** the v17-only `ProxyErrorRes` block; verify `InheritsGenericClass` helper exists on v17 |
+| #917 | `bb7554fa8` | canonical/og:url on virtual routes + sitemap BOM (18 files) | ⏳ **deferred** — large; Extensions/Search sitemap area |
+| #921 | `ad530fba0` | make culture a first-class concept, one accessor (13 files) | ⏳ **deferred** — architectural; **overlaps #919**'s `SpecialContentPathParser`/`ContentCache`; likely supersedes parts of #919 |
+| #922 | `b4ecfd557` | rename `SubscriptionDescriptor`→`SubscriptionId` + webhook codes (11 files) | ⏳ **deferred** — cross-cutting rename; apply **last** + consistently across the (renamed/restructured) v17 tree |
+
+> The 4 deferred PRs must each be done carefully (build-verify per project; the full-solution build is still blocked locally by the frontend `npm ci` issue). #921 before #922; #922 last. Reflect status on #729 as they land.
