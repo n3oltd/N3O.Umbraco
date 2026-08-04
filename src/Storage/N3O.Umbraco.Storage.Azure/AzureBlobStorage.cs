@@ -12,8 +12,9 @@ public static class AzureBlobStorage {
     private const string ServiceUrlKey = "ServiceUrl";
     private const string ContainerNameKey = "ContainerName";
 
-    // ServiceUrl (identity mode) and ConnectionString (legacy mode) are mutually exclusive:
-    // the presence of ServiceUrl selects workload identity and no storage secret is configured.
+    // ServiceUrl and ConnectionString are mutually exclusive. ServiceUrl selects
+    // DefaultAzureCredential (workload identity, managed identity or developer
+    // credentials), so no storage secret appears in configuration.
     public static bool UsesIdentity(IConfiguration configuration) {
         return configuration.GetSection(MediaSectionKey)[ServiceUrlKey].HasValue();
     }

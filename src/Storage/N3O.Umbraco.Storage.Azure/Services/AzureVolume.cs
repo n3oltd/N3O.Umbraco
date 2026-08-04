@@ -25,8 +25,9 @@ public class AzureVolume : IVolume {
 
     public async Task<IStorageFolder> GetStorageFolderAsync(string folderPath) {
         if (AzureBlobStorage.UsesIdentity(_configuration)) {
-            // The site's single container holds everything; volume files live under the
-            // storage prefix, beside media, cache and the data protection keys.
+            // With credential-based access a single container holds everything; volume
+            // files live under the storage prefix, beside the media, the image cache
+            // and the data protection keys.
             var container = AzureBlobStorage.GetContainerClient(_configuration);
 
             return new AzureStorageFolder(container, GetPrefixedPath(folderPath));
