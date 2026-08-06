@@ -20,7 +20,4 @@
         <ProjectReference Include="..\..\Sync\N3O.Umbraco.Sync\N3O.Umbraco.Sync.csproj" />
         <ProjectReference Include="..\..\Templates\N3O.Umbraco.Templates.Handlebars\N3O.Umbraco.Templates.Handlebars.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Content\Models\Generated\" />
-    </ItemGroup>
 </Project>
