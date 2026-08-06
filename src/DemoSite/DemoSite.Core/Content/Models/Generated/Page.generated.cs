@@ -22,9 +22,34 @@ namespace DemoSite.Content
 	/// <summary>Page</summary>
 	public partial interface IPage : IPublishedContent
 	{
+		/// <summary>Assets</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		global::Umbraco.Cms.Core.Models.Blocks.BlockListModel Assets { get; }
+
+		/// <summary>Body HTML</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string BodyHtml { get; }
+
+		/// <summary>Inline Styles</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string Css { get; }
+
+		/// <summary>Head HTML</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string HeadHtml { get; }
+
 		/// <summary>Hide From Search Engines</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		bool HidePage { get; }
+
+		/// <summary>Inline Script</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string JavaScript { get; }
 
 		/// <summary>Title & Meta</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
@@ -64,6 +89,58 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
+		/// Assets
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("assets")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel Assets => GetAssets(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Assets</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static global::Umbraco.Cms.Core.Models.Blocks.BlockListModel GetAssets(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(publishedValueFallback, "assets");
+
+		///<summary>
+		/// Body HTML
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("bodyHtml")]
+		public virtual string BodyHtml => GetBodyHtml(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Body HTML</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetBodyHtml(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "bodyHtml");
+
+		///<summary>
+		/// Inline Styles
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("css")]
+		public virtual string Css => GetCss(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Inline Styles</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetCss(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "css");
+
+		///<summary>
+		/// Head HTML
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("headHtml")]
+		public virtual string HeadHtml => GetHeadHtml(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Head HTML</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetHeadHtml(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "headHtml");
+
+		///<summary>
 		/// Hide From Search Engines
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
@@ -73,6 +150,19 @@ namespace DemoSite.Content
 		/// <summary>Static getter for Hide From Search Engines</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		public static bool GetHidePage(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<bool>(publishedValueFallback, "hidePage");
+
+		///<summary>
+		/// Inline Script
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("javaScript")]
+		public virtual string JavaScript => GetJavaScript(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Inline Script</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetJavaScript(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "javaScript");
 
 		///<summary>
 		/// Title & Meta

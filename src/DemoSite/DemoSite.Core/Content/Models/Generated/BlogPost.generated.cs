@@ -55,7 +55,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("categories")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.BlogCategory> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.BlogCategory>>(_publishedValueFallback, "categories");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.87446633-60be-4dfc-b761-8339d6c55906> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.87446633-60be-4dfc-b761-8339d6c55906>>(_publishedValueFallback, "categories");
 
 		///<summary>
 		/// Date
@@ -65,11 +65,51 @@ namespace DemoSite.Content
 		public virtual global::System.DateTime Date => this.Value<global::System.DateTime>(_publishedValueFallback, "date");
 
 		///<summary>
+		/// Assets
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("assets")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel Assets => global::DemoSite.Content.Page.GetAssets(this, _publishedValueFallback);
+
+		///<summary>
+		/// Body HTML
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("bodyHtml")]
+		public virtual string BodyHtml => global::DemoSite.Content.Page.GetBodyHtml(this, _publishedValueFallback);
+
+		///<summary>
+		/// Inline Styles
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("css")]
+		public virtual string Css => global::DemoSite.Content.Page.GetCss(this, _publishedValueFallback);
+
+		///<summary>
+		/// Head HTML
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("headHtml")]
+		public virtual string HeadHtml => global::DemoSite.Content.Page.GetHeadHtml(this, _publishedValueFallback);
+
+		///<summary>
 		/// Hide From Search Engines
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[ImplementPropertyType("hidePage")]
 		public virtual bool HidePage => global::DemoSite.Content.Page.GetHidePage(this, _publishedValueFallback);
+
+		///<summary>
+		/// Inline Script
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("javaScript")]
+		public virtual string JavaScript => global::DemoSite.Content.Page.GetJavaScript(this, _publishedValueFallback);
 
 		///<summary>
 		/// Title & Meta

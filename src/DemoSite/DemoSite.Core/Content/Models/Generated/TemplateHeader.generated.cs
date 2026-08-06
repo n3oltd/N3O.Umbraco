@@ -56,5 +56,13 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("callUsText")]
 		public virtual string CallUsText => this.Value<string>(_publishedValueFallback, "callUsText");
+
+		///<summary>
+		/// Menu
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("menu")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel Menu => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "menu");
 	}
 }

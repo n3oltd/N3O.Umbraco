@@ -48,5 +48,21 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// Webhooks
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("productionWebhooks")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel ProductionWebhooks => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "productionWebhooks");
+
+		///<summary>
+		/// Webhooks
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("stagingWebhooks")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel StagingWebhooks => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "stagingWebhooks");
 	}
 }

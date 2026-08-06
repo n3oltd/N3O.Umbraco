@@ -58,6 +58,14 @@ namespace DemoSite.Content
 		public virtual string Password => this.Value<string>(_publishedValueFallback, "password");
 
 		///<summary>
+		/// Rules
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("rules")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel Rules => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "rules");
+
+		///<summary>
 		/// Username
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
