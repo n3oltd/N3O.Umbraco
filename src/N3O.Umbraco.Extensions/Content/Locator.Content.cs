@@ -1,10 +1,8 @@
-using System;
+using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services.Navigation;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Content;
 
@@ -20,9 +18,7 @@ public class ContentLocator : Locator, IContentLocator {
 
     protected override IPublishedCache PublishedCache => _contentCache;
 
-    protected override IEnumerable<Guid> GetRootKeys() {
-        _navigationQueryService.TryGetRootKeys(out var rootKeys);
-        
-        return rootKeys;
+    protected override IEnumerable<IPublishedContent> GetRootContents() {
+        return _navigationQueryService.GetPublishedRootContents(_contentCache);
     }
 }

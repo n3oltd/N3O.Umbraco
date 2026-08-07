@@ -22,7 +22,7 @@ public class ContentCache : IContentCache {
     public IReadOnlyList<T> All<T>(Func<T, bool> predicate = null) {
         var cacheKey = GetCacheKey<T>();
 
-        var all = (IReadOnlyList<T>) _typedStore.GetOrAdd(cacheKey, _contentLocator.All<T>());
+        var all = (IReadOnlyList<T>) _typedStore.GetOrAdd(cacheKey, _ => _contentLocator.All<T>());
         IReadOnlyList<T> res;
 
         if (predicate == null) {
@@ -42,7 +42,7 @@ public class ContentCache : IContentCache {
                                                 Func<IPublishedContent, bool> predicate = null) {
         var cacheKey = GetCacheKey(contentTypeAlias);
 
-        var all = _untypedStore.GetOrAdd(cacheKey, _contentLocator.All(contentTypeAlias));
+        var all = _untypedStore.GetOrAdd(cacheKey, _ => _contentLocator.All(contentTypeAlias));
         IReadOnlyList<IPublishedContent> res;
 
         if (predicate == null) {

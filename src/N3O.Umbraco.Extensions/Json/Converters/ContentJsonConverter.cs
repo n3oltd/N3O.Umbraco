@@ -10,8 +10,6 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Json;
 
