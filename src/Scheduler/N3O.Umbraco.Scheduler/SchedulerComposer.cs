@@ -33,7 +33,11 @@ public class SchedulerComposer : IComposer {
     public void Compose(IUmbracoBuilder builder) {
         builder.Services.AddSingleton<IJobUrlProvider, JobUrlProvider>();
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
-        
+
+        var settings = builder.Config.GetSection(SchedulerSettings.SectionName).Get<SchedulerSettings>() ??
+                       new SchedulerSettings();
+        builder.Services.AddSingleton(settings);
+
         var connectionString = builder.Config.GetConnectionString(UmbracoConstants.System.UmbracoConnectionName);
 
         if (connectionString.HasValue()) {

@@ -1,4 +1,3 @@
-using Humanizer;
 using Humanizer.Bytes;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;

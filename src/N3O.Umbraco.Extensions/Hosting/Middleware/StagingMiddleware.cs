@@ -10,7 +10,6 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Hosting;

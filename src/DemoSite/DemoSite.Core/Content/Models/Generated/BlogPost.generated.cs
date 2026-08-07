@@ -55,7 +55,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("categories")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.87446633-60be-4dfc-b761-8339d6c55906> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.87446633-60be-4dfc-b761-8339d6c55906>>(_publishedValueFallback, "categories");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.BlogCategories> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.BlogCategories>>(_publishedValueFallback, "categories");
 
 		///<summary>
 		/// Date

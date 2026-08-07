@@ -2,7 +2,6 @@ using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
-using System.Linq;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Localization;

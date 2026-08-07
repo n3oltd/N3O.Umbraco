@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
@@ -61,9 +60,7 @@ public abstract class Locator : ILocator {
     private IReadOnlyList<IPublishedContent> GetAllContent(string contentTypeAlias) {
         var allContent = new List<IPublishedContent>();
 
-        foreach (var rootKey in GetRootKeys()) {
-            var rootContent = PublishedCache.GetById(rootKey);
-
+        foreach (var rootContent in GetRootContents()) {
             if (rootContent == null) {
                 continue;
             }
@@ -83,5 +80,5 @@ public abstract class Locator : ILocator {
     }
 
     protected abstract IPublishedCache PublishedCache { get; }
-    protected abstract IEnumerable<Guid> GetRootKeys();
+    protected abstract IEnumerable<IPublishedContent> GetRootContents();
 }
