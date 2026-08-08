@@ -363,9 +363,6 @@ public class ContentHelper : IContentHelper {
             return (null, null);
         }
         
-        // When the value is already the stored JSON string, return it verbatim rather than round-tripping it
-        // through Newtonsoft — re-serialising coerces ISO date strings to the server timezone and loses
-        // precision on large / high-precision numbers.
         if (propertyValue is string str) {
             return ((JToken) JsonConvert.DeserializeObject(str), str);
         }

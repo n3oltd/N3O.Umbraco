@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
@@ -40,11 +39,8 @@ public class NotificationsComposer : Composer {
     private void RegisterHandlerForNotification<TNotification, THandler>(IUmbracoBuilder builder)
         where TNotification : INotification
         where THandler : class, INotificationAsyncHandler<TNotification> {
-        // A handler that implements INotificationAsyncHandler<> for multiple notifications reaches this
-        // method once per notification type; TryAddTransient registers the same THandler only once (the
-        // factory registration below bypasses Umbraco's dedup guard, so it stays explicit).
-        builder.Services.TryAddTransient<THandler>();
-
+        builder.Services.AddTransient<THandler>();
+        
         builder.Services.AddTransient(typeof(INotificationAsyncHandler<TNotification>), s => {
             var notificationHandlerSkippers = s.GetServices<INotificationHandlerSkipper>();
             var handler = s.GetRequiredService<THandler>();

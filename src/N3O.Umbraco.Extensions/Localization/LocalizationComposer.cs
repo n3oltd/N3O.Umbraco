@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using NodaTime;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -7,14 +7,14 @@ namespace N3O.Umbraco.Localization;
 
 public class LocalizationComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        builder.Services.TryAddSingleton<IClock>(SystemClock.Instance);
-        builder.Services.TryAddSingleton<IDateTimeFormatter, DateTimeFormatter>();
-        builder.Services.TryAddSingleton<IFormatter, Formatter>();
-        builder.Services.TryAddSingleton<IFormatterFactory, FormatterFactory>();
-        builder.Services.TryAddSingleton<ILocalClock, LocalClock>();
-        builder.Services.TryAddSingleton<ILocalizationSettingsAccessor, EnvironmentLocalizationSettingsAccessor>();
-        builder.Services.TryAddSingleton<INumberFormatter, NumberFormatter>();
-        builder.Services.TryAddSingleton<IStringLocalizer, ReadWriteStringLocalizer>();
-        builder.Services.TryAddSingleton<ITextFormatter, TextFormatter>();
+        builder.Services.AddSingleton<IClock>(SystemClock.Instance);
+        builder.Services.AddSingleton<IDateTimeFormatter, DateTimeFormatter>();
+        builder.Services.AddSingleton<IFormatter, Formatter>();
+        builder.Services.AddSingleton<IFormatterFactory, FormatterFactory>();
+        builder.Services.AddSingleton<ILocalClock, LocalClock>();
+        builder.Services.AddSingleton<ILocalizationSettingsAccessor, EnvironmentLocalizationSettingsAccessor>();
+        builder.Services.AddSingleton<INumberFormatter, NumberFormatter>();
+        builder.Services.AddSingleton<IStringLocalizer, ReadWriteStringLocalizer>();
+        builder.Services.AddSingleton<ITextFormatter, TextFormatter>();
     }
 }

@@ -6,9 +6,6 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Extensions;
 
-// These accessors expose synchronous data over the async ILanguageService API. Blocking with
-// GetAwaiter().GetResult() is safe here: ASP.NET Core has no SynchronizationContext, so the awaited
-// continuations never need the calling thread — there is no sync-over-async deadlock.
 public static class LanguageServiceExtensions {
     public static IReadOnlyList<string> GetAllCultureCodes(this ILanguageService languageService) {
         try {
