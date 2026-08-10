@@ -1,10 +1,10 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import {
-    UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { UmbChangeEvent } from '@umbraco-cms/backoffice/event';
 import { UmbAuthFetchMixin } from '@n3oltd/backoffice-core';
 import type { AuthFetch } from '@n3oltd/backoffice-core';
 import { createElement } from 'react';
@@ -87,7 +87,7 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
                 authFetch: this.authFetch,
                 onChange: (value: SerpValue) => {
                     this.#value = value;
-                    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+                    this.dispatchEvent(new UmbChangeEvent());
                 },
             }),
         );
