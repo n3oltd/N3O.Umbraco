@@ -1,0 +1,34 @@
+{
+    "name": "@n3oltd/editor-js",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc --noEmit && vite build",
+        "watch": "vite build --watch"
+    },
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    },
+    "dependencies": {
+        "@editorjs/checklist": "^1.6.0",
+        "@editorjs/code": "^2.9.2",
+        "@editorjs/editorjs": "^2.30.6",
+        "@editorjs/embed": "^2.7.6",
+        "@editorjs/header": "^2.8.8",
+        "@editorjs/list": "^1.10.0",
+        "@editorjs/paragraph": "^2.11.7",
+        "@editorjs/quote": "^2.7.2",
+        "@editorjs/raw": "^2.5.0",
+        "editor-js-alignment-tune": "^1.0.1",
+        "editorjs-drag-drop": "^1.1.16"
+    },
+    "devDependencies": {
+        "@repo/build-config": "*",
+        "@n3oltd/backoffice-core": "*",
+        "@n3oltd/backoffice-ui": "*",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0"
+    }
+}

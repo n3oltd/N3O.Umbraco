@@ -7,8 +7,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.EditorJs;
@@ -17,12 +17,15 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
     private const string DocumentEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
     private const string MediaEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Media;
     
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    private readonly IPublishedContentCache _contentCache;
+    private readonly IPublishedMediaCache _mediaCache;
     private readonly IPublishedUrlProvider _publishedUrlProvider;
 
-    protected BlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
+    protected BlockDataConverter(IPublishedContentCache contentCache,
+                                 IPublishedMediaCache mediaCache,
                                  IPublishedUrlProvider publishedUrlProvider) {
-        _umbracoContextAccessor = umbracoContextAccessor;
+        _contentCache = contentCache;
+        _mediaCache = mediaCache;
         _publishedUrlProvider = publishedUrlProvider;
     }
     
@@ -59,13 +62,13 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
         var udiText = match.Groups[2].Value;
         var udi = UdiParser.Parse(udiText);
 
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out var context)) {
+        if (udi is GuidUdi guidUdi) {
             IPublishedContent content;
-            
+
             if (udi.EntityType == DocumentEntityType) {
-                content = context.Content?.GetById(udi);
+                content = _contentCache.GetById(guidUdi.Guid);
             } else if (udi.EntityType == MediaEntityType) {
-                content = context.Media?.GetById(udi);
+                content = _mediaCache.GetById(guidUdi.Guid);
             } else {
                 throw UnrecognisedValueException.For(udi.EntityType);
             }

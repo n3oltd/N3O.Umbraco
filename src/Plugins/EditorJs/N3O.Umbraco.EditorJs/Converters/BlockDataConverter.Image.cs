@@ -1,15 +1,15 @@
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Core.PublishedCache;
 
 namespace N3O.Umbraco.EditorJs;
 
 public class ImageBlockDataConverter : BlockDataConverter<ImageBlockData> {
     protected override string TypeId => "image";
     
-    public ImageBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
+    public ImageBlockDataConverter(IPublishedContentCache contentCache, IPublishedMediaCache mediaCache,
                                    IPublishedUrlProvider publishedUrlProvider)
-        : base(umbracoContextAccessor, publishedUrlProvider) { }
+        : base(contentCache, mediaCache, publishedUrlProvider) { }
 }
 
 public class ImageBlockData {
