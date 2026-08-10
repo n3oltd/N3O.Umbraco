@@ -5,8 +5,8 @@ import {
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
-import { UmbAuthFetchMixin } from '@n3o/backoffice-core';
-import type { AuthFetch } from '@n3o/backoffice-core';
+import { UmbAuthFetchMixin } from '@n3oltd/backoffice-core';
+import type { AuthFetch } from '@n3oltd/backoffice-core';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { SerpEditorApp, type SerpValue } from './serp-editor-app';
@@ -18,7 +18,7 @@ const elementName = 'n3o-serp-editor';
 // and mounts the React UI (SerpEditorApp) into its shadow root. React itself is NOT bundled here —
 // it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
 //
-// UmbAuthFetchMixin (from @n3o/backoffice-core) provides `this.authFetch`, rebuilt from
+// UmbAuthFetchMixin (from @n3oltd/backoffice-core) provides `this.authFetch`, rebuilt from
 // UMB_AUTH_CONTEXT whenever the auth context changes. It is forwarded to SerpEditorApp as a prop
 // so the React component can make authenticated requests to the [Authorize] templateOptions endpoint.
 @customElement(elementName)

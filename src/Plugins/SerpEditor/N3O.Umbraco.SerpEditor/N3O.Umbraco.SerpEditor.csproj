@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.SerpEditor</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
@@ -10,6 +10,7 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <N3OReactPlugin>true</N3OReactPlugin>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.SerpEditor</PackageId>

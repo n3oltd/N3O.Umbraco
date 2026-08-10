@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { AuthFetch } from '@n3o/backoffice-core';
+import type { AuthFetch } from '@n3oltd/backoffice-core';
 import styles from './serp-editor-app.css?inline';
 
 export interface SerpValue {
