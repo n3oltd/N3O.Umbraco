@@ -13,15 +13,39 @@
     width: 90%;
 }
 
-.n3o-text-resource-editor .delete {
-    cursor: pointer;
-}
-
 .n3o-text-resource-editor .text {
     font-weight: bold;
 }
 
+/* Shadow DOM isolates these native controls from the backoffice's global
+   styling, so restyle them to match (v13 inherited it from the light DOM). */
 .n3o-text-resource-editor .custom {
     width: 100%;
     margin-top: 10px;
+    box-sizing: border-box;
+    font: inherit;
+    padding: 6px 9px;
+    border: 1px solid var(--uui-color-border, #d8d7d9);
+    border-radius: 3px;
+    background: var(--uui-color-surface, #fff);
+    color: var(--uui-color-text, #060606);
+}
+
+.n3o-text-resource-editor .custom:focus {
+    outline: none;
+    border-color: var(--uui-color-focus, #3544b1);
+}
+
+/* v13 rendered the delete/confirm affordances as plain text links (<a>), not buttons. */
+.n3o-text-resource-editor button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--uui-color-interactive, #3544b1);
+    cursor: pointer;
+}
+
+.n3o-text-resource-editor button:hover {
+    text-decoration: underline;
 }
