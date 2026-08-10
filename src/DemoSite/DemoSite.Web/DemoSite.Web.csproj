@@ -14,7 +14,7 @@
         <ProjectReference Include="..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
         <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms.StaticAssets\N3O.Umbraco.Forms.StaticAssets.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Cms\N3O.Umbraco.Cms.csproj" />
-        <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\N3O.Umbraco.SerpEditor.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor\N3O.Umbraco.SerpEditor.csproj" />
         <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
         <ProjectReference Include="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.csproj" />
         <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
