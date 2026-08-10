@@ -1,11 +1,15 @@
 {
-    "name": "n3o-umbraco-editorjs",
+    "name": "@n3oltd/editor-js",
     "version": "1.0.0",
     "private": true,
     "type": "module",
     "scripts": {
         "build": "tsc --noEmit && vite build",
         "watch": "vite build --watch"
+    },
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
     },
     "dependencies": {
         "@editorjs/checklist": "^1.6.0",
@@ -21,6 +25,10 @@
         "editorjs-drag-drop": "^1.1.16"
     },
     "devDependencies": {
-        "@n3o/build": "*"
+        "@repo/build-config": "*",
+        "@n3oltd/backoffice-core": "*",
+        "@n3oltd/backoffice-ui": "*",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0"
     }
 }
