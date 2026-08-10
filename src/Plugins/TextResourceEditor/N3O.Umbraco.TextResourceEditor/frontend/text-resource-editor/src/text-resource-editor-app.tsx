@@ -40,7 +40,7 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
     }
 
     return (
-        <uui-box headline="Text resources">
+        <>
             <div className="n3o-text-resource-editor">
                 {value.map((entry) => (
                     <div className="row-wrapper" key={entry.source}>
@@ -94,6 +94,6 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
             </div>
 
             <style>{styles}</style>
-        </uui-box>
+        </>
     );
 }

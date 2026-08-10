@@ -1,9 +1,9 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import {
-    UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { UmbChangeEvent } from '@umbraco-cms/backoffice/event';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { TextResourceEditorApp, type TextResourceEntry } from './text-resource-editor-app';
@@ -57,7 +57,7 @@ export class N3oTextResourceEditorElement extends HTMLElement implements UmbProp
                 value: this.#value,
                 onChange: (value: TextResourceEntry[]) => {
                     this.#value = value;
-                    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+                    this.dispatchEvent(new UmbChangeEvent());
                 },
             }),
         );
