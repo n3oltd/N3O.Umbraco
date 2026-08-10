@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.WelcomeDashboard",
+    "name": "N3O Welcome Dashboard",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "dashboard",
+            "alias": "N3O.Dashboard.Welcome",
+            "name": "N3O Welcome Dashboard",
+            "element": "/App_Plugins/N3O.Umbraco.WelcomeDashboard/welcome-dashboard.js",
+            "weight": -10,
+            "meta": {
+                "label": "Welcome",
+                "pathname": "welcome"
+            },
+            "conditions": [
+                {
+                    "alias": "Umb.Condition.SectionAlias",
+                    "match": "Umb.Section.Content"
+                }
+            ]
+        }
+    ]
+}
