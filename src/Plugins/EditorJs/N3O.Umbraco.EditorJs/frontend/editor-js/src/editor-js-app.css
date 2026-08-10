@@ -20,10 +20,14 @@
     }
 }
 
+/* Align the toolbar (the "+" / drag handle) to the block content's left edge. EditorJS 2.30
+   anchors .ce-toolbar__actions to .ce-toolbar__content, so the old v13 `width: 0` hack collapsed
+   and centre-aligned it, pushing the "+" into the middle. Match the .ce-block__content rule instead. */
 @media (min-width: 651px) {
     .ce-toolbar__content {
-        width: 0px !important;
-        margin: 0 50px;
+        width: auto !important;
+        max-width: calc(100% - 120px) !important;
+        margin: 0 60px;
     }
 }
 
