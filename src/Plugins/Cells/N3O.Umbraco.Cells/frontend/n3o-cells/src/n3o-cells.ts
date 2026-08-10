@@ -1,9 +1,9 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import {
-    UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { UmbChangeEvent } from '@umbraco-cms/backoffice/event';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { N3oCellsApp, type CellsValue } from './n3o-cells-app';
@@ -70,7 +70,7 @@ export class N3oCellsElement extends HTMLElement implements UmbPropertyEditorUiE
                 gridConfiguration: this.#gridConfiguration,
                 onChange: (value: unknown[][]) => {
                     this.#value = value;
-                    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+                    this.dispatchEvent(new UmbChangeEvent());
                 },
             }),
         );
