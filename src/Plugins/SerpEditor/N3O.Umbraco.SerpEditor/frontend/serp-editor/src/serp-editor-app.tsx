@@ -70,7 +70,7 @@ export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authF
     const host = `${location.protocol}//${window.location.hostname}`;
 
     return (
-        <uui-box headline="SEO preview">
+        <>
             <div className="sv">
                 <div className="sv-form">
                     <input
@@ -107,6 +107,6 @@ export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authF
             </div>
 
             <style>{styles}</style>
-        </uui-box>
+        </>
     );
 }
