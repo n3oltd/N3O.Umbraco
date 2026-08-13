@@ -15,4 +15,6 @@ public interface ICdnClient {
     
     Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
                                                                CancellationToken cancellationToken = default);
+
+    void Evict(string path);
 }

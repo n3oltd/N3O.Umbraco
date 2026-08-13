@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using NodaTime;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -22,6 +23,7 @@ public class CdnClient : ICdnClient {
     private static readonly SemaphoreSlim ConcurrencyLimit = new(10, 10);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
     private static readonly ConcurrentDictionary<string, Lazy<Task<CdnDownloadResult>>> Refreshes = new(StringComparer.InvariantCultureIgnoreCase);
+    private static readonly ConcurrentDictionary<string, Instant> InvalidatedAt = new(StringComparer.InvariantCultureIgnoreCase);
 
     private readonly ICloudUrl _cloudUrl;
     private readonly IClock _clock;
@@ -83,10 +85,19 @@ public class CdnClient : ICdnClient {
         }
     }
 
+    public void Evict(string path) {
+        var publishedUrl = GetPublishedContentUrl(path);
+
+        InvalidatedAt[publishedUrl] = _clock.GetCurrentInstant();
+    }
+
     private async Task<CdnDownloadResult> FetchAsync(string publishedUrl, CancellationToken cancellationToken) {
         var download = Downloads.GetOrDefault(publishedUrl);
 
-        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
+        if (download == null ||
+            download.IsExpired(_clock) ||
+            download.CanRetry(_clock) ||
+            download.WasInvalidated(GetInvalidatedAt(publishedUrl))) {
             // Coalesce refreshes per URL so a failing CDN cannot pile up in-flight fetches and drain ConcurrencyLimit.
             var refresh = Refreshes.GetOrAdd(publishedUrl,
                                              url => new Lazy<Task<CdnDownloadResult>>(() => RefreshAsync(url)));
@@ -99,33 +110,59 @@ public class CdnClient : ICdnClient {
 
     private async Task<CdnDownloadResult> RefreshAsync(string publishedUrl) {
         try {
-            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, CancellationToken.None);
+            var startedAt = _clock.GetCurrentInstant();
+            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, startedAt, CancellationToken.None);
 
             // A cached success is retained when a later refresh fails.
-            return Downloads.AddOrUpdate(publishedUrl,
-                                         cdnDownloadResult,
-                                         (_, existing) => cdnDownloadResult.Success || !existing.Success
-                                                              ? cdnDownloadResult
-                                                              : existing);
+            var result = Downloads.AddOrUpdate(publishedUrl,
+                                               cdnDownloadResult,
+                                               (_, existing) => cdnDownloadResult.Success || !existing.Success
+                                                                    ? cdnDownloadResult
+                                                                    : existing);
+
+            ClearInvalidation(publishedUrl, startedAt);
+
+            return result;
         } finally {
             Refreshes.TryRemove(publishedUrl, out _);
         }
     }
-    
+
+    private void ClearInvalidation(string publishedUrl, Instant startedAt) {
+        var invalidatedAt = GetInvalidatedAt(publishedUrl);
+
+        if (invalidatedAt == null) {
+            return;
+        }
+
+        if (invalidatedAt.Value < startedAt) {
+            InvalidatedAt.TryRemove(new KeyValuePair<string, Instant>(publishedUrl, invalidatedAt.Value));
+        }
+    }
+
+    private Instant? GetInvalidatedAt(string publishedUrl) {
+        if (InvalidatedAt.TryGetValue(publishedUrl, out var invalidatedAt)) {
+            return invalidatedAt;
+        } else {
+            return null;
+        }
+    }
+
     private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
+                                                              Instant startedAt,
                                                               CancellationToken cancellationToken) {
         try {
             var download = await GetStringRateLimitedAsync(publishedUrl, cancellationToken);
 
-            return CdnDownloadResult.ForSuccess(_clock, download);
+            return CdnDownloadResult.ForSuccess(startedAt, download);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
             _logger.LogDebug("CDN 404 for {PublishedUrl}", publishedUrl);
 
-            return CdnDownloadResult.ForNotFound(_clock);
+            return CdnDownloadResult.ForNotFound(startedAt);
         } catch (Exception ex) {
             _logger.LogWarning(ex, "Could not download {PublishedUrl}", publishedUrl);
 
-            return CdnDownloadResult.ForError(_clock);
+            return CdnDownloadResult.ForError(startedAt);
         }
     }
     

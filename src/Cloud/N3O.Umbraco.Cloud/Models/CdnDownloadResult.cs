@@ -38,16 +38,24 @@ public class CdnDownloadResult {
             return false;
         }
     }
-
-    public static CdnDownloadResult ForNotFound(IClock clock) {
-        return new CdnDownloadResult(false, false, null, clock.GetCurrentInstant());
+    
+    public bool WasInvalidated(Instant? invalidatedAt) {
+        if (invalidatedAt == null) {
+            return false;
+        }
+        
+        return Timestamp <= invalidatedAt.Value;
     }
 
-    public static CdnDownloadResult ForError(IClock clock) {
-        return new CdnDownloadResult(false, true, null, clock.GetCurrentInstant());
+    public static CdnDownloadResult ForNotFound(Instant startedAt) {
+        return new CdnDownloadResult(false, false, null, startedAt);
     }
 
-    public static CdnDownloadResult ForSuccess(IClock clock, string content) {
-        return new CdnDownloadResult(true, false, content, clock.GetCurrentInstant());
+    public static CdnDownloadResult ForError(Instant startedAt) {
+        return new CdnDownloadResult(false, true, null, startedAt);
+    }
+
+    public static CdnDownloadResult ForSuccess(Instant startedAt, string content) {
+        return new CdnDownloadResult(true, false, content, startedAt);
     }
 }
