@@ -72,8 +72,7 @@ public static class TypesenseHelper {
 
     private static void AddIndexFields<TDocument>(List<Field> fields) {
         var attributes = typeof(TDocument).GetProperties()
-                                          .Select(x => x.GetCustomAttribute<IndexAttribute>())
-                                          .ExceptNull()
+                                          .SelectMany(x => x.GetCustomAttributes<IndexAttribute>())
                                           .ToList();
 
         foreach (var attribute in attributes) {
