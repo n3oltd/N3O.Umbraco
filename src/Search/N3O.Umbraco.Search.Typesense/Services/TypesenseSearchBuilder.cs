@@ -1,0 +1,47 @@
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Search.Typesense.Models;
+using N3O.Umbraco.Search.Typesense.Queries;
+using System;
+using System.Threading.Tasks;
+using Typesense;
+
+namespace N3O.Umbraco.Search.Typesense;
+
+public partial class TypesenseSearchBuilder<T> : ITypesenseSearchBuilder<T> where T : SearchDocument {
+    private readonly ITypesenseSearchFactory _typesenseSearchFactory;
+    private bool _built;
+
+    public TypesenseSearchBuilder(ITypesenseSearchFactory typesenseSearchFactory) {
+        _typesenseSearchFactory = typesenseSearchFactory;
+    }
+
+    public async Task<SearchParameters> BuildAsync() {
+        if (_built) {
+            throw new Exception($"{nameof(BuildAsync)} can only be called once per {nameof(TypesenseSearchBuilder<T>)} instance");
+        }
+
+        _built = true;
+
+        foreach (var search in _appliedSearches) {
+            await search.ApplyAsync(this);
+        }
+
+        var searchParameters = new SearchParameters(_queryText, _queryFields ?? string.Empty);
+
+        searchParameters.SortBy = GetSortBy();
+
+        var filterBy = ParameterizedTypesenseText.Empty();
+
+        foreach (var filterText in _filterTexts) {
+            filterBy.And(filterText);
+        }
+
+        if (!filterBy.IsEmpty) {
+            searchParameters.FilterBy = filterBy.ToString();
+        }
+
+        _customActions.Do(x => x(searchParameters));
+
+        return searchParameters;
+    }
+}

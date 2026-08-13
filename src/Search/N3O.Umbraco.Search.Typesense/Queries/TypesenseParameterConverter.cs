@@ -1,0 +1,66 @@
+using N3O.Umbraco.Lookups;
+using System;
+using System.Globalization;
+
+namespace N3O.Umbraco.Search.Typesense.Queries;
+
+public static class TypesenseParameterConverter {
+    public static Func<object, string> GetConverter(Type parameterType) {
+        var documentConverter = TypesenseConverterRegistry.GetConverter(parameterType);
+
+        if (documentConverter != null) {
+            var convert = GetScalarConverter(documentConverter.UnderlyingTypesenseType);
+
+            return convert == null ? null : v => convert(documentConverter.ToTypesenseValue(v));
+        } else if (typeof(ILookup).IsAssignableFrom(parameterType)) {
+            return v => Backtick(((ILookup) v)?.Id);
+        } else {
+            return GetScalarConverter(parameterType);
+        }
+    }
+
+    private static string Backtick(string value) {
+        return $"`{value?.Replace("`", "\\`")}`";
+    }
+
+    // The scalar shapes Typesense accepts as a filter_by literal, covering String, Bool, Int32, Int64 and
+    // Float and their array forms. Object fields are filtered by sub-field path and GeoPoint by its own
+    // compound syntax, so neither is a literal and both resolve to no converter.
+    private static Func<object, string> GetScalarConverter(Type type) {
+        var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
+
+        if (underlyingType == typeof(string)) {
+            return v => Backtick((string) v);
+        } else if (underlyingType == typeof(bool)) {
+            return v => v == null ? null : (bool) v ? "true" : "false";
+        } else if (underlyingType == typeof(Guid) ||
+                   underlyingType == typeof(TimeSpan) ||
+                   underlyingType == typeof(char)) {
+            return v => v == null ? null : Backtick(Convert.ToString(v, CultureInfo.InvariantCulture));
+        } else if (underlyingType.IsEnum) {
+            var integralType = Enum.GetUnderlyingType(underlyingType);
+
+            return v => v == null
+                            ? null
+                            : Convert.ToString(Convert.ChangeType(v, integralType), CultureInfo.InvariantCulture);
+        } else if (IsNumeric(underlyingType)) {
+            return v => v == null ? null : Convert.ToString(v, CultureInfo.InvariantCulture);
+        } else {
+            return null;
+        }
+    }
+
+    private static bool IsNumeric(Type type) {
+        return type == typeof(int) ||
+               type == typeof(long) ||
+               type == typeof(decimal) ||
+               type == typeof(double) ||
+               type == typeof(float) ||
+               type == typeof(short) ||
+               type == typeof(byte) ||
+               type == typeof(sbyte) ||
+               type == typeof(ushort) ||
+               type == typeof(uint) ||
+               type == typeof(ulong);
+    }
+}
