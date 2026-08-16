@@ -68,6 +68,15 @@ public static class PropertyContainerBuilderExtensions {
         return builder.Property<DateTimePropertyTypeBuilder, TProperty>(expression);
     }
 
+    public static DecimalPropertyTypeBuilder Decimal(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<DecimalPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static DecimalPropertyTypeBuilder Decimal<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                   Expression<Func<T, TProperty>> expression) {
+        return builder.Property<DecimalPropertyTypeBuilder, TProperty>(expression);
+    }
+
     public static DropdownPropertyTypeBuilder Dropdown(this IPropertyContainerBuilder builder, string propertyAlias) {
         return builder.Property<DropdownPropertyTypeBuilder>(propertyAlias);
     }
@@ -75,6 +84,33 @@ public static class PropertyContainerBuilderExtensions {
     public static DropdownPropertyTypeBuilder Dropdown<T, TProperty>(this IPropertyContainerBuilder<T> builder,
                                                                      Expression<Func<T, TProperty>> expression) {
         return builder.Property<DropdownPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static EmailPropertyTypeBuilder Email(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<EmailPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static EmailPropertyTypeBuilder Email<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                               Expression<Func<T, TProperty>> expression) {
+        return builder.Property<EmailPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static EyeDropperPropertyTypeBuilder EyeDropper(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<EyeDropperPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static EyeDropperPropertyTypeBuilder EyeDropper<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                         Expression<Func<T, TProperty>> expression) {
+        return builder.Property<EyeDropperPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static ImageCropperPropertyTypeBuilder ImageCropper(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<ImageCropperPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static ImageCropperPropertyTypeBuilder ImageCropper<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                             Expression<Func<T, TProperty>> expression) {
+        return builder.Property<ImageCropperPropertyTypeBuilder, TProperty>(expression);
     }
 
     public static LabelPropertyTypeBuilder Label(this IPropertyContainerBuilder builder, string propertyAlias) {
@@ -102,6 +138,15 @@ public static class PropertyContainerBuilderExtensions {
     public static MediaPickerPropertyTypeBuilder MediaPicker<T, TProperty>(this IPropertyContainerBuilder<T> builder,
                                                                            Expression<Func<T, TProperty>> expression) {
         return builder.Property<MediaPickerPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static MemberGroupPickerPropertyTypeBuilder MemberGroupPicker(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<MemberGroupPickerPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static MemberGroupPickerPropertyTypeBuilder MemberGroupPicker<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                                       Expression<Func<T, TProperty>> expression) {
+        return builder.Property<MemberGroupPickerPropertyTypeBuilder, TProperty>(expression);
     }
 
     public static MemberPickerPropertyTypeBuilder MemberPicker(this IPropertyContainerBuilder builder, string propertyAlias) {
@@ -219,5 +264,14 @@ public static class PropertyContainerBuilderExtensions {
     public static UploadPropertyTypeBuilder Upload<T, TProperty>(this IPropertyContainerBuilder<T> builder,
                                                                  Expression<Func<T, TProperty>> expression) {
         return builder.Property<UploadPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static UserPickerPropertyTypeBuilder UserPicker(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<UserPickerPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static UserPickerPropertyTypeBuilder UserPicker<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                         Expression<Func<T, TProperty>> expression) {
+        return builder.Property<UserPickerPropertyTypeBuilder, TProperty>(expression);
     }
 }

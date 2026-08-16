@@ -27,12 +27,32 @@ public static class DataTypeEditorExtensions {
         return editor.New<DateTimeDataTypeDesigner>(name);
     }
 
+    public static DecimalDataTypeDesigner NewDecimal(this IDataTypeEditor editor, string name) {
+        return editor.New<DecimalDataTypeDesigner>(name);
+    }
+
     public static DropdownDataTypeDesigner NewDropdown(this IDataTypeEditor editor, string name) {
         return editor.New<DropdownDataTypeDesigner>(name);
     }
 
+    public static EmailDataTypeDesigner NewEmail(this IDataTypeEditor editor, string name) {
+        return editor.New<EmailDataTypeDesigner>(name);
+    }
+
+    public static EyeDropperDataTypeDesigner NewEyeDropper(this IDataTypeEditor editor, string name) {
+        return editor.New<EyeDropperDataTypeDesigner>(name);
+    }
+
     public static FileUploadDataTypeDesigner NewFileUpload(this IDataTypeEditor editor, string name) {
         return editor.New<FileUploadDataTypeDesigner>(name);
+    }
+
+    public static ImageCropperDataTypeDesigner NewImageCropper(this IDataTypeEditor editor, string name) {
+        return editor.New<ImageCropperDataTypeDesigner>(name);
+    }
+
+    public static LabelDataTypeDesigner NewLabel(this IDataTypeEditor editor, string name) {
+        return editor.New<LabelDataTypeDesigner>(name);
     }
 
     public static MarkdownDataTypeDesigner NewMarkdown(this IDataTypeEditor editor, string name) {
@@ -41,6 +61,10 @@ public static class DataTypeEditorExtensions {
 
     public static MediaPickerDataTypeDesigner NewMediaPicker(this IDataTypeEditor editor, string name) {
         return editor.New<MediaPickerDataTypeDesigner>(name);
+    }
+
+    public static MemberGroupPickerDataTypeDesigner NewMemberGroupPicker(this IDataTypeEditor editor, string name) {
+        return editor.New<MemberGroupPickerDataTypeDesigner>(name);
     }
 
     public static MultiNodeTreePickerDataTypeDesigner NewMultiNodeTreePicker(this IDataTypeEditor editor,
@@ -56,8 +80,16 @@ public static class DataTypeEditorExtensions {
         return editor.New<MultiUrlPickerDataTypeDesigner>(name);
     }
 
+    public static NumericDataTypeDesigner NewNumeric(this IDataTypeEditor editor, string name) {
+        return editor.New<NumericDataTypeDesigner>(name);
+    }
+
     public static RadioButtonListDataTypeDesigner NewRadioButtonList(this IDataTypeEditor editor, string name) {
         return editor.New<RadioButtonListDataTypeDesigner>(name);
+    }
+
+    public static RichTextDataTypeDesigner NewRichText(this IDataTypeEditor editor, string name) {
+        return editor.New<RichTextDataTypeDesigner>(name);
     }
 
     public static SliderDataTypeDesigner NewSlider(this IDataTypeEditor editor, string name) {
@@ -78,5 +110,9 @@ public static class DataTypeEditorExtensions {
 
     public static ToggleDataTypeDesigner NewToggle(this IDataTypeEditor editor, string name) {
         return editor.New<ToggleDataTypeDesigner>(name);
+    }
+
+    public static UserPickerDataTypeDesigner NewUserPicker(this IDataTypeEditor editor, string name) {
+        return editor.New<UserPickerDataTypeDesigner>(name);
     }
 }

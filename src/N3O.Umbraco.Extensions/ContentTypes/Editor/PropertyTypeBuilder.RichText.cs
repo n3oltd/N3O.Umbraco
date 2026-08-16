@@ -1,12 +1,19 @@
+using N3O.Umbraco.DataTypes;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class RichTextPropertyTypeBuilder : PropertyTypeBuilder<RichTextPropertyTypeBuilder> {
-    public RichTextPropertyTypeBuilder(IDataTypeService dataTypeService) : base(dataTypeService) { }
+public class RichTextPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<RichTextPropertyTypeBuilder, RichTextDataTypeDesigner> {
+    public RichTextPropertyTypeBuilder(IDataTypeService dataTypeService, RichTextDataTypeDesigner dataTypeDesigner)
+        : base(dataTypeService, dataTypeDesigner) { }
 
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.RichtextEditor);
+        if (HasConfiguration) {
+            return BuildInlineDataType(context);
+        } else {
+            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.RichtextEditor);
+        }
     }
 }

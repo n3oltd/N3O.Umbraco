@@ -1,15 +1,22 @@
+using N3O.Umbraco.DataTypes;
 using System;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class NumericPropertyTypeBuilder : PropertyTypeBuilder<NumericPropertyTypeBuilder> {
-    public NumericPropertyTypeBuilder(IDataTypeService dataTypeService) : base(dataTypeService) { }
+public class NumericPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<NumericPropertyTypeBuilder, NumericDataTypeDesigner> {
+    public NumericPropertyTypeBuilder(IDataTypeService dataTypeService, NumericDataTypeDesigner dataTypeDesigner)
+        : base(dataTypeService, dataTypeDesigner) { }
 
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        var key = Guid.Parse(global::Umbraco.Cms.Core.Constants.DataTypes.Guids.Numeric);
+        if (HasConfiguration) {
+            return BuildInlineDataType(context);
+        } else {
+            var key = Guid.Parse(global::Umbraco.Cms.Core.Constants.DataTypes.Guids.Numeric);
 
-        return DataTypeService.GetDataType(key);
+            return DataTypeService.GetDataType(key);
+        }
     }
 }

@@ -1,12 +1,19 @@
+using N3O.Umbraco.DataTypes;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class LabelPropertyTypeBuilder : PropertyTypeBuilder<LabelPropertyTypeBuilder> {
-    public LabelPropertyTypeBuilder(IDataTypeService dataTypeService) : base(dataTypeService) { }
+public class LabelPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<LabelPropertyTypeBuilder, LabelDataTypeDesigner> {
+    public LabelPropertyTypeBuilder(IDataTypeService dataTypeService, LabelDataTypeDesigner dataTypeDesigner)
+        : base(dataTypeService, dataTypeDesigner) { }
 
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.LabelString);
+        if (HasConfiguration) {
+            return BuildInlineDataType(context);
+        } else {
+            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.LabelString);
+        }
     }
 }
