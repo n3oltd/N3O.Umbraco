@@ -10,12 +10,13 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
+using UmbracoUdiEntityType = Umbraco.Cms.Core.Constants.UdiEntityType;
 
 namespace N3O.Umbraco.EditorJs;
 
 public abstract class BlockDataConverter<TData> : IBlockDataConverter where TData : class {
-    private const string DocumentEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
-    private const string MediaEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Media;
+    private const string DocumentEntityType = UmbracoUdiEntityType.Document;
+    private const string MediaEntityType = UmbracoUdiEntityType.Media;
     
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly IPublishedUrlProvider _publishedUrlProvider;
