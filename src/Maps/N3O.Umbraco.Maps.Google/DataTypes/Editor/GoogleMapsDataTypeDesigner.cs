@@ -1,6 +1,6 @@
 using N3O.Umbraco.DataTypes;
 using N3O.Umbraco.Extensions;
-using Our.Umbraco.GMaps.Core.Models.Configuration;
+using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
@@ -36,21 +36,22 @@ public class GoogleMapsDataTypeDesigner : DataTypeDesigner {
         return this;
     }
 
+    // The editor ships as a package manifest, so Umbraco gives it the dictionary configuration editor
     protected override object BuildConfiguration(IDataType existing) {
-        var configuration = new Config();
+        var configuration = new Dictionary<string, object>();
 
-        configuration.ApiKey = _apiKey;
+        configuration["apikey"] = _apiKey;
 
         if (_location.HasValue()) {
-            configuration.Location = _location;
+            configuration["location"] = _location;
         }
 
         if (_zoom.HasValue()) {
-            configuration.Zoom = _zoom;
+            configuration["zoom"] = _zoom;
         }
 
         return configuration;
     }
 
-    protected override string EditorAlias => "Our.Umbraco.GMaps";
+    protected override string EditorAlias => GoogleMapsConstants.PropertyEditorAlias;
 }

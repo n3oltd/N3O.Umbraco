@@ -23,9 +23,7 @@ public enum IdScope {
 }
 
 public static class UmbracoId {
-    // Derived GUIDs are persisted identifiers so the seed format, casing and algorithm must never change. Seeds
-    // must be aliases or other stable identifiers, never display names; entities without an alias (data types)
-    // require an explicit caller-supplied seed.
+    // Derived GUIDs are persisted, so the seed format, casing and algorithm must never change
     public static Guid Deterministic(IdScope scope, params object[] seeds) {
         var key = $"{scope}_{string.Join("_", seeds)}";
         var hash = SHA256.HashData(Encoding.UTF8.GetBytes(key));

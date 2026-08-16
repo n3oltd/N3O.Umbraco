@@ -7,6 +7,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
@@ -87,12 +88,7 @@ public class BlockGridDataTypeDesigner : DataTypeDesigner {
         var configuration = new BlockGridConfiguration();
 
         configuration.BlockGroups = _groups.Select(name => BuildGroup(name, existingConfiguration)).ToArray();
-        configuration.Blocks = _blocks.Select(x => x.Build(ResolveElementType,
-                                                           groupName => FindGroupKey(configuration, groupName),
-                                                           areaAlias => GetAreaKey(x.ElementTypeAlias,
-                                                                                   areaAlias,
-                                                                                   existingConfiguration)))
-                                      .ToArray();
+        configuration.Blocks = _blocks.Select(x => BuildBlock(x, configuration, existingConfiguration)).ToArray();
         configuration.UseLiveEditing = _useLiveEditing;
 
         if (_minBlocks.HasValue() || _maxBlocks.HasValue()) {
@@ -119,7 +115,15 @@ public class BlockGridDataTypeDesigner : DataTypeDesigner {
         return configuration;
     }
 
-    protected override string EditorAlias => global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.BlockGrid;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.BlockGrid;
+
+    private BlockGridConfiguration.BlockGridBlockConfiguration BuildBlock(BlockGridBlockBuilder block,
+                                                                          BlockGridConfiguration configuration,
+                                                                          BlockGridConfiguration existing) {
+        return block.Build(ResolveElementType,
+                           groupName => FindGroupKey(configuration, groupName),
+                           areaAlias => GetAreaKey(block.ElementTypeAlias, areaAlias, existing));
+    }
 
     private BlockGridConfiguration.BlockGridGroupConfiguration BuildGroup(string name,
                                                                           BlockGridConfiguration existing) {
@@ -172,14 +176,18 @@ public class BlockGridBlockBuilder {
     private bool _allowInAreas = true;
     private int? _areaGridColumns;
     private string _backgroundColor;
+    private string _editorSize;
     private string _groupName;
     private bool _hideContentEditorInOverlay;
     private string _iconColor;
+    private bool _inlineEditing;
     private string _label;
     private int? _rowMaxSpan;
     private int? _rowMinSpan;
     private string _settingsElementTypeAlias;
+    private string _stylesheet;
     private string _thumbnail;
+    private string _view;
 
     public BlockGridBlockBuilder(string elementTypeAlias) {
         ElementTypeAlias = elementTypeAlias;
@@ -223,6 +231,12 @@ public class BlockGridBlockBuilder {
         return this;
     }
 
+    public BlockGridBlockBuilder EditorSize(string editorSize) {
+        _editorSize = editorSize;
+
+        return this;
+    }
+
     public BlockGridBlockBuilder HideContentEditorInOverlay() {
         _hideContentEditorInOverlay = true;
 
@@ -241,6 +255,12 @@ public class BlockGridBlockBuilder {
         return this;
     }
 
+    public BlockGridBlockBuilder InlineEditing() {
+        _inlineEditing = true;
+
+        return this;
+    }
+
     public BlockGridBlockBuilder Label(string label) {
         _label = label;
 
@@ -254,8 +274,20 @@ public class BlockGridBlockBuilder {
         return this;
     }
 
+    public BlockGridBlockBuilder Stylesheet(string stylesheet) {
+        _stylesheet = stylesheet;
+
+        return this;
+    }
+
     public BlockGridBlockBuilder Thumbnail(string thumbnail) {
         _thumbnail = thumbnail;
+
+        return this;
+    }
+
+    public BlockGridBlockBuilder View(string view) {
+        _view = view;
 
         return this;
     }
@@ -276,22 +308,19 @@ public class BlockGridBlockBuilder {
         block.ContentElementTypeKey = resolveElementType(ElementTypeAlias).Key;
         block.AllowAtRoot = _allowAtRoot;
         block.AllowInAreas = _allowInAreas;
-        block.Areas = _areas.Select(x => x.Build(getAreaKey)).ToArray();
+        block.Areas = _areas.Select(x => x.Build(getAreaKey, resolveElementType, findGroupKey)).ToArray();
         block.BackgroundColor = _backgroundColor;
-        block.ColumnSpanOptions = _columnSpans.Select(span => {
-                                                  var option = new BlockGridConfiguration.BlockGridColumnSpanOption();
-
-                                                  option.ColumnSpan = span;
-
-                                                  return option;
-                                              })
-                                              .ToArray();
+        block.EditorSize = _editorSize;
+        block.ColumnSpanOptions = _columnSpans.Select(BuildColumnSpanOption).ToArray();
         block.ForceHideContentEditorInOverlay = _hideContentEditorInOverlay;
         block.IconColor = _iconColor;
+        block.InlineEditing = _inlineEditing;
         block.Label = _label;
         block.RowMaxSpan = _rowMaxSpan;
         block.RowMinSpan = _rowMinSpan;
+        block.Stylesheet = _stylesheet;
         block.Thumbnail = _thumbnail;
+        block.View = _view;
 
         if (_areaGridColumns.HasValue()) {
             block.AreaGridColumns = _areaGridColumns;
@@ -307,10 +336,19 @@ public class BlockGridBlockBuilder {
 
         return block;
     }
+
+    private BlockGridConfiguration.BlockGridColumnSpanOption BuildColumnSpanOption(int span) {
+        var option = new BlockGridConfiguration.BlockGridColumnSpanOption();
+
+        option.ColumnSpan = span;
+
+        return option;
+    }
 }
 
 public class BlockGridAreaBuilder {
     private readonly string _alias;
+    private readonly List<(string ElementTypeAlias, string GroupName, int? Min, int? Max)> _allowances = [];
 
     private int? _columnSpan;
     private string _createLabel;
@@ -320,6 +358,18 @@ public class BlockGridAreaBuilder {
 
     public BlockGridAreaBuilder(string alias) {
         _alias = alias;
+    }
+
+    public BlockGridAreaBuilder AllowElementType(string elementTypeAlias, int? min = null, int? max = null) {
+        _allowances.Add((elementTypeAlias, null, min, max));
+
+        return this;
+    }
+
+    public BlockGridAreaBuilder AllowGroup(string groupName, int? min = null, int? max = null) {
+        _allowances.Add((null, groupName, min, max));
+
+        return this;
     }
 
     public BlockGridAreaBuilder ColumnSpan(int columnSpan) {
@@ -347,7 +397,9 @@ public class BlockGridAreaBuilder {
         return this;
     }
 
-    public BlockGridConfiguration.BlockGridAreaConfiguration Build(Func<string, Guid> getAreaKey) {
+    public BlockGridConfiguration.BlockGridAreaConfiguration Build(Func<string, Guid> getAreaKey,
+                                                                    Func<string, IContentType> resolveElementType,
+                                                                    Func<string, Guid> findGroupKey) {
         var area = new BlockGridConfiguration.BlockGridAreaConfiguration();
 
         area.Key = getAreaKey(_alias);
@@ -357,7 +409,27 @@ public class BlockGridAreaBuilder {
         area.MaxAllowed = _maxAllowed;
         area.MinAllowed = _minAllowed;
         area.RowSpan = _rowSpan;
+        area.SpecifiedAllowance = _allowances.Select(x => BuildAllowance(x, resolveElementType, findGroupKey))
+                                             .ToArray();
 
         return area;
+    }
+
+    private BlockGridConfiguration.BlockGridAreaConfigurationSpecifiedAllowance BuildAllowance(
+        (string ElementTypeAlias, string GroupName, int? Min, int? Max) allowance,
+        Func<string, IContentType> resolveElementType,
+        Func<string, Guid> findGroupKey) {
+        var specifiedAllowance = new BlockGridConfiguration.BlockGridAreaConfigurationSpecifiedAllowance();
+
+        specifiedAllowance.MinAllowed = allowance.Min;
+        specifiedAllowance.MaxAllowed = allowance.Max;
+
+        if (allowance.ElementTypeAlias.HasValue()) {
+            specifiedAllowance.ElementTypeKey = resolveElementType(allowance.ElementTypeAlias).Key;
+        } else {
+            specifiedAllowance.GroupKey = findGroupKey(allowance.GroupName);
+        }
+
+        return specifiedAllowance;
     }
 }

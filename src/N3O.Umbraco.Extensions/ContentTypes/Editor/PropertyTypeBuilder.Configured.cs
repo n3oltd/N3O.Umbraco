@@ -1,4 +1,3 @@
-using Humanizer;
 using N3O.Umbraco.DataTypes;
 using System;
 using Umbraco.Cms.Core.Models;
@@ -25,12 +24,10 @@ public abstract class ConfiguredPropertyTypeBuilder<TSelf, TDesigner> : Property
     }
 
     protected IDataType BuildInlineDataType(PropertyTypeContext context) {
-        _dataTypeDesigner.SetName($"{context.ContentTypeAlias.Titleize()} {context.PropertyAlias.Titleize()}");
+        // An inline data type is identified by the property it serves, so its key is always derived
+        _dataTypeDesigner.SetName(context.DataTypeName);
         _dataTypeDesigner.WithoutNameAdoption();
-
-        if (context.UseDeterministicIds) {
-            _dataTypeDesigner.WithDeterministicId($"{context.ContentTypeAlias}_{context.PropertyAlias}");
-        }
+        _dataTypeDesigner.WithDeterministicId(context.DataTypeSeed);
 
         ConfigureDataType(_dataTypeDesigner);
 

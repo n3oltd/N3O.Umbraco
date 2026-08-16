@@ -7,6 +7,8 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
+using UmbracoUdiEntityType = Umbraco.Cms.Core.Constants.UdiEntityType;
 
 namespace N3O.Umbraco.DataTypes;
 
@@ -81,29 +83,30 @@ public class RichTextDataTypeDesigner : DataTypeDesigner {
         configuration.UseLiveEditing = _useLiveEditing;
 
         if (_mediaParentKey.HasValue()) {
-            configuration.MediaParentId = new GuidUdi(global::Umbraco.Cms.Core.Constants.UdiEntityType.Media,
+            configuration.MediaParentId = new GuidUdi(UmbracoUdiEntityType.Media,
                                                       _mediaParentKey.GetValueOrThrow());
         }
 
         if (_blockElementTypeAliases.Count > 0) {
-            configuration.Blocks = _blockElementTypeAliases.Select(alias => {
-                                                               var elementType = _contentTypeService.Get(alias);
-
-                                                               if (elementType == null) {
-                                                                   throw new Exception($"No element type found with alias {alias.Quote()}");
-                                                               }
-
-                                                               var block = new RichTextConfiguration.RichTextBlockConfiguration();
-
-                                                               block.ContentElementTypeKey = elementType.Key;
-
-                                                               return block;
-                                                           })
-                                                           .ToArray();
+            configuration.Blocks = _blockElementTypeAliases.Select(BuildBlock).ToArray();
         }
 
         return configuration;
     }
 
-    protected override string EditorAlias => global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.TinyMce;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.TinyMce;
+
+    private RichTextConfiguration.RichTextBlockConfiguration BuildBlock(string elementTypeAlias) {
+        var elementType = _contentTypeService.Get(elementTypeAlias);
+
+        if (elementType == null) {
+            throw new Exception($"No element type found with alias {elementTypeAlias.Quote()}");
+        }
+
+        var block = new RichTextConfiguration.RichTextBlockConfiguration();
+
+        block.ContentElementTypeKey = elementType.Key;
+
+        return block;
+    }
 }

@@ -4,18 +4,19 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
-public class FileUploadDataTypeDesigner : DataTypeDesigner {
+public class UploadDataTypeDesigner : DataTypeDesigner {
     private readonly List<string> _fileExtensions = [];
 
-    public FileUploadDataTypeDesigner(IDataTypeService dataTypeService,
+    public UploadDataTypeDesigner(IDataTypeService dataTypeService,
                                       PropertyEditorCollection propertyEditors,
                                       IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
-    public FileUploadDataTypeDesigner AllowExtensions(params string[] fileExtensions) {
+    public UploadDataTypeDesigner AllowExtensions(params string[] fileExtensions) {
         _fileExtensions.AddRange(fileExtensions);
 
         return this;
@@ -37,5 +38,5 @@ public class FileUploadDataTypeDesigner : DataTypeDesigner {
         return configuration;
     }
 
-    protected override string EditorAlias => global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.UploadField;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.UploadField;
 }

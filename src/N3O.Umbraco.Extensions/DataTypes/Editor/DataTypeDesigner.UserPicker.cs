@@ -2,6 +2,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
@@ -15,5 +16,5 @@ public class UserPickerDataTypeDesigner : DataTypeDesigner {
         return null;
     }
 
-    protected override string EditorAlias => global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.UserPicker;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.UserPicker;
 }

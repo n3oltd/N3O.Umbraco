@@ -1,6 +1,7 @@
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
@@ -11,5 +12,5 @@ public class RadioButtonListDataTypeDesigner : ValueListDataTypeDesigner<RadioBu
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override string EditorAlias =>
-        global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.RadioButtonList;
+        UmbracoPropertyEditors.Aliases.RadioButtonList;
 }

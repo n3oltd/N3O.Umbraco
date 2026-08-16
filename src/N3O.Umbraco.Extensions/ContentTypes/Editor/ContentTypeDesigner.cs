@@ -198,20 +198,25 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
                                string propertyAlias,
                                IPropertyTypeBuilder builder,
                                int sortOrder) {
-        var context = new PropertyTypeContext(Alias, propertyAlias, _deterministic);
+        var context = new PropertyTypeContext(Alias, propertyAlias);
         var existing = contentType.PropertyTypes.FirstOrDefault(x => x.Alias == propertyAlias);
 
         if (existing != null) {
             var dataType = builder.ResolveDataType(context);
+            var currentContainer = contentType.PropertyGroups
+                                              .FirstOrDefault(x => x.PropertyTypes.OrEmpty()
+                                                                    .Any(y => y.Alias == propertyAlias));
 
             existing.DataTypeId = dataType.Id;
             existing.DataTypeKey = dataType.Key;
             existing.SortOrder = sortOrder;
 
             builder.Apply(existing, context);
-        } else if (contentType.PropertyTypeExists(propertyAlias)) {
-            // Supplied by a composition, which owns it
-        } else {
+
+            if (currentContainer?.Alias != container.Alias) {
+                contentType.MovePropertyType(propertyAlias, container.Alias);
+            }
+        } else if (!contentType.PropertyTypeExists(propertyAlias)) {
             var propertyType = new PropertyType(_shortStringHelper, builder.ResolveDataType(context));
 
             propertyType.Alias = propertyAlias;

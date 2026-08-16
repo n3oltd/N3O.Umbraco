@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
-public class DropdownDataTypeDesigner : DataTypeDesigner {
-    private readonly List<string> _options = [];
-
+public class DropdownDataTypeDesigner : ValueListDataTypeDesigner<DropdownDataTypeDesigner> {
     private bool _multiple;
 
     public DropdownDataTypeDesigner(IDataTypeService dataTypeService,
@@ -23,29 +19,13 @@ public class DropdownDataTypeDesigner : DataTypeDesigner {
         return this;
     }
 
-    public DropdownDataTypeDesigner Options(params string[] values) {
-        _options.AddRange(values);
-
-        return this;
-    }
-
-    protected override object BuildConfiguration(IDataType existing) {
+    protected override ValueListConfiguration CreateConfiguration() {
         var configuration = new DropDownFlexibleConfiguration();
 
         configuration.Multiple = _multiple;
-        configuration.Items = _options.Select((value, index) => {
-                                          var item = new ValueListConfiguration.ValueListItem();
-
-                                          item.Id = index + 1;
-                                          item.Value = value;
-
-                                          return item;
-                                      })
-                                      .ToList();
 
         return configuration;
     }
 
-    protected override string EditorAlias =>
-        global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.DropDownListFlexible;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.DropDownListFlexible;
 }

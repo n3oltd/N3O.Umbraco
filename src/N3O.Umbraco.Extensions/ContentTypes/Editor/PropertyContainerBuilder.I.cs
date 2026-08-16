@@ -10,6 +10,7 @@ public interface IPropertyContainerBuilder {
 
 public interface IPropertyContainerBuilder<T> : IPropertyContainerBuilder {
     new IPropertyContainerBuilder<T> Group(string name);
+
     TBuilder Property<TBuilder, TProperty>(Expression<Func<T, TProperty>> expression)
         where TBuilder : IPropertyTypeBuilder;
 }

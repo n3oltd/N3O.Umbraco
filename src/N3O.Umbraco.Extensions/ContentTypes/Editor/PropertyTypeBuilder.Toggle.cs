@@ -1,6 +1,7 @@
 using N3O.Umbraco.DataTypes;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using UmbracoDataTypes = Umbraco.Cms.Core.Constants.DataTypes;
 
 namespace N3O.Umbraco.ContentTypes;
 
@@ -13,7 +14,7 @@ public class TogglePropertyTypeBuilder
         if (HasConfiguration) {
             return BuildInlineDataType(context);
         } else {
-            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Boolean);
+            return DataTypeService.GetDataType(UmbracoDataTypes.Boolean);
         }
     }
 }

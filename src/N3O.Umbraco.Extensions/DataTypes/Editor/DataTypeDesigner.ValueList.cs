@@ -7,7 +7,8 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.DataTypes;
 
-public abstract class ValueListDataTypeDesigner<TSelf> : DataTypeDesigner where TSelf : ValueListDataTypeDesigner<TSelf> {
+public abstract class ValueListDataTypeDesigner<TSelf> : DataTypeDesigner
+    where TSelf : ValueListDataTypeDesigner<TSelf> {
     private readonly List<string> _options = [];
 
     protected ValueListDataTypeDesigner(IDataTypeService dataTypeService,
@@ -28,13 +29,17 @@ public abstract class ValueListDataTypeDesigner<TSelf> : DataTypeDesigner where 
                                           var item = new ValueListConfiguration.ValueListItem();
 
                                           item.Id = index + 1;
-                                          item.Value = value;
+                                          item.Value = BuildItemValue(value);
 
                                           return item;
                                       })
                                       .ToList();
 
         return configuration;
+    }
+
+    protected virtual string BuildItemValue(string value) {
+        return value;
     }
 
     protected virtual ValueListConfiguration CreateConfiguration() {

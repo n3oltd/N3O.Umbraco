@@ -2,6 +2,7 @@ using N3O.Umbraco.DataTypes;
 using System;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using UmbracoDataTypes = Umbraco.Cms.Core.Constants.DataTypes;
 
 namespace N3O.Umbraco.ContentTypes;
 
@@ -15,7 +16,7 @@ public class ContentPickerPropertyTypeBuilder
         if (HasConfiguration) {
             return BuildInlineDataType(context);
         } else {
-            var key = Guid.Parse(global::Umbraco.Cms.Core.Constants.DataTypes.Guids.ContentPicker);
+            var key = Guid.Parse(UmbracoDataTypes.Guids.ContentPicker);
 
             return DataTypeService.GetDataType(key);
         }

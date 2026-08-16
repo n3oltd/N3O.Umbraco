@@ -13,7 +13,7 @@ public class ElementTypeDesigner : ContentTypeDesigner, IElementTypeDesigner {
         : base(serviceProvider, contentTypeService, shortStringHelper, name, alias, true) { }
 
     public void AllowInLibrary() {
-        // Umbraco 13 has no library concept
+        // Umbraco has no library concept
     }
 }
 

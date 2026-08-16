@@ -43,10 +43,6 @@ public static class DataTypeEditorExtensions {
         return editor.New<EyeDropperDataTypeDesigner>(name);
     }
 
-    public static FileUploadDataTypeDesigner NewFileUpload(this IDataTypeEditor editor, string name) {
-        return editor.New<FileUploadDataTypeDesigner>(name);
-    }
-
     public static ImageCropperDataTypeDesigner NewImageCropper(this IDataTypeEditor editor, string name) {
         return editor.New<ImageCropperDataTypeDesigner>(name);
     }
@@ -110,6 +106,10 @@ public static class DataTypeEditorExtensions {
 
     public static ToggleDataTypeDesigner NewToggle(this IDataTypeEditor editor, string name) {
         return editor.New<ToggleDataTypeDesigner>(name);
+    }
+
+    public static UploadDataTypeDesigner NewUpload(this IDataTypeEditor editor, string name) {
+        return editor.New<UploadDataTypeDesigner>(name);
     }
 
     public static UserPickerDataTypeDesigner NewUserPicker(this IDataTypeEditor editor, string name) {

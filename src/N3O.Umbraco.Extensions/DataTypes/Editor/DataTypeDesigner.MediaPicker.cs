@@ -3,6 +3,8 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoConventions = Umbraco.Cms.Core.Constants.Conventions;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
@@ -37,7 +39,7 @@ public class MediaPickerDataTypeDesigner : DataTypeDesigner {
     }
 
     public MediaPickerDataTypeDesigner ImagesOnly() {
-        _filter = global::Umbraco.Cms.Core.Constants.Conventions.MediaTypes.Image;
+        _filter = UmbracoConventions.MediaTypes.Image;
 
         return this;
     }
@@ -67,5 +69,5 @@ public class MediaPickerDataTypeDesigner : DataTypeDesigner {
         return configuration;
     }
 
-    protected override string EditorAlias => global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.MediaPicker3;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.MediaPicker3;
 }

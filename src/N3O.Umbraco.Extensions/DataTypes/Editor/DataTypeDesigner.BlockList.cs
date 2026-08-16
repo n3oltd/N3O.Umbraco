@@ -6,6 +6,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.DataTypes;
 
@@ -95,7 +96,7 @@ public class BlockListDataTypeDesigner : DataTypeDesigner {
         return configuration;
     }
 
-    protected override string EditorAlias => global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.BlockList;
+    protected override string EditorAlias => UmbracoPropertyEditors.Aliases.BlockList;
 
     private IContentType ResolveElementType(string alias) {
         var elementType = _contentTypeService.Get(alias);
@@ -117,7 +118,9 @@ public class BlockListBlockBuilder {
     private string _iconColor;
     private string _label;
     private string _settingsElementTypeAlias;
+    private string _stylesheet;
     private string _thumbnail;
+    private string _view;
 
     public BlockListBlockBuilder(string elementTypeAlias) {
         _elementTypeAlias = elementTypeAlias;
@@ -153,8 +156,20 @@ public class BlockListBlockBuilder {
         return this;
     }
 
+    public BlockListBlockBuilder Stylesheet(string stylesheet) {
+        _stylesheet = stylesheet;
+
+        return this;
+    }
+
     public BlockListBlockBuilder Thumbnail(string thumbnail) {
         _thumbnail = thumbnail;
+
+        return this;
+    }
+
+    public BlockListBlockBuilder View(string view) {
+        _view = view;
 
         return this;
     }
@@ -174,7 +189,9 @@ public class BlockListBlockBuilder {
         block.ForceHideContentEditorInOverlay = _hideContentEditorInOverlay;
         block.IconColor = _iconColor;
         block.Label = _label;
+        block.Stylesheet = _stylesheet;
         block.Thumbnail = _thumbnail;
+        block.View = _view;
 
         if (_settingsElementTypeAlias.HasValue()) {
             block.SettingsElementTypeKey = resolveElementType(_settingsElementTypeAlias).Key;
