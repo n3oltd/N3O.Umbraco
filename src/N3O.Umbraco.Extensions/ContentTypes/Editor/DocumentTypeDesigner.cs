@@ -33,7 +33,7 @@ public class DocumentTypeDesigner : ContentTypeDesigner, IDocumentTypeDesigner {
             contentType.AllowedAsRoot = true;
         }
 
-        if (_allowedChildren.Count > 0) {
+        if (!_allowedChildren.None()) {
             var allowed = contentType.AllowedContentTypes.OrEmpty().ToList();
 
             foreach (var alias in _allowedChildren) {

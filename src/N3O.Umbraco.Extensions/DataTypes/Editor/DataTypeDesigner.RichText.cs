@@ -87,7 +87,7 @@ public class RichTextDataTypeDesigner : DataTypeDesigner {
                                                       _mediaParentKey.GetValueOrThrow());
         }
 
-        if (_blockElementTypeAliases.Count > 0) {
+        if (!_blockElementTypeAliases.None()) {
             configuration.Blocks = _blockElementTypeAliases.Select(BuildBlock).ToArray();
         }
 
@@ -97,16 +97,20 @@ public class RichTextDataTypeDesigner : DataTypeDesigner {
     protected override string EditorAlias => UmbracoPropertyEditors.Aliases.TinyMce;
 
     private RichTextConfiguration.RichTextBlockConfiguration BuildBlock(string elementTypeAlias) {
-        var elementType = _contentTypeService.Get(elementTypeAlias);
-
-        if (elementType == null) {
-            throw new Exception($"No element type found with alias {elementTypeAlias.Quote()}");
-        }
-
         var block = new RichTextConfiguration.RichTextBlockConfiguration();
 
-        block.ContentElementTypeKey = elementType.Key;
+        block.ContentElementTypeKey = ResolveElementType(elementTypeAlias).Key;
 
         return block;
+    }
+
+    private IContentType ResolveElementType(string alias) {
+        var elementType = _contentTypeService.Get(alias);
+
+        if (elementType == null) {
+            throw new Exception($"No element type found with alias {alias.Quote()}");
+        }
+
+        return elementType;
     }
 }

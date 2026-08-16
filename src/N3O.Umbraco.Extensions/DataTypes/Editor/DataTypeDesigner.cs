@@ -45,6 +45,9 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
 
         dataType.Name = _name;
 
+        // Only the backoffice save path derives this, so without it every value would be stored as Ntext
+        dataType.DatabaseType = ValueTypes.ToStorageType(ResolveEditor().GetValueEditor().ValueType);
+
         // Assigning null throws, so designers with nothing to configure keep the editor default
         if (configuration != null) {
             dataType.Configuration = configuration;
@@ -76,19 +79,22 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
     protected abstract string EditorAlias { get; }
 
     private IDataType Create() {
-        if (!_propertyEditors.TryGet(EditorAlias, out var editor)) {
-            throw new Exception($"Property editor {EditorAlias.Quote()} not found");
-        }
-
         var parentId = GetOrCreateFolder();
-
-        var dataType = new DataType(editor, _configurationEditorJsonSerializer, parentId);
+        var dataType = new DataType(ResolveEditor(), _configurationEditorJsonSerializer, parentId);
 
         if (_id.HasValue()) {
             dataType.Key = _id.GetValueOrThrow();
         }
 
         return dataType;
+    }
+
+    private IDataEditor ResolveEditor() {
+        if (!_propertyEditors.TryGet(EditorAlias, out var editor)) {
+            throw new Exception($"Property editor {EditorAlias.Quote()} not found");
+        }
+
+        return editor;
     }
 
     private IDataType FindExisting() {
