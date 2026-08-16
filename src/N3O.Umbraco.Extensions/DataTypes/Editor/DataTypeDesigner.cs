@@ -40,8 +40,10 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
                                 $"be converged to editor {EditorAlias.Quote()}");
         }
 
+        var existing = dataType.Id > 0 ? dataType : null;
+
         dataType.Name = _name;
-        dataType.Configuration = BuildConfiguration();
+        dataType.Configuration = BuildConfiguration(existing);
 
         _dataTypeService.Save(dataType);
 
@@ -64,7 +66,7 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
         _adoptByName = false;
     }
 
-    protected abstract object BuildConfiguration();
+    protected abstract object BuildConfiguration(IDataType existing);
 
     protected abstract string EditorAlias { get; }
 

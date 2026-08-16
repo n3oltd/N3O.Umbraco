@@ -1,12 +1,19 @@
+using N3O.Umbraco.DataTypes;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class TextareaPropertyTypeBuilder : PropertyTypeBuilder<TextareaPropertyTypeBuilder> {
-    public TextareaPropertyTypeBuilder(IDataTypeService dataTypeService) : base(dataTypeService) { }
+public class TextareaPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<TextareaPropertyTypeBuilder, TextareaDataTypeDesigner> {
+    public TextareaPropertyTypeBuilder(IDataTypeService dataTypeService, TextareaDataTypeDesigner dataTypeDesigner)
+        : base(dataTypeService, dataTypeDesigner) { }
 
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Textarea);
+        if (HasConfiguration) {
+            return BuildInlineDataType(context);
+        } else {
+            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Textarea);
+        }
     }
 }

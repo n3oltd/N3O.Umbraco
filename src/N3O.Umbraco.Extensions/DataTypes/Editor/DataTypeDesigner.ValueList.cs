@@ -7,32 +7,23 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.DataTypes;
 
-public class DropdownDataTypeDesigner : DataTypeDesigner {
+public abstract class ValueListDataTypeDesigner<TSelf> : DataTypeDesigner where TSelf : ValueListDataTypeDesigner<TSelf> {
     private readonly List<string> _options = [];
 
-    private bool _multiple;
-
-    public DropdownDataTypeDesigner(IDataTypeService dataTypeService,
-                                    PropertyEditorCollection propertyEditors,
-                                    IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
+    protected ValueListDataTypeDesigner(IDataTypeService dataTypeService,
+                                        PropertyEditorCollection propertyEditors,
+                                        IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
-    public DropdownDataTypeDesigner AllowMultiple() {
-        _multiple = true;
-
-        return this;
-    }
-
-    public DropdownDataTypeDesigner Options(params string[] values) {
+    public TSelf Options(params string[] values) {
         _options.AddRange(values);
 
-        return this;
+        return (TSelf) this;
     }
 
     protected override object BuildConfiguration(IDataType existing) {
-        var configuration = new DropDownFlexibleConfiguration();
+        var configuration = CreateConfiguration();
 
-        configuration.Multiple = _multiple;
         configuration.Items = _options.Select((value, index) => {
                                           var item = new ValueListConfiguration.ValueListItem();
 
@@ -46,6 +37,7 @@ public class DropdownDataTypeDesigner : DataTypeDesigner {
         return configuration;
     }
 
-    protected override string EditorAlias =>
-        global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.DropDownListFlexible;
+    protected virtual ValueListConfiguration CreateConfiguration() {
+        return new ValueListConfiguration();
+    }
 }

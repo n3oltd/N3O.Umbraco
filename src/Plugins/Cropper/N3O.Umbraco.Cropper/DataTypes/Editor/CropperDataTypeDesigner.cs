@@ -1,5 +1,6 @@
 using N3O.Umbraco.DataTypes;
 using System.Collections.Generic;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -35,7 +36,7 @@ public class CropperDataTypeDesigner : DataTypeDesigner {
         return this;
     }
 
-    protected override object BuildConfiguration() {
+    protected override object BuildConfiguration(IDataType existing) {
         var configuration = new CropperConfiguration();
 
         configuration.AltText = _altText;

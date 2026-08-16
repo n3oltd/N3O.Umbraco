@@ -1,12 +1,19 @@
+using N3O.Umbraco.DataTypes;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class TextBoxPropertyTypeBuilder : PropertyTypeBuilder<TextBoxPropertyTypeBuilder> {
-    public TextBoxPropertyTypeBuilder(IDataTypeService dataTypeService) : base(dataTypeService) { }
+public class TextBoxPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<TextBoxPropertyTypeBuilder, TextBoxDataTypeDesigner> {
+    public TextBoxPropertyTypeBuilder(IDataTypeService dataTypeService, TextBoxDataTypeDesigner dataTypeDesigner)
+        : base(dataTypeService, dataTypeDesigner) { }
 
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Textbox);
+        if (HasConfiguration) {
+            return BuildInlineDataType(context);
+        } else {
+            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Textbox);
+        }
     }
 }

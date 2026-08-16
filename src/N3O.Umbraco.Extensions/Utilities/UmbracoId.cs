@@ -8,8 +8,10 @@ namespace N3O.Umbraco.Utilities;
 
 public enum IdScope {
     Block,
+    BlockArea,
     BlockCategory,
     BlockDataType,
+    BlockGroup,
     BlockLayout,
     ContentType,
     ContentTypeContainer,

@@ -4,16 +4,15 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class TogglePropertyTypeBuilder
-    : ConfiguredPropertyTypeBuilder<TogglePropertyTypeBuilder, ToggleDataTypeDesigner> {
-    public TogglePropertyTypeBuilder(IDataTypeService dataTypeService, ToggleDataTypeDesigner dataTypeDesigner)
+public class TagsPropertyTypeBuilder : ConfiguredPropertyTypeBuilder<TagsPropertyTypeBuilder, TagsDataTypeDesigner> {
+    public TagsPropertyTypeBuilder(IDataTypeService dataTypeService, TagsDataTypeDesigner dataTypeDesigner)
         : base(dataTypeService, dataTypeDesigner) { }
 
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
         if (HasConfiguration) {
             return BuildInlineDataType(context);
         } else {
-            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Boolean);
+            return DataTypeService.GetDataType(global::Umbraco.Cms.Core.Constants.DataTypes.Tags);
         }
     }
 }
