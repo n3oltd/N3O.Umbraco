@@ -41,9 +41,14 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
         }
 
         var existing = dataType.Id > 0 ? dataType : null;
+        var configuration = BuildConfiguration(existing);
 
         dataType.Name = _name;
-        dataType.Configuration = BuildConfiguration(existing);
+
+        // Assigning null throws, so designers with nothing to configure keep the editor default
+        if (configuration != null) {
+            dataType.Configuration = configuration;
+        }
 
         _dataTypeService.Save(dataType);
 
