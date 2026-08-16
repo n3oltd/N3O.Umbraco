@@ -202,7 +202,10 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         var existing = contentType.PropertyTypes.FirstOrDefault(x => x.Alias == propertyAlias);
 
         if (existing != null) {
-            existing.DataTypeId = builder.ResolveDataType(context).Id;
+            var dataType = builder.ResolveDataType(context);
+
+            existing.DataTypeId = dataType.Id;
+            existing.DataTypeKey = dataType.Key;
             existing.SortOrder = sortOrder;
 
             builder.Apply(existing, context);

@@ -1,4 +1,3 @@
-using Humanizer;
 using N3O.Umbraco.ContentTypes;
 using N3O.Umbraco.Cropper.DataTypes;
 using System.Collections.Generic;
@@ -7,16 +6,14 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cropper.ContentTypes;
 
-public class CropperPropertyTypeBuilder : PropertyTypeBuilder<CropperPropertyTypeBuilder> {
-    private readonly CropperDataTypeDesigner _dataTypeDesigner;
+public class CropperPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<CropperPropertyTypeBuilder, CropperDataTypeDesigner> {
     private readonly List<(string Alias, string Label, int Width, int Height)> _crops = [];
 
     private bool _altText;
 
     public CropperPropertyTypeBuilder(IDataTypeService dataTypeService, CropperDataTypeDesigner dataTypeDesigner)
-        : base(dataTypeService) {
-        _dataTypeDesigner = dataTypeDesigner;
-    }
+        : base(dataTypeService, dataTypeDesigner) { }
 
     public CropperPropertyTypeBuilder AddCrop(string alias, string label, int width, int height) {
         _crops.Add((alias, label, width, height));
@@ -30,22 +27,17 @@ public class CropperPropertyTypeBuilder : PropertyTypeBuilder<CropperPropertyTyp
         return this;
     }
 
-    protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        _dataTypeDesigner.SetName($"{context.ContentTypeAlias.Titleize()} {context.PropertyAlias.Titleize()}");
-        _dataTypeDesigner.WithoutNameAdoption();
-
+    protected override void ConfigureDataType(CropperDataTypeDesigner dataTypeDesigner) {
         foreach (var (alias, label, width, height) in _crops) {
-            _dataTypeDesigner.AddCrop(alias, label, width, height);
+            dataTypeDesigner.AddCrop(alias, label, width, height);
         }
 
         if (_altText) {
-            _dataTypeDesigner.WithAltText();
+            dataTypeDesigner.WithAltText();
         }
+    }
 
-        if (context.UseDeterministicIds) {
-            _dataTypeDesigner.WithDeterministicId($"{context.ContentTypeAlias}_{context.PropertyAlias}");
-        }
-
-        return _dataTypeDesigner.Save();
+    protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
+        return BuildInlineDataType(context);
     }
 }

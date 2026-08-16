@@ -1,4 +1,3 @@
-using Humanizer;
 using N3O.Umbraco.DataTypes;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
@@ -6,14 +5,12 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class BlockListPropertyTypeBuilder : PropertyTypeBuilder<BlockListPropertyTypeBuilder> {
-    private readonly BlockListDataTypeDesigner _dataTypeDesigner;
+public class BlockListPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<BlockListPropertyTypeBuilder, BlockListDataTypeDesigner> {
     private readonly List<string> _elementTypeAliases = [];
 
     public BlockListPropertyTypeBuilder(IDataTypeService dataTypeService, BlockListDataTypeDesigner dataTypeDesigner)
-        : base(dataTypeService) {
-        _dataTypeDesigner = dataTypeDesigner;
-    }
+        : base(dataTypeService, dataTypeDesigner) { }
 
     public BlockListPropertyTypeBuilder AllowBlocks(params string[] elementTypeAliases) {
         _elementTypeAliases.AddRange(elementTypeAliases);
@@ -21,15 +18,11 @@ public class BlockListPropertyTypeBuilder : PropertyTypeBuilder<BlockListPropert
         return this;
     }
 
+    protected override void ConfigureDataType(BlockListDataTypeDesigner dataTypeDesigner) {
+        dataTypeDesigner.AllowBlocks(_elementTypeAliases.ToArray());
+    }
+
     protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        _dataTypeDesigner.SetName($"{context.ContentTypeAlias.Titleize()} {context.PropertyAlias.Titleize()}");
-        _dataTypeDesigner.WithoutNameAdoption();
-        _dataTypeDesigner.AllowBlocks(_elementTypeAliases.ToArray());
-
-        if (context.UseDeterministicIds) {
-            _dataTypeDesigner.WithDeterministicId($"{context.ContentTypeAlias}_{context.PropertyAlias}");
-        }
-
-        return _dataTypeDesigner.Save();
+        return BuildInlineDataType(context);
     }
 }

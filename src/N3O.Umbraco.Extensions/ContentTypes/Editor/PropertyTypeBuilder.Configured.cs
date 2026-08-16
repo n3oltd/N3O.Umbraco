@@ -32,10 +32,14 @@ public abstract class ConfiguredPropertyTypeBuilder<TSelf, TDesigner> : Property
             _dataTypeDesigner.WithDeterministicId($"{context.ContentTypeAlias}_{context.PropertyAlias}");
         }
 
+        ConfigureDataType(_dataTypeDesigner);
+
         _configure?.Invoke(_dataTypeDesigner);
 
         return _dataTypeDesigner.Save();
     }
+
+    protected virtual void ConfigureDataType(TDesigner dataTypeDesigner) { }
 
     protected bool HasConfiguration => _configure != null;
 }

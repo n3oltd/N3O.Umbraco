@@ -1,4 +1,3 @@
-using Humanizer;
 using N3O.Umbraco.DataTypes;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
@@ -6,16 +5,14 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.ContentTypes;
 
-public class DropdownPropertyTypeBuilder : PropertyTypeBuilder<DropdownPropertyTypeBuilder> {
-    private readonly DropdownDataTypeDesigner _dataTypeDesigner;
+public class DropdownPropertyTypeBuilder
+    : ConfiguredPropertyTypeBuilder<DropdownPropertyTypeBuilder, DropdownDataTypeDesigner> {
     private readonly List<string> _options = [];
 
     private bool _multiple;
 
     public DropdownPropertyTypeBuilder(IDataTypeService dataTypeService, DropdownDataTypeDesigner dataTypeDesigner)
-        : base(dataTypeService) {
-        _dataTypeDesigner = dataTypeDesigner;
-    }
+        : base(dataTypeService, dataTypeDesigner) { }
 
     public DropdownPropertyTypeBuilder AllowMultiple() {
         _multiple = true;
@@ -29,19 +26,15 @@ public class DropdownPropertyTypeBuilder : PropertyTypeBuilder<DropdownPropertyT
         return this;
     }
 
-    protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
-        _dataTypeDesigner.SetName($"{context.ContentTypeAlias.Titleize()} {context.PropertyAlias.Titleize()}");
-        _dataTypeDesigner.WithoutNameAdoption();
-        _dataTypeDesigner.Options(_options.ToArray());
+    protected override void ConfigureDataType(DropdownDataTypeDesigner dataTypeDesigner) {
+        dataTypeDesigner.Options(_options.ToArray());
 
         if (_multiple) {
-            _dataTypeDesigner.AllowMultiple();
+            dataTypeDesigner.AllowMultiple();
         }
+    }
 
-        if (context.UseDeterministicIds) {
-            _dataTypeDesigner.WithDeterministicId($"{context.ContentTypeAlias}_{context.PropertyAlias}");
-        }
-
-        return _dataTypeDesigner.Save();
+    protected override IDataType GetDefaultDataType(PropertyTypeContext context) {
+        return BuildInlineDataType(context);
     }
 }
