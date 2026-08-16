@@ -29,14 +29,10 @@ public abstract class ConfiguredPropertyTypeBuilder<TSelf, TDesigner> : Property
         _dataTypeDesigner.WithoutNameAdoption();
         _dataTypeDesigner.WithDeterministicId(context.DataTypeSeed);
 
-        ConfigureDataType(_dataTypeDesigner);
-
         _configure?.Invoke(_dataTypeDesigner);
 
         return _dataTypeDesigner.Save();
     }
-
-    protected virtual void ConfigureDataType(TDesigner dataTypeDesigner) { }
 
     protected bool HasConfiguration => _configure != null;
 }
