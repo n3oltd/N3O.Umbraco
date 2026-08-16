@@ -217,9 +217,11 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
                 contentType.MovePropertyType(propertyAlias, container.Alias);
             }
         } else if (!contentType.PropertyTypeExists(propertyAlias)) {
-            var propertyType = new PropertyType(_shortStringHelper, builder.ResolveDataType(context));
+            var dataType = builder.ResolveDataType(context);
+            var propertyType = new PropertyType(_shortStringHelper, dataType);
 
             propertyType.Alias = propertyAlias;
+            propertyType.DataTypeKey = dataType.Key;
             propertyType.SortOrder = sortOrder;
 
             if (_deterministic) {

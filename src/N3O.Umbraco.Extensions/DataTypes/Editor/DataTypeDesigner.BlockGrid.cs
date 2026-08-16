@@ -308,7 +308,7 @@ public class BlockGridBlockBuilder {
         block.ContentElementTypeKey = resolveElementType(ElementTypeAlias).Key;
         block.AllowAtRoot = _allowAtRoot;
         block.AllowInAreas = _allowInAreas;
-        block.Areas = _areas.Select(x => x.Build(getAreaKey, resolveElementType, findGroupKey)).ToArray();
+        block.Areas = _areas.Select(x => x.Build(resolveElementType, findGroupKey, getAreaKey)).ToArray();
         block.BackgroundColor = _backgroundColor;
         block.EditorSize = _editorSize;
         block.ColumnSpanOptions = _columnSpans.Select(BuildColumnSpanOption).ToArray();
@@ -397,9 +397,9 @@ public class BlockGridAreaBuilder {
         return this;
     }
 
-    public BlockGridConfiguration.BlockGridAreaConfiguration Build(Func<string, Guid> getAreaKey,
-                                                                    Func<string, IContentType> resolveElementType,
-                                                                    Func<string, Guid> findGroupKey) {
+    public BlockGridConfiguration.BlockGridAreaConfiguration Build(Func<string, IContentType> resolveElementType,
+                                                                    Func<string, Guid> findGroupKey,
+                                                                    Func<string, Guid> getAreaKey) {
         var area = new BlockGridConfiguration.BlockGridAreaConfiguration();
 
         area.Key = getAreaKey(_alias);
