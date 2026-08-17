@@ -11,13 +11,13 @@ interface TemplateOptionsResponse {
     titleSuffix?: string;
 }
 
-interface SerpEditorAppProps {
+type SerpEditorAppProps = {
     value: SerpValue;
     maxCharsTitle: number;
     maxCharsDescription: number;
     authFetch: AuthFetch | null;
     onChange: (value: SerpValue) => void;
-}
+};
 
 // The title suffix is site-wide and fixed for the session, so it is cached across mounts to keep
 // several SERP fields on one page down to a single request.
@@ -61,7 +61,7 @@ export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authF
 
     const title = value.title ?? '';
     const description = value.description ?? '';
-    const host = `${location.protocol}//${window.location.hostname}`;
+    const host = `${window.location.protocol}//${window.location.hostname}`;
 
     return (
         <>
