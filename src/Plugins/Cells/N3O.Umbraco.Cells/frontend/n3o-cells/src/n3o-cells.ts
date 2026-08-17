@@ -47,9 +47,19 @@ export class N3oCellsElement extends HTMLElement implements UmbPropertyEditorUiE
     // Config (prevalues) arrives as UmbPropertyEditorConfigCollection. `gridConfiguration` is a JSON
     // string stored as a prevalue on the data type.
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
-        this.#gridConfiguration = JSON.parse(
-            config?.getValueByAlias('gridConfiguration') ?? '{}',
-        ) as Record<string, unknown>;
+        const gridConfiguration = config?.getValueByAlias<string>('gridConfiguration');
+
+        // The setting is a free-text area, so an editor can save it blank or with malformed JSON.
+        // An unusable grid configuration must not take the whole property editor down with it.
+        try {
+            this.#gridConfiguration = gridConfiguration
+                ? (JSON.parse(gridConfiguration) as Record<string, unknown>)
+                : {};
+        } catch {
+            this.#gridConfiguration = {};
+            console.error('[Cells] gridConfiguration is not valid JSON; falling back to an empty grid.');
+        }
+
         this.#render();
     }
 
