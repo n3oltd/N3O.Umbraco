@@ -1,0 +1,38 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.SerpEditor",
+    "name": "N3O Serp Editor",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.SerpEditor",
+            "name": "N3O Serp Editor",
+            "element": "/App_Plugins/N3O.Umbraco.SerpEditor/serp-editor.js",
+            "meta": {
+                "label": "N3O Serp Editor",
+                "icon": "icon-search",
+                "group": "common",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.SerpEditor",
+                "settings": {
+                    "properties": [
+                        {
+                            "alias": "maxCharsTitle",
+                            "label": "Maximum title characters",
+                            "description": "Warn the editor when the title exceeds this length. Defaults to 60.",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.Integer",
+                            "config": [{ "alias": "min", "value": 0 }]
+                        },
+                        {
+                            "alias": "maxCharsDescription",
+                            "label": "Maximum description characters",
+                            "description": "Warn the editor when the meta description exceeds this length. Defaults to 160.",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.Integer",
+                            "config": [{ "alias": "min", "value": 0 }]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
