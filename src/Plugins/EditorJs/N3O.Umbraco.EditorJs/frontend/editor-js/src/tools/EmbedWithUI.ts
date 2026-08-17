@@ -50,7 +50,10 @@ export class EmbedWithUI extends (Embed as new (...args: any[]) => any) {
             });
             input.addEventListener('keydown', (event: KeyboardEvent) => {
                 if (event.key === 'Enter') {
+                    // EditorJS listens on the block holder and does not check defaultPrevented, so it
+                    // would insert a paragraph and move the caret out of this field.
                     event.preventDefault();
+                    event.stopPropagation();
                     applyUrl(input.value);
                 }
             });

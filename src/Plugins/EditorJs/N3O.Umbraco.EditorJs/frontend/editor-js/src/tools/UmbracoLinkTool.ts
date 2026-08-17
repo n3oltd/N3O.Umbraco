@@ -32,10 +32,12 @@ export function makeUmbracoLinkTool(openLinkPicker: OpenLinkPicker) {
             this.button?.classList.toggle(this.api.styles.inlineToolButtonActive, state);
         }
 
+        // EditorJS merges this into every block tool and applies it on paste, render and save, which is
+        // the only place a pasted href is filtered.
         static get sanitize(): object {
             return {
                 a: {
-                    href: true,
+                    href: (value: string) => isSafeUrl(value),
                 },
             };
         }

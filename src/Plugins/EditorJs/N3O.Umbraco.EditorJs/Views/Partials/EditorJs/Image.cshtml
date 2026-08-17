@@ -3,4 +3,4 @@
 
 @model EditorJsBlock<ImageBlockData>
 
-<img src="@Model.Data.Url" alt="@Model.Data.Alt" width="@Model.Data.Width" height="@Model.Data.Height" />
+<img src="@Model.Data.Url" alt="@Model.Data.Alt" width="@(Model.Data.Width > 0 ? Model.Data.Width : null)" height="@(Model.Data.Height > 0 ? Model.Data.Height : null)" />

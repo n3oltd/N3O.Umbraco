@@ -19,11 +19,8 @@ export function isSafeUrl(url: string): boolean {
         return false;
     }
 
-    if (candidate.startsWith('/') || candidate.startsWith('#') || candidate.startsWith('?')) {
-        return true;
-    }
-
     try {
+        // A relative link resolves against the page and takes its scheme, so everything is parsed.
         const scheme = new URL(candidate, window.location.href).protocol;
 
         return safeLinkSchemes.includes(scheme) || scheme === 'umb:';
@@ -52,7 +49,7 @@ export function createInput(id: string, value: string, text: string, type: strin
     input.setAttribute('id', id);
     input.classList.add('cdx-input');
 
-    // EditorJS detects edits with a MutationObserver, which a typed value alone does not trigger.
+    // A typed value lives only on the property, so it is mirrored to the attribute the editor reads back.
     input.addEventListener('input', () => {
         input.setAttribute('value', input.value);
     });

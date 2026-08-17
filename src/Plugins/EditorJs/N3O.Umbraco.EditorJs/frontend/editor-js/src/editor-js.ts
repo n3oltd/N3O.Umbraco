@@ -125,7 +125,7 @@ export class N3oEditorJsElement
             },
             pickMedia: () => this.#pickMedia(),
             pickLink: () => this.#pickLink(),
-            requestSave: () => this.#requestSave(),
+            requestSave: (key: string) => this.#requestSave(key),
         });
 
         const body = iframe.contentDocument?.body;
@@ -140,9 +140,9 @@ export class N3oEditorJsElement
     }
 
     // The backoffice binds its save shortcut to the parent window.
-    #requestSave(): void {
+    #requestSave(key: string): void {
         window.dispatchEvent(
-            new KeyboardEvent('keydown', { key: 's', metaKey: true, ctrlKey: true, bubbles: true }),
+            new KeyboardEvent('keydown', { key, metaKey: true, ctrlKey: true, bubbles: true }),
         );
     }
 

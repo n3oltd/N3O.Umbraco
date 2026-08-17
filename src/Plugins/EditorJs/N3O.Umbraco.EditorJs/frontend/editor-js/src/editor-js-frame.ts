@@ -19,14 +19,15 @@ export interface EditorJsFrameConfig {
     onChange: (value: string) => void;
     pickMedia: () => Promise<MediaPickerResultItem | null>;
     pickLink: () => Promise<string | null>;
-    requestSave: () => void;
+    requestSave: (key: string) => void;
 }
 
 const FULLSCREEN_ICON =
     '<svg xmlns="http://www.w3.org/2000/svg" class="skriv-let__fullscreen-button-icon" fill="currentColor" width="22" height="22" viewBox="0 0 512 512"><path d="M368.432 110.765l32.367 32.362 34.896-34.898 36.539 36.539V38.783H366.256l37.075 37.077-34.899 34.905zm66.725 293.309l-34.901-34.899-32.37 32.368 34.9 34.899-36.534 36.536h105.986V366.996l-37.081 37.078zm-294.656-3.081l-32.37-32.365-34.898 34.902L36.7 366.993v105.985h105.979l-37.079-37.08 34.901-34.905zm-31.828-258.41l32.373-32.365-34.903-34.899 36.538-36.536H36.698v105.978l37.08-37.075 34.895 34.897zm278.314 157.969v-86.92c0-35.993-29.179-65.169-65.17-65.169H186.109c-35.991 0-65.171 29.177-65.171 65.169v86.92c0 35.993 29.18 65.168 65.171 65.168h135.708c35.992 0 65.17-29.175 65.17-65.168z"></path></svg>';
 
-function getInitialData(value: string | undefined): object {
-    // Umbraco supplies this value as either a string or an object.
+// Umbraco supplies this value as either a string or an object. Null signals a value that could not be
+// read, which is not the same as an empty document.
+function getInitialData(value: string | undefined): object | null {
     if (!value) {
         return {};
     }
@@ -34,8 +35,8 @@ function getInitialData(value: string | undefined): object {
         try {
             return JSON.parse(value) as object;
         } catch (e) {
-            console.error('Error parsing SkrivLet initial data JSON:', e);
-            return {};
+            console.error('[EditorJs] Could not parse the stored value:', e);
+            return null;
         }
     }
     return (value as unknown as object) ?? {};
@@ -45,6 +46,29 @@ let setValue: (value: string | undefined) => void = () => {};
 
 function init(config: EditorJsFrameConfig): void {
     let flush: () => Promise<void> = () => Promise.resolve();
+    let applyingExternalValue = false;
+
+    // save() stamps a fresh time on every call, so only the blocks decide whether anything changed.
+    const comparable = (outputData: unknown): string =>
+        JSON.stringify((outputData as { blocks?: unknown } | undefined)?.blocks ?? null);
+
+    let lastEmitted = comparable(getInitialData(config.value));
+
+    const emit = (outputData: unknown): void => {
+        if (applyingExternalValue) {
+            return;
+        }
+
+        const blocks = comparable(outputData);
+
+        if (blocks === lastEmitted) {
+            return;
+        }
+
+        lastEmitted = blocks;
+
+        config.onChange(JSON.stringify(outputData));
+    };
 
     const styleEl = document.createElement('style');
     styleEl.textContent = styles;
@@ -93,7 +117,7 @@ function init(config: EditorJsFrameConfig): void {
     editor = new (EditorJS as any)({
         holder,
         placeholder: "Type '/' to insert a block or just start typing something super...",
-        data: getInitialData(config.value),
+        data: getInitialData(config.value) ?? {},
         inlineToolbar: true,
         tools: {
             paragraph: { class: Paragraph, tunes: ['alignmentTune'] },
@@ -112,11 +136,9 @@ function init(config: EditorJsFrameConfig): void {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             editor
                 ?.save()
-                .then((outputData: unknown) => {
-                    config.onChange(JSON.stringify(outputData));
-                })
+                .then(emit)
                 .catch((error: unknown) => {
-                    console.log('Saving failed: ', error);
+                    console.error('[EditorJs] Saving failed:', error);
                 });
         },
         onReady: () => {
@@ -130,7 +152,7 @@ function init(config: EditorJsFrameConfig): void {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
             const outputData = await editor?.save();
 
-            config.onChange(JSON.stringify(outputData));
+            emit(outputData);
         } catch (error: unknown) {
             console.error('[EditorJs] Saving failed:', error);
         }
@@ -143,23 +165,31 @@ function init(config: EditorJsFrameConfig): void {
 
     // A key event raised in this document never reaches the backoffice's own window listener.
     document.addEventListener('keydown', (event: KeyboardEvent) => {
-        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
+        const key = event.key.toLowerCase();
+
+        if ((event.metaKey || event.ctrlKey) && (key === 's' || key === 'p')) {
             event.preventDefault();
 
-            void flush().then(() => config.requestSave());
+            void flush().then(() => config.requestSave(key));
         }
     });
 
     setValue = (value: string | undefined) => {
-        const data = getInitialData(value) as { blocks?: unknown[] };
+        const data = getInitialData(value) as { blocks?: unknown[] } | null;
 
-        if (data.blocks?.length) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-            void editor?.render(data);
-        } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-            void editor?.clear();
+        if (data == null) {
+            return;
         }
+
+        applyingExternalValue = true;
+        lastEmitted = comparable(data);
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+        const applied: unknown = data.blocks?.length ? editor?.render(data) : editor?.clear();
+
+        void Promise.resolve(applied).finally(() => {
+            applyingExternalValue = false;
+        });
     };
 }
 

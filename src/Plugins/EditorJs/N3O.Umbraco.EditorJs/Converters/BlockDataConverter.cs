@@ -69,19 +69,18 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
 
     private string ConvertUdiUrl(Match match) {
         var udiText = match.Groups[2].Value;
-        var udi = UdiParser.Parse(udiText);
 
-        if (udi is GuidUdi guidUdi) {
-            IPublishedContent content;
+        // Stored content can carry any href, so an unparseable or unsupported reference loses its
+        // destination rather than taking the page down.
+        if (UdiParser.TryParse(udiText, out var udi) && udi is GuidUdi guidUdi) {
+            IPublishedContent content = null;
 
             if (udi.EntityType == DocumentEntityType) {
                 content = _contentCache.GetById(guidUdi.Guid);
             } else if (udi.EntityType == MediaEntityType) {
                 content = _mediaCache.GetById(guidUdi.Guid);
-            } else {
-                throw UnrecognisedValueException.For(udi.EntityType);
             }
-            
+
             if (content != null) {
                 return $"{match.Groups[1].Value}{content.Url(_publishedUrlProvider)}\"";
             }

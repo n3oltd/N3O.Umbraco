@@ -83,17 +83,17 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             this.button.classList.add('umb-group-builder__group-add-property');
             this.button.classList.add('skriv-let__add-image-button');
             this.button.textContent = this.data?.url ? 'Change image' : 'Select an image';
-            this.button.addEventListener('click', () => {
-                void openMediaPicker(this);
-            });
-            this.image?.addEventListener('click', () => {
-                // The picker's modal belongs to the parent document and renders behind a fullscreen frame.
+            // The picker's modal belongs to the parent document and renders behind a fullscreen frame.
+            const pickUnlessFullscreen = () => {
                 if (document.fullscreenElement) {
                     return;
                 }
 
                 void openMediaPicker(this);
-            });
+            };
+
+            this.button.addEventListener('click', pickUnlessFullscreen);
+            this.image?.addEventListener('click', pickUnlessFullscreen);
             this.wrapper.appendChild(this.altTextLabel);
             this.wrapper.appendChild(this.altTextInput);
             this.wrapper.appendChild(this.button);
