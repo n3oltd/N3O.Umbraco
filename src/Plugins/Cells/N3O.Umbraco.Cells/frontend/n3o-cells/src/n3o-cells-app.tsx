@@ -6,12 +6,12 @@ import handsontableStyles from 'handsontable/dist/handsontable.full.min.css?inli
 
 export type CellsValue = unknown[][] | undefined;
 
-interface N3oCellsAppProps {
+type N3oCellsAppProps = {
     value: CellsValue;
-    // Parsed `gridConfiguration` prevalue (columns, default data, etc.).
+    // Already parsed from the gridConfiguration setting's JSON by the host element.
     gridConfiguration: Record<string, unknown>;
     onChange: (value: unknown[][]) => void;
-}
+};
 
 // Handsontable is imperative and owns its own DOM, so it lives in an effect against a container ref
 // rather than being described by the render tree.
