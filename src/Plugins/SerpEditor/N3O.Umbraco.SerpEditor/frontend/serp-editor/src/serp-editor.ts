@@ -47,8 +47,11 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
 
     // Config (prevalues) arrives as UmbPropertyEditorConfigCollection.
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
-        const maxCharsTitle = Number.parseInt(config?.getValueByAlias('maxCharsTitle') ?? '', 10);
-        const maxCharsDescription = Number.parseInt(config?.getValueByAlias('maxCharsDescription') ?? '', 10);
+        // The Integer settings editor stores a number, but a data type saved before those settings
+        // existed still carries a string, so normalise before parsing.
+        const maxCharsTitle = Number.parseInt(String(config?.getValueByAlias('maxCharsTitle') ?? ''), 10);
+        const maxCharsDescription = Number.parseInt(String(config?.getValueByAlias('maxCharsDescription') ?? ''),
+                                                    10);
 
         if (!Number.isNaN(maxCharsTitle) && maxCharsTitle > 0) {
             this.#maxCharsTitle = maxCharsTitle;
