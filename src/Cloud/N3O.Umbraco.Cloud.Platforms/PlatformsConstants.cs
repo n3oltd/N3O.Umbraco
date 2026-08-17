@@ -92,6 +92,19 @@ public static class PlatformsConstants {
         public const string ZakatSettings = "zakatSettings";
     }
 
+    public static class Webhooks {
+        public static class EventTypes {
+            public static class Crowdfunder {
+                public const string Created = "crowdfunder.created";
+                public const string Updated = "crowdfunder.updated";
+            }
+        }
+
+        public static class HookIds {
+            public const string Crowdfunder = nameof(Crowdfunder);
+        }
+    }
+
     public static class Zakat {
         public static class Settings {
             public static class Calculator {
