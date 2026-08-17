@@ -17,8 +17,6 @@
     font-weight: bold;
 }
 
-/* Shadow DOM isolates these native controls from the backoffice's global
-   styling, so restyle them to match (v13 inherited it from the light DOM). */
 .n3o-text-resource-editor .custom {
     width: 100%;
     margin-top: 10px;
@@ -36,7 +34,6 @@
     border-color: var(--uui-color-focus, #3544b1);
 }
 
-/* v13 rendered the delete/confirm affordances as plain text links (<a>), not buttons. */
 .n3o-text-resource-editor button {
     background: none;
     border: none;

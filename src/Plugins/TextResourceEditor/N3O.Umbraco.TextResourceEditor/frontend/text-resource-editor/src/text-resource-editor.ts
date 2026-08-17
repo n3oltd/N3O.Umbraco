@@ -10,8 +10,6 @@ import { TextResourceEditorApp, type TextResourceEntry } from './text-resource-e
 
 const elementName = 'n3o-text-resource-editor';
 
-// Umbraco's backoffice loads custom elements only, which is why the React UI needs this shell. React
-// is external, resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 @customElement(elementName)
 export class N3oTextResourceEditorElement extends HTMLElement implements UmbPropertyEditorUiElement {
     #root?: Root;
@@ -34,7 +32,6 @@ export class N3oTextResourceEditorElement extends HTMLElement implements UmbProp
         this.#render();
     }
 
-    // config is set by Umbraco; not used by this editor but accepted to satisfy the contract.
     public set config(_config: UmbPropertyEditorConfigCollection | undefined) {}
 
     connectedCallback(): void {

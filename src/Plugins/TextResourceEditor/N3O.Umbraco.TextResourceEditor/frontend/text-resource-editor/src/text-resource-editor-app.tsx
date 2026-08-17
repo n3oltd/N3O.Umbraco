@@ -3,8 +3,6 @@ import styles from './text-resource-editor-app.css?inline';
 
 export interface TextResourceEntry {
     source: string;
-    // Null as well as absent: this mirrors TextResource.Custom, a plain C# string that serialises to
-    // null when the editor has set no override.
     custom?: string | null;
 }
 
@@ -13,45 +11,43 @@ type TextResourceEditorAppProps = {
     onChange: (value: TextResourceEntry[]) => void;
 };
 
-// Fully controlled: the host element owns the value, so every edit must go out through onChange
-// rather than into local state.
 export function TextResourceEditorApp({ value, onChange }: TextResourceEditorAppProps) {
-    const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+    const [pendingDelete, setPendingDelete] = useState<number | null>(null);
 
     if (!value.length) {
         return null;
     }
 
-    function requestDelete(source: string): void {
-        setPendingDelete(source);
+    function requestDelete(index: number): void {
+        setPendingDelete(index);
     }
 
-    function confirmDelete(source: string): void {
+    function confirmDelete(index: number): void {
         setPendingDelete(null);
-        onChange(value.filter((entry) => entry.source !== source));
+        onChange(value.filter((_, entryIndex) => entryIndex !== index));
     }
 
     function cancelDelete(): void {
         setPendingDelete(null);
     }
 
-    function updateCustom(source: string, custom: string): void {
-        onChange(value.map((entry) => (entry.source === source ? { ...entry, custom } : entry)));
+    function updateCustom(index: number, custom: string): void {
+        onChange(value.map((entry, entryIndex) => (entryIndex === index ? { ...entry, custom } : entry)));
     }
 
     return (
         <>
             <div className="n3o-text-resource-editor">
-                {value.map((entry) => (
-                    <div className="row-wrapper" key={entry.source}>
+                {value.map((entry, index) => (
+                    <div className="row-wrapper" key={index}>
                         <div className="row-1">
-                            {pendingDelete === entry.source ? (
+                            {pendingDelete === index ? (
                                 <>
                                     <span>Delete this entry? </span>
                                     <button
                                         type="button"
                                         className="delete-confirm"
-                                        onClick={() => confirmDelete(entry.source)}
+                                        onClick={() => confirmDelete(index)}
                                     >
                                         Yes
                                     </button>
@@ -71,7 +67,7 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
                                         type="button"
                                         className="delete"
                                         aria-label={`Delete ${entry.source}`}
-                                        onClick={() => requestDelete(entry.source)}
+                                        onClick={() => requestDelete(index)}
                                     >
                                         x
                                     </button>
@@ -85,7 +81,7 @@ export function TextResourceEditorApp({ value, onChange }: TextResourceEditorApp
                                 className="custom"
                                 value={entry.custom ?? ''}
                                 onChange={(e) =>
-                                    updateCustom(entry.source, e.currentTarget.value)
+                                    updateCustom(index, e.currentTarget.value)
                                 }
                             />
                         </div>
