@@ -1,0 +1,6 @@
+@using N3O.Umbraco.EditorJs;
+@using N3O.Umbraco.EditorJs.Models
+
+@model EditorJsBlock<ImageBlockData>
+
+<img src="@Model.Data.Url" alt="@Model.Data.Alt" width="@Model.Data.Width" height="@Model.Data.Height" />

@@ -1,14 +1,6 @@
-// Frame entry — runs INSIDE the editor's iframe (a separate, same-origin document).
-//
-// EditorJS is built for a top-level document: it injects its stylesheet into `document.head` and its
-// "close popovers on outside click" handler reads `event.target`. Inside Umbraco 17's all-shadow-DOM
-// backoffice both break (head styles can't cross the shadow boundary; `event.target` is retargeted to
-// `umb-app`). Hosting EditorJS in an iframe gives it its own real document, so BOTH work natively with
-// no per-symptom shims: styles land in the iframe's head, and clicks report the real target.
-//
-// This module is loaded by the shell (editor-js.ts) into the iframe. It has NO @umbraco / React deps —
-// everything it needs is bundled. Umbraco-specific work (media/link pickers) is delegated back to the
-// shell in the parent via the injected bridge callbacks.
+// Runs inside the editor's iframe, loaded by the shell (editor-js.ts), which explains why the iframe
+// exists. Nothing here may import @umbraco or React: this bundle is loaded into a bare document, so
+// everything it needs is bundled and Umbraco-specific work is delegated to the shell's bridge callbacks.
 
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
@@ -26,8 +18,7 @@ import { makeUmbracoImageTool, type MediaPickerResultItem } from './tools/Umbrac
 import { EmbedWithUI } from './tools/EmbedWithUI';
 import styles from './editor-js-app.css?inline';
 
-// Bridge callbacks are provided by the shell (parent). They run in the parent realm where the Umbraco
-// modal manager + media repositories live, and return plain data the (Umbraco-free) tools apply.
+// The pickers execute in the parent realm, where the Umbraco modal manager and media repositories live.
 export interface EditorJsFrameConfig {
     value: string | undefined;
     onChange: (value: string) => void;
@@ -82,8 +73,6 @@ function init(config: EditorJsFrameConfig): void {
 
     document.body.appendChild(container);
 
-    // The Umbraco-free tools take a picker callback; delegate the actual pick to the parent bridge and
-    // apply the returned data locally.
     const openMediaPicker = (tool: { applyMediaSelection(item: MediaPickerResultItem): void }): Promise<void> =>
         config.pickMedia().then((item) => {
             if (item) {
@@ -98,8 +87,8 @@ function init(config: EditorJsFrameConfig): void {
             }
         });
 
-    // EditorJS ships a .d.ts whose `holder`/config generics are awkward to satisfy; cast to any for the
-    // whole config object (as the original did).
+    // EditorJS's shipped .d.ts constrains `holder` and the tool config in a way this config cannot
+    // satisfy, so the whole object is cast.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let editor: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call
@@ -108,7 +97,7 @@ function init(config: EditorJsFrameConfig): void {
         placeholder: "Type '/' to insert a block or just start typing something super...",
         data: getInitialData(config.value),
         inlineToolbar: true,
-        // NOTE: global `sanitizer` is not applied during save() in EditorJS 2.x (see TECH_DEBT F-24).
+        // EditorJS 2.x does not apply the global sanitizer during save(), only on paste and render.
         sanitizer: {
             a: {},
         },
@@ -143,9 +132,8 @@ function init(config: EditorJsFrameConfig): void {
     });
 }
 
-// The shell talks to this frame through the <iframe> element itself (same-origin): it reads __n3oInit
-// to start the editor and is notified via __n3oOnReady. Using the frame element (not postMessage / a
-// window global) keeps everything per-instance and lets us pass live function references for the bridge.
+// Must stay structurally identical to EditorJsFrame in editor-js.ts — the two sides of the same
+// same-origin handshake, declared separately so this bundle imports nothing from the shell.
 type FrameHandshake = HTMLIFrameElement & {
     __n3oInit?: (config: EditorJsFrameConfig) => void;
     __n3oOnReady?: () => void;

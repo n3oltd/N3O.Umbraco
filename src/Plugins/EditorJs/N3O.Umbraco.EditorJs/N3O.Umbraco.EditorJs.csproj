@@ -11,6 +11,9 @@
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <N3OReactPlugin>true</N3OReactPlugin>
+        <!-- The site-side block partials under Views/ are MVC views. The Razor SDK only compiles them
+             when this is set; it is implicit for the Web SDK but not for a class library. -->
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.EditorJs</PackageId>

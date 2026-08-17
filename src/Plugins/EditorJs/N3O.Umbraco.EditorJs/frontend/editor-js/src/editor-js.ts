@@ -5,7 +5,7 @@ import type {
     UmbPropertyEditorConfigCollection,
     UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
-import { UMB_MODAL_MANAGER_CONTEXT } from '@umbraco-cms/backoffice/modal';
+import { UMB_MODAL_MANAGER_CONTEXT, type UmbModalManagerContext } from '@umbraco-cms/backoffice/modal';
 import { UMB_MEDIA_PICKER_MODAL, UmbMediaUrlRepository, UmbMediaItemRepository } from '@umbraco-cms/backoffice/media';
 import { UMB_LINK_PICKER_MODAL } from '@umbraco-cms/backoffice/multi-url-picker';
 import type { MediaPickerResultItem } from './tools/UmbracoImageTool';
@@ -13,9 +13,8 @@ import type { EditorJsFrameConfig } from './editor-js-frame';
 
 const elementName = 'n3o-editor-js';
 
-// The <iframe> is same-origin, so the shell and the frame module communicate through the iframe element
-// itself: the shell sets __n3oOnReady and the frame calls it once loaded, then the shell calls __n3oInit
-// with live callbacks (value/change + the two pickers).
+// The handshake hangs off the iframe element rather than postMessage or a window global, which keeps it
+// per-instance and lets live function references cross into the frame. Only safe because it is same-origin.
 type EditorJsFrame = HTMLIFrameElement & {
     __n3oInit?: (config: EditorJsFrameConfig) => void;
     __n3oOnReady?: () => void;
@@ -25,19 +24,11 @@ interface MediaPickerModalResult {
     selection: Array<string | null>;
 }
 
-interface LinkPickerModalResult {
-    link?: { url?: string; unique?: string };
-}
-
-// Web-component SHELL for the EditorJS property editor.
-//
-// EditorJS assumes a top-level document (it injects styles into document.head and its outside-click
-// handler reads event.target). Umbraco 17's backoffice is entirely shadow DOM, which breaks both
-// (styles can't cross the boundary; event.target retargets to umb-app so EditorJS closes its toolbar on
-// every click). Rather than shim each symptom, this shell hosts EditorJS in a same-origin IFRAME — its
-// own real document — so styles and events both work natively. The heavy editor bundle runs inside the
-// frame (editor-js-frame.js); this shell only owns the Umbraco contract (value + change event) and
-// bridges the media/link pickers back to the parent, where the Umbraco modal manager lives.
+// EditorJS assumes a top-level document: it injects styles into document.head and its outside-click
+// handler reads event.target. Umbraco 17's backoffice is entirely shadow DOM, which breaks both — styles
+// cannot cross the boundary, and event.target retargets to umb-app, so EditorJS closes its own toolbar on
+// every click. EditorJS does not support shadow DOM (codex-team/editor.js#1009), so it is hosted in a
+// same-origin iframe where both work natively.
 @customElement(elementName)
 export class N3oEditorJsElement
     extends UmbElementMixin(HTMLElement)
@@ -46,10 +37,7 @@ export class N3oEditorJsElement
     #iframe?: EditorJsFrame;
     #value: string | undefined;
     #resizeObserver?: ResizeObserver;
-    // FLAG: UMB_MODAL_MANAGER_CONTEXT consumer value — using `any` then casting at call site (as in the
-    // original Lit version).
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    #modalManager: any;
+    #modalManager?: UmbModalManagerContext;
 
     constructor() {
         super();
@@ -64,8 +52,8 @@ export class N3oEditorJsElement
     }
 
     set value(value: string | undefined) {
-        // Init-once semantics (matching the previous implementation): the editor is hydrated from the
-        // value present when the frame is ready; later external value changes are not pushed back in.
+        // Init-once: the editor is hydrated from the value present when the frame is ready, and later
+        // external value changes are not pushed back in.
         this.#value = value;
     }
 
@@ -111,9 +99,9 @@ export class N3oEditorJsElement
 
         const script = doc.createElement('script');
         script.type = 'module';
-        // Resolve the sibling frame bundle at runtime. NOTE: do NOT use `new URL('literal',
-        // import.meta.url)` — Vite rewrites that at build time into an inlined asset (it would embed
-        // the .ts source as a data: URI). A plain string replace on the runtime module URL is untouched.
+        // Do not switch this to `new URL('literal', import.meta.url)` — Vite rewrites that at build time
+        // into an inlined asset, embedding the .ts source as a data: URI. A string replace on the runtime
+        // module URL is left alone.
         script.src = import.meta.url.replace('editor-js.js', 'editor-js-frame.js');
         doc.head.appendChild(script);
     }
@@ -134,7 +122,6 @@ export class N3oEditorJsElement
             pickLink: () => this.#pickLink(),
         });
 
-        // Size the iframe to its content so the editor grows with the document.
         const body = iframe.contentDocument?.body;
         if (body) {
             const resize = () => {
@@ -146,8 +133,8 @@ export class N3oEditorJsElement
         }
     }
 
-    // Runs in the parent realm (where the Umbraco modal manager + media repositories live). Opens the
-    // media picker, resolves the picked GUID to a URL + name, and returns plain data for the frame's tool.
+    // Must run in the parent realm: the Umbraco modal manager and media repositories live there, not in
+    // the frame. Returns plain data so the frame's tool stays free of Umbraco imports.
     async #pickMedia(): Promise<MediaPickerResultItem | null> {
         const modalManager = this.#modalManager;
         if (!modalManager) {
@@ -174,7 +161,10 @@ export class N3oEditorJsElement
                     url: urlResult.data?.[0]?.url ?? '',
                     name: itemResult.data?.[0]?.name ?? '',
                     unique,
-                    udi: unique,
+                    // ImageBlockData.Udi deserialises into Umbraco's Udi type, which expects
+                    // umb://media/<guid> with the guid in dash-less "N" form; the picker returns the
+                    // bare, dashed entity key.
+                    udi: `umb://media/${unique.replace(/-/g, '')}`,
                 };
             } finally {
                 urlRepo.destroy();
@@ -192,14 +182,17 @@ export class N3oEditorJsElement
             return null;
         }
 
-        const modal = modalManager.open(this, UMB_LINK_PICKER_MODAL, { data: { config: {} } });
+        // The EditorJS link tool always wraps the current selection in a new link, so the picker never
+        // opens against an existing entry.
+        const modal = modalManager.open(this, UMB_LINK_PICKER_MODAL, {
+            data: { config: {}, index: null, isNew: true },
+        });
 
         try {
-            const result = (await modal.onSubmit()) as LinkPickerModalResult;
+            const result = await modal.onSubmit();
             const link = result?.link;
             return link ? (link.url ?? link.unique ?? '') : null;
         } catch {
-            // Picker cancelled.
             return null;
         }
     }
