@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
@@ -16,10 +17,14 @@ namespace N3O.Umbraco.Cloud.Platforms.Webhooks;
 public class CrowdfunderReceiver : WebhookReceiver {
     private readonly ICdnClient _cdnClient;
     private readonly IJsonProvider _jsonProvider;
+    private readonly ILogger<CrowdfunderReceiver> _logger;
 
-    public CrowdfunderReceiver(ICdnClient cdnClient, IJsonProvider jsonProvider) {
+    public CrowdfunderReceiver(ICdnClient cdnClient,
+                               IJsonProvider jsonProvider,
+                               ILogger<CrowdfunderReceiver> logger) {
         _cdnClient = cdnClient;
         _jsonProvider = jsonProvider;
+        _logger = logger;
     }
 
     protected override async Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
@@ -37,16 +42,20 @@ public class CrowdfunderReceiver : WebhookReceiver {
 
     private async Task EvictAsync(WebhookCrowdfunder webhookCrowdfunder, CancellationToken cancellationToken) {
         if (webhookCrowdfunder == null || !webhookCrowdfunder.HasValue(x => x.PagePublishedPath)) {
+            _logger.LogWarning("Crowdfunder webhook carried no page published path, so nothing was evicted");
+
             return;
         }
+
+        // The page is read before it is evicted: reading first would consume the eviction it just recorded, and
+        // a stale page still names the merge models that need evicting.
+        await EvictMergeModelsAsync(webhookCrowdfunder.PagePublishedPath, cancellationToken);
 
         foreach (var pagePublishedPath in webhookCrowdfunder.OrEmpty(x => x.PagePublishedPathsHistory)) {
             _cdnClient.Evict(pagePublishedPath);
         }
 
         _cdnClient.Evict(webhookCrowdfunder.PagePublishedPath);
-
-        await EvictMergeModelsAsync(webhookCrowdfunder.PagePublishedPath, cancellationToken);
     }
 
     private async Task EvictMergeModelsAsync(string pagePublishedPath, CancellationToken cancellationToken) {
@@ -54,6 +63,9 @@ public class CrowdfunderReceiver : WebhookReceiver {
                                                                                    cancellationToken);
 
         if (publishedContentResult.NotFound || publishedContentResult.Error) {
+            _logger.LogWarning("Could not read the crowdfunder page at {PagePublishedPath}, so its merge models were not evicted",
+                               pagePublishedPath);
+
             return;
         }
 

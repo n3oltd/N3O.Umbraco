@@ -92,12 +92,18 @@ public class CdnClient : ICdnClient {
     }
 
     private async Task<CdnDownloadResult> FetchAsync(string publishedUrl, CancellationToken cancellationToken) {
-        var download = Downloads.GetOrDefault(publishedUrl);
+        // A refresh already in flight when an eviction lands cannot satisfy that eviction, so a caller joining
+        // it takes one further turn rather than accepting the entry that refresh produces.
+        for (var attempt = 0; attempt < 2; attempt++) {
+            var download = Downloads.GetOrDefault(publishedUrl);
 
-        if (download == null ||
-            download.IsExpired(_clock) ||
-            download.CanRetry(_clock) ||
-            download.WasInvalidated(GetInvalidatedAt(publishedUrl))) {
+            if (download != null &&
+                !download.IsExpired(_clock) &&
+                !download.CanRetry(_clock) &&
+                !download.WasInvalidated(GetInvalidatedAt(publishedUrl))) {
+                return download;
+            }
+
             // Coalesce refreshes per URL so a failing CDN cannot pile up in-flight fetches and drain ConcurrencyLimit.
             var refresh = Refreshes.GetOrAdd(publishedUrl,
                                              url => new Lazy<Task<CdnDownloadResult>>(() => RefreshAsync(url)));
@@ -113,14 +119,17 @@ public class CdnClient : ICdnClient {
             var startedAt = _clock.GetCurrentInstant();
             var cdnDownloadResult = await DownloadStringAsync(publishedUrl, startedAt, CancellationToken.None);
 
-            // A cached success is retained when a later refresh fails.
+            // A cached success survives a transient error, but not a not-found: content that has gone must stop
+            // being served.
             var result = Downloads.AddOrUpdate(publishedUrl,
                                                cdnDownloadResult,
-                                               (_, existing) => cdnDownloadResult.Success || !existing.Success
-                                                                    ? cdnDownloadResult
-                                                                    : existing);
+                                               (_, existing) => cdnDownloadResult.Error && existing.Success
+                                                                    ? existing
+                                                                    : cdnDownloadResult);
 
-            ClearInvalidation(publishedUrl, startedAt);
+            if (ReferenceEquals(result, cdnDownloadResult)) {
+                ClearInvalidation(publishedUrl, startedAt);
+            }
 
             return result;
         } finally {
