@@ -7,6 +7,9 @@ public class CdnDownloadResult {
     private static readonly Duration NotFoundRetryInterval = Duration.FromMinutes(15);
     private static readonly Duration ErrorRetryInterval = Duration.FromSeconds(10);
 
+    // No result stays put for longer than this, so anything older refreshes of its own accord.
+    public static readonly Duration MaxRetention = NotFoundRetryInterval;
+
     private CdnDownloadResult(bool success, bool error, string content, Instant timestamp, Duration retryInterval) {
         Success = success;
         Error = error;

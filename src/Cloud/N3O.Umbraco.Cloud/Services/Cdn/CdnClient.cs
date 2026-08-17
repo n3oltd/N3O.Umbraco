@@ -86,9 +86,25 @@ public class CdnClient : ICdnClient {
     }
 
     public void Evict(string path) {
-        var publishedUrl = GetPublishedContentUrl(path);
+        Invalidate(GetPublishedContentUrl(path));
+    }
 
-        InvalidatedAt[publishedUrl] = _clock.GetCurrentInstant();
+    public void Evict(PublishedFileKind kind, string path) {
+        Invalidate(GetPublishedContentUrl(kind, path));
+    }
+
+    private void Invalidate(string publishedUrl) {
+        var now = _clock.GetCurrentInstant();
+
+        InvalidatedAt[publishedUrl] = now;
+
+        var cutoff = now - CdnDownloadResult.MaxRetention;
+
+        foreach (var invalidation in InvalidatedAt) {
+            if (invalidation.Value < cutoff) {
+                InvalidatedAt.TryRemove(invalidation);
+            }
+        }
     }
 
     private async Task<CdnDownloadResult> FetchAsync(string publishedUrl, CancellationToken cancellationToken) {
