@@ -1,11 +1,4 @@
-// Block tool that lets editors pick images from the Umbraco media library.
-// EditorJS instantiates tools via `new ToolClass({ data, api, config })`, so the openMediaPicker
-// dependency is injected through a factory that returns the concrete class. The caller registers
-// the returned class directly with EditorJS.
-
 import { createInput, createLabel, randomUUID } from './renderHelpers';
-
-// ---- minimal shims for the EditorJS block tool API ----
 
 export interface EditorJsApi {
     styles: { inlineToolButton: string; inlineToolButtonActive: string };
@@ -94,6 +87,11 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
                 void openMediaPicker(this);
             });
             this.image?.addEventListener('click', () => {
+                // The picker's modal belongs to the parent document and renders behind a fullscreen frame.
+                if (document.fullscreenElement) {
+                    return;
+                }
+
                 void openMediaPicker(this);
             });
             this.wrapper.appendChild(this.altTextLabel);
@@ -108,11 +106,14 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             const imageUrl = item.url ?? '';
             const imageAlt = item.name ?? '';
 
+            const width = Number.parseInt(String(item.width), 10);
+            const height = Number.parseInt(String(item.height), 10);
+
             this.data.url = imageUrl;
             this.data.alt = imageAlt;
-            this.data.udi = item.unique ?? item.udi ?? '';
-            this.data.width = parseInt(String(item.width));
-            this.data.height = parseInt(String(item.height));
+            this.data.udi = item.udi ?? '';
+            this.data.width = Number.isNaN(width) ? undefined : width;
+            this.data.height = Number.isNaN(height) ? undefined : height;
 
             if (this.input) {
                 this.input.value = imageUrl;
@@ -123,6 +124,7 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             }
             if (this.altTextInput) {
                 this.altTextInput.value = imageAlt;
+                this.altTextInput.setAttribute('value', imageAlt);
             }
             if (this.button) {
                 this.button.textContent = this.data?.url ? 'Change image' : 'Select an image';

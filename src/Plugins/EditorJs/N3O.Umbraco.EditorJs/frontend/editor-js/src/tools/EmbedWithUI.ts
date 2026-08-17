@@ -1,13 +1,7 @@
-// Block tool that extends the @editorjs/embed tool with a custom UI for entering a URL before
-// any service has been detected. Embed is declared `any` in vendor.d.ts (it ships no .d.ts), so
-// extending it is safe at runtime via the widened base type.
-
 import Embed from '@editorjs/embed';
 
-import { createInput, createLabel } from './renderHelpers';
+import { createInput, createLabel, randomUUID } from './renderHelpers';
 
-// Embed is `any` (declared in vendor.d.ts) so extending it is safe at runtime.
-// The base type is widened to `any` so that super.render() and super.* are accessible.
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
 export class EmbedWithUI extends (Embed as new (...args: any[]) => any) {
     static get toolbox(): object {
@@ -25,16 +19,18 @@ export class EmbedWithUI extends (Embed as new (...args: any[]) => any) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this as any).element = container;
 
+            const inputId = randomUUID();
+
             const label = createLabel(
-                'embed-input',
+                inputId,
                 'cdx-label',
                 'Enter a URL to embed a video from YouTube or Vimeo'
             );
             container.appendChild(label);
 
-            const input = createInput('embed-input', '', '', 'url');
-            input.addEventListener('paste', (event: ClipboardEvent) => {
-                const url = event.clipboardData?.getData('text') ?? '';
+            const input = createInput(inputId, '', '', 'url');
+
+            const applyUrl = (url: string): void => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const EmbedClass = Embed as any;
                 const service = Object.keys(EmbedClass.services as Record<string, { regex: RegExp }>).find(
@@ -43,6 +39,19 @@ export class EmbedWithUI extends (Embed as new (...args: any[]) => any) {
                 if (service) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (this as any).onPaste({ detail: { key: service, data: url } });
+                }
+            };
+
+            input.addEventListener('paste', (event: ClipboardEvent) => {
+                applyUrl(event.clipboardData?.getData('text') ?? '');
+            });
+            input.addEventListener('change', () => {
+                applyUrl(input.value);
+            });
+            input.addEventListener('keydown', (event: KeyboardEvent) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    applyUrl(input.value);
                 }
             });
             container.appendChild(input);

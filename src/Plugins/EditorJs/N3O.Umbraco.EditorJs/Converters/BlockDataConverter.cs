@@ -16,6 +16,7 @@ namespace N3O.Umbraco.EditorJs;
 public abstract class BlockDataConverter<TData> : IBlockDataConverter where TData : class {
     private const string DocumentEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
     private const string MediaEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Media;
+    private const string HrefAttributeStart = "href=\"";
     
     private readonly IPublishedContentCache _contentCache;
     private readonly IPublishedMediaCache _mediaCache;
@@ -46,10 +47,18 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
     protected virtual void Process(TData data) { }
 
     protected string ConvertUmbracoLinks(string text) {
+        if (text == null) {
+            return null;
+        }
+
         return Regex.Replace(text, "(<a\\s+(?:[^>]*?\\s+)?href=\")(umb:\\/\\/[^\"]*)\"", ConvertUdiUrl);
     }
 
     protected string DecodePlatformsElements(string text) {
+        if (text == null) {
+            return null;
+        }
+
         var encodedStart = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.Start);
         var encodedEnd = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.End);
 
@@ -77,7 +86,9 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
                 return $"{match.Groups[1].Value}{content.Url(_publishedUrlProvider)}\"";
             }
         }
-        
-        return "";
+
+        // The match spans the opening tag up to and including the href's closing quote, so returning the
+        // tag without that attribute keeps the anchor and its text and drops only the dead destination.
+        return match.Groups[1].Value[..^HrefAttributeStart.Length];
     }
 }

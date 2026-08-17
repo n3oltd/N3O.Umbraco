@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.PublishedCache;
@@ -10,6 +11,12 @@ public class CheckListBlockDataConverter : BlockDataConverter<CheckListBlockData
         : base(contentCache, mediaCache, publishedUrlProvider) { }
 
     protected override string TypeId => "checklist";
+
+    protected override void Process(CheckListBlockData data) {
+        foreach (var item in data.Items.OrEmpty()) {
+            item.Text = ConvertUmbracoLinks(item.Text);
+        }
+    }
 }
 
 public class CheckListBlockData {

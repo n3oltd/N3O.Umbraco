@@ -1,7 +1,3 @@
-// Runs inside the editor's iframe, loaded by the shell (editor-js.ts), which explains why the iframe
-// exists. Nothing here may import @umbraco or React: this bundle is loaded into a bare document, so
-// everything it needs is bundled and Umbraco-specific work is delegated to the shell's bridge callbacks.
-
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import RawTool from '@editorjs/raw';
@@ -18,19 +14,19 @@ import { makeUmbracoImageTool, type MediaPickerResultItem } from './tools/Umbrac
 import { EmbedWithUI } from './tools/EmbedWithUI';
 import styles from './editor-js-app.css?inline';
 
-// The pickers execute in the parent realm, where the Umbraco modal manager and media repositories live.
 export interface EditorJsFrameConfig {
     value: string | undefined;
     onChange: (value: string) => void;
     pickMedia: () => Promise<MediaPickerResultItem | null>;
     pickLink: () => Promise<string | null>;
+    requestSave: () => void;
 }
 
 const FULLSCREEN_ICON =
     '<svg xmlns="http://www.w3.org/2000/svg" class="skriv-let__fullscreen-button-icon" fill="currentColor" width="22" height="22" viewBox="0 0 512 512"><path d="M368.432 110.765l32.367 32.362 34.896-34.898 36.539 36.539V38.783H366.256l37.075 37.077-34.899 34.905zm66.725 293.309l-34.901-34.899-32.37 32.368 34.9 34.899-36.534 36.536h105.986V366.996l-37.081 37.078zm-294.656-3.081l-32.37-32.365-34.898 34.902L36.7 366.993v105.985h105.979l-37.079-37.08 34.901-34.905zm-31.828-258.41l32.373-32.365-34.903-34.899 36.538-36.536H36.698v105.978l37.08-37.075 34.895 34.897zm278.314 157.969v-86.92c0-35.993-29.179-65.169-65.17-65.169H186.109c-35.991 0-65.171 29.177-65.171 65.169v86.92c0 35.993 29.18 65.168 65.171 65.168h135.708c35.992 0 65.17-29.175 65.17-65.168z"></path></svg>';
 
 function getInitialData(value: string | undefined): object {
-    // Sometimes Umbraco returns a string (e.g. block grid), sometimes an object.
+    // Umbraco supplies this value as either a string or an object.
     if (!value) {
         return {};
     }
@@ -45,8 +41,11 @@ function getInitialData(value: string | undefined): object {
     return (value as unknown as object) ?? {};
 }
 
+let setValue: (value: string | undefined) => void = () => {};
+
 function init(config: EditorJsFrameConfig): void {
-    // EditorJS + each tool inject their CSS into this (iframe) document's head; add the plugin CSS too.
+    let flush: () => Promise<void> = () => Promise.resolve();
+
     const styleEl = document.createElement('style');
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
@@ -87,8 +86,7 @@ function init(config: EditorJsFrameConfig): void {
             }
         });
 
-    // EditorJS's shipped .d.ts constrains `holder` and the tool config in a way this config cannot
-    // satisfy, so the whole object is cast.
+    // EditorJS's shipped .d.ts is narrower than the configuration it accepts at runtime.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let editor: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call
@@ -97,10 +95,6 @@ function init(config: EditorJsFrameConfig): void {
         placeholder: "Type '/' to insert a block or just start typing something super...",
         data: getInitialData(config.value),
         inlineToolbar: true,
-        // EditorJS 2.x does not apply the global sanitizer during save(), only on paste and render.
-        sanitizer: {
-            a: {},
-        },
         tools: {
             paragraph: { class: Paragraph, tunes: ['alignmentTune'] },
             header: { class: Header, tunes: ['alignmentTune'] },
@@ -130,17 +124,54 @@ function init(config: EditorJsFrameConfig): void {
             new DragDrop(editor);
         },
     });
+
+    flush = async () => {
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+            const outputData = await editor?.save();
+
+            config.onChange(JSON.stringify(outputData));
+        } catch (error: unknown) {
+            console.error('[EditorJs] Saving failed:', error);
+        }
+    };
+
+    // EditorJS batches its change notification, so a recent edit is still only in the DOM.
+    window.addEventListener('blur', () => {
+        void flush();
+    });
+
+    // A key event raised in this document never reaches the backoffice's own window listener.
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
+            event.preventDefault();
+
+            void flush().then(() => config.requestSave());
+        }
+    });
+
+    setValue = (value: string | undefined) => {
+        const data = getInitialData(value) as { blocks?: unknown[] };
+
+        if (data.blocks?.length) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            void editor?.render(data);
+        } else {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            void editor?.clear();
+        }
+    };
 }
 
-// Must stay structurally identical to EditorJsFrame in editor-js.ts — the two sides of the same
-// same-origin handshake, declared separately so this bundle imports nothing from the shell.
 type FrameHandshake = HTMLIFrameElement & {
     __n3oInit?: (config: EditorJsFrameConfig) => void;
+    __n3oSetValue?: (value: string | undefined) => void;
     __n3oOnReady?: () => void;
 };
 
 const frameElement = window.frameElement as FrameHandshake | null;
 if (frameElement) {
     frameElement.__n3oInit = init;
+    frameElement.__n3oSetValue = (value) => setValue(value);
     frameElement.__n3oOnReady?.();
 }
