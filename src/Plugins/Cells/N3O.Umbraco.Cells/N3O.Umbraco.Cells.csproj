@@ -4,7 +4,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
-        <NoWarn>1591;NU1605;NU1504</NoWarn>
+        <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -22,6 +22,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
+        <Version>17.0.0</Version>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

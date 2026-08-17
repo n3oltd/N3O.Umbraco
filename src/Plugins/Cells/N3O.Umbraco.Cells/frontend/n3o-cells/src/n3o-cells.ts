@@ -10,15 +10,13 @@ import { N3oCellsApp, type CellsValue } from './n3o-cells-app';
 
 const elementName = 'n3o-cells';
 
-// Umbraco's backoffice loads custom elements only, which is why the React UI needs this shell. React
-// is external, resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map; Handsontable
-// is bundled, since only React is shared.
 @customElement(elementName)
 export class N3oCellsElement extends HTMLElement implements UmbPropertyEditorUiElement {
     #root?: Root;
     #mount: HTMLDivElement;
     #value: CellsValue;
     #gridConfiguration: Record<string, unknown> = {};
+    #gridConfigurationJson?: string;
 
     constructor() {
         super();
@@ -42,15 +40,18 @@ export class N3oCellsElement extends HTMLElement implements UmbPropertyEditorUiE
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
         const gridConfiguration = config?.getValueByAlias<string>('gridConfiguration');
 
-        // The setting is a free-text area, so an editor can save it blank or with malformed JSON.
-        // An unusable grid configuration must not take the whole property editor down with it.
-        try {
-            this.#gridConfiguration = gridConfiguration
-                ? (JSON.parse(gridConfiguration) as Record<string, unknown>)
-                : {};
-        } catch {
-            this.#gridConfiguration = {};
-            console.error('[Cells] gridConfiguration is not valid JSON; falling back to an empty grid.');
+        // Reparsing would hand the grid a new object every time and rebuild it, losing selection and scroll.
+        if (gridConfiguration !== this.#gridConfigurationJson) {
+            this.#gridConfigurationJson = gridConfiguration;
+
+            try {
+                this.#gridConfiguration = gridConfiguration
+                    ? (JSON.parse(gridConfiguration) as Record<string, unknown>)
+                    : {};
+            } catch {
+                this.#gridConfiguration = {};
+                console.error('[Cells] gridConfiguration is not valid JSON; falling back to an empty grid.');
+            }
         }
 
         this.#render();
