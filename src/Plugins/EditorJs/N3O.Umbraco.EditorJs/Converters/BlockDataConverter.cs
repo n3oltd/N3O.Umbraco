@@ -7,8 +7,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.EditorJs;
@@ -16,13 +16,17 @@ namespace N3O.Umbraco.EditorJs;
 public abstract class BlockDataConverter<TData> : IBlockDataConverter where TData : class {
     private const string DocumentEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
     private const string MediaEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Media;
+    private const string HrefAttributeStart = "href=\"";
     
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    private readonly IPublishedContentCache _contentCache;
+    private readonly IPublishedMediaCache _mediaCache;
     private readonly IPublishedUrlProvider _publishedUrlProvider;
 
-    protected BlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
+    protected BlockDataConverter(IPublishedContentCache contentCache,
+                                 IPublishedMediaCache mediaCache,
                                  IPublishedUrlProvider publishedUrlProvider) {
-        _umbracoContextAccessor = umbracoContextAccessor;
+        _contentCache = contentCache;
+        _mediaCache = mediaCache;
         _publishedUrlProvider = publishedUrlProvider;
     }
     
@@ -43,10 +47,18 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
     protected virtual void Process(TData data) { }
 
     protected string ConvertUmbracoLinks(string text) {
+        if (text == null) {
+            return null;
+        }
+
         return Regex.Replace(text, "(<a\\s+(?:[^>]*?\\s+)?href=\")(umb:\\/\\/[^\"]*)\"", ConvertUdiUrl);
     }
 
     protected string DecodePlatformsElements(string text) {
+        if (text == null) {
+            return null;
+        }
+
         var encodedStart = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.Start);
         var encodedEnd = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.End);
 
@@ -57,24 +69,25 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
 
     private string ConvertUdiUrl(Match match) {
         var udiText = match.Groups[2].Value;
-        var udi = UdiParser.Parse(udiText);
 
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out var context)) {
-            IPublishedContent content;
-            
+        // Stored content can carry any href, so an unparseable or unsupported reference loses its
+        // destination rather than taking the page down.
+        if (UdiParser.TryParse(udiText, out var udi) && udi is GuidUdi guidUdi) {
+            IPublishedContent content = null;
+
             if (udi.EntityType == DocumentEntityType) {
-                content = context.Content?.GetById(udi);
+                content = _contentCache.GetById(guidUdi.Guid);
             } else if (udi.EntityType == MediaEntityType) {
-                content = context.Media?.GetById(udi);
-            } else {
-                throw UnrecognisedValueException.For(udi.EntityType);
+                content = _mediaCache.GetById(guidUdi.Guid);
             }
-            
+
             if (content != null) {
                 return $"{match.Groups[1].Value}{content.Url(_publishedUrlProvider)}\"";
             }
         }
-        
-        return "";
+
+        // The match spans the opening tag up to and including the href's closing quote, so returning the
+        // tag without that attribute keeps the anchor and its text and drops only the dead destination.
+        return match.Groups[1].Value[..^HrefAttributeStart.Length];
     }
 }

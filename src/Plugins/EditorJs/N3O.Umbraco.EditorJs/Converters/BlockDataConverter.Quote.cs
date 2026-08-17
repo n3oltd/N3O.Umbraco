@@ -1,14 +1,19 @@
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Core.PublishedCache;
 
 namespace N3O.Umbraco.EditorJs;
 
 public class QuoteBlockDataConverter : BlockDataConverter<QuoteBlockData> {
-    public QuoteBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
+    public QuoteBlockDataConverter(IPublishedContentCache contentCache, IPublishedMediaCache mediaCache,
                                    IPublishedUrlProvider publishedUrlProvider)
-        : base(umbracoContextAccessor, publishedUrlProvider) { }
+        : base(contentCache, mediaCache, publishedUrlProvider) { }
     
     protected override string TypeId => "quote";
+
+    protected override void Process(QuoteBlockData data) {
+        data.Text = ConvertUmbracoLinks(data.Text);
+        data.Caption = ConvertUmbracoLinks(data.Caption);
+    }
 }
 
 public class QuoteBlockData {

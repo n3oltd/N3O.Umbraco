@@ -1,10 +1,11 @@
 @using N3O.Umbraco.EditorJs;
 @using N3O.Umbraco.EditorJs.Models
+@using N3O.Umbraco.Extensions
 
 @model EditorJsBlock<CheckListBlockData>
 
 <ul>
-	@foreach (var item in Model.Data.Items)	{
+	@foreach (var item in Model.Data.Items.OrEmpty())	{
 		<li>
 			<span>
 				@if (@item.Checked) {
