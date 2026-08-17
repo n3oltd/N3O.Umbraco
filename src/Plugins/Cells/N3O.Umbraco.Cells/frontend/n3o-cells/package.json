@@ -1,0 +1,22 @@
+{
+    "name": "@n3oltd/n3o-cells",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc --noEmit && vite build",
+        "watch": "vite build --watch"
+    },
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    },
+    "dependencies": {
+        "handsontable": "12.3.0"
+    },
+    "devDependencies": {
+        "@repo/build-config": "*",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "extends": "@repo/build-config/tsconfig-react",
+    "include": ["src"],
+    "compilerOptions": {
+        "paths": {
+            "handsontable": ["../../../../../node_modules/handsontable/index.d.ts"]
+        }
+    }
+}
