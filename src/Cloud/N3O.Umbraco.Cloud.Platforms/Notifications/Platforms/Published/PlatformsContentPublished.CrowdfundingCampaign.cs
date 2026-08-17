@@ -56,5 +56,5 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
         return content.GetValue<bool>(AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled));
     }
 
-    protected override string HookId => PlatformsConstants.WebhookIds.CrowdfundingCampaigns;
+    protected override string HookId => PlatformsConstants.Webhooks.HookIds.CrowdfundingCampaigns;
 }

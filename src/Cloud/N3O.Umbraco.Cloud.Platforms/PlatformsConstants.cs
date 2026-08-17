@@ -80,18 +80,6 @@ public static class PlatformsConstants {
         }
     }
 
-    public static class WebhookIds {
-        public const string Campaigns = "campaigns";
-        public const string CrossSells = "crossSells";
-        public const string ContentCollection = "contentCollection";
-        public const string ContentLibrary = "contentLibrary";
-        public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
-        public const string ManagedContent = "managedContent";
-        public const string Offerings = "offerings";
-        public const string QurbaniSeason = "qurbaniSeason";
-        public const string ZakatSettings = "zakatSettings";
-    }
-
     public static class Webhooks {
         public static class EventTypes {
             public static class Crowdfunder {
@@ -101,7 +89,16 @@ public static class PlatformsConstants {
         }
 
         public static class HookIds {
+            public const string Campaigns = "campaigns";
+            public const string ContentCollection = "contentCollection";
+            public const string ContentLibrary = "contentLibrary";
+            public const string CrossSells = "crossSells";
             public const string Crowdfunder = nameof(Crowdfunder);
+            public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
+            public const string ManagedContent = "managedContent";
+            public const string Offerings = "offerings";
+            public const string QurbaniSeason = "qurbaniSeason";
+            public const string ZakatSettings = "zakatSettings";
         }
     }
 
