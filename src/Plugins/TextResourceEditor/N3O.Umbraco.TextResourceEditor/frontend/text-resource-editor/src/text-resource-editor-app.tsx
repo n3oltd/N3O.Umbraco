@@ -3,13 +3,15 @@ import styles from './text-resource-editor-app.css?inline';
 
 export interface TextResourceEntry {
     source: string;
-    custom: string | null | undefined;
+    // Null as well as absent: this mirrors TextResource.Custom, a plain C# string that serialises to
+    // null when the editor has set no override.
+    custom?: string | null;
 }
 
-interface TextResourceEditorAppProps {
+type TextResourceEditorAppProps = {
     value: TextResourceEntry[];
     onChange: (value: TextResourceEntry[]) => void;
-}
+};
 
 // Fully controlled: the host element owns the value, so every edit must go out through onChange
 // rather than into local state.
