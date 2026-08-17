@@ -1,5 +1,3 @@
-// Umbraco's backoffice loads custom elements only, which is why the React UI needs this shell. React
-// is external, resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';

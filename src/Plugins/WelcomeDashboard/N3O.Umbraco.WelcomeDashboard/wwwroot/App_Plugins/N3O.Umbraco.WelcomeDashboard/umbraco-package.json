@@ -5,6 +5,12 @@
     "version": "17.0.0",
     "extensions": [
         {
+            "type": "backofficeEntryPoint",
+            "alias": "N3O.EntryPoint.WelcomeDashboard",
+            "name": "N3O Welcome Dashboard Entry Point",
+            "js": "/App_Plugins/N3O.Umbraco.WelcomeDashboard/entry-point.js"
+        },
+        {
             "type": "dashboard",
             "alias": "N3O.Dashboard.Welcome",
             "name": "N3O Welcome Dashboard",
