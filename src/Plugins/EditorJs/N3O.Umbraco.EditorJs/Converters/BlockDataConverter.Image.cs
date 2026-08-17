@@ -16,6 +16,6 @@ public class ImageBlockData {
     public string Url { get; set; }
     public string Alt { get; set; }
     public Udi Udi { get; set; }
-    public int Height { get; set; }
-    public int Width { get; set; }
+    public int? Height { get; set; }
+    public int? Width { get; set; }
 }

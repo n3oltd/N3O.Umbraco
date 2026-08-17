@@ -1,10 +1,5 @@
 import styles from './welcome-dashboard-app.css?inline';
 
-// NOTE: React shell is overhead here (a near-static help panel) — kept for uniformity per
-// migration decision. Hybrid UI: uui-box provides the backoffice-standard chrome; the body is
-// plain static markup ported verbatim from the original AngularJS/Lit dashboard view.
-
-// React UI for the Welcome dashboard. Static help/support panel — no props, no state, no backend.
 export function WelcomeDashboardApp() {
     return (
         <uui-box headline="Help & Support">

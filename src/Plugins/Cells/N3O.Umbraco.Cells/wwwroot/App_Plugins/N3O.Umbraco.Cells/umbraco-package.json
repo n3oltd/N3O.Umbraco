@@ -13,7 +13,17 @@
                 "label": "N3O Cells",
                 "icon": "icon-grid",
                 "group": "common",
-                "propertyEditorSchemaAlias": "N3O.Umbraco.Cells"
+                "propertyEditorSchemaAlias": "N3O.Umbraco.Cells",
+                "settings": {
+                    "properties": [
+                        {
+                            "alias": "gridConfiguration",
+                            "label": "Grid Configuration",
+                            "description": "Sets the configuration for the grid",
+                            "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextArea"
+                        }
+                    ]
+                }
             }
         }
     ]

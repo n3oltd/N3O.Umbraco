@@ -16,8 +16,6 @@
     },
     "devDependencies": {
         "@repo/build-config": "*",
-        "@n3oltd/backoffice-core": "*",
-        "@n3oltd/backoffice-ui": "*",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0"
     }

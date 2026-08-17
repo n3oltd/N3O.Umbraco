@@ -13,14 +13,6 @@ import { SerpEditorApp, type SerpValue } from './serp-editor-app';
 
 const elementName = 'n3o-serp-editor';
 
-// Web-component SHELL for the SERP property editor. Umbraco's backoffice only loads custom
-// elements, so this thin element owns the Umbraco contract (value/config + UmbPropertyValueChangeEvent)
-// and mounts the React UI (SerpEditorApp) into its shadow root. React itself is NOT bundled here —
-// it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
-//
-// UmbAuthFetchMixin (from @n3oltd/backoffice-core) provides `this.authFetch`, rebuilt from
-// UMB_AUTH_CONTEXT whenever the auth context changes. It is forwarded to SerpEditorApp as a prop
-// so the React component can make authenticated requests to the [Authorize] templateOptions endpoint.
 @customElement(elementName)
 export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbPropertyEditorUiElement {
     #root?: Root;
@@ -45,10 +37,10 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
         this.#render();
     }
 
-    // Config (prevalues) arrives as UmbPropertyEditorConfigCollection.
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
-        const maxCharsTitle = Number.parseInt(config?.getValueByAlias('maxCharsTitle') ?? '', 10);
-        const maxCharsDescription = Number.parseInt(config?.getValueByAlias('maxCharsDescription') ?? '', 10);
+        const maxCharsTitle = Number.parseInt(String(config?.getValueByAlias('maxCharsTitle') ?? ''), 10);
+        const maxCharsDescription = Number.parseInt(String(config?.getValueByAlias('maxCharsDescription') ?? ''),
+                                                    10);
 
         if (!Number.isNaN(maxCharsTitle) && maxCharsTitle > 0) {
             this.#maxCharsTitle = maxCharsTitle;
@@ -61,7 +53,6 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
         this.#render();
     }
 
-    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
     authFetchChanged(_authFetch: AuthFetch | null): void {
         this.#render();
     }

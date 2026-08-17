@@ -1,30 +1,27 @@
 import { useEffect, useRef } from 'react';
 import Handsontable from 'handsontable';
-// Handsontable CSS is imported as an inlined string so Vite bundles it into the JS output
-// rather than emitting a separate .css file. It is injected into the shadow root via a <style>
-// tag below, matching the original Lit component's behaviour (scoped, no extra network request).
 import handsontableStyles from 'handsontable/dist/handsontable.full.min.css?inline';
 
 export type CellsValue = unknown[][] | undefined;
 
-interface N3oCellsAppProps {
+type N3oCellsAppProps = {
     value: CellsValue;
-    // Parsed `gridConfiguration` prevalue (columns, default data, etc.).
     gridConfiguration: Record<string, unknown>;
     onChange: (value: unknown[][]) => void;
+};
+
+// Handsontable writes edits into the array it is given, so it never receives the stored value itself.
+function copyGrid(data: unknown[][] | undefined): unknown[][] | undefined {
+    return data ? structuredClone(data) : undefined;
 }
 
-// React UI for the Cells (Handsontable) property editor. Controlled by the host web component:
-// `value` comes in as a prop, edits are pushed back out via `onChange` (the host then raises
-// UmbPropertyValueChangeEvent). Handsontable is a non-React imperative library, so it is created
-// inside a useEffect against a container ref and destroyed in the effect cleanup. It is NOT
-// re-created on every render — the effect depends only on the inputs that require a fresh grid.
 export function N3oCellsApp({ value, gridConfiguration, onChange }: N3oCellsAppProps) {
     const containerRef = useRef<HTMLDivElement>(null);
-    // Keep the latest onChange in a ref so the change hook always calls the current callback
-    // without forcing the grid to be re-initialised when the parent passes a new function identity.
+    const hotRef = useRef<Handsontable | null>(null);
     const onChangeRef = useRef(onChange);
     onChangeRef.current = onChange;
+    const valueRef = useRef(value);
+    valueRef.current = value;
 
     useEffect(() => {
         const container = containerRef.current;
@@ -33,8 +30,7 @@ export function N3oCellsApp({ value, gridConfiguration, onChange }: N3oCellsAppP
             return;
         }
 
-        // Fall back to the configured default data when the host has no stored value.
-        const data = (value ?? (gridConfiguration.data as unknown[][] | undefined)) as unknown[][] | undefined;
+        const data = copyGrid(valueRef.current ?? (gridConfiguration.data as unknown[][] | undefined));
 
         const globalConfig: Handsontable.GridSettings = {
             licenseKey: 'non-commercial-and-evaluation',
@@ -50,14 +46,27 @@ export function N3oCellsApp({ value, gridConfiguration, onChange }: N3oCellsAppP
 
         const hot = new Handsontable(container, { ...gridConfiguration, ...globalConfig });
 
+        hotRef.current = hot;
+
         return () => {
+            hotRef.current = null;
+
             hot.destroy();
         };
-        // Re-initialise only when the grid configuration changes. The host's `value` updates flow
-        // through Handsontable's own change hooks (single source of truth = the host element), so
-        // depending on `value` here would needlessly destroy/recreate the grid on every edit.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [gridConfiguration]);
+
+    useEffect(() => {
+        const hot = hotRef.current;
+
+        if (!hot || !Array.isArray(value)) {
+            return;
+        }
+
+        if (JSON.stringify(hot.getData()) !== JSON.stringify(value)) {
+            hot.loadData(structuredClone(value));
+        }
+    }, [value]);
 
     return (
         <>

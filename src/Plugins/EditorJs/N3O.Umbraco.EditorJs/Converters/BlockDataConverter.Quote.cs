@@ -9,6 +9,11 @@ public class QuoteBlockDataConverter : BlockDataConverter<QuoteBlockData> {
         : base(contentCache, mediaCache, publishedUrlProvider) { }
     
     protected override string TypeId => "quote";
+
+    protected override void Process(QuoteBlockData data) {
+        data.Text = ConvertUmbracoLinks(data.Text);
+        data.Caption = ConvertUmbracoLinks(data.Caption);
+    }
 }
 
 public class QuoteBlockData {

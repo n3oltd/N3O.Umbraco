@@ -10,12 +10,6 @@ import { TextResourceEditorApp, type TextResourceEntry } from './text-resource-e
 
 const elementName = 'n3o-text-resource-editor';
 
-// Web-component SHELL for the text resource property editor. Umbraco's backoffice only loads custom
-// elements, so this thin element owns the Umbraco contract (value/config + UmbPropertyValueChangeEvent)
-// and mounts the React UI (TextResourceEditorApp) into its shadow root. React itself is NOT bundled
-// here — it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
-//
-// Mirrors the SerpEditor reference bridge pattern. The value is an array of { source, custom } entries.
 @customElement(elementName)
 export class N3oTextResourceEditorElement extends HTMLElement implements UmbPropertyEditorUiElement {
     #root?: Root;
@@ -38,7 +32,6 @@ export class N3oTextResourceEditorElement extends HTMLElement implements UmbProp
         this.#render();
     }
 
-    // config is set by Umbraco; not used by this editor but accepted to satisfy the contract.
     public set config(_config: UmbPropertyEditorConfigCollection | undefined) {}
 
     connectedCallback(): void {

@@ -1,9 +1,4 @@
-// Block tool that lets editors pick images from the Umbraco media library.
-// EditorJS instantiates tools via `new ToolClass({ data, api, config })`, so the openMediaPicker
-// dependency is injected through a factory that returns the concrete class. The caller registers
-// the returned class directly with EditorJS.
-
-// ---- minimal shims for the EditorJS block tool API ----
+import { createInput, createLabel, randomUUID } from './renderHelpers';
 
 export interface EditorJsApi {
     styles: { inlineToolButton: string; inlineToolButtonActive: string };
@@ -40,40 +35,6 @@ export interface MediaPickerResultItem {
 
 export type OpenMediaPicker = (tool: { applyMediaSelection(item: MediaPickerResultItem): void }) => Promise<void>;
 
-// ---- small DOM helpers shared by image tool ----
-
-class RenderHelper {
-    static randomUUID(): string {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = (Math.random() * 16) | 0;
-            const v = c === 'x' ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-        });
-    }
-
-    static createLabel(id: string, cssClass: string, text: string): HTMLLabelElement {
-        const label = document.createElement('label');
-        label.innerHTML = text;
-        label.classList.add(cssClass);
-        label.setAttribute('for', id);
-        return label;
-    }
-
-    static createInput(id: string, value: string, text: string, type: string): HTMLInputElement {
-        const input = document.createElement('input');
-        input.setAttribute('type', type);
-        if (value) {
-            input.setAttribute('value', value);
-        }
-        if (text) {
-            input.setAttribute('placeholder', text);
-        }
-        input.setAttribute('id', id);
-        input.classList.add('cdx-input');
-        return input;
-    }
-}
-
 export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
     return class UmbracoImageTool {
         static get toolbox(): object {
@@ -109,9 +70,9 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             this.input = document.createElement('input');
             this.input.setAttribute('type', 'hidden');
 
-            const altTextID = RenderHelper.randomUUID();
-            this.altTextLabel = RenderHelper.createLabel(altTextID, 'sr-only', 'Alt text');
-            this.altTextInput = RenderHelper.createInput(altTextID, this.data.alt, 'Enter alt text', 'text');
+            const altTextID = randomUUID();
+            this.altTextLabel = createLabel(altTextID, 'sr-only', 'Alt text');
+            this.altTextInput = createInput(altTextID, this.data.alt, 'Enter alt text', 'text');
 
             this.wrapper.classList.add('simple-image');
 
@@ -122,12 +83,17 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             this.button.classList.add('umb-group-builder__group-add-property');
             this.button.classList.add('skriv-let__add-image-button');
             this.button.textContent = this.data?.url ? 'Change image' : 'Select an image';
-            this.button.addEventListener('click', () => {
+            // The picker's modal belongs to the parent document and renders behind a fullscreen frame.
+            const pickUnlessFullscreen = () => {
+                if (document.fullscreenElement) {
+                    return;
+                }
+
                 void openMediaPicker(this);
-            });
-            this.image?.addEventListener('click', () => {
-                void openMediaPicker(this);
-            });
+            };
+
+            this.button.addEventListener('click', pickUnlessFullscreen);
+            this.image?.addEventListener('click', pickUnlessFullscreen);
             this.wrapper.appendChild(this.altTextLabel);
             this.wrapper.appendChild(this.altTextInput);
             this.wrapper.appendChild(this.button);
@@ -140,11 +106,14 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             const imageUrl = item.url ?? '';
             const imageAlt = item.name ?? '';
 
+            const width = Number.parseInt(String(item.width), 10);
+            const height = Number.parseInt(String(item.height), 10);
+
             this.data.url = imageUrl;
             this.data.alt = imageAlt;
-            this.data.udi = item.unique ?? item.udi ?? '';
-            this.data.width = parseInt(String(item.width));
-            this.data.height = parseInt(String(item.height));
+            this.data.udi = item.udi ?? '';
+            this.data.width = Number.isNaN(width) ? undefined : width;
+            this.data.height = Number.isNaN(height) ? undefined : height;
 
             if (this.input) {
                 this.input.value = imageUrl;
@@ -155,6 +124,7 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             }
             if (this.altTextInput) {
                 this.altTextInput.value = imageAlt;
+                this.altTextInput.setAttribute('value', imageAlt);
             }
             if (this.button) {
                 this.button.textContent = this.data?.url ? 'Change image' : 'Select an image';

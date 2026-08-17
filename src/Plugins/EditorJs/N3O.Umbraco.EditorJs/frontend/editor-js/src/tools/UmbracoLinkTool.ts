@@ -1,9 +1,4 @@
-// Inline tool that replaces EditorJS's built-in link tool with an Umbraco link picker.
-// EditorJS instantiates tools via `new ToolClass({ api, ... })`, so dependencies that were
-// previously captured by a closure (openLinkPicker) are injected through a factory that returns
-// the concrete class. The caller registers the returned class directly with EditorJS.
-
-// ---- minimal shims for the EditorJS inline tool API ----
+import { isSafeUrl } from './renderHelpers';
 
 export interface EditorJsApi {
     styles: { inlineToolButton: string; inlineToolButtonActive: string };
@@ -37,10 +32,12 @@ export function makeUmbracoLinkTool(openLinkPicker: OpenLinkPicker) {
             this.button?.classList.toggle(this.api.styles.inlineToolButtonActive, state);
         }
 
+        // EditorJS merges this into every block tool and applies it on paste, render and save, which is
+        // the only place a pasted href is filtered.
         static get sanitize(): object {
             return {
                 a: {
-                    href: true,
+                    href: (value: string) => isSafeUrl(value),
                 },
             };
         }
@@ -75,6 +72,12 @@ export function makeUmbracoLinkTool(openLinkPicker: OpenLinkPicker) {
         }
 
         wrap(range: Range, url: string): void {
+            if (!isSafeUrl(url)) {
+                console.error('[EditorJs] Refused a link with an unsupported scheme.');
+
+                return;
+            }
+
             const selectedText = range.extractContents();
             const link = document.createElement(this.tag);
 

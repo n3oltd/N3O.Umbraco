@@ -9,6 +9,10 @@ public class HeaderBlockDataConverter : BlockDataConverter<HeaderBlockData> {
         : base(contentCache, mediaCache, publishedUrlProvider) { }
     
     protected override string TypeId => "header";
+
+    protected override void Process(HeaderBlockData data) {
+        data.Text = ConvertUmbracoLinks(data.Text);
+    }
 }
 
 public class HeaderBlockData {
