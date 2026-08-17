@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
 import Handsontable from 'handsontable';
-// Handsontable CSS is imported as an inlined string so Vite bundles it into the JS output
-// rather than emitting a separate .css file. It is injected into the shadow root via a <style>
-// tag below, matching the original Lit component's behaviour (scoped, no extra network request).
+// ?inline keeps the stylesheet in the JS bundle instead of a separate .css file, so it can be injected
+// into the shadow root below. A linked stylesheet would not reach inside the shadow boundary.
 import handsontableStyles from 'handsontable/dist/handsontable.full.min.css?inline';
 
 export type CellsValue = unknown[][] | undefined;
@@ -14,11 +13,8 @@ interface N3oCellsAppProps {
     onChange: (value: unknown[][]) => void;
 }
 
-// React UI for the Cells (Handsontable) property editor. Controlled by the host web component:
-// `value` comes in as a prop, edits are pushed back out via `onChange` (the host then raises
-// UmbPropertyValueChangeEvent). Handsontable is a non-React imperative library, so it is created
-// inside a useEffect against a container ref and destroyed in the effect cleanup. It is NOT
-// re-created on every render — the effect depends only on the inputs that require a fresh grid.
+// Handsontable is imperative and owns its own DOM, so it lives in an effect against a container ref
+// rather than being described by the render tree.
 export function N3oCellsApp({ value, gridConfiguration, onChange }: N3oCellsAppProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     // Keep the latest onChange in a ref so the change hook always calls the current callback
@@ -33,8 +29,7 @@ export function N3oCellsApp({ value, gridConfiguration, onChange }: N3oCellsAppP
             return;
         }
 
-        // Fall back to the configured default data when the host has no stored value.
-        const data = (value ?? (gridConfiguration.data as unknown[][] | undefined)) as unknown[][] | undefined;
+        const data =(value ?? (gridConfiguration.data as unknown[][] | undefined)) as unknown[][] | undefined;
 
         const globalConfig: Handsontable.GridSettings = {
             licenseKey: 'non-commercial-and-evaluation',
