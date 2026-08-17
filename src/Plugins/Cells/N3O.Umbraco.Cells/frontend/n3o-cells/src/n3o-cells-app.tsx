@@ -59,7 +59,7 @@ export function N3oCellsApp({ value, gridConfiguration, onChange }: N3oCellsAppP
     useEffect(() => {
         const hot = hotRef.current;
 
-        if (!hot || value === undefined) {
+        if (!hot || !Array.isArray(value)) {
             return;
         }
 
