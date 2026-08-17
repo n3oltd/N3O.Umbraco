@@ -13,14 +13,11 @@ import { SerpEditorApp, type SerpValue } from './serp-editor-app';
 
 const elementName = 'n3o-serp-editor';
 
-// Web-component SHELL for the SERP property editor. Umbraco's backoffice only loads custom
-// elements, so this thin element owns the Umbraco contract (value/config + UmbPropertyValueChangeEvent)
-// and mounts the React UI (SerpEditorApp) into its shadow root. React itself is NOT bundled here —
-// it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
+// Umbraco's backoffice loads custom elements only, which is why the React UI needs this shell. React
+// is external, resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 //
-// UmbAuthFetchMixin (from @n3oltd/backoffice-core) provides `this.authFetch`, rebuilt from
-// UMB_AUTH_CONTEXT whenever the auth context changes. It is forwarded to SerpEditorApp as a prop
-// so the React component can make authenticated requests to the [Authorize] templateOptions endpoint.
+// UmbAuthFetchMixin supplies this.authFetch, rebuilt whenever UMB_AUTH_CONTEXT changes, so the
+// templateOptions call can reach an [Authorize] endpoint.
 @customElement(elementName)
 export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbPropertyEditorUiElement {
     #root?: Root;
@@ -45,7 +42,6 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
         this.#render();
     }
 
-    // Config (prevalues) arrives as UmbPropertyEditorConfigCollection.
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
         // The Integer settings editor stores a number, but a data type saved before those settings
         // existed still carries a string, so normalise before parsing.
@@ -64,7 +60,7 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
         this.#render();
     }
 
-    // Re-render when the shared authenticated fetch becomes available / changes (mixin hook).
+    // Called by UmbAuthFetchMixin, not from this class.
     authFetchChanged(_authFetch: AuthFetch | null): void {
         this.#render();
     }

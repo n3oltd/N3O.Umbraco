@@ -19,15 +19,10 @@ interface SerpEditorAppProps {
     onChange: (value: SerpValue) => void;
 }
 
-// Module-level cache: the templateOptions response is site-wide and never changes within a session.
-// We cache the resolved suffix so repeated property-editor mounts (e.g. multiple SERP fields on a
-// page) only ever issue a single network request.
+// The title suffix is site-wide and fixed for the session, so it is cached across mounts to keep
+// several SERP fields on one page down to a single request.
 let cachedTitleSuffix: string | undefined;
 
-// React UI for the Google SERP preview property editor. Controlled by the host web component:
-// `value` comes in as a prop, edits are pushed back out via `onChange` (the host then raises
-// UmbPropertyValueChangeEvent). Hybrid UI: uui-box for backoffice-standard chrome + a custom
-// styled SERP preview (the bespoke surface).
 export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authFetch, onChange }: SerpEditorAppProps) {
     const [titleSuffix, setTitleSuffix] = useState(cachedTitleSuffix ?? '');
 
@@ -36,7 +31,6 @@ export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authF
             return;
         }
 
-        // Return early if we already have the suffix (from cache or a prior mount in this session).
         if (cachedTitleSuffix !== undefined) {
             return;
         }
