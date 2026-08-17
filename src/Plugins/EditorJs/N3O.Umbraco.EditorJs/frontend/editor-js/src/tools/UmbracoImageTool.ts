@@ -3,6 +3,8 @@
 // dependency is injected through a factory that returns the concrete class. The caller registers
 // the returned class directly with EditorJS.
 
+import { createInput, createLabel, randomUUID } from './renderHelpers';
+
 // ---- minimal shims for the EditorJS block tool API ----
 
 export interface EditorJsApi {
@@ -40,40 +42,6 @@ export interface MediaPickerResultItem {
 
 export type OpenMediaPicker = (tool: { applyMediaSelection(item: MediaPickerResultItem): void }) => Promise<void>;
 
-// ---- small DOM helpers shared by image tool ----
-
-class RenderHelper {
-    static randomUUID(): string {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = (Math.random() * 16) | 0;
-            const v = c === 'x' ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-        });
-    }
-
-    static createLabel(id: string, cssClass: string, text: string): HTMLLabelElement {
-        const label = document.createElement('label');
-        label.innerHTML = text;
-        label.classList.add(cssClass);
-        label.setAttribute('for', id);
-        return label;
-    }
-
-    static createInput(id: string, value: string, text: string, type: string): HTMLInputElement {
-        const input = document.createElement('input');
-        input.setAttribute('type', type);
-        if (value) {
-            input.setAttribute('value', value);
-        }
-        if (text) {
-            input.setAttribute('placeholder', text);
-        }
-        input.setAttribute('id', id);
-        input.classList.add('cdx-input');
-        return input;
-    }
-}
-
 export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
     return class UmbracoImageTool {
         static get toolbox(): object {
@@ -109,9 +77,9 @@ export function makeUmbracoImageTool(openMediaPicker: OpenMediaPicker) {
             this.input = document.createElement('input');
             this.input.setAttribute('type', 'hidden');
 
-            const altTextID = RenderHelper.randomUUID();
-            this.altTextLabel = RenderHelper.createLabel(altTextID, 'sr-only', 'Alt text');
-            this.altTextInput = RenderHelper.createInput(altTextID, this.data.alt, 'Enter alt text', 'text');
+            const altTextID = randomUUID();
+            this.altTextLabel = createLabel(altTextID, 'sr-only', 'Alt text');
+            this.altTextInput = createInput(altTextID, this.data.alt, 'Enter alt text', 'text');
 
             this.wrapper.classList.add('simple-image');
 

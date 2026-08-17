@@ -4,31 +4,7 @@
 
 import Embed from '@editorjs/embed';
 
-// ---- small DOM helpers (duplicated from UmbracoImageTool to keep each tool file self-contained) ----
-
-class RenderHelper {
-    static createLabel(id: string, cssClass: string, text: string): HTMLLabelElement {
-        const label = document.createElement('label');
-        label.innerHTML = text;
-        label.classList.add(cssClass);
-        label.setAttribute('for', id);
-        return label;
-    }
-
-    static createInput(id: string, value: string, text: string, type: string): HTMLInputElement {
-        const input = document.createElement('input');
-        input.setAttribute('type', type);
-        if (value) {
-            input.setAttribute('value', value);
-        }
-        if (text) {
-            input.setAttribute('placeholder', text);
-        }
-        input.setAttribute('id', id);
-        input.classList.add('cdx-input');
-        return input;
-    }
-}
+import { createInput, createLabel } from './renderHelpers';
 
 // Embed is `any` (declared in vendor.d.ts) so extending it is safe at runtime.
 // The base type is widened to `any` so that super.render() and super.* are accessible.
@@ -49,14 +25,14 @@ export class EmbedWithUI extends (Embed as new (...args: any[]) => any) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this as any).element = container;
 
-            const label = RenderHelper.createLabel(
+            const label = createLabel(
                 'embed-input',
                 'cdx-label',
                 'Enter a URL to embed a video from YouTube or Vimeo'
             );
             container.appendChild(label);
 
-            const input = RenderHelper.createInput('embed-input', '', '', 'url');
+            const input = createInput('embed-input', '', '', 'url');
             input.addEventListener('paste', (event: ClipboardEvent) => {
                 const url = event.clipboardData?.getData('text') ?? '';
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
