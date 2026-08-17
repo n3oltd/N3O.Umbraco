@@ -11,10 +11,8 @@ interface TextResourceEditorAppProps {
     onChange: (value: TextResourceEntry[]) => void;
 }
 
-// React UI for the text resource override property editor. Controlled by the host web component:
-// `value` (an array of { source, custom } entries) comes in as a prop and is the single source of
-// truth — edits are pushed back out via `onChange` (the host then raises UmbPropertyValueChangeEvent).
-// Each entry shows the read-only source text, a delete affordance, and an input bound to `custom`.
+// Fully controlled: the host element owns the value, so every edit must go out through onChange
+// rather than into local state.
 export function TextResourceEditorApp({ value, onChange }: TextResourceEditorAppProps) {
     const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
