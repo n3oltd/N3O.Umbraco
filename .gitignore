@@ -10,20 +10,21 @@
 *.sln.docstates
 *.env
 
-# Build output
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
+# Build output. Anchored to the repo root except bin/ and obj/, which occur per project;
+# unanchored, these swallow any source folder that happens to share the name
+/[Dd]ebug/
+/[Dd]ebugPublic/
+/[Rr]elease/
+/[Rr]eleases/
+/[Ww][Ii][Nn]32/
+/[Aa][Rr][Mm]/
+/[Aa][Rr][Mm]64/
+/bld/
 [Bb]in/
 [Oo]bj/
-[Oo]ut/
-[Ll]og/
-[Ll]ogs/
+/[Oo]ut/
+/[Ll]og/
+/[Ll]ogs/
 **/[Bb]in/*
 
 # Visual Studio
