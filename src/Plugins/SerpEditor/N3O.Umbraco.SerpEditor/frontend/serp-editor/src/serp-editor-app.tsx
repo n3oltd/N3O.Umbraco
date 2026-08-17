@@ -19,9 +19,35 @@ type SerpEditorAppProps = {
     onChange: (value: SerpValue) => void;
 };
 
-// The title suffix is site-wide and fixed for the session, so it is cached across mounts to keep
-// several SERP fields on one page down to a single request.
 let cachedTitleSuffix: string | undefined;
+let titleSuffixRequest: Promise<string> | undefined;
+
+function loadTitleSuffix(authFetch: AuthFetch): Promise<string> {
+    if (cachedTitleSuffix !== undefined) {
+        return Promise.resolve(cachedTitleSuffix);
+    }
+
+    titleSuffixRequest ??= authFetch('/umbraco/backoffice/api/serpEditor/templateOptions')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`templateOptions fetch failed: ${response.status}`);
+            }
+
+            return response.json() as Promise<TemplateOptionsResponse>;
+        })
+        .then((data) => {
+            cachedTitleSuffix = data.titleSuffix ?? '';
+
+            return cachedTitleSuffix;
+        })
+        .catch((err: unknown) => {
+            titleSuffixRequest = undefined;
+
+            throw err;
+        });
+
+    return titleSuffixRequest;
+}
 
 export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authFetch, onChange }: SerpEditorAppProps) {
     const [titleSuffix, setTitleSuffix] = useState(cachedTitleSuffix ?? '');
@@ -31,23 +57,12 @@ export function SerpEditorApp({ value, maxCharsTitle, maxCharsDescription, authF
             return;
         }
 
-        if (cachedTitleSuffix !== undefined) {
-            return;
-        }
-
         let active = true;
 
-        authFetch('/umbraco/backoffice/api/serpEditor/templateOptions')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`templateOptions fetch failed: ${response.status}`);
-                }
-                return response.json() as Promise<TemplateOptionsResponse>;
-            })
-            .then((data) => {
-                cachedTitleSuffix = data.titleSuffix ?? '';
+        loadTitleSuffix(authFetch)
+            .then((suffix) => {
                 if (active) {
-                    setTitleSuffix(cachedTitleSuffix);
+                    setTitleSuffix(suffix);
                 }
             })
             .catch((err: unknown) => {

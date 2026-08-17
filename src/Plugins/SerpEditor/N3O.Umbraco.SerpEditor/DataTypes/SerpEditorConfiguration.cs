@@ -4,8 +4,8 @@ namespace N3O.Umbraco.SerpEditor.DataTypes;
 
 public class SerpEditorConfiguration {
     [ConfigurationField("maxCharsDescription")]
-    public string MaxCharsDescription { get; set; }
+    public int? MaxCharsDescription { get; set; }
 
     [ConfigurationField("maxCharsTitle")]
-    public string MaxCharsTitle { get; set; }
+    public int? MaxCharsTitle { get; set; }
 }

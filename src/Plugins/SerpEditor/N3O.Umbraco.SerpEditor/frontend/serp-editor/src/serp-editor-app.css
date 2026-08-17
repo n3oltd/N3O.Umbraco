@@ -1,8 +1,6 @@
 .sv { display: flex; gap: 40px; }
 .sv-form { flex: 0 0 30%; }
 .sv-demo { flex: 1 1 600px; max-width: 600px; }
-/* Shadow DOM isolates these native controls from the backoffice's global input
-   styling, so restyle them to match (uui-input can't be used from React). */
 .sv-form input, .sv-form textarea {
     width: 100%;
     box-sizing: border-box;

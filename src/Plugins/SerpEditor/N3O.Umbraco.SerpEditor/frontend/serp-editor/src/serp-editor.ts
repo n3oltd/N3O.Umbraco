@@ -13,11 +13,6 @@ import { SerpEditorApp, type SerpValue } from './serp-editor-app';
 
 const elementName = 'n3o-serp-editor';
 
-// Umbraco's backoffice loads custom elements only, which is why the React UI needs this shell. React
-// is external, resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
-//
-// UmbAuthFetchMixin supplies this.authFetch, rebuilt whenever UMB_AUTH_CONTEXT changes, so the
-// templateOptions call can reach an [Authorize] endpoint.
 @customElement(elementName)
 export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement)) implements UmbPropertyEditorUiElement {
     #root?: Root;
@@ -43,8 +38,6 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
     }
 
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
-        // The Integer settings editor stores a number, but a data type saved before those settings
-        // existed still carries a string, so normalise before parsing.
         const maxCharsTitle = Number.parseInt(String(config?.getValueByAlias('maxCharsTitle') ?? ''), 10);
         const maxCharsDescription = Number.parseInt(String(config?.getValueByAlias('maxCharsDescription') ?? ''),
                                                     10);
@@ -60,7 +53,6 @@ export class N3oSerpEditorElement extends UmbAuthFetchMixin(UmbElementMixin(HTML
         this.#render();
     }
 
-    // Called by UmbAuthFetchMixin, not from this class.
     authFetchChanged(_authFetch: AuthFetch | null): void {
         this.#render();
     }
