@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "id": "N3O.Umbraco.TextResourceEditor",
+    "name": "N3O Text Resource Editor",
+    "version": "17.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.TemplateTextEditor",
+            "name": "N3O Text Resource Editor",
+            "element": "/App_Plugins/N3O.Umbraco.TextResourceEditor/text-resource-editor.js",
+            "meta": {
+                "label": "N3O Text Resource Editor",
+                "icon": "icon-document",
+                "group": "common",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.TemplateTextEditor"
+            }
+        }
+    ]
+}

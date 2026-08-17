@@ -1,0 +1,9 @@
+import { n3oPluginConfig } from '@repo/build-config';
+
+export default n3oPluginConfig({
+    entries: {
+        'N3O.Umbraco.TextResourceEditor/text-resource-editor': 'src/text-resource-editor.ts',
+    },
+    outDir: 'dist',
+    react: true,
+});
