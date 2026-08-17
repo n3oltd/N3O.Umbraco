@@ -47,14 +47,16 @@ public class CrowdfunderReceiver : WebhookReceiver {
             return;
         }
 
-        // The page is read before it is evicted: reading first would consume the eviction it just recorded, and
-        // a stale page still names the merge models that need evicting.
-        await EvictMergeModelsAsync(webhookCrowdfunder.PagePublishedPath, cancellationToken);
-
         foreach (var pagePublishedPath in webhookCrowdfunder.OrEmpty(x => x.PagePublishedPathsHistory)) {
             _cdnClient.Evict(pagePublishedPath);
         }
 
+        _cdnClient.Evict(webhookCrowdfunder.PagePublishedPath);
+
+        // The read that follows is served fresh because of the eviction above, and consumes it.
+        await EvictMergeModelsAsync(webhookCrowdfunder.PagePublishedPath, cancellationToken);
+
+        // The CDN may not have had the new page yet, so the page is left marked for the next reader.
         _cdnClient.Evict(webhookCrowdfunder.PagePublishedPath);
     }
 

@@ -109,6 +109,11 @@ public class CdnClient : ICdnClient {
                                              url => new Lazy<Task<CdnDownloadResult>>(() => RefreshAsync(url)));
 
             await refresh.Value.WaitAsync(cancellationToken);
+
+            // A refresh that could not replace the entry will not replace it on a second turn either.
+            if (ReferenceEquals(Downloads.GetOrDefault(publishedUrl), download)) {
+                break;
+            }
         }
 
         return Downloads[publishedUrl];
@@ -118,6 +123,11 @@ public class CdnClient : ICdnClient {
         try {
             var startedAt = _clock.GetCurrentInstant();
             var cdnDownloadResult = await DownloadStringAsync(publishedUrl, startedAt, CancellationToken.None);
+
+            // Refreshes for a URL are serialised, so this is the entry AddOrUpdate will see.
+            if (cdnDownloadResult.NotFound && Downloads.GetOrDefault(publishedUrl)?.Success == true) {
+                cdnDownloadResult = CdnDownloadResult.ForNotFoundReplacingSuccess(startedAt);
+            }
 
             // A cached success survives a transient error, but not a not-found: content that has gone must stop
             // being served.
