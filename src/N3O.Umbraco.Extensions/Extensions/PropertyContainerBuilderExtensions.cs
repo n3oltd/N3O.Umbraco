@@ -100,17 +100,6 @@ public static class PropertyContainerBuilderExtensions {
         return builder.Property<EmailPropertyTypeBuilder, TProperty>(expression);
     }
 
-    public static ExistingDataTypePropertyTypeBuilder ExistingDataType(this IPropertyContainerBuilder builder,
-                                                                       string propertyAlias) {
-        return builder.Property<ExistingDataTypePropertyTypeBuilder>(propertyAlias);
-    }
-
-    public static ExistingDataTypePropertyTypeBuilder ExistingDataType<T, TProperty>(
-        this IPropertyContainerBuilder<T> builder,
-        Expression<Func<T, TProperty>> expression) {
-        return builder.Property<ExistingDataTypePropertyTypeBuilder, TProperty>(expression);
-    }
-
     public static EyeDropperPropertyTypeBuilder EyeDropper(this IPropertyContainerBuilder builder,
                                                            string propertyAlias) {
         return builder.Property<EyeDropperPropertyTypeBuilder>(propertyAlias);

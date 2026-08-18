@@ -13,11 +13,6 @@ public static class PlatformsConstants {
         
         public const string ScheduledGiving = "platformsScheduledGivingCampaign";
         public const string RegularGiving = "platformsRegularGivingCampaign";
-
-        public static class Properties {
-            public const string HeroImage = "heroImage";
-            public const string PageContent = "campaignPageContent";
-        }
     }
 
     public static class CrossSells {
@@ -34,7 +29,6 @@ public static class PlatformsConstants {
         public static class Crowdfunder {
             public const string Alias = "platformsCrowdfunder";
 
-            // Only the campaign picker: every other alias on a crowdfunder belongs to the site.
             public static class Properties {
                 public const string Campaign = "campaign";
             }
@@ -43,12 +37,6 @@ public static class PlatformsConstants {
 
     public static class CrowdfundingCampaign {
         public const string CompositionAlias = "platformsCrowdfundingCampaign";
-
-        public static class Properties {
-            // TODO Delete along with the composition once every site has been migrated. HeroImage is site-specific.
-            public const string Content = "newCrowdfundingContent";
-            public const string HeroImage = "newCrowdfundingHeroImage";
-        }
     }
 
     public static class DonationFormContent {
