@@ -2,6 +2,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
+using Microsoft.Extensions.Options;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -31,10 +33,6 @@ namespace N3O.Umbraco.Data.Converters;
 public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
     private static readonly string EditorAlias = UmbracoPropertyEditors.Aliases.MediaPicker3;
 
-    private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase) {
-        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".tif", ".svg"
-    };
-
     private readonly IContentHelper _contentHelper;
     private readonly IMediaUrl _mediaUrl;
     private readonly IMediaService _mediaService;
@@ -42,6 +40,7 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
     private readonly MediaUrlGeneratorCollection _mediaUrlGenerators;
     private readonly IShortStringHelper _shortStringHelper;
     private readonly IContentTypeBaseServiceProvider _contentTypeBaseServiceProvider;
+    private readonly ContentSettings _contentSettings;
 
     public MediaPickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
                                         IContentHelper contentHelper,
@@ -50,7 +49,8 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
                                         MediaFileManager mediaFileManager,
                                         MediaUrlGeneratorCollection mediaUrlGenerators,
                                         IShortStringHelper shortStringHelper,
-                                        IContentTypeBaseServiceProvider contentTypeBaseServiceProvider)
+                                        IContentTypeBaseServiceProvider contentTypeBaseServiceProvider,
+                                        IOptions<ContentSettings> contentSettings)
         : base(columnRangeBuilder) {
         _contentHelper = contentHelper;
         _mediaUrl = mediaUrl;
@@ -59,6 +59,7 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
         _mediaUrlGenerators = mediaUrlGenerators;
         _shortStringHelper = shortStringHelper;
         _contentTypeBaseServiceProvider = contentTypeBaseServiceProvider;
+        _contentSettings = contentSettings.Value;
     }
 
     public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
@@ -135,7 +136,12 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
         return JsonConvert.SerializeObject(new JArray(item));
     }
 
-    private static bool IsImage(string filename) {
-        return ImageExtensions.Contains(Path.GetExtension(filename ?? string.Empty));
+    // Image vs File is driven by Umbraco's own configurable image-format list
+    // (Umbraco:CMS:Content:Imaging:ImageFileTypes) rather than a hard-coded set, so new formats are picked up
+    // from configuration without a code change.
+    private bool IsImage(string filename) {
+        var extension = Path.GetExtension(filename ?? string.Empty).TrimStart('.');
+
+        return _contentSettings.Imaging.ImageFileTypes.Any(x => x.EqualsInvariant(extension));
     }
 }
