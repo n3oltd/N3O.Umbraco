@@ -59,47 +59,26 @@ public class PopulateCrowdfundersHandler : IRequestHandler<PopulateCrowdfundersC
                         .Property<ContentPickerPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.Campaign)
                         .SetContent(campaign.Key);
 
-        var templateSourceAlias = campaign.FirstAliasWithValue(CrowdfunderContentSources.All);
-
-        if (templateSourceAlias != null) {
-            var templateValue = campaign.GetValue(templateSourceAlias);
-
-            contentPublisher.Content
-                            .Property<RawPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.PageTemplate)
-                            .Set(templateValue);
-
-            contentPublisher.Content
-                            .Property<RawPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.Page)
-                            .Set(templateValue);
+        // A site declares what to copy, so declaring nothing means the crowdfunder is created empty. That is a
+        // site that has not been wired up rather than a site with nothing to move, so say so.
+        if (CrowdfunderContentSources.All.None()) {
+            _logger.LogWarning("No crowdfunder content sources are declared so only the campaign was set");
         }
 
-        var heroImageSourceAlias =
-            campaign.FirstAliasWithValue([PlatformsConstants.CrowdfundingCampaign.Properties.HeroImage,
-                                          PlatformsConstants.Campaigns.Properties.HeroImage]);
+        foreach (var source in CrowdfunderContentSources.All) {
+            if (!contentPublisher.HasProperty(source.DestinationAlias)) {
+                _logger.LogWarning("Crowdfunder has no {Alias} property so nothing was copied into it",
+                                   source.DestinationAlias);
 
-        if (heroImageSourceAlias != null) {
-            var heroImageValue = campaign.GetValue(heroImageSourceAlias);
+                continue;
+            }
 
-            contentPublisher.Content
-                            .Property<RawPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.PageTemplateHeroImage)
-                            .Set(heroImageValue);
+            var sourceAlias = campaign.FirstAliasWithValue(source.SourceAliases);
 
-            contentPublisher.Content
-                            .Property<RawPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.PageHeroImage)
-                            .Set(heroImageValue);
-        }
-
-        foreach (var alias in CrowdfunderContentSources.CarriedOver) {
-            var carriedOverValue = campaign.GetValue(alias);
-
-            if (carriedOverValue != null) {
+            if (sourceAlias != null) {
                 contentPublisher.Content
-                                .Property<RawPropertyBuilder>(CrowdfunderContentSources.PageAlias(alias))
-                                .Set(carriedOverValue);
-
-                contentPublisher.Content
-                                .Property<RawPropertyBuilder>(CrowdfunderContentSources.PageTemplateAlias(alias))
-                                .Set(carriedOverValue);
+                                .Property<RawPropertyBuilder>(source.DestinationAlias)
+                                .Set(campaign.GetValue(sourceAlias));
             }
         }
 

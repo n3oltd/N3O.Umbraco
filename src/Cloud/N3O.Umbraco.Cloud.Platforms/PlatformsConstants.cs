@@ -34,12 +34,10 @@ public static class PlatformsConstants {
         public static class Crowdfunder {
             public const string Alias = "platformsCrowdfunder";
 
+            // Only the campaign picker is defined here. Every other property on a crowdfunder mirrors the
+            // crowdfunder page schema configured in the backend, so its alias belongs to the site.
             public static class Properties {
                 public const string Campaign = "campaign";
-                public const string Page = "page";
-                public const string PageHeroImage = "pageHeroImage";
-                public const string PageTemplate = "pageTemplate";
-                public const string PageTemplateHeroImage = "pageTemplateHeroImage";
             }
         }
     }

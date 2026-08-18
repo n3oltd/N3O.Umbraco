@@ -144,7 +144,6 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
 
         var summary = new CrowdfunderMigrationSummaryRes();
         summary.EnabledCampaignsCount = campaigns.Count;
-        summary.FallbackSourceCount = campaigns.Count(x => x.UsedFallbackSource);
         summary.NotReadyCount = campaigns.Count(x => !x.Ready);
         summary.ReadyCount = campaigns.Count(x => x.Ready);
 
@@ -223,8 +222,6 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
 
     private IReadOnlyList<CrowdfunderMigrationCampaignRes> EvaluateEnabledCampaigns() {
         var results = new List<CrowdfunderMigrationCampaignRes>();
-        var sourceAliases = CrowdfunderContentSources.All;
-
         var crowdfunders = _contentService.GetCrowdfundersByCampaign(_contentTypeService);
 
         foreach (var campaign in _contentService.GetCrowdfundingEnabledCampaigns(_contentTypeService)) {
@@ -235,21 +232,20 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
             var crowdfunder = crowdfunders.GetValueOrDefault(campaign.Key);
 
             res.HasCrowdfunder = crowdfunder != null;
-            res.TemplateSourceAlias = campaign.FirstAliasWithValue(sourceAliases);
 
-            res.UsedFallbackSource = res.TemplateSourceAlias.HasValue() &&
-                                     res.TemplateSourceAlias !=
-                                     PlatformsConstants.CrowdfundingCampaign.Properties.Content;
+            foreach (var source in CrowdfunderContentSources.All) {
+                if (campaign.FirstAliasWithValue(source.SourceAliases) == null) {
+                    continue;
+                }
 
-            if (crowdfunder != null) {
-                var pageTemplate = PlatformsConstants.Crowdfunders.Crowdfunder.Properties.PageTemplate;
+                res.ExpectedCopies++;
 
-                res.PageTemplatePopulated = crowdfunder.FirstAliasWithValue([pageTemplate]).HasValue();
+                if (crowdfunder?.FirstAliasWithValue([source.DestinationAlias]).HasValue() == true) {
+                    res.PopulatedCopies++;
+                }
             }
 
-            // A template is only demanded where there was a source to copy from.
-            res.Ready = res.HasCrowdfunder &&
-                        (res.TemplateSourceAlias == null || res.PageTemplatePopulated);
+            res.Ready = res.HasCrowdfunder && res.PopulatedCopies == res.ExpectedCopies;
 
             results.Add(res);
         }
