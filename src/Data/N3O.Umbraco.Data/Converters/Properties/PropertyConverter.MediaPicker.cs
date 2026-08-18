@@ -1,38 +1,64 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Builders;
-using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Localization;
 using N3O.Umbraco.Media;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
+using UmbracoConstants = Umbraco.Cms.Core.Constants;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters;
 
 // Replaces the removed CropperPropertyConverter / UploaderPropertyConverter (both editors are retired in
-// favour of native Umbraco.MediaPicker3). Export writes each picked item's media URL. Import is not
-// supported: native MediaPicker3 references media-library nodes by key, so importing would have to create
-// a media node per row and the target folder + de-duplication are per-site decisions (the offline
-// media-migrate CLI takes them as flags). Existing content is migrated by that CLI; a populated media
-// column on import is surfaced as an error rather than silently dropped.
-public class MediaPickerPropertyConverter : PropertyConverter<string> {
+// favour of native Umbraco.MediaPicker3).
+// Export: writes each picked item's media URL.
+// Import: creates a normal media-library node from the uploaded file (IMediaService, so the configured
+// storage provider — e.g. Azure Blob — stores it the same way as any other media) and references it. There
+// is no distinction between imported media and media added through the backoffice.
+public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
     private static readonly string EditorAlias = UmbracoPropertyEditors.Aliases.MediaPicker3;
+
+    private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase) {
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".tif", ".svg"
+    };
+
     private readonly IContentHelper _contentHelper;
     private readonly IMediaUrl _mediaUrl;
+    private readonly IMediaService _mediaService;
+    private readonly MediaFileManager _mediaFileManager;
+    private readonly MediaUrlGeneratorCollection _mediaUrlGenerators;
+    private readonly IShortStringHelper _shortStringHelper;
+    private readonly IContentTypeBaseServiceProvider _contentTypeBaseServiceProvider;
 
     public MediaPickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
                                         IContentHelper contentHelper,
-                                        IMediaUrl mediaUrl)
+                                        IMediaUrl mediaUrl,
+                                        IMediaService mediaService,
+                                        MediaFileManager mediaFileManager,
+                                        MediaUrlGeneratorCollection mediaUrlGenerators,
+                                        IShortStringHelper shortStringHelper,
+                                        IContentTypeBaseServiceProvider contentTypeBaseServiceProvider)
         : base(columnRangeBuilder) {
         _contentHelper = contentHelper;
         _mediaUrl = mediaUrl;
+        _mediaService = mediaService;
+        _mediaFileManager = mediaFileManager;
+        _mediaUrlGenerators = mediaUrlGenerators;
+        _shortStringHelper = shortStringHelper;
+        _contentTypeBaseServiceProvider = contentTypeBaseServiceProvider;
     }
 
     public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
@@ -59,9 +85,11 @@ public class MediaPickerPropertyConverter : PropertyConverter<string> {
                                 string columnTitlePrefix,
                                 UmbracoPropertyInfo propertyInfo,
                                 IEnumerable<ImportField> fields) {
-        foreach (var field in fields.OrEmpty().Where(x => x.Value.HasValue())) {
-            errorLog.AddError<MediaImportStrings>(s => s.NotSupported_1, propertyInfo.GetColumnTitle(columnTitlePrefix));
-        }
+        Import(errorLog,
+               propertyInfo,
+               fields,
+               s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
+               (alias, blob) => contentBuilder.Raw(alias).Set(BuildValue(CreateMedia(blob))));
     }
 
     protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
@@ -74,8 +102,40 @@ public class MediaPickerPropertyConverter : PropertyConverter<string> {
         return media == null ? null : _mediaUrl.GetMediaUrl(media);
     }
 
-    public class MediaImportStrings : CodeStrings {
-        public string NotSupported_1 =>
-            $"Importing media into {"{0}".Quote()} is not supported; add the media in the library and reference it";
+    private Guid CreateMedia(Blob blob) {
+        var mediaTypeAlias = IsImage(blob.Filename)
+                                 ? UmbracoConstants.Conventions.MediaTypes.Image
+                                 : UmbracoConstants.Conventions.MediaTypes.File;
+
+        var media = _mediaService.CreateMedia(blob.Filename, UmbracoConstants.System.Root, mediaTypeAlias);
+
+        blob.Stream.Rewind();
+
+        media.SetValue(_mediaFileManager,
+                       _mediaUrlGenerators,
+                       _shortStringHelper,
+                       _contentTypeBaseServiceProvider,
+                       UmbracoConstants.Conventions.Media.File,
+                       blob.Filename,
+                       blob.Stream);
+
+        _mediaService.Save(media);
+
+        return media.Key;
+    }
+
+    private static string BuildValue(Guid mediaKey) {
+        var item = new JObject {
+            ["key"] = Guid.NewGuid().ToString(),
+            ["mediaKey"] = mediaKey.ToString(),
+            ["crops"] = new JArray(),
+            ["focalPoint"] = null
+        };
+
+        return JsonConvert.SerializeObject(new JArray(item));
+    }
+
+    private static bool IsImage(string filename) {
+        return ImageExtensions.Contains(Path.GetExtension(filename ?? string.Empty));
     }
 }
