@@ -34,7 +34,7 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
-        <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
+        <ProjectReference Include="..\..\Plugins\N3O.Umbraco.Plugins\N3O.Umbraco.Plugins.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
