@@ -24,12 +24,6 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters;
 
-// Replaces the removed CropperPropertyConverter / UploaderPropertyConverter (both editors are retired in
-// favour of native Umbraco.MediaPicker3).
-// Export: writes each picked item's media URL.
-// Import: creates a normal media-library node from the uploaded file (IMediaService, so the configured
-// storage provider — e.g. Azure Blob — stores it the same way as any other media) and references it. There
-// is no distinction between imported media and media added through the backoffice.
 public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
     private static readonly string EditorAlias = UmbracoPropertyEditors.Aliases.MediaPicker3;
 
@@ -136,9 +130,6 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
         return JsonConvert.SerializeObject(new JArray(item));
     }
 
-    // Image vs File is driven by Umbraco's own configurable image-format list
-    // (Umbraco:CMS:Content:Imaging:ImageFileTypes) rather than a hard-coded set, so new formats are picked up
-    // from configuration without a code change.
     private bool IsImage(string filename) {
         var extension = Path.GetExtension(filename ?? string.Empty).TrimStart('.');
 

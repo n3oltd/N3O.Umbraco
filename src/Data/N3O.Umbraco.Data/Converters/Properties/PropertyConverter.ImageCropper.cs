@@ -15,8 +15,6 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters;
 
-// Native Umbraco.ImageCropper (inline image with crops / focal point). The stored value is an
-// ImageCropperValue; import stores the file and writes a value with no crops and a centre focal point.
 public class ImageCropperPropertyConverter : InlineMediaPropertyConverter {
     private static readonly string EditorAlias = UmbracoPropertyEditors.Aliases.ImageCropper;
 

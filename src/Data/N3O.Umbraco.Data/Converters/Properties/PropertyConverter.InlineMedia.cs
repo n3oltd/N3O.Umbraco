@@ -12,10 +12,6 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Converters;
 
-// Shared base for the native inline media editors (Umbraco.UploadField, Umbraco.ImageCropper). Unlike the
-// media picker (which references a media-library node), these editors store the file inline on the property,
-// so import writes the uploaded file straight to the media file system — the same /media/{id}/{filename}
-// folder-per-item layout the editors use — and the subclass builds the editor's stored value shape.
 public abstract class InlineMediaPropertyConverter : PropertyConverter<Blob, string> {
     private readonly IUrlBuilder _urlBuilder;
     private readonly MediaFileManager _mediaFileManager;

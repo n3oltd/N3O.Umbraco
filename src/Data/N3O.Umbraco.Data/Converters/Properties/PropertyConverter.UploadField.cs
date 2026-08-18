@@ -11,7 +11,6 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters;
 
-// Native Umbraco.UploadField (inline single-file upload). The stored value is the file path string.
 public class UploadFieldPropertyConverter : InlineMediaPropertyConverter {
     private static readonly string EditorAlias = UmbracoPropertyEditors.Aliases.UploadField;
 
