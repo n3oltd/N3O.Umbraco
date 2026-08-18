@@ -17,7 +17,7 @@ public abstract class PlatformsContentNotification {
     protected void Enqueue(object body) {
         var req = new DispatchWebhookReq();
         req.Body = body;
-        req.Url = _cloudUrl.ForWebhook(HookId);
+        req.Url = _cloudUrl.ForWebhook(HookId).Replace("https://beta.n3o.cloud/eu1/hooks", "https://webhooks.local.n3o.dev");
         
         _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req, HookId);
     }

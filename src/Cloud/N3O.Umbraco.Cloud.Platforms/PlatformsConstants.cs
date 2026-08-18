@@ -13,6 +13,11 @@ public static class PlatformsConstants {
         
         public const string ScheduledGiving = "platformsScheduledGivingCampaign";
         public const string RegularGiving = "platformsRegularGivingCampaign";
+
+        public static class Properties {
+            public const string HeroImage = "heroImage";
+            public const string PageContent = "campaignPageContent";
+        }
     }
 
     public static class CrossSells {
@@ -23,8 +28,32 @@ public static class PlatformsConstants {
         public const string Sponsorship = "platformsSponsorshipCrossSell";
     }
 
+    public static class Crowdfunders {
+        public const string Alias = "platformsCrowdfunders";
+
+        public static class Crowdfunder {
+            public const string Alias = "platformsCrowdfunder";
+
+            public static class Properties {
+                public const string Campaign = "campaign";
+                public const string Page = "page";
+                public const string PageHeroImage = "pageHeroImage";
+                public const string PageTemplate = "pageTemplate";
+                public const string PageTemplateHeroImage = "pageTemplateHeroImage";
+            }
+        }
+    }
+
     public static class CrowdfundingCampaign {
         public const string CompositionAlias = "platformsCrowdfundingCampaign";
+
+        public static class Properties {
+            // TODO Delete these along with the composition once every site has been migrated. They are where the
+            // crowdfunding content lived while it was a tab on the campaign, and only the migration reads them.
+            // HeroImage exists on some sites only, so the migration has to treat it as optional.
+            public const string Content = "newCrowdfundingContent";
+            public const string HeroImage = "newCrowdfundingHeroImage";
+        }
     }
 
     public static class DonationFormContent {
