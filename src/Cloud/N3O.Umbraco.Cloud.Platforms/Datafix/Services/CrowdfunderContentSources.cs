@@ -6,7 +6,12 @@ namespace N3O.Umbraco.Cloud.Platforms;
 // TODO Delete this class along with the legacy crowdfunding composition once every site has completed the
 // migration; it only exists to tell the backfill where the legacy content lives.
 public static class CrowdfunderContentSources {
-    private static readonly List<string> SourceAliases = [PlatformsConstants.CrowdfundingCampaign.Properties.Content];
+    // The campaign's page content comes first because that is where editors authored crowdfunder content on every
+    // site but one, and it is populated on essentially every campaign, so it would win a tie regardless.
+    private static readonly List<string> SourceAliases = [
+        PlatformsConstants.Campaigns.Properties.PageContent,
+        PlatformsConstants.CrowdfundingCampaign.Properties.Content
+    ];
 
     private static readonly List<string> CarriedOverAliases = [];
 
@@ -33,11 +38,12 @@ public static class CrowdfunderContentSources {
         }
     }
 
-    // Called from a site's own composer. Inserted ahead of the crowdfunding tab so a campaign holding both keeps
-    // the Page tab copy.
-    public static void PrefersCampaignPageContent() {
-        if (!SourceAliases.Contains(PlatformsConstants.Campaigns.Properties.PageContent)) {
-            SourceAliases.Insert(0, PlatformsConstants.Campaigns.Properties.PageContent);
-        }
+    // Called from the composer of a site whose editors used the crowdfunding tab as intended, so the campaign's
+    // own page content does not win over it.
+    public static void PrefersCrowdfundingTabContent() {
+        var alias = PlatformsConstants.CrowdfundingCampaign.Properties.Content;
+
+        SourceAliases.Remove(alias);
+        SourceAliases.Insert(0, alias);
     }
 }
