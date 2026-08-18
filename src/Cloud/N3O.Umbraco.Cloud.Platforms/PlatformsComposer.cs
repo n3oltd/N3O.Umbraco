@@ -14,7 +14,6 @@ namespace N3O.Umbraco.Cloud.Platforms;
 
 public class PlatformsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        // A component so it runs before any uSync import.
         builder.Components().Append<CrowdfundersSchemaComponent>();
 
         builder.Services.AddOpenApiDocument(PlatformsConstants.BackOfficeApiName);
@@ -24,7 +23,7 @@ public class PlatformsComposer : Composer {
         builder.Services.AddSingleton<INisab, Nisab>();
         builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
         builder.Services.AddSingleton<ITagHelperComponent, PlatformsTagHelperComponent>();
-
+        
         builder.Services.AddScoped<PlatformsCdnFailureMiddleware>();
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();
         
