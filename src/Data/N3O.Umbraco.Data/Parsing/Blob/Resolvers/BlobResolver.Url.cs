@@ -1,4 +1,3 @@
-using Humanizer;
 using Humanizer.Bytes;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
