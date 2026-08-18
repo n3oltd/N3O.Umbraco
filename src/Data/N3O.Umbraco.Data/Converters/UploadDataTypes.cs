@@ -10,6 +10,7 @@ public static class UploadDataTypes {
 
     static UploadDataTypes() {
         Register(UmbracoPropertyEditors.Aliases.UploadField);
+        Register(UmbracoPropertyEditors.Aliases.ImageCropper);
         Register(UmbracoPropertyEditors.Aliases.MediaPicker3);
     }
     
