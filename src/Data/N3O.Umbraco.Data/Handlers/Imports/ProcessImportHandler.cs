@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Extensions;
@@ -28,6 +29,7 @@ namespace N3O.Umbraco.Data.Handlers;
 
 public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, None> {
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
+    private readonly ICoreScopeProvider _coreScopeProvider;
     private readonly IContentEditor _contentEditor;
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
@@ -43,6 +45,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
     private readonly IReadOnlyList<IContentSummariser> _contentSummarisers;
 
     public ProcessImportHandler(IUmbracoDatabaseFactory umbracoDatabaseFactory,
+                                ICoreScopeProvider coreScopeProvider,
                                 IContentEditor contentEditor,
                                 IContentService contentService,
                                 IContentTypeService contentTypeService,
@@ -56,6 +59,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                                 IEnumerable<IImportPropertyFilter> importPropertyFilters,
                                 IEnumerable<IContentSummariser> contentSummarisers) {
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
+        _coreScopeProvider = coreScopeProvider;
         _contentEditor = contentEditor;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
@@ -92,13 +96,17 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                                                                  x => x.ToList());
                 var contentPublisher = GetContentPublisher(import, importData.ContentId);
 
-                foreach (var (propertyInfo, fields) in propertyInfoFields) {
-                    ImportProperty(contentPublisher, parser, propertyInfo, fields);
+                using (var scope = _coreScopeProvider.CreateCoreScope()) {
+                    foreach (var (propertyInfo, fields) in propertyInfoFields) {
+                        ImportProperty(contentPublisher, parser, propertyInfo, fields);
+                    }
+
+                    _errorLog.ThrowIfHasErrors();
+
+                    if (SaveOrPublishContent(contentPublisher, import)) {
+                        scope.Complete();
+                    }
                 }
-
-                _errorLog.ThrowIfHasErrors();
-
-                SaveOrPublishContent(contentPublisher, import);
             } catch (ProcessingException processingException) {
                 import.Error(_jsonProvider, processingException.Errors);
             } catch (Exception ex) {
@@ -186,21 +194,21 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
         converter.Import(contentPublisher.Content, _converters, parser, _errorLog, null, propertyInfo, fields);
     }
     
-    private void SaveOrPublishContent(IContentPublisher contentPublisher, Import import) {
+    private bool SaveOrPublishContent(IContentPublisher contentPublisher, Import import) {
         if (import.MoveUpdatedContentToContainer && import.ReplacesId.HasValue) {
             var content = _contentService.GetById(import.ReplacesId.Value);
 
             if (!content.Edited && content.Published) {
-                PublishContent(contentPublisher, import);
+                return PublishContent(contentPublisher, import);
             } else {
-                SaveContent(contentPublisher, import);
+                return SaveContent(contentPublisher, import);
             }
         } else {
-            PublishContent(contentPublisher, import);
+            return PublishContent(contentPublisher, import);
         }
     }
-    
-    private void PublishContent(IContentPublisher contentPublisher, Import import) {
+
+    private bool PublishContent(IContentPublisher contentPublisher, Import import) {
         var publishResult = contentPublisher.SaveAndPublish();
 
         var savedContent = _contentService.GetById(publishResult.Content.Id);
@@ -209,7 +217,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
 
         if (wasSaved) {
             var contentSummary = GetContentSummary(savedContent);
-                        
+
             if (wasPublished) {
                 import.SavedAndPublished(_clock, savedContent.Key, contentSummary);
             } else {
@@ -218,18 +226,22 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
         } else {
             import.Error(_jsonProvider, publishResult.EventMessages.GetAll().Select(x => x.Message));
         }
+
+        return wasSaved;
     }
 
-    private void SaveContent(IContentPublisher contentPublisher, Import import) {
+    private bool SaveContent(IContentPublisher contentPublisher, Import import) {
         contentPublisher.SaveUnpublished();
 
         var savedContent = _contentService.GetById(import.ReplacesId.Value);
-                        
+
         var contentSummary = GetContentSummary(savedContent);
 
         var warningText = _formatter.Text.Format<Strings>(s => s.WasEdited_1, contentSummary);
 
         import.Saved(_jsonProvider, _clock, savedContent.Key, contentSummary, warningText.Yield());
+
+        return true;
     }
 
     public class Strings : CodeStrings {
