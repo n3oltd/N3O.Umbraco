@@ -32,8 +32,6 @@ public class CrowdfunderPublished : CloudContentPublished {
         _platformsPageContentPublishers = platformsPageContentPublishers.ToList();
     }
 
-    // A crowdfunder with no campaign picked yet has nothing the backend can be told about, so it is skipped
-    // rather than sent with an empty campaign id.
     protected override bool CanProcess(IContent content) {
         if (!content.IsCrowdfunder()) {
             return false;
