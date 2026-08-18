@@ -34,8 +34,7 @@ public static class PlatformsConstants {
         public static class Crowdfunder {
             public const string Alias = "platformsCrowdfunder";
 
-            // Only the campaign picker is defined here. Every other property on a crowdfunder mirrors the
-            // crowdfunder page schema configured in the backend, so its alias belongs to the site.
+            // Only the campaign picker: every other alias on a crowdfunder belongs to the site.
             public static class Properties {
                 public const string Campaign = "campaign";
             }
@@ -46,9 +45,7 @@ public static class PlatformsConstants {
         public const string CompositionAlias = "platformsCrowdfundingCampaign";
 
         public static class Properties {
-            // TODO Delete these along with the composition once every site has been migrated. They are where the
-            // crowdfunding content lived while it was a tab on the campaign, and only the migration reads them.
-            // HeroImage exists on some sites only, so the migration has to treat it as optional.
+            // TODO Delete along with the composition once every site has been migrated. HeroImage is site-specific.
             public const string Content = "newCrowdfundingContent";
             public const string HeroImage = "newCrowdfundingHeroImage";
         }

@@ -39,9 +39,7 @@ public class CrowdfundersSchemaComponent : IComponent {
 
     public void Terminate() { }
 
-    // Only the campaign picker is created here. The page and template properties differ per client: the crowdfunder
-    // page schema is configured in the backend first and a matching property is then added to this document type in
-    // the backoffice, the same way the campaign and offering page properties already work.
+    // Only the campaign picker: the page properties differ per client and are added in the backoffice.
     private void CreateDocumentTypes() {
         var compositionAlias = PlatformsConstants.CrowdfundingCampaign.CompositionAlias;
         var legacyComposition = _contentTypeService.Value.Get(compositionAlias);
@@ -57,8 +55,7 @@ public class CrowdfundersSchemaComponent : IComponent {
         CreateCrowdfundersDocumentType();
     }
 
-    // Checked on every boot because a uSync import of the platforms type drops the container from its allowed
-    // children and nothing else restores it.
+    // Checked every boot because a uSync import of the platforms type drops the container from its allowed children.
     private void AllowCrowdfundersUnderPlatforms() {
         if (_contentTypeService.Value.Get(PlatformsConstants.Crowdfunders.Alias) == null) {
             return;
@@ -95,23 +92,15 @@ public class CrowdfundersSchemaComponent : IComponent {
         designer.Save();
     }
 
-    // TODO Wave 3 - rename the crowdfunder types onto the aliases the crowdfunding service uses, once every site
-    // has completed wave 2 (the dev tools crowdfunders/migration/complete endpoint, which deletes the legacy
-    // composition and so frees the alias). Uncomment RenameOntoServiceAliases below, call it from Initialize
-    // before the other steps, and in the SAME release change these constants, because the stored alias and the
-    // compiled constant have to move together or the content model silently stops binding:
-    //     Crowdfunders.Alias                  "platformsCrowdfunders"  ->  "platformsCrowdfundingCampaigns"
-    //     Crowdfunders.Crowdfunder.Alias      "platformsCrowdfunder"   ->  "platformsCrowdfundingCampaign"
-    // and rename the constant classes to match (Crowdfunders -> CrowdfundingCampaigns, Crowdfunder ->
-    // CrowdfundingCampaign), which is only free once the legacy CrowdfundingCampaign constants are deleted.
-    // A site must be through wave 2 before it takes that release: the rename refuses while the legacy type still
-    // holds the alias, and until it runs that site's crowdfunder publishing is broken. This cannot be an endpoint
-    // for the same reason - the constant flip arrives with the deployment, so the rename has to as well.
-    // The site's uSync ContentTypes configs and generated models have to be regenerated in the same change, or a
-    // later uSync import matches the stale composition config by alias and overwrites the renamed document type.
+    // TODO Wave 3 - once every site has completed wave 2, uncomment RenameOntoServiceAliases, call it first from
+    // Initialize, and in the SAME release flip these constants and rename their classes to match:
+    //     Crowdfunders.Alias              "platformsCrowdfunders"  ->  "platformsCrowdfundingCampaigns"
+    //     Crowdfunders.Crowdfunder.Alias  "platformsCrowdfunder"   ->  "platformsCrowdfundingCampaign"
+    // The stored alias and the compiled constant have to move together or the content model stops binding, so this
+    // cannot be an endpoint. Regenerate the site's uSync ContentTypes configs and models in the same change.
     //
     // private void RenameOntoServiceAliases() {
-    //     // The old aliases are literals because the constants now hold the new values. Deleted with this method.
+    //     // Old aliases are literals because the constants now hold the new values.
     //     RenameContentType("platformsCrowdfunder", PlatformsConstants.Crowdfunders.Crowdfunder.Alias);
     //     RenameContentType("platformsCrowdfunders", PlatformsConstants.Crowdfunders.Alias);
     // }
@@ -123,8 +112,7 @@ public class CrowdfundersSchemaComponent : IComponent {
     //         return;
     //     }
     //
-    //     // Refuse rather than collide: uSync and Umbraco both resolve an alias clash by mangling it, so renaming
-    //     // onto an alias something else still holds corrupts both types silently.
+    //     // Refuse rather than collide: uSync and Umbraco both silently mangle an alias clash.
     //     if (_contentTypeService.Value.Get(toAlias) != null) {
     //         _logger.LogError("Cannot rename {FromAlias} to {ToAlias} because {ToAlias} already exists - complete "
     //                          + "the crowdfunder migration on this site first", fromAlias, toAlias, toAlias);

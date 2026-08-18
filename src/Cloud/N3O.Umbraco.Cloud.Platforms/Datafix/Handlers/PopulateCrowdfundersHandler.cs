@@ -59,8 +59,6 @@ public class PopulateCrowdfundersHandler : IRequestHandler<PopulateCrowdfundersC
                         .Property<ContentPickerPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.Campaign)
                         .SetContent(campaign.Key);
 
-        // A site declares what to copy, so declaring nothing means the crowdfunder is created empty. That is a
-        // site that has not been wired up rather than a site with nothing to move, so say so.
         if (CrowdfunderContentSources.All.None()) {
             _logger.LogWarning("No crowdfunder content sources are declared so only the campaign was set");
         }

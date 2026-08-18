@@ -4,9 +4,7 @@ using System;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-// TODO Delete this along with the composition once every site has been migrated. It models the crowdfunding tab
-// campaigns carried before crowdfunders became their own document type, and is retained only so the migration can
-// find campaigns with crowdfunding enabled and read the content it moves onto the crowdfunder.
+// TODO Delete along with the composition once every site has been migrated. Only the migration reads it.
 [UmbracoContent(PlatformsConstants.CrowdfundingCampaign.CompositionAlias)]
 public class CrowdfundingCampaignContent : UmbracoContent<CrowdfundingCampaignContent> {
     public Guid Key => Content().Key;

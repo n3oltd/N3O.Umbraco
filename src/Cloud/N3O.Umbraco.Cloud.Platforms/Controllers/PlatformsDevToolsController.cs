@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Webhooks.Commands;
@@ -33,6 +35,7 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
     private readonly IBackgroundJob _backgroundJob;
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
+    private readonly IMediator _mediator;
     private readonly ILogger<PlatformsDevToolsController> _logger;
 
     public PlatformsDevToolsController(IContentLocator contentLocator,
@@ -41,7 +44,8 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
                                        IBackgroundJob backgroundJob,
                                        ILogger<PlatformsDevToolsController> logger,
                                        IContentService contentService,
-                                       IContentTypeService contentTypeService) {
+                                       IContentTypeService contentTypeService,
+                                       IMediator mediator) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _cloudUrl = cloudUrl;
@@ -49,6 +53,7 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
         _logger = logger;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
+        _mediator = mediator;
     }
 
     [HttpPost("webhooks/resend/campaigns/all")]
@@ -155,6 +160,13 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
         return Task.FromResult<ActionResult<CrowdfunderMigrationStatusRes>>(Ok(res));
     }
 
+    [HttpPost("crowdfunders/migration/populate")]
+    public async Task<ActionResult> PopulateCrowdfunders() {
+        await _mediator.SendAsync<PopulateCrowdfundersCommand, None>(None.Empty);
+
+        return Ok();
+    }
+
     [HttpPost("crowdfunders/migration/complete")]
     public Task<ActionResult<CompleteCrowdfunderMigrationRes>> CompleteCrowdfunderMigration() {
         var res = new CompleteCrowdfunderMigrationRes();
@@ -184,16 +196,11 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
             return Task.FromResult<ActionResult<CompleteCrowdfunderMigrationRes>>(Ok(res));
         }
 
-        // Enumerated dynamically via the composition axis rather than from a hardcoded list of campaign types,
-        // as a site can compose the legacy type onto types the others do not and a hardcoded list would silently
-        // leave that site's data behind.
         var composedContentTypes = _contentTypeService.GetComposedOf(legacyContentType.Id).ToList();
         var compositionRemovedFrom = new List<string>();
 
         foreach (var contentType in composedContentTypes) {
-            // Must be RemoveContentType rather than assigning ContentTypeComposition: only RemoveContentType
-            // populates RemovedContentTypes, which is what makes the repository purge the now-orphaned
-            // umbracoPropertyData rows when the type is saved.
+            // Only RemoveContentType purges the orphaned umbracoPropertyData rows on save.
             contentType.RemoveContentType(PlatformsConstants.CrowdfundingCampaign.CompositionAlias);
 
             _contentTypeService.Save(contentType);
@@ -205,9 +212,6 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
                                    contentType.Alias);
         }
 
-        // TODO Once every site has run this, rename the crowdfunder type onto the alias freed here. That has to
-        // happen in a package release rather than from an endpoint, because the stored alias and the compiled
-        // constant have to change together or the content model stops binding.
         _contentTypeService.Delete(legacyContentType);
 
         _logger.LogInformation("Deleted the {Alias} content type",
