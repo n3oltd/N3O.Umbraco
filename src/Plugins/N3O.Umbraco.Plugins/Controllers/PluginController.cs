@@ -13,5 +13,4 @@ namespace N3O.Umbraco.Plugins.Controllers;
 [ProducesResponseType(StatusCodes.Status200OK)]
 [ProducesResponseType(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-// TODO, replace with BackOfficeAuthorizedController
 public abstract partial class PluginController : UmbracoAuthorizedController { }
