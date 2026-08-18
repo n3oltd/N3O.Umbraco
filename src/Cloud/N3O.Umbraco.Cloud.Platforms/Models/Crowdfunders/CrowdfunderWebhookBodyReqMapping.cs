@@ -21,8 +21,6 @@ public class CrowdfunderWebhookBodyReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(CrowdfunderContent src, CrowdfundingCampaignWebhookBodyReq dest, MapperContext ctx) {
-        // The backend keys a crowdfunding campaign by the campaign, so this comes from the picked campaign rather
-        // than from the crowdfunder's own key.
         dest.CampaignId = src.Campaign.Key.ToString();
         dest.Action = WebhookSyncAction.AddOrUpdate;
 
