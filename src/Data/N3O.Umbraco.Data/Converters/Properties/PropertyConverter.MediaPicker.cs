@@ -11,9 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
@@ -80,11 +82,11 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
                                 string columnTitlePrefix,
                                 UmbracoPropertyInfo propertyInfo,
                                 IEnumerable<ImportField> fields) {
-        Import(errorLog,
-               propertyInfo,
-               fields,
-               s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
-               (alias, blob) => contentBuilder.Raw(alias).Set(BuildValue(CreateMedia(blob))));
+        ImportAll(errorLog,
+                  propertyInfo,
+                  fields,
+                  s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
+                  (alias, blobs) => contentBuilder.Raw(alias).Set(BuildValue(blobs.Select(CreateMedia))));
     }
 
     protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
@@ -94,15 +96,23 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
     }
 
     private string GetUrl(MediaWithCrops media) {
-        return media == null ? null : _mediaUrl.GetMediaUrl(media);
+        return media == null ? null : _mediaUrl.GetMediaUrl(media, urlMode: UrlMode.Absolute);
     }
 
     private Guid CreateMedia(Blob blob) {
+        var key = DeterministicMediaKey(blob);
+        var existing = _mediaService.GetById(key);
+
+        if (existing != null) {
+            return existing.Key;
+        }
+
         var mediaTypeAlias = IsImage(blob.Filename)
                                  ? UmbracoConstants.Conventions.MediaTypes.Image
                                  : UmbracoConstants.Conventions.MediaTypes.File;
 
         var media = _mediaService.CreateMedia(blob.Filename, UmbracoConstants.System.Root, mediaTypeAlias);
+        media.Key = key;
 
         blob.Stream.Rewind();
 
@@ -119,15 +129,31 @@ public class MediaPickerPropertyConverter : PropertyConverter<Blob, string> {
         return media.Key;
     }
 
-    private static string BuildValue(Guid mediaKey) {
-        var item = new JObject {
-            ["key"] = Guid.NewGuid().ToString(),
-            ["mediaKey"] = mediaKey.ToString(),
-            ["crops"] = new JArray(),
-            ["focalPoint"] = null
-        };
+    private static Guid DeterministicMediaKey(Blob blob) {
+        blob.Stream.Rewind();
 
-        return JsonConvert.SerializeObject(new JArray(item));
+        using (var sha = SHA256.Create()) {
+            var hash = sha.ComputeHash(blob.Stream);
+
+            blob.Stream.Rewind();
+
+            return new Guid(hash[..16]);
+        }
+    }
+
+    private static string BuildValue(IEnumerable<Guid> mediaKeys) {
+        var items = new JArray();
+
+        foreach (var mediaKey in mediaKeys) {
+            items.Add(new JObject {
+                ["key"] = Guid.NewGuid().ToString(),
+                ["mediaKey"] = mediaKey.ToString(),
+                ["crops"] = new JArray(),
+                ["focalPoint"] = null
+            });
+        }
+
+        return JsonConvert.SerializeObject(items);
     }
 
     private bool IsImage(string filename) {
