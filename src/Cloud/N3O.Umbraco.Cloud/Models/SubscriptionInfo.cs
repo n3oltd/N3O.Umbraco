@@ -6,16 +6,16 @@ namespace N3O.Umbraco.Cloud.Models;
 
 public class SubscriptionInfo : Value {
     [JsonConstructor]
-    public SubscriptionInfo(DataRegion dataRegion, SubscriptionDescriptor descriptor) {
+    public SubscriptionInfo(DataRegion dataRegion, SubscriptionId id) {
         DataRegion = dataRegion;
-        Descriptor = descriptor;
+        Id = id;
     }
 
     public DataRegion DataRegion { get; }
-    public SubscriptionDescriptor Descriptor { get; }
+    public SubscriptionId Id { get; }
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return DataRegion;
-        yield return Descriptor;
+        yield return Id;
     }
 }
