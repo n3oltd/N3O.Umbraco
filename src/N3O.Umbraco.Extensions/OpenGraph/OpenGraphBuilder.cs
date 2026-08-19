@@ -49,5 +49,5 @@ public class OpenGraphBuilder : IOpenGraphBuilder {
         return new OpenGraphData(_title, _description, _url, _imageUrl);
     }
 
-    public bool HasData => _title.HasValue() || _description.HasValue() || _imageUrl.HasValue();
+    public bool HasData => _title.HasValue() || _description.HasValue() || _url.HasValue() || _imageUrl.HasValue();
 }

@@ -20,17 +20,17 @@ public class OpenGraphPageModule : IPageModule {
 
     public bool ShouldExecute(IPublishedContent page) => true;
 
-    public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+    public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
         var providers = _allProviders.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
         foreach (var provider in providers) {
-            provider.AddOpenGraph(_openGraphBuilder, page);
+            await provider.AddOpenGraphAsync(_openGraphBuilder, page);
         }
 
         if (_openGraphBuilder.HasData) {
-            return Task.FromResult<object>(_openGraphBuilder.Build());
+            return _openGraphBuilder.Build();
         } else {
-            return Task.FromResult<object>(null);
+            return null;
         }
     }
 
