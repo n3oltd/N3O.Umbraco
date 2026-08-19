@@ -15,8 +15,6 @@ using N3O.Umbraco.Clients.Payments.GoCardless;
 using N3O.Umbraco.Clients.Payments.Opayo;
 using N3O.Umbraco.Clients.Payments.PayPal;
 using N3O.Umbraco.Clients.Payments.Stripe;
-using N3O.Umbraco.Clients.Plugins.Cropper;
-using N3O.Umbraco.Clients.Plugins.Uploader;
 using System;
 using System.Net.Http;
 
@@ -48,9 +46,6 @@ namespace N3O.Umbraco.Data.Clients {
             AddUmbracoClient<IOpayoClient, OpayoClient>(services, baseUrlResolver, httpClientFactory);
             AddUmbracoClient<IPayPalClient, PayPalClient>(services, baseUrlResolver, httpClientFactory);
             AddUmbracoClient<IStripeClient, StripeClient>(services, baseUrlResolver, httpClientFactory);
-            
-            AddUmbracoClient<ICropperClient, CropperClient>(services, baseUrlResolver, httpClientFactory);
-            AddUmbracoClient<IUploaderClient, UploaderClient>(services, baseUrlResolver, httpClientFactory);
         }
 
         private static void AddUmbracoClient<TService, TImplementation>(IServiceCollection services,
