@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud.Platforms.Search;
 
 public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
+    private const string AppealsSection = "appeals";
+
     private readonly ICdnClient _cdnClient;
     private readonly IContentCache _contentCache;
     private readonly ISlugHelper _slugHelper;
@@ -57,7 +59,7 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     private SitemapEntry GetSitemapEntryForCampaign(PublishedCampaign publishedCampaign, LocalDate today) {
         var url = _contentCache.GetCampaignUrl(_slugHelper, _webHostEnvironment, publishedCampaign.Name);
 
-        return new SitemapEntry(url, "daily", 0.5f, today, null);
+        return new SitemapEntry(url, null, AppealsSection, today, null);
     }
     
     private SitemapEntry GetSitemapEntryForOffering(PublishedOffering publishedOffering,
@@ -68,6 +70,6 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
                                                publishedCampaign.Name,
                                                publishedOffering.Name);
 
-        return new SitemapEntry(url, "daily", 0.5f, today, null);
+        return new SitemapEntry(url, null, AppealsSection, today, null);
     }
 }

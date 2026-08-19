@@ -1,24 +1,27 @@
+using N3O.Umbraco.Extensions;
 using NodaTime;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Search.Models;
 
 public class SitemapEntry : Value {
+    public const string DefaultSection = "content";
+
     public SitemapEntry(string url,
-                        string changeFrequency,
-                        float priority,
-                        LocalDate lastModified,
-                        IReadOnlyDictionary<string, string> cultureVariantUrls) {
+                        string culture,
+                        string section,
+                        LocalDate? lastModified,
+                        IReadOnlyDictionary<string, string> alternateUrls) {
         Url = url;
-        ChangeFrequency = changeFrequency;
-        Priority = priority;
+        Culture = culture;
+        Section = section.HasValue() ? section : DefaultSection;
         LastModified = lastModified;
-        CultureVariantUrls = cultureVariantUrls;
+        AlternateUrls = alternateUrls;
     }
 
     public string Url { get; }
-    public string ChangeFrequency { get; }
-    public float Priority { get; }
-    public LocalDate LastModified { get; }
-    public IReadOnlyDictionary<string, string> CultureVariantUrls { get; }
+    public string Culture { get; }
+    public string Section { get; }
+    public LocalDate? LastModified { get; }
+    public IReadOnlyDictionary<string, string> AlternateUrls { get; }
 }

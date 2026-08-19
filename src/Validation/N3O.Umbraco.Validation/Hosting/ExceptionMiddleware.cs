@@ -54,6 +54,10 @@ public class ExceptionMiddleware : IMiddleware {
                                      ex.Message);
                 }
 
+                if (context.Response.HasStarted) {
+                    throw;
+                }
+
                 await WriteProblemDetailsAsync(context.Response, problemDetailsException);
             }
         }
