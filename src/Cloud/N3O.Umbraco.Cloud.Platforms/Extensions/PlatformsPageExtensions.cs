@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Exceptions;
+using PlatformsPage = N3O.Umbraco.Cloud.Platforms.Models.PlatformsPage;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 

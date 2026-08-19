@@ -23,6 +23,18 @@ public static class PlatformsConstants {
         public const string Sponsorship = "platformsSponsorshipCrossSell";
     }
 
+    public static class Crowdfunders {
+        public const string Alias = "platformsCrowdfunders";
+
+        public static class Crowdfunder {
+            public const string Alias = "platformsCrowdfunder";
+
+            public static class Properties {
+                public const string Campaign = "campaign";
+            }
+        }
+    }
+
     public static class CrowdfundingCampaign {
         public const string CompositionAlias = "platformsCrowdfundingCampaign";
     }
