@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Flurl;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search;
 using N3O.Umbraco.Search.Models;
+using N3O.Umbraco.Utilities;
 using NodaTime;
-using Slugify;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,58 +15,71 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud.Platforms.Search;
 
 public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
+    private const string AppealsSection = "appeals";
+
     private readonly ICdnClient _cdnClient;
-    private readonly IContentCache _contentCache;
-    private readonly ISlugHelper _slugHelper;
+    private readonly IUrlBuilder _urlBuilder;
     private readonly IClock _clock;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly ICampaignOfferingVisibility _visibility;
 
     public CampaignOfferingsSitemapEntriesProvider(ICdnClient cdnClient,
-                                                   IContentCache contentCache,
-                                                   ISlugHelper slugHelper,
+                                                   IUrlBuilder urlBuilder,
                                                    IClock clock,
-                                                   IWebHostEnvironment webHostEnvironment) {
+                                                   ICampaignOfferingVisibility visibility) {
         _cdnClient = cdnClient;
-        _contentCache = contentCache;
-        _slugHelper = slugHelper;
+        _urlBuilder = urlBuilder;
         _clock = clock;
-        _webHostEnvironment = webHostEnvironment;
+        _visibility = visibility;
     }
-    
+
     public async Task<IEnumerable<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default) {
         var entries = new List<SitemapEntry>();
 
         var today = _clock.GetCurrentInstant().InUtc().Date;
-        
+
         var publishedCampaigns = await _cdnClient.DownloadSubscriptionContentAsync<PublishedCampaigns>(SubscriptionFiles.Campaigns,
                                                                                                        JsonSerializers.JsonProvider,
                                                                                                        cancellationToken);
 
         foreach (var publishedCampaign in publishedCampaigns.OrEmpty(x => x.Campaigns)) {
-            entries.Add(GetSitemapEntryForCampaign(publishedCampaign, today));
+            if (!_visibility.IsVisible(publishedCampaign)) {
+                continue;
+            }
 
-            foreach (var publishedOffering in publishedCampaign.Offerings) {
-                entries.Add(GetSitemapEntryForOffering(publishedOffering, publishedCampaign, today));
+            AddSitemapEntry(entries, publishedCampaign.Url, today);
+
+            foreach (var publishedOffering in publishedCampaign.Offerings.OrEmpty()) {
+                if (_visibility.IsVisible(publishedOffering)) {
+                    AddSitemapEntry(entries, publishedOffering.Url, today);
+                }
             }
         }
 
         return entries;
     }
 
-    private SitemapEntry GetSitemapEntryForCampaign(PublishedCampaign publishedCampaign, LocalDate today) {
-        var url = _contentCache.GetCampaignUrl(_slugHelper, _webHostEnvironment, publishedCampaign.Name);
+    private void AddSitemapEntry(List<SitemapEntry> entries, Uri publishedUrl, LocalDate today) {
+        var url = RebaseOnSiteRoot(publishedUrl);
 
-        return new SitemapEntry(url, "daily", 0.5f, today, null);
+        if (!url.HasValue()) {
+            return;
+        }
+
+        entries.Add(new SitemapEntry(url, null, AppealsSection, today, null));
     }
-    
-    private SitemapEntry GetSitemapEntryForOffering(PublishedOffering publishedOffering,
-                                                    PublishedCampaign publishedCampaign,
-                                                    LocalDate today) {
-        var url = _contentCache.GetOfferingUrl(_slugHelper,
-                                               _webHostEnvironment,
-                                               publishedCampaign.Name,
-                                               publishedOffering.Name);
 
-        return new SitemapEntry(url, "daily", 0.5f, today, null);
+    private string RebaseOnSiteRoot(Uri url) {
+        if (!url.HasValue()) {
+            return null;
+        }
+
+        var rootUrl = _urlBuilder.Root();
+        var rebasedUrl = new Url(url.IsAbsoluteUri ? url.AbsolutePath : url.OriginalString);
+
+        rebasedUrl.Scheme = rootUrl.Scheme;
+        rebasedUrl.Host = rootUrl.Host;
+        rebasedUrl.Port = rootUrl.Port;
+
+        return rebasedUrl;
     }
 }

@@ -72,12 +72,16 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                                                                                 currentPath,
                                                                                 cancellationToken);
 
+                if (getPageResult.HasValue() && getPageResult.IsError) {
+                    return getPageResult;
+                }
+
                 if (getPageResult.HasValue()) {
                     if (getPageResult.IsRedirect) {
                         return getPageResult;
                     } else {
                         if (currentPath != platformsPath) {
-                            return GetPageResult.ForRedirect(getPageResult.Page.Url.AbsolutePath, false);
+                            return GetPageResult.ForRedirect(getPageResult.Page.Url.AbsolutePath, true);
                         } else {
                             return getPageResult;
                         }
@@ -100,7 +104,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache,
                                                                               fallbacks.First(),
                                                                               culture),
-                                             false);
+                                             true);
         } else {
             return null;
         }
