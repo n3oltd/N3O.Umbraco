@@ -7,17 +7,24 @@ public class CdnDownloadResult {
     private static readonly Duration NotFoundRetryInterval = Duration.FromMinutes(15);
     private static readonly Duration ErrorRetryInterval = Duration.FromSeconds(10);
 
-    private CdnDownloadResult(bool success, bool error, string content, Instant timestamp) {
+    // No result stays put for longer than this, so anything older refreshes of its own accord.
+    public static readonly Duration MaxRetention = NotFoundRetryInterval;
+
+    private CdnDownloadResult(bool success, bool error, string content, Instant timestamp, Duration retryInterval) {
         Success = success;
         Error = error;
         Content = content;
         Timestamp = timestamp;
+        RetryInterval = retryInterval;
     }
 
     public bool Success { get; }
     public bool Error { get; }
     public string Content { get; }
     public Instant Timestamp { get; }
+    public bool NotFound => !Success && !Error;
+
+    private Duration RetryInterval { get; }
 
     public bool CanRetry(IClock clock) {
         if (Success) {
@@ -25,7 +32,7 @@ public class CdnDownloadResult {
         } else {
             var age = clock.GetCurrentInstant() - Timestamp;
 
-            return age > (Error ? ErrorRetryInterval : NotFoundRetryInterval);
+            return age > RetryInterval;
         }
     }
     
@@ -38,16 +45,30 @@ public class CdnDownloadResult {
             return false;
         }
     }
-
-    public static CdnDownloadResult ForNotFound(IClock clock) {
-        return new CdnDownloadResult(false, false, null, clock.GetCurrentInstant());
+    
+    public bool WasInvalidated(Instant? invalidatedAt) {
+        if (invalidatedAt == null) {
+            return false;
+        }
+        
+        return Timestamp <= invalidatedAt.Value;
     }
 
-    public static CdnDownloadResult ForError(IClock clock) {
-        return new CdnDownloadResult(false, true, null, clock.GetCurrentInstant());
+    public static CdnDownloadResult ForNotFound(Instant startedAt) {
+        return new CdnDownloadResult(false, false, null, startedAt, NotFoundRetryInterval);
     }
 
-    public static CdnDownloadResult ForSuccess(IClock clock, string content) {
-        return new CdnDownloadResult(true, false, content, clock.GetCurrentInstant());
+    // A not-found that displaces content the CDN was serving may be a blip mid-publish rather than a
+    // deletion, and until it is retried the page it replaced is gone.
+    public static CdnDownloadResult ForNotFoundReplacingSuccess(Instant startedAt) {
+        return new CdnDownloadResult(false, false, null, startedAt, ErrorRetryInterval);
+    }
+
+    public static CdnDownloadResult ForError(Instant startedAt) {
+        return new CdnDownloadResult(false, true, null, startedAt, ErrorRetryInterval);
+    }
+
+    public static CdnDownloadResult ForSuccess(Instant startedAt, string content) {
+        return new CdnDownloadResult(true, false, content, startedAt, Duration.Zero);
     }
 }
