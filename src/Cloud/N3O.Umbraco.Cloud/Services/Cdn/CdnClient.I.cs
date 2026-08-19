@@ -15,4 +15,10 @@ public interface ICdnClient {
     
     Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
                                                                CancellationToken cancellationToken = default);
+
+    // Eviction applies to the calling process only, and reaches only entries fetched through the
+    // matching overload.
+    void Evict(string path);
+
+    void Evict(PublishedFileKind kind, string path);
 }

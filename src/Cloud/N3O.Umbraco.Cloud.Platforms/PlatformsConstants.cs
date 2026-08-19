@@ -80,11 +80,19 @@ public static class PlatformsConstants {
         }
     }
 
+    public static class WebhookEventTypes {
+        public static class Crowdfunder {
+            public const string Created = "crowdfunder.created";
+            public const string Updated = "crowdfunder.updated";
+        }
+    }
+
     public static class WebhookIds {
         public const string Campaigns = "campaigns";
         public const string CrossSells = "crossSells";
         public const string ContentCollection = "contentCollection";
         public const string ContentLibrary = "contentLibrary";
+        public const string Crowdfunder = nameof(Crowdfunder);
         public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
         public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
