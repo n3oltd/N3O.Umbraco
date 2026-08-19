@@ -62,13 +62,13 @@ public class SchedulerComposer : IComposer {
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.DefaultWorker;
                 opt.Queues = [SchedulerConstants.Queues.Default];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = settings.DefaultWorkerCount;
             });
 
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.LongJobsWorker;
                 opt.Queues = [SchedulerConstants.Queues.LongJobs];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = settings.LongJobsWorkerCount;
             });
 
             AddHangfireDashboardAuthentication(builder);
