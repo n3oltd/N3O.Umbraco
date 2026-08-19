@@ -16,6 +16,6 @@ public class CloudBackOfficeController : BackofficeAuthorizedApiController {
     public ActionResult<string> GetSubscriptionCode() {
         var subscription = _subscriptionAccessor.GetSubscription();
         
-        return Ok(subscription.Descriptor.Code);
+        return Ok(subscription.Id.Code);
     }
 }
