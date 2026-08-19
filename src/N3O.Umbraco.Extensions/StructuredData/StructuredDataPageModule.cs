@@ -22,13 +22,32 @@ public class StructuredDataPageModule : IPageModule {
     public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
         var providers = _allProviders.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
-        var root = JsonLd.Root();
+        var nodes = new List<JsonLd>();
 
         foreach (var provider in providers) {
-            provider.AddStructuredData(root, page);
+            var node = JsonLd.New();
+
+            provider.AddStructuredData(node, page);
+
+            if (node.Count > 0) {
+                nodes.Add(node);
+            }
         }
 
-        var javaScript = JsonConvert.SerializeObject(root, Formatting.Indented);
+        var root = JsonLd.Root();
+
+        if (nodes.Count == 1) {
+            foreach (var entry in nodes[0]) {
+                root[entry.Key] = entry.Value;
+            }
+        } else if (nodes.Count > 1) {
+            root.Custom("@graph", nodes);
+        }
+
+        var serializerSettings = new JsonSerializerSettings();
+        serializerSettings.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
+
+        var javaScript = JsonConvert.SerializeObject(root, Formatting.Indented, serializerSettings);
 
         return Task.FromResult<object>(new StructuredDataCode(javaScript.ToHtmlString()));
     }
