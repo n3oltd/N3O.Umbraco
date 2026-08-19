@@ -20,13 +20,16 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     private readonly ICdnClient _cdnClient;
     private readonly IUrlBuilder _urlBuilder;
     private readonly IClock _clock;
+    private readonly ICampaignOfferingVisibility _visibility;
 
     public CampaignOfferingsSitemapEntriesProvider(ICdnClient cdnClient,
                                                    IUrlBuilder urlBuilder,
-                                                   IClock clock) {
+                                                   IClock clock,
+                                                   ICampaignOfferingVisibility visibility) {
         _cdnClient = cdnClient;
         _urlBuilder = urlBuilder;
         _clock = clock;
+        _visibility = visibility;
     }
 
     public async Task<IEnumerable<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default) {
@@ -39,10 +42,16 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
                                                                                                        cancellationToken);
 
         foreach (var publishedCampaign in publishedCampaigns.OrEmpty(x => x.Campaigns)) {
+            if (!_visibility.IsVisible(publishedCampaign)) {
+                continue;
+            }
+
             AddSitemapEntry(entries, publishedCampaign.Url, today);
 
             foreach (var publishedOffering in publishedCampaign.Offerings.OrEmpty()) {
-                AddSitemapEntry(entries, publishedOffering.Url, today);
+                if (_visibility.IsVisible(publishedOffering)) {
+                    AddSitemapEntry(entries, publishedOffering.Url, today);
+                }
             }
         }
 
