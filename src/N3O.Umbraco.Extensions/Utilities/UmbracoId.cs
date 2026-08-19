@@ -11,8 +11,11 @@ public enum IdScope {
     BlockLayout,
     ContentType,
     ContentTypeContainer,
+    ContentTypeFolder,
     DataType,
-    DataTypeContainer
+    DataTypeContainer,
+    DataTypeFolder,
+    PropertyType
 }
 
 public static class UmbracoId {
