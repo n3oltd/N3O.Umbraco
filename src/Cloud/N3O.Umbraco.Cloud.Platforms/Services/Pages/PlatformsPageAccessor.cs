@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using System;
@@ -16,15 +17,18 @@ namespace N3O.Umbraco.Cloud.Platforms;
 public class PlatformsPageAccessor : IPlatformsPageAccessor {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IContentCache _contentCache;
+    private readonly ICultureAccessor _cultureAccessor;
     private readonly ICdnClient _cdnClient;
     private readonly IJsonProvider _jsonProvider;
 
     public PlatformsPageAccessor(IHttpContextAccessor httpContextAccessor,
                                  IContentCache contentCache,
+                                 ICultureAccessor cultureAccessor,
                                  ICdnClient cdnClient,
                                  IJsonProvider jsonProvider) {
         _httpContextAccessor = httpContextAccessor;
         _contentCache = contentCache;
+        _cultureAccessor = cultureAccessor;
         _cdnClient = cdnClient;
         _jsonProvider = jsonProvider;
     }
@@ -46,10 +50,14 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
     }
     
     private async Task<GetPageResult> GetAsync(Uri requestUri, CancellationToken cancellationToken) {
+        var culture = _cultureAccessor.GetCulture();
         var fallbacks = new List<SpecialContent>();
-        
+
         foreach (var platformsPageRoute in PlatformsPageRoute.All) {
-            var platformsPath = SpecialContentPathParser.ParseUri(_contentCache, platformsPageRoute.Parent, requestUri);
+            var platformsPath = SpecialContentPathParser.ParseUri(_contentCache,
+                                                                  platformsPageRoute.Parent,
+                                                                  requestUri,
+                                                                  culture);
 
             if (!platformsPath.HasValue()) {
                 continue;
@@ -93,10 +101,12 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         }
         
         if (fallbacks.Any()) {
-            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, fallbacks.First()),
+            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache,
+                                                                              fallbacks.First(),
+                                                                              culture),
                                              true);
         } else {
-            return null;   
+            return null;
         }
     }
 }
