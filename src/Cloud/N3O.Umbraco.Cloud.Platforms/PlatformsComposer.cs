@@ -14,6 +14,8 @@ namespace N3O.Umbraco.Cloud.Platforms;
 
 public class PlatformsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
+        builder.Components().Append<CrowdfundersSchemaComponent>();
+
         builder.Services.AddOpenApiDocument(PlatformsConstants.BackOfficeApiName);
         builder.Services.AddOpenApiDocument(PlatformsConstants.DevToolsApiName);
         builder.Services.AddSingleton<ICampaignAccessor, CampaignAccessor>();

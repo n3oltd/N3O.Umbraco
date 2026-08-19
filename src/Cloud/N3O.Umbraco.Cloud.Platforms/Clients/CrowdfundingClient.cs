@@ -127,8 +127,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     public partial class CrowdfundingCampaignReq
     {
 
-        [Newtonsoft.Json.JsonProperty("template", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ContentReq Template { get; set; }
+        [Newtonsoft.Json.JsonProperty("storedContents", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public StoredContentsReq StoredContents { get; set; }
 
         /// <summary>
         /// Whether to enable crowdfunding for the campaign
@@ -215,7 +215,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'sys__crowdfunderPage'
+    /// One of 'sys__crowdfunderPage', 'sys__crowdfundingCampaignPage'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum CrowdfundingSystemSchema
@@ -223,6 +223,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [System.Runtime.Serialization.EnumMember(Value = @"sys__crowdfunderPage")]
         Sys__crowdfunderPage = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"sys__crowdfundingCampaignPage")]
+        Sys__crowdfundingCampaignPage = 1,
 
     }
 
@@ -770,6 +773,33 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("donateTo", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public DonateToSponsorshipIntent DonateTo { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class StoredContentReq
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ContentReq Content { get; set; }
+
+    }
+
+    /// <summary>
+    /// The campaign page and the template for new crowdfunder pages
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class StoredContentsReq
+    {
+
+        /// <summary>
+        /// The stored content items
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<StoredContentReq> Items { get; set; }
 
     }
 
