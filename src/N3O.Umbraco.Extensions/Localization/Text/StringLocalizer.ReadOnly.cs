@@ -1,5 +1,6 @@
 using AsyncKeyedLock;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,11 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Localization;
 
 public class ReadOnlyStringLocalizer : ContentStringLocalizer {
-    public ReadOnlyStringLocalizer(ILocalizationSettingsAccessor localizationSettingsAccessor,
-                                   IContentCache contentCache,
+    public ReadOnlyStringLocalizer(IContentCache contentCache,
+                                   ICultureAccessor cultureAccessor,
+                                   ILocalizationSettingsAccessor localizationSettingsAccessor,
                                    AsyncKeyedLocker<string> locker)
-        : base(contentCache, localizationSettingsAccessor, locker) { }
+        : base(contentCache, cultureAccessor, localizationSettingsAccessor, locker) { }
 
     protected override string GetText(string folderName, string name, string text) {
         var folder = GetFolder(folderName);
@@ -61,5 +63,5 @@ public class ReadOnlyStringLocalizer : ContentStringLocalizer {
         return textContainerContent.OrEmpty(x => x.Resources);
     }
     
-    private VariationContext VariationContext => new (LocalizationSettings.CultureCode);
+    private VariationContext VariationContext => new (CultureAccessor.GetCulture());
 }

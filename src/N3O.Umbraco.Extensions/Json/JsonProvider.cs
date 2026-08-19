@@ -119,4 +119,13 @@ public class JsonProvider<TContractResolver> : IJsonProvider where TContractReso
 
         serializer.Serialize(writer, value);
     }
+
+    public string SerializeObjectForScript(object value, Formatting formatting = Formatting.Indented) {
+        var settings = GetSettings();
+
+        settings.Formatting = formatting;
+        settings.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
+
+        return JsonConvert.SerializeObject(value, settings);
+    }
 }

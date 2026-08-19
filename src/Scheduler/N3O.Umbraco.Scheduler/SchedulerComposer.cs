@@ -62,13 +62,13 @@ public class SchedulerComposer : IComposer {
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.DefaultWorker;
                 opt.Queues = [SchedulerConstants.Queues.Default];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = settings.DefaultWorkerCount;
             });
 
             builder.Services.AddHangfireServer(opt => {
                 opt.ServerName = SchedulerConstants.Workers.LongJobsWorker;
                 opt.Queues = [SchedulerConstants.Queues.LongJobs];
-                opt.WorkerCount = 1;
+                opt.WorkerCount = settings.LongJobsWorkerCount;
             });
 
             AddHangfireDashboardAuthentication(builder);
@@ -79,6 +79,7 @@ public class SchedulerComposer : IComposer {
 
             builder.Components().Append<CleanupStaleRecurringJobsComponent>();
             builder.Components().Append<RegisterRecurringJobsComponent>();
+            builder.Components().Append<ValidateRunsWhereQueuedComponent>();
         }
     }
 
@@ -175,6 +176,32 @@ public class SchedulerComposer : IComposer {
                                  .SendAsync<RegisterRecurringJobsCommand, RegisterRecurringJobsReq>(req)
                                  .GetAwaiter()
                                  .GetResult();
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) => Task.CompletedTask;
+    }
+
+    public class ValidateRunsWhereQueuedComponent : IAsyncComponent {
+        private readonly IRuntimeState _runtimeState;
+
+        public ValidateRunsWhereQueuedComponent(IRuntimeState runtimeState) {
+            _runtimeState = runtimeState;
+        }
+
+        public Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
+            if (_runtimeState.Level == RuntimeLevel.Run) {
+                var runsWhereQueuedTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                                       t.HasAttribute<RunsWhereQueuedAttribute>());
+
+                foreach (var commandType in runsWhereQueuedTypes) {
+                    if (!commandType.InheritsGenericClass(typeof(Request<,>))) {
+                        throw new Exception("Runs where queued attribute can only be applied to classes that " +
+                                            $"inherit Request<,> but was applied to {commandType.Name}");
                     }
                 }
             }

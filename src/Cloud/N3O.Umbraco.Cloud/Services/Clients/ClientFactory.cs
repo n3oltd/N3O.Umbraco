@@ -51,7 +51,7 @@ public class ClientFactory<T> {
         transientErrorPolicyHandler.InnerHandler = new HttpClientHandler();
 
         var subscription = _subscriptionAccessor.GetSubscription();
-        var cloudApiHandler = new CloudApiHandler(subscription.Descriptor,
+        var cloudApiHandler = new CloudApiHandler(subscription.Id,
                                                   bearerToken,
                                                   onBehalfOf,
                                                   transientErrorPolicyHandler);
