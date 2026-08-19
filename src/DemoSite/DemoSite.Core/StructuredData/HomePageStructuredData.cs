@@ -17,6 +17,6 @@ public class HomePageStructuredData : StructuredDataProvider<HomePage> {
               .OfType("PostalAddress")
               .Address("123 Street, City")
               .PostalCode("ABC 123")
-              .Country("GBR");
+              .Country("GB");
     }
 }
