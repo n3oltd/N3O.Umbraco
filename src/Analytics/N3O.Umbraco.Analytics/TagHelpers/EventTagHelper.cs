@@ -21,7 +21,7 @@ public abstract class EventTagHelper : TagHelper {
             output.TagName = null;
 
             var parameters = await GetParametersAsync();
-            var parametersJson = _jsonProvider.SerializeObject(parameters);
+            var parametersJson = _jsonProvider.SerializeObjectForScript(parameters);
             
             var scriptTag = new TagBuilder("script");
 
