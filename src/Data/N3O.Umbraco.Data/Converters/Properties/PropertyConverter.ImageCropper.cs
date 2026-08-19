@@ -35,10 +35,9 @@ public class ImageCropperPropertyConverter : InlineMediaPropertyConverter {
 
     protected override IEnumerable<Cell<string>> GetCells(IContentProperty contentProperty,
                                                           UmbracoPropertyInfo propertyInfo) {
-        var value = _contentHelper.GetConvertedValue<ImageCropperValueConverter, ImageCropperValue>(
-            contentProperty.ContentType.Alias,
-            contentProperty.Type.Alias,
-            contentProperty.Value);
+        var value = _contentHelper.GetConvertedValue<ImageCropperValueConverter, ImageCropperValue>(contentProperty.ContentType.Alias,
+                                                                                                    contentProperty.Type.Alias,
+                                                                                                    contentProperty.Value);
 
         return OurDataTypes.String.Cell(AbsoluteUrl(value?.Src)).Yield();
     }
