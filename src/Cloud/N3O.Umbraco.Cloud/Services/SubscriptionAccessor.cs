@@ -14,7 +14,7 @@ public class SubscriptionAccessor : ISubscriptionAccessor {
             var dataRegion = StaticLookups.FindById<DataRegion>(dataRegionId);
             var subscriptionId = Get(CloudConstants.Environment.Keys.SubscriptionId);
 
-            _subscription = new SubscriptionInfo(dataRegion, SubscriptionDescriptor.Parse(subscriptionId));
+            _subscription = new SubscriptionInfo(dataRegion, SubscriptionId.Parse(subscriptionId));
         }
 
         return _subscription;
