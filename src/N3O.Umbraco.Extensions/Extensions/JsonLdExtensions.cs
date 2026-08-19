@@ -92,7 +92,7 @@ public static class JsonLdExtensions {
     }
 
     public static JsonLd StartDate(this JsonLd jsonLd, DateTime date) {
-        jsonLd.Custom("startDate", date.ToString("yyyy-MM-dd"));
+        jsonLd.Custom("startDate", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
 
         return jsonLd;
     }
@@ -122,11 +122,11 @@ public static class JsonLdExtensions {
     }
 
     public static JsonLd Country(this JsonLd jsonLd, Country country) {
-        return Country(jsonLd, country.Iso3Code);
+        return Country(jsonLd, country.Iso2Code);
     }
 
-    public static JsonLd Country(this JsonLd jsonLd, string iso3Code) {
-        jsonLd.Custom("addressCountry", iso3Code);
+    public static JsonLd Country(this JsonLd jsonLd, string countryCode) {
+        jsonLd.Custom("addressCountry", countryCode);
 
         return jsonLd;
     }
