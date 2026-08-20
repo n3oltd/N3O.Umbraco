@@ -9,6 +9,8 @@ public static class UploadDataTypes {
     private static readonly List<string> EditorAliases = [];
 
     static UploadDataTypes() {
+        Register(UmbracoPropertyEditors.Aliases.ImageCropper);
+        Register(UmbracoPropertyEditors.Aliases.MediaPicker3);
         Register(UmbracoPropertyEditors.Aliases.UploadField);
         Register(UmbracoPropertyEditors.Aliases.ImageCropper);
         Register(UmbracoPropertyEditors.Aliases.MediaPicker3);

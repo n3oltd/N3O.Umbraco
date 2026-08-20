@@ -1,6 +1,7 @@
 using AsyncKeyedLock;
 using Humanizer;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
@@ -23,11 +24,13 @@ public abstract class ContentStringLocalizer : IStringLocalizer {
     private IPublishedContent _textSettingsContent;
 
     protected ContentStringLocalizer(IContentCache contentCache,
+                                     ICultureAccessor cultureAccessor,
                                      ILocalizationSettingsAccessor localizationSettingsAccessor,
                                      AsyncKeyedLocker<string> locker) {
         _localizationSettingsAccessor = localizationSettingsAccessor;
 
         ContentCache = contentCache;
+        CultureAccessor = cultureAccessor;
         Locker = locker;
     }
 
@@ -44,7 +47,7 @@ public abstract class ContentStringLocalizer : IStringLocalizer {
             return text;
         }
 
-        if (!_localizationSettingsAccessor.GetSettings().AllCultureCodes.Contains(LocalizationSettings.CultureCode)) {
+        if (!_localizationSettingsAccessor.GetSettings().AllCultureCodes.Contains(CultureAccessor.GetCulture())) {
             return text;
         }
         
@@ -64,7 +67,7 @@ public abstract class ContentStringLocalizer : IStringLocalizer {
     protected abstract string GetText(string folderName, string name, string text);
 
     private string GetCacheKey(params object[] values) {
-        var newValues = values.OrEmpty().Concat(LocalizationSettings.CultureCode).ToArray();
+        var newValues = values.OrEmpty().Concat(CultureAccessor.GetCulture()).ToArray();
 
         return CacheKey.Generate<ContentStringLocalizer>(newValues);
     }
@@ -92,5 +95,6 @@ public abstract class ContentStringLocalizer : IStringLocalizer {
     }
 
     protected IContentCache ContentCache { get; }
+    protected ICultureAccessor CultureAccessor { get; }
     protected AsyncKeyedLocker<string> Locker { get; }
 }

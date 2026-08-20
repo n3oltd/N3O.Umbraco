@@ -1,7 +1,9 @@
+using N3O.Umbraco.Context;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
+using N3O.Umbraco.Scheduler.Attributes;
 using NodaTime;
 using System;
 
@@ -11,13 +13,16 @@ public class BackgroundJob : IBackgroundJob {
     private readonly IFluentParametersBuilder _fluentParametersBuilder;
     private readonly IJsonProvider _jsonProvider;
     private readonly IClock _clock;
+    private readonly ICultureAccessor _cultureAccessor;
 
     public BackgroundJob(IFluentParametersBuilder fluentParametersBuilder,
                          IJsonProvider jsonProvider,
-                         IClock clock) {
+                         IClock clock,
+                         ICultureAccessor cultureAccessor) {
         _fluentParametersBuilder = fluentParametersBuilder;
         _jsonProvider = jsonProvider;
         _clock = clock;
+        _cultureAccessor = cultureAccessor;
     }
 
     public string Enqueue<TRequest, TModel>(string jobName,
@@ -46,9 +51,15 @@ public class BackgroundJob : IBackgroundJob {
 
         addParameters?.Invoke(_fluentParametersBuilder);
 
-        _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Culture, LocalizationSettings.CultureCode);
+        _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Culture, _cultureAccessor.GetCulture());
 
-        var parameterData = _fluentParametersBuilder.Build();
+        var parameterData = _fluentParametersBuilder.Build().ToDictionary();
+
+        if (typeof(TRequest).HasAttribute<RunsWhereQueuedAttribute>()) {
+            parameterData[SchedulerConstants.Parameters.Origin] = JobOriginProvider.GetOrigin();
+            parameterData[SchedulerConstants.Parameters.Queue] = queue;
+        }
+
         var modelJson = _jsonProvider.SerializeObject(model);
 
         var enqueueAt = at.ToDateTimeOffset();
