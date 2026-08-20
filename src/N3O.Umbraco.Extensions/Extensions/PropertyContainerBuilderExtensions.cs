@@ -5,6 +5,15 @@ using System.Linq.Expressions;
 namespace N3O.Umbraco.Extensions;
 
 public static class PropertyContainerBuilderExtensions {
+    public static BlockGridPropertyTypeBuilder BlockGrid(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<BlockGridPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static BlockGridPropertyTypeBuilder BlockGrid<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                       Expression<Func<T, TProperty>> expression) {
+        return builder.Property<BlockGridPropertyTypeBuilder, TProperty>(expression);
+    }
+
     public static BlockListPropertyTypeBuilder BlockList(this IPropertyContainerBuilder builder, string propertyAlias) {
         return builder.Property<BlockListPropertyTypeBuilder>(propertyAlias);
     }
@@ -99,6 +108,17 @@ public static class PropertyContainerBuilderExtensions {
     public static EyeDropperPropertyTypeBuilder EyeDropper<T, TProperty>(this IPropertyContainerBuilder<T> builder,
                                                                          Expression<Func<T, TProperty>> expression) {
         return builder.Property<EyeDropperPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static ImageCropperPropertyTypeBuilder ImageCropper(this IPropertyContainerBuilder builder,
+                                                               string propertyAlias) {
+        return builder.Property<ImageCropperPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static ImageCropperPropertyTypeBuilder ImageCropper<T, TProperty>(
+        this IPropertyContainerBuilder<T> builder,
+        Expression<Func<T, TProperty>> expression) {
+        return builder.Property<ImageCropperPropertyTypeBuilder, TProperty>(expression);
     }
 
     public static LabelPropertyTypeBuilder Label(this IPropertyContainerBuilder builder, string propertyAlias) {
@@ -202,6 +222,15 @@ public static class PropertyContainerBuilderExtensions {
         this IPropertyContainerBuilder<T> builder,
         Expression<Func<T, TProperty>> expression) {
         return builder.Property<RadioButtonListPropertyTypeBuilder, TProperty>(expression);
+    }
+
+    public static RichTextPropertyTypeBuilder RichText(this IPropertyContainerBuilder builder, string propertyAlias) {
+        return builder.Property<RichTextPropertyTypeBuilder>(propertyAlias);
+    }
+
+    public static RichTextPropertyTypeBuilder RichText<T, TProperty>(this IPropertyContainerBuilder<T> builder,
+                                                                     Expression<Func<T, TProperty>> expression) {
+        return builder.Property<RichTextPropertyTypeBuilder, TProperty>(expression);
     }
 
     public static SliderPropertyTypeBuilder Slider(this IPropertyContainerBuilder builder, string propertyAlias) {

@@ -65,7 +65,7 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
     }
 
     public void WithDeterministicId(string seed) {
-        _id = UmbracoId.Generate(IdScope.DataType, seed);
+        _id = UmbracoId.Deterministic(IdScope.DataType, seed);
     }
 
     public void WithId(Guid id) {
@@ -130,7 +130,7 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
             }
 
             if (elementContainer == null) {
-                var key = UmbracoId.Generate(IdScope.DataTypeFolder, walkedPath.ToArray());
+                var key = UmbracoId.Deterministic(IdScope.DataTypeFolder, walkedPath.ToArray());
                 var attempt = _dataTypeService.CreateContainer(container?.Id ?? -1, key, element);
 
                 if (!attempt.Success) {

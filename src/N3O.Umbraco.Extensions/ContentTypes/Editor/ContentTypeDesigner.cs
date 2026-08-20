@@ -121,7 +121,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
     public void WithDeterministicId() {
         _deterministic = true;
-        _id = UmbracoId.Generate(IdScope.ContentType, Alias);
+        _id = UmbracoId.Deterministic(IdScope.ContentType, Alias);
     }
 
     public void WithId(Guid id) {
@@ -167,7 +167,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
             group = contentType.PropertyGroups.First(x => x.Alias == container.Alias);
 
             if (_deterministic) {
-                group.Key = UmbracoId.Generate(IdScope.ContentTypeContainer, Alias, container.Alias);
+                group.Key = UmbracoId.Deterministic(IdScope.ContentTypeContainer, Alias, container.Alias);
             }
         }
 
@@ -225,7 +225,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
             propertyType.SortOrder = sortOrder;
 
             if (_deterministic) {
-                propertyType.Key = UmbracoId.Generate(IdScope.PropertyType, Alias, propertyAlias);
+                propertyType.Key = UmbracoId.Deterministic(IdScope.PropertyType, Alias, propertyAlias);
             }
 
             builder.Apply(propertyType, context);
@@ -275,7 +275,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
             }
 
             if (elementContainer == null) {
-                var key = UmbracoId.Generate(IdScope.ContentTypeFolder, walkedPath.ToArray());
+                var key = UmbracoId.Deterministic(IdScope.ContentTypeFolder, walkedPath.ToArray());
                 var attempt = _contentTypeService.CreateContainer(container?.Id ?? -1, key, element);
 
                 if (!attempt.Success) {

@@ -3,6 +3,10 @@ using N3O.Umbraco.DataTypes;
 namespace N3O.Umbraco.Extensions;
 
 public static class DataTypeEditorExtensions {
+    public static BlockGridDataTypeDesigner NewBlockGrid(this IDataTypeEditor editor, string name) {
+        return editor.New<BlockGridDataTypeDesigner>(name);
+    }
+
     public static CheckBoxListDataTypeDesigner NewCheckBoxList(this IDataTypeEditor editor, string name) {
         return editor.New<CheckBoxListDataTypeDesigner>(name);
     }
@@ -33,6 +37,10 @@ public static class DataTypeEditorExtensions {
 
     public static EyeDropperDataTypeDesigner NewEyeDropper(this IDataTypeEditor editor, string name) {
         return editor.New<EyeDropperDataTypeDesigner>(name);
+    }
+
+    public static ImageCropperDataTypeDesigner NewImageCropper(this IDataTypeEditor editor, string name) {
+        return editor.New<ImageCropperDataTypeDesigner>(name);
     }
 
     public static LabelDataTypeDesigner NewLabel(this IDataTypeEditor editor, string name) {
@@ -70,6 +78,10 @@ public static class DataTypeEditorExtensions {
 
     public static RadioButtonListDataTypeDesigner NewRadioButtonList(this IDataTypeEditor editor, string name) {
         return editor.New<RadioButtonListDataTypeDesigner>(name);
+    }
+
+    public static RichTextDataTypeDesigner NewRichText(this IDataTypeEditor editor, string name) {
+        return editor.New<RichTextDataTypeDesigner>(name);
     }
 
     public static SliderDataTypeDesigner NewSlider(this IDataTypeEditor editor, string name) {
