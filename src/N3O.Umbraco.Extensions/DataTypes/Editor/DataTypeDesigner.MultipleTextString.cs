@@ -11,9 +11,10 @@ public class MultipleTextStringDataTypeDesigner : DataTypeDesigner {
     private int _minimum;
 
     public MultipleTextStringDataTypeDesigner(IDataTypeService dataTypeService,
+                                              IDataTypeContainerService dataTypeContainerService,
                                               PropertyEditorCollection propertyEditors,
                                               IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public MultipleTextStringDataTypeDesigner Limit(int min, int max) {
         _minimum = min;

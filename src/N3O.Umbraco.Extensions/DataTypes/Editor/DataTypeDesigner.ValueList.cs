@@ -12,9 +12,10 @@ public abstract class ValueListDataTypeDesigner<TSelf> : DataTypeDesigner
     private readonly List<string> _options = [];
 
     protected ValueListDataTypeDesigner(IDataTypeService dataTypeService,
+                                        IDataTypeContainerService dataTypeContainerService,
                                         PropertyEditorCollection propertyEditors,
                                         IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public TSelf Options(params string[] values) {
         _options.AddRange(values);

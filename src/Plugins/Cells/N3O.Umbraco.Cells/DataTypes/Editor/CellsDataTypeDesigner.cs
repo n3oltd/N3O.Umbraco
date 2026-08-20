@@ -11,9 +11,10 @@ public class CellsDataTypeDesigner : DataTypeDesigner {
     private string _gridConfiguration;
 
     public CellsDataTypeDesigner(IDataTypeService dataTypeService,
+                                 IDataTypeContainerService dataTypeContainerService,
                                  PropertyEditorCollection propertyEditors,
                                  IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public CellsDataTypeDesigner GridConfiguration(string gridConfiguration) {
         _gridConfiguration = gridConfiguration;

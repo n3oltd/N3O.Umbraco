@@ -9,9 +9,10 @@ public class DropdownDataTypeDesigner : ValueListDataTypeDesigner<DropdownDataTy
     private bool _multiple;
 
     public DropdownDataTypeDesigner(IDataTypeService dataTypeService,
+                                    IDataTypeContainerService dataTypeContainerService,
                                     PropertyEditorCollection propertyEditors,
                                     IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public DropdownDataTypeDesigner AllowMultiple() {
         _multiple = true;

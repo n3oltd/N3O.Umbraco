@@ -13,9 +13,10 @@ public class MultiNodeTreePickerDataTypeDesigner : DataTypeDesigner {
     private int _minNumber;
 
     public MultiNodeTreePickerDataTypeDesigner(IDataTypeService dataTypeService,
+                                               IDataTypeContainerService dataTypeContainerService,
                                                PropertyEditorCollection propertyEditors,
                                                IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public MultiNodeTreePickerDataTypeDesigner AllowContentTypes(params string[] contentTypeAliases) {
         _filter = contentTypeAliases.ToCsv();

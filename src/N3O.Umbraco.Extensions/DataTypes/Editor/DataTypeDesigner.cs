@@ -7,11 +7,13 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.DataTypes;
 
 public abstract class DataTypeDesigner : IDataTypeDesigner {
     private readonly IDataTypeService _dataTypeService;
+    private readonly IDataTypeContainerService _dataTypeContainerService;
     private readonly PropertyEditorCollection _propertyEditors;
     private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
 
@@ -21,9 +23,11 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
     private string _name;
 
     protected DataTypeDesigner(IDataTypeService dataTypeService,
+                               IDataTypeContainerService dataTypeContainerService,
                                PropertyEditorCollection propertyEditors,
                                IConfigurationEditorJsonSerializer configurationEditorJsonSerializer) {
         _dataTypeService = dataTypeService;
+        _dataTypeContainerService = dataTypeContainerService;
         _propertyEditors = propertyEditors;
         _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
     }
@@ -55,9 +59,16 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
                                                                                  _configurationEditorJsonSerializer);
         }
 
-        _dataTypeService.Save(dataType);
+        var save = existing != null
+                       ? _dataTypeService.UpdateAsync(dataType, UmbracoSecurity.SuperUserKey)
+                       : _dataTypeService.CreateAsync(dataType, UmbracoSecurity.SuperUserKey);
+        var attempt = save.GetAwaiter().GetResult();
 
-        return dataType;
+        if (!attempt.Success) {
+            throw new Exception($"Failed to save data type {_name.Quote()}: {attempt.Status}");
+        }
+
+        return attempt.Result;
     }
 
     public void SetName(string name) {
@@ -107,7 +118,7 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
         }
 
         if (dataType == null && _adoptByName) {
-            dataType = _dataTypeService.GetDataType(_name);
+            dataType = _dataTypeService.GetAsync(_name).GetAwaiter().GetResult();
         }
 
         return dataType;
@@ -122,22 +133,27 @@ public abstract class DataTypeDesigner : IDataTypeDesigner {
 
             var elementContainer = default(EntityContainer);
 
+            var level = container == null ? 1 : container.Level + 1;
+            var containers = _dataTypeContainerService.GetAsync(element, level).GetAwaiter().GetResult();
+
             if (container == null) {
-                elementContainer = _dataTypeService.GetContainers(element, 1).SingleOrDefault();
+                elementContainer = containers.SingleOrDefault();
             } else {
-                elementContainer = _dataTypeService.GetContainers(element, container.Level + 1)
-                                                   .SingleOrDefault(x => x.ParentId == container.Id);
+                elementContainer = containers.SingleOrDefault(x => x.ParentId == container.Id);
             }
 
             if (elementContainer == null) {
                 var key = UmbracoId.Deterministic(IdScope.DataTypeFolder, walkedPath.ToArray());
-                var attempt = _dataTypeService.CreateContainer(container?.Id ?? -1, key, element);
+                var attempt = _dataTypeContainerService
+                                  .CreateAsync(key, element, container?.Key, UmbracoSecurity.SuperUserKey)
+                                  .GetAwaiter()
+                                  .GetResult();
 
                 if (!attempt.Success) {
-                    throw new Exception($"Failed to create data type folder {element.Quote()}", attempt.Exception);
+                    throw new Exception($"Failed to create data type folder {element.Quote()}: {attempt.Status}");
                 }
 
-                container = attempt.Result.Entity;
+                container = attempt.Result;
             } else {
                 container = elementContainer;
             }

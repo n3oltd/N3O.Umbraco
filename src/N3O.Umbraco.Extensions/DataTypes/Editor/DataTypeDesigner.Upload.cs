@@ -12,9 +12,10 @@ public class UploadDataTypeDesigner : DataTypeDesigner {
     private readonly List<string> _fileExtensions = [];
 
     public UploadDataTypeDesigner(IDataTypeService dataTypeService,
+                                      IDataTypeContainerService dataTypeContainerService,
                                       PropertyEditorCollection propertyEditors,
                                       IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public UploadDataTypeDesigner AllowExtensions(params string[] fileExtensions) {
         _fileExtensions.AddRange(fileExtensions);

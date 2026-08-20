@@ -10,9 +10,10 @@ public class TagsDataTypeDesigner : DataTypeDesigner {
     private string _group = "default";
 
     public TagsDataTypeDesigner(IDataTypeService dataTypeService,
+                                IDataTypeContainerService dataTypeContainerService,
                                 PropertyEditorCollection propertyEditors,
                                 IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public TagsDataTypeDesigner Group(string group) {
         _group = group;

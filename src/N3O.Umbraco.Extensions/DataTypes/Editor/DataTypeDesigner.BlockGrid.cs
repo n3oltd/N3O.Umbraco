@@ -20,10 +20,11 @@ public class BlockGridDataTypeDesigner : DataTypeDesigner {
     private int? _minBlocks;
 
     public BlockGridDataTypeDesigner(IDataTypeService dataTypeService,
+                                     IDataTypeContainerService dataTypeContainerService,
                                      IContentTypeService contentTypeService,
                                      PropertyEditorCollection propertyEditors,
                                      IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) {
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) {
         _contentTypeService = contentTypeService;
     }
 

@@ -16,9 +16,10 @@ public class MediaPickerDataTypeDesigner : DataTypeDesigner {
     private bool _multiple;
 
     public MediaPickerDataTypeDesigner(IDataTypeService dataTypeService,
+                                       IDataTypeContainerService dataTypeContainerService,
                                        PropertyEditorCollection propertyEditors,
                                        IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public MediaPickerDataTypeDesigner AllowMultiple() {
         _multiple = true;

@@ -8,9 +8,10 @@ namespace N3O.Umbraco.SerpEditor.DataTypes;
 
 public class SerpEditorDataTypeDesigner : DataTypeDesigner {
     public SerpEditorDataTypeDesigner(IDataTypeService dataTypeService,
+                                      IDataTypeContainerService dataTypeContainerService,
                                       PropertyEditorCollection propertyEditors,
                                       IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
         return new SerpEditorConfiguration();

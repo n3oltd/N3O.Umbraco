@@ -11,9 +11,10 @@ public class MultiUrlPickerDataTypeDesigner : DataTypeDesigner {
     private int _minNumber;
 
     public MultiUrlPickerDataTypeDesigner(IDataTypeService dataTypeService,
+                                          IDataTypeContainerService dataTypeContainerService,
                                           PropertyEditorCollection propertyEditors,
                                           IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public MultiUrlPickerDataTypeDesigner Limit(int min, int max) {
         _minNumber = min;

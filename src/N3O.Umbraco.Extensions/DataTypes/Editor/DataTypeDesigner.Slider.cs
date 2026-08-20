@@ -13,9 +13,10 @@ public class SliderDataTypeDesigner : DataTypeDesigner {
     private decimal _step = 1;
 
     public SliderDataTypeDesigner(IDataTypeService dataTypeService,
+                                  IDataTypeContainerService dataTypeContainerService,
                                   PropertyEditorCollection propertyEditors,
                                   IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public SliderDataTypeDesigner EnableRange() {
         _enableRange = true;

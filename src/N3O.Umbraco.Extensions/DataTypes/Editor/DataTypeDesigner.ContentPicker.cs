@@ -8,9 +8,10 @@ namespace N3O.Umbraco.DataTypes;
 
 public class ContentPickerDataTypeDesigner : DataTypeDesigner {
     public ContentPickerDataTypeDesigner(IDataTypeService dataTypeService,
+                                         IDataTypeContainerService dataTypeContainerService,
                                          PropertyEditorCollection propertyEditors,
                                          IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
         // v17 removed ContentPickerConfiguration.ShowOpenButton (only IgnoreUserStartNodes remains); nothing to configure

@@ -11,9 +11,10 @@ public class ImageCropperDataTypeDesigner : DataTypeDesigner {
     private readonly List<ImageCropperConfiguration.Crop> _crops = [];
 
     public ImageCropperDataTypeDesigner(IDataTypeService dataTypeService,
+                                        IDataTypeContainerService dataTypeContainerService,
                                         PropertyEditorCollection propertyEditors,
                                         IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public ImageCropperDataTypeDesigner AddCrop(string alias, int width, int height) {
         var crop = new ImageCropperConfiguration.Crop();

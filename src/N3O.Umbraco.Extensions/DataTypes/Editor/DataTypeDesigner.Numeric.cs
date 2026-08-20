@@ -14,9 +14,10 @@ public class NumericDataTypeDesigner : DataTypeDesigner {
     private int? _step;
 
     public NumericDataTypeDesigner(IDataTypeService dataTypeService,
+                                   IDataTypeContainerService dataTypeContainerService,
                                    PropertyEditorCollection propertyEditors,
                                    IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public NumericDataTypeDesigner Max(int max) {
         _max = max;

@@ -14,9 +14,10 @@ public class DecimalDataTypeDesigner : DataTypeDesigner {
     private decimal? _step;
 
     public DecimalDataTypeDesigner(IDataTypeService dataTypeService,
+                                   IDataTypeContainerService dataTypeContainerService,
                                    PropertyEditorCollection propertyEditors,
                                    IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public DecimalDataTypeDesigner Max(decimal max) {
         _max = max;

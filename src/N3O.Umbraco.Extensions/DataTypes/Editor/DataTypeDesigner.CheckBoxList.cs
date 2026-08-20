@@ -7,9 +7,10 @@ namespace N3O.Umbraco.DataTypes;
 
 public class CheckBoxListDataTypeDesigner : ValueListDataTypeDesigner<CheckBoxListDataTypeDesigner> {
     public CheckBoxListDataTypeDesigner(IDataTypeService dataTypeService,
+                                        IDataTypeContainerService dataTypeContainerService,
                                         PropertyEditorCollection propertyEditors,
                                         IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override string EditorAlias => UmbracoPropertyEditors.Aliases.CheckBoxList;
 }

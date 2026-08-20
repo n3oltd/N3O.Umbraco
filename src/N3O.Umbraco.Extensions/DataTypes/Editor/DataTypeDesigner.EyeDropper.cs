@@ -8,9 +8,10 @@ namespace N3O.Umbraco.DataTypes;
 
 public class EyeDropperDataTypeDesigner : DataTypeDesigner {
     public EyeDropperDataTypeDesigner(IDataTypeService dataTypeService,
+                                      IDataTypeContainerService dataTypeContainerService,
                                       PropertyEditorCollection propertyEditors,
                                       IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
         // v17 has no eye-dropper colour-picker configuration (ShowAlpha/ShowPalette removed); nothing to configure

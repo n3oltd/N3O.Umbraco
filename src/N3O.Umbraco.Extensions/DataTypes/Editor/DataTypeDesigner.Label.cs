@@ -10,9 +10,10 @@ public class LabelDataTypeDesigner : DataTypeDesigner {
     private string _valueType = ValueTypes.String;
 
     public LabelDataTypeDesigner(IDataTypeService dataTypeService,
+                                 IDataTypeContainerService dataTypeContainerService,
                                  PropertyEditorCollection propertyEditors,
                                  IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public LabelDataTypeDesigner ValueType(string valueType) {
         _valueType = valueType;

@@ -10,9 +10,10 @@ public class TextareaDataTypeDesigner : DataTypeDesigner {
     private int? _maxChars;
 
     public TextareaDataTypeDesigner(IDataTypeService dataTypeService,
+                                    IDataTypeContainerService dataTypeContainerService,
                                     PropertyEditorCollection propertyEditors,
                                     IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public TextareaDataTypeDesigner MaxChars(int maxChars) {
         _maxChars = maxChars;

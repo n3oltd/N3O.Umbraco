@@ -14,9 +14,10 @@ public class ColorPickerDataTypeDesigner : DataTypeDesigner {
     private bool _useLabel;
 
     public ColorPickerDataTypeDesigner(IDataTypeService dataTypeService,
+                                       IDataTypeContainerService dataTypeContainerService,
                                        PropertyEditorCollection propertyEditors,
                                        IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public ColorPickerDataTypeDesigner AddColor(string color, string label) {
         _colors.Add((ToHex(color), label));

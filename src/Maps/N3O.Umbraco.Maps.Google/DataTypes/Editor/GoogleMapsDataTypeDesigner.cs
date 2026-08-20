@@ -14,9 +14,10 @@ public class GoogleMapsDataTypeDesigner : DataTypeDesigner {
     private string _zoom;
 
     public GoogleMapsDataTypeDesigner(IDataTypeService dataTypeService,
+                                      IDataTypeContainerService dataTypeContainerService,
                                       PropertyEditorCollection propertyEditors,
                                       IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
+        : base(dataTypeService, dataTypeContainerService, propertyEditors, configurationEditorJsonSerializer) { }
 
     public GoogleMapsDataTypeDesigner ApiKey(string apiKey) {
         _apiKey = apiKey;

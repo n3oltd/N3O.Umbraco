@@ -7,6 +7,7 @@ using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
+using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.ContentTypes;
 
@@ -62,6 +63,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
     public IContentType Save() {
         var contentType = FindExisting() ?? Create();
+        var isNew = !contentType.HasIdentity;
 
         contentType.Name = _name;
         contentType.IsElement = _isElement;
@@ -86,7 +88,14 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         ApplyContainers(contentType);
         ApplyKind(contentType);
 
-        _contentTypeService.Save(contentType);
+        var save = isNew
+                       ? _contentTypeService.CreateAsync(contentType, UmbracoSecurity.SuperUserKey)
+                       : _contentTypeService.UpdateAsync(contentType, UmbracoSecurity.SuperUserKey);
+        var attempt = save.GetAwaiter().GetResult();
+
+        if (!attempt.Success) {
+            throw new Exception($"Failed to save content type {_name.Quote()}: {attempt.Result}");
+        }
 
         return contentType;
     }
