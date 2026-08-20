@@ -7,6 +7,10 @@ public static class DataTypeEditorExtensions {
         return editor.New<BlockGridDataTypeDesigner>(name);
     }
 
+    public static BlockListDataTypeDesigner NewBlockList(this IDataTypeEditor editor, string name) {
+        return editor.New<BlockListDataTypeDesigner>(name);
+    }
+
     public static CheckBoxListDataTypeDesigner NewCheckBoxList(this IDataTypeEditor editor, string name) {
         return editor.New<CheckBoxListDataTypeDesigner>(name);
     }
