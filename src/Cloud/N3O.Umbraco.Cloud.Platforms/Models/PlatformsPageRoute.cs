@@ -20,9 +20,11 @@ public class PlatformsPageRoute : Value {
     }
     
     public static readonly PlatformsPageRoute[] All = [
-        // Order is important here as offerings fallback to campaign
+        // Order is important here as offerings fallback to campaign, and the crowdfunder route must precede the
+        // crowdfunding campaign so a campaign slugged pages cannot capture every crowdfunder URL
         new(SpecialPages.Donate, PublishedFileKinds.OfferingPage),
         new(SpecialPages.Donate, PublishedFileKinds.CampaignPage),
-        new(SpecialPages.Crowdfunding, PublishedFileKinds.CrowdfunderPage)
+        new(SpecialPages.Crowdfunding, PublishedFileKinds.CrowdfunderPage),
+        new(SpecialPages.Crowdfunding, PublishedFileKinds.CrowdfundingCampaignPage)
     ];
 }
