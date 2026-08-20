@@ -13,6 +13,7 @@ public class DateTimeDataTypeDesigner : DataTypeDesigner {
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
+        // v17 removed DateTimeConfiguration.Format/OffsetTime (only TimeZones remains); nothing to configure
         return null;
     }
 

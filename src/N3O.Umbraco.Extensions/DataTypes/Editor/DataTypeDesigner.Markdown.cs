@@ -14,6 +14,7 @@ public class MarkdownDataTypeDesigner : DataTypeDesigner {
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
+        // v17 has no MarkdownConfiguration (DefaultValue/DisplayLivePreview removed); nothing to configure
         return null;
     }
 

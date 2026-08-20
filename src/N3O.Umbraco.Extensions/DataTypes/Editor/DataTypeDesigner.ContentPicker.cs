@@ -13,6 +13,7 @@ public class ContentPickerDataTypeDesigner : DataTypeDesigner {
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
+        // v17 removed ContentPickerConfiguration.ShowOpenButton (only IgnoreUserStartNodes remains); nothing to configure
         return null;
     }
 

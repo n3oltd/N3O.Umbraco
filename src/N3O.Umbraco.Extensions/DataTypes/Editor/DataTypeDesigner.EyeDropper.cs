@@ -13,6 +13,7 @@ public class EyeDropperDataTypeDesigner : DataTypeDesigner {
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
+        // v17 has no eye-dropper colour-picker configuration (ShowAlpha/ShowPalette removed); nothing to configure
         return null;
     }
 

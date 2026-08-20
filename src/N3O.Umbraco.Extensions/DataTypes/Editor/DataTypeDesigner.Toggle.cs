@@ -14,6 +14,7 @@ public class ToggleDataTypeDesigner : DataTypeDesigner {
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
+        // v17 has no TrueFalseConfiguration (DefaultOn/Labels removed); nothing to configure
         return null;
     }
 

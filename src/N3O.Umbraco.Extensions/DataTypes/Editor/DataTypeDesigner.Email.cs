@@ -13,6 +13,7 @@ public class EmailDataTypeDesigner : DataTypeDesigner {
         : base(dataTypeService, propertyEditors, configurationEditorJsonSerializer) { }
 
     protected override object BuildConfiguration(IDataType existing) {
+        // v17 has no EmailAddressConfiguration; nothing to configure
         return null;
     }
 
