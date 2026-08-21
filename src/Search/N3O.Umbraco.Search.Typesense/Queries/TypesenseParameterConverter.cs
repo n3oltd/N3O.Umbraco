@@ -1,6 +1,8 @@
 using N3O.Umbraco.Lookups;
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
+using System.Reflection;
 
 namespace N3O.Umbraco.Search.Typesense.Queries;
 
@@ -20,12 +22,10 @@ public static class TypesenseParameterConverter {
     }
 
     private static string Backtick(string value) {
-        return $"`{value?.Replace("`", "\\`")}`";
+        return value == null ? null : $"`{value.Replace("`", "\\`")}`";
     }
 
-    // The scalar shapes Typesense accepts as a filter_by literal, covering String, Bool, Int32, Int64 and
-    // Float and their array forms. Object fields are filtered by sub-field path and GeoPoint by its own
-    // compound syntax, so neither is a literal and both resolve to no converter.
+    // Only the shapes Typesense accepts as a filter_by literal
     private static Func<object, string> GetScalarConverter(Type type) {
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
@@ -38,11 +38,21 @@ public static class TypesenseParameterConverter {
                    underlyingType == typeof(char)) {
             return v => v == null ? null : Backtick(Convert.ToString(v, CultureInfo.InvariantCulture));
         } else if (underlyingType.IsEnum) {
-            var integralType = Enum.GetUnderlyingType(underlyingType);
+            var jsonConverterAttribute = underlyingType.GetCustomAttribute<JsonConverterAttribute>();
 
-            return v => v == null
-                            ? null
-                            : Convert.ToString(Convert.ChangeType(v, integralType), CultureInfo.InvariantCulture);
+            if (jsonConverterAttribute != null) {
+                var converterParameters = jsonConverterAttribute.ConverterParameters ?? [];
+                var jsonConverter = (JsonConverter) Activator.CreateInstance(jsonConverterAttribute.ConverterType,
+                                                                             converterParameters);
+
+                return v => v == null ? null : ToLiteral(JsonConvert.SerializeObject(v, jsonConverter));
+            } else {
+                var integralType = Enum.GetUnderlyingType(underlyingType);
+
+                return v => v == null ?
+                            null :
+                            Convert.ToString(Convert.ChangeType(v, integralType), CultureInfo.InvariantCulture);
+            }
         } else if (IsNumeric(underlyingType)) {
             return v => v == null ? null : Convert.ToString(v, CultureInfo.InvariantCulture);
         } else {
@@ -62,5 +72,9 @@ public static class TypesenseParameterConverter {
                type == typeof(ushort) ||
                type == typeof(uint) ||
                type == typeof(ulong);
+    }
+
+    private static string ToLiteral(string json) {
+        return json.StartsWith('"') ? Backtick(json.Trim('"')) : json;
     }
 }

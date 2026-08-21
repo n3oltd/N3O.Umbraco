@@ -19,8 +19,6 @@ public class ContentIndexer : IContentIndexer {
 
         foreach (var searchIndexer in searchIndexers) {
             if (content.ContentType.VariesByCulture()) {
-                // Remove all existing culture documents first so cultures that are no longer
-                // published (and so won't be re-indexed below) don't linger in the index
                 await searchIndexer.DeleteAsync(content.Key);
 
                 foreach (var publishedContentCulture in content.Cultures) {

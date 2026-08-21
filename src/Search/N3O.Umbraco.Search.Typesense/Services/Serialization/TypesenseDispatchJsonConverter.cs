@@ -5,8 +5,6 @@ using System;
 
 namespace N3O.Umbraco.Search.Typesense;
 
-// JsonComposer registers every JsonConverter as a serializer-level converter, which would apply Typesense
-// conversion to all JSON everywhere; this one is attached per property by TypesenseJsonContractResolver
 [NoRegisterAll]
 public class TypesenseDispatchJsonConverter : JsonConverter {
     public static readonly TypesenseDispatchJsonConverter Instance = new();
@@ -24,7 +22,7 @@ public class TypesenseDispatchJsonConverter : JsonConverter {
             return;
         }
 
-        var converter = TypesenseConverterRegistry.GetConverter(value.GetType());
+        var converter = GetConverterForAncestry(value.GetType());
         var typesenseValue = converter.ToTypesenseValue(value);
 
         if (typesenseValue == null) {
@@ -45,10 +43,22 @@ public class TypesenseDispatchJsonConverter : JsonConverter {
         var converter = TypesenseConverterRegistry.GetConverter(objectType);
         var token = JToken.Load(reader);
 
-        var typesenseValue = token.Type == JTokenType.Null
-                                 ? null
-                                 : token.ToObject(converter.UnderlyingTypesenseType, serializer);
+        var typesenseValue = token.Type == JTokenType.Null ?
+                             null :
+                             token.ToObject(converter.UnderlyingTypesenseType, serializer);
 
         return converter.FromTypesenseValue(typesenseValue);
+    }
+
+    private ITypesenseConverter GetConverterForAncestry(Type type) {
+        for (var candidateType = type; candidateType != null; candidateType = candidateType.BaseType) {
+            var converter = TypesenseConverterRegistry.GetConverter(candidateType);
+
+            if (converter != null) {
+                return converter;
+            }
+        }
+
+        return null;
     }
 }

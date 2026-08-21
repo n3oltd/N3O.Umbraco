@@ -10,23 +10,14 @@ using System.Reflection;
 namespace N3O.Umbraco.Search.Typesense;
 
 public static class TypesenseField {
-    private static readonly NamingStrategy CamelCase = new CamelCaseNamingStrategy {
-        ProcessDictionaryKeys = false
-    };
+    private static readonly NamingStrategy CamelCase = new CamelCaseNamingStrategy();
 
     public static string Get<T, TField>(Expression<Func<T, TField>> pathExpression) {
         var pathComponents = new List<string>();
-        MemberExpression memberExpression;
+        var memberExpression = GetMemberExpression(pathExpression.Body);
 
-        switch (pathExpression.Body.NodeType) {
-            case ExpressionType.Convert:
-            case ExpressionType.ConvertChecked:
-                memberExpression = (pathExpression.Body as UnaryExpression)?.Operand as MemberExpression;
-                break;
-
-            default:
-                memberExpression = pathExpression.Body as MemberExpression;
-                break;
+        if (memberExpression == null) {
+            throw new Exception($"The path {pathExpression.Body.ToString().Quote()} is not a property path");
         }
 
         while (memberExpression != null) {
@@ -53,7 +44,15 @@ public static class TypesenseField {
             return jsonProperty.PropertyName;
         }
 
-        return CamelCase.GetPropertyName(memberInfo.Name, hasSpecifiedName: false);
+        return CamelCase.GetPropertyName(memberInfo.Name, false);
+    }
+
+    private static MemberExpression GetMemberExpression(Expression body) {
+        if (body.NodeType.IsAnyOf(ExpressionType.Convert, ExpressionType.ConvertChecked)) {
+            return (body as UnaryExpression)?.Operand as MemberExpression;
+        } else {
+            return body as MemberExpression;
+        }
     }
 
     public const char PathSeparator = '.';

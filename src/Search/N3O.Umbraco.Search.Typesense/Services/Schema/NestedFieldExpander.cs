@@ -40,7 +40,7 @@ public static class NestedFieldExpander {
                                 "nested fields");
         }
 
-        // NullValueHandling omits a null object, and Typesense stops indexing a document missing a non-optional field
+        // Typesense rejects a document that lacks a non-optional field
         var isRequired = attribute.Required && !isArray && IsAlwaysWritten(rootProperty);
 
         AddFieldsForType(objectType, attribute.Name, isArray, isRequired, ancestry, fields);
@@ -48,6 +48,22 @@ public static class NestedFieldExpander {
         ValidateFields(documentType, attribute.Name, fields);
 
         return fields;
+    }
+
+    public static FieldType ToArrayFieldType(string path, FieldType fieldType) {
+        if (fieldType == FieldType.Bool) {
+            return FieldType.BoolArray;
+        } else if (fieldType == FieldType.Float) {
+            return FieldType.FloatArray;
+        } else if (fieldType == FieldType.Int32) {
+            return FieldType.Int32Array;
+        } else if (fieldType == FieldType.Int64) {
+            return FieldType.Int64Array;
+        } else if (fieldType == FieldType.String) {
+            return FieldType.StringArray;
+        } else {
+            throw new Exception($"Cannot index {path.Quote()} because field type {fieldType} has no array form");
+        }
     }
 
     private static void ValidateOptions(Type documentType, FieldAttribute attribute) {
@@ -169,8 +185,8 @@ public static class NestedFieldExpander {
 
         var underlyingElementType = Nullable.GetUnderlyingType(elementType) ?? elementType;
 
-        if (TypesenseConverterRegistry.GetConverter(elementType) != null) {
-            return;
+        if (TypesenseConverterRegistry.GetConverter(elementType) is ITypesenseConverter converter) {
+            fields.Add(CreateField(path, converter.FieldType, true, false));
         } else if (underlyingElementType == typeof(byte)) {
             return;
         } else if (GetFieldType(elementType) is FieldType elementFieldType) {
@@ -257,7 +273,7 @@ public static class NestedFieldExpander {
     }
 
     private static bool HasMemberConverter(JsonProperty property) {
-        return property.ItemConverter != null ||
+        return (property.ItemConverter != null && !(property.ItemConverter is TypesenseDispatchJsonConverter)) ||
                (property.Converter != null && !(property.Converter is TypesenseDispatchJsonConverter));
     }
 
@@ -265,9 +281,10 @@ public static class NestedFieldExpander {
         return ContractResolver.ResolveContract(type) is JsonDictionaryContract;
     }
 
-    // Registration runs before the container exists, so only parameterless converters can be constructed here
+    // Runs before the container exists
     private static IReadOnlyList<JsonConverter> LoadJsonConverters() {
         return OurAssemblies.GetTypes(x => x.IsConcreteClass() &&
+                                           !x.IsGenericTypeDefinition &&
                                            x.IsSubclassOfType(typeof(JsonConverter)) &&
                                            x.HasParameterlessConstructor())
                             .Select(x => (JsonConverter) Activator.CreateInstance(x))
@@ -289,22 +306,6 @@ public static class NestedFieldExpander {
         var type = isArray ? ToArrayFieldType(path, fieldType) : fieldType;
 
         return new Field(path, type, false, !isRequired, true);
-    }
-
-    private static FieldType ToArrayFieldType(string path, FieldType fieldType) {
-        if (fieldType == FieldType.Bool) {
-            return FieldType.BoolArray;
-        } else if (fieldType == FieldType.Float) {
-            return FieldType.FloatArray;
-        } else if (fieldType == FieldType.Int32) {
-            return FieldType.Int32Array;
-        } else if (fieldType == FieldType.Int64) {
-            return FieldType.Int64Array;
-        } else if (fieldType == FieldType.String) {
-            return FieldType.StringArray;
-        } else {
-            throw new Exception($"Cannot index {path.Quote()} because field type {fieldType} has no array form");
-        }
     }
 
     private const int MaxDepth = 16;

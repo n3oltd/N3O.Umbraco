@@ -21,9 +21,15 @@ public class TypesenseJsonContractResolver : JsonContractResolver {
         if (converter != null) {
             var valueProvider = jsonProperty.ValueProvider;
 
-            // A converter can produce null from a non-null value, which NullValueHandling cannot see
             jsonProperty.Converter = TypesenseDispatchJsonConverter.Instance;
-            jsonProperty.ShouldSerialize = instance => converter.ToTypesenseValue(valueProvider?.GetValue(instance)) != null;
+            jsonProperty.ShouldSerialize = instance => {
+                return converter.ToTypesenseValue(valueProvider?.GetValue(instance)) != null;
+            };
+        } else if (jsonProperty.PropertyType.IsCollectionType() &&
+                   ResolveContract(jsonProperty.PropertyType) is JsonArrayContract arrayContract &&
+                   arrayContract.CollectionItemType != null &&
+                   TypesenseConverterRegistry.GetConverter(arrayContract.CollectionItemType) != null) {
+            jsonProperty.ItemConverter = TypesenseDispatchJsonConverter.Instance;
         }
 
         return jsonProperty;

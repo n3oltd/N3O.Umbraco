@@ -1,4 +1,4 @@
-using N3O.Umbraco.Extensions;
+﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search.Typesense.Attributes;
 using System;
 using Typesense;

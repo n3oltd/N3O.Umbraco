@@ -17,7 +17,7 @@ public partial class TypesenseSearchBuilder<T> : ITypesenseSearchBuilder<T> wher
 
     public async Task<SearchParameters> BuildAsync() {
         if (_built) {
-            throw new Exception($"{nameof(BuildAsync)} can only be called once per {nameof(TypesenseSearchBuilder<T>)} instance");
+            throw new Exception("A search builder can only be built once");
         }
 
         _built = true;

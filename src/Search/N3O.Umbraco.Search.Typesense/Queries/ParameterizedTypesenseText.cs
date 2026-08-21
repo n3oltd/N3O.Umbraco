@@ -140,15 +140,14 @@ public class ParameterizedTypesenseText : Value {
     }
 
     public override string ToString() {
-        var result = Text;
+        if (_parameters.None()) {
+            return Text;
+        } else {
+            var valuesByName = _parameters.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.First().Value);
+            var pattern = string.Join("|", valuesByName.Keys.OrderByDescending(x => x.Length).Select(Regex.Escape));
 
-        // Longest first so that @param_10 is replaced before @param_1 and @param
-        var orderedParameters = _parameters.OrderByDescending(x => x.Name.Length);
-        foreach (var parameter in orderedParameters) {
-            result = result.Replace(parameter.Name, parameter.Value);
+            return Regex.Replace(Text, pattern, m => valuesByName[m.Value]);
         }
-
-        return result;
     }
 
     private ParameterizedTypesenseText Merge(ParameterizedTypesenseText other, string op) {

@@ -54,9 +54,9 @@ public class TypesenseClauseBuilder<T> : ITypesenseClauseBuilder<T> where T : Se
         return _clause;
     }
 
-    private static ParameterizedTypesenseText BuildLeaf<TKey>(Expression<Func<T, TKey>> pathExpression,
-                                                              string expression,
-                                                              IEnumerable<Action<ParameterizedTypesenseText>> filterActions) {
+    private ParameterizedTypesenseText BuildLeaf<TKey>(Expression<Func<T, TKey>> pathExpression,
+                                                       string expression,
+                                                       IEnumerable<Action<ParameterizedTypesenseText>> filterActions) {
         var leaf = ParameterizedTypesenseText.Create(pathExpression, expression);
 
         filterActions.Do(e => e?.Invoke(leaf));
@@ -64,7 +64,7 @@ public class TypesenseClauseBuilder<T> : ITypesenseClauseBuilder<T> where T : Se
         return leaf;
     }
 
-    private static ParameterizedTypesenseText BuildNested(Action<ITypesenseClauseBuilder<T>> buildClause) {
+    private ParameterizedTypesenseText BuildNested(Action<ITypesenseClauseBuilder<T>> buildClause) {
         var inner = new TypesenseClauseBuilder<T>();
 
         buildClause(inner);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Typesense;
 
 namespace N3O.Umbraco.Search.Typesense.Attributes;

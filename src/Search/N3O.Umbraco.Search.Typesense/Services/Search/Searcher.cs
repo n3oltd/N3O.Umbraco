@@ -27,6 +27,10 @@ public class Searcher<TDocument> : ISearcher<TDocument> where TDocument : Search
 
     public async Task<SearchResult<TDocument>> SearchAsync(SearchParameters searchParameters,
                                                            CancellationToken cancellationToken = default) {
+        if (!_typesenseClient.HasValue()) {
+            throw new Exception("Typesense is not configured");
+        }
+
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
 
         var results = await _typesenseClient.Search<object>(collectionInfo.Name.Resolve(), searchParameters, cancellationToken);
@@ -55,7 +59,6 @@ public class Searcher<TDocument> : ISearcher<TDocument> where TDocument : Search
 
     public async Task<SearchResult<TDocument>> SearchAsync(Func<ITypesenseSearchBuilder<TDocument>, Task> buildSearchParametersAsync,
                                                            CancellationToken cancellationToken = default) {
-        // Resolved per call because a builder can only be built once
         var searchBuilder = _serviceProvider.GetRequiredService<ITypesenseSearchBuilder<TDocument>>();
 
         await buildSearchParametersAsync(searchBuilder);

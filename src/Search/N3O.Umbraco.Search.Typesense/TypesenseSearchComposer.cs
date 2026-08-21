@@ -17,9 +17,9 @@ public class TypesenseSearchComposer : Composer {
         builder.Services.AddTransient<IContentIndexer, ContentIndexer>();
         builder.Services.AddTransient(typeof(ISearchDocumentBuilder<>), typeof(SearchDocumentBuilder<>));
         builder.Services.AddTransient(typeof(ISearcher<>), typeof(Searcher<>));
+        builder.Services.AddSingleton<ITypesenseJsonProvider, TypesenseJsonProvider>();
         builder.Services.AddTransient(typeof(ITypesenseSearchBuilder<>), typeof(TypesenseSearchBuilder<>));
         builder.Services.AddTransient<ITypesenseSearchFactory, TypesenseSearchFactory>();
-        builder.Services.AddSingleton<ITypesenseJsonProvider, TypesenseJsonProvider>();
 
         builder.Services.AddOpenApiDocument(TypesenseConstants.BackOfficeApiName);
         

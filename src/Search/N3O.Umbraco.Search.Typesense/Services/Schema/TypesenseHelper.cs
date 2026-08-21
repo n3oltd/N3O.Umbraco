@@ -39,8 +39,8 @@ public static class TypesenseHelper {
         AddFields<TDocument>(fields);
         AddIndexFields<TDocument>(fields);
 
-        ValidateNoDuplicates<TDocument>(fields);
         ValidateDeclaredFieldTypes<TDocument>();
+        ValidateNoDuplicates<TDocument>(fields);
 
         return fields;
     }
@@ -83,18 +83,26 @@ public static class TypesenseHelper {
         }
     }
 
-    private static void ValidateNoDuplicates<TDocument>(IReadOnlyList<Field> fields) {
-        var duplicate = fields.GroupBy(x => x.Name).FirstOrDefault(x => x.Count() > 1);
-
-        if (duplicate != null) {
-            throw new Exception($"Type {typeof(TDocument).GetFriendlyName()} declares more than one Typesense field " +
-                                $"named {duplicate.Key.Quote()}");
+    private static ITypesenseConverter GetElementConverter(Type type) {
+        if (type.IsCollectionType()) {
+            return TypesenseConverterRegistry.GetConverter(type.GetCollectionType());
+        } else {
+            return null;
         }
     }
 
-    // Where a converter exists it, not the attribute, decides the shape the value serializes to, so a
-    // disagreement builds a collection whose schema rejects its own documents. Typesense reports that as a
-    // 400 on upsert from inside a background job, so it is caught at registration instead
+    private static void ValidateDeclaredFieldType<TDocument>(PropertyInfo property,
+                                                             FieldAttribute attribute,
+                                                             ITypesenseConverter converter,
+                                                             FieldType serializedType) {
+        if (serializedType != attribute.Type) {
+            throw new Exception($"Property {property.Name.Quote()} on type " +
+                                $"{typeof(TDocument).GetFriendlyName()} declares Typesense field type " +
+                                $"{attribute.Type} but {converter.GetType().GetFriendlyName()} serializes " +
+                                $"it as {serializedType}");
+        }
+    }
+
     private static void ValidateDeclaredFieldTypes<TDocument>() {
         foreach (var property in typeof(TDocument).GetProperties()) {
             var attribute = property.GetCustomAttribute<FieldAttribute>();
@@ -105,12 +113,22 @@ public static class TypesenseHelper {
 
             var converter = TypesenseConverterRegistry.GetConverter(property.PropertyType);
 
-            if (converter != null && converter.FieldType != attribute.Type) {
-                throw new Exception($"Property {property.Name.Quote()} on type " +
-                                    $"{typeof(TDocument).GetFriendlyName()} declares Typesense field type " +
-                                    $"{attribute.Type} but {converter.GetType().GetFriendlyName()} serializes " +
-                                    $"it as {converter.FieldType}");
+            if (converter != null) {
+                ValidateDeclaredFieldType<TDocument>(property, attribute, converter, converter.FieldType);
+            } else if (GetElementConverter(property.PropertyType) is ITypesenseConverter elementConverter) {
+                var arrayFieldType = NestedFieldExpander.ToArrayFieldType(attribute.Name, elementConverter.FieldType);
+
+                ValidateDeclaredFieldType<TDocument>(property, attribute, elementConverter, arrayFieldType);
             }
+        }
+    }
+
+    private static void ValidateNoDuplicates<TDocument>(IReadOnlyList<Field> fields) {
+        var duplicate = fields.GroupBy(x => x.Name).FirstOrDefault(x => x.Count() > 1);
+
+        if (duplicate != null) {
+            throw new Exception($"Type {typeof(TDocument).GetFriendlyName()} declares more than one Typesense field " +
+                                $"named {duplicate.Key.Quote()}");
         }
     }
 }
