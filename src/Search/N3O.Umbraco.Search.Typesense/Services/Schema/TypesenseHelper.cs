@@ -40,6 +40,7 @@ public static class TypesenseHelper {
         AddIndexFields<TDocument>(fields);
 
         ValidateNoDuplicates<TDocument>(fields);
+        ValidateDeclaredFieldTypes<TDocument>();
 
         return fields;
     }
@@ -88,6 +89,28 @@ public static class TypesenseHelper {
         if (duplicate != null) {
             throw new Exception($"Type {typeof(TDocument).GetFriendlyName()} declares more than one Typesense field " +
                                 $"named {duplicate.Key.Quote()}");
+        }
+    }
+
+    // Where a converter exists it, not the attribute, decides the shape the value serializes to, so a
+    // disagreement builds a collection whose schema rejects its own documents. Typesense reports that as a
+    // 400 on upsert from inside a background job, so it is caught at registration instead
+    private static void ValidateDeclaredFieldTypes<TDocument>() {
+        foreach (var property in typeof(TDocument).GetProperties()) {
+            var attribute = property.GetCustomAttribute<FieldAttribute>();
+
+            if (attribute == null || NestedFieldExpander.ShouldExpand(attribute)) {
+                continue;
+            }
+
+            var converter = TypesenseConverterRegistry.GetConverter(property.PropertyType);
+
+            if (converter != null && converter.FieldType != attribute.Type) {
+                throw new Exception($"Property {property.Name.Quote()} on type " +
+                                    $"{typeof(TDocument).GetFriendlyName()} declares Typesense field type " +
+                                    $"{attribute.Type} but {converter.GetType().GetFriendlyName()} serializes " +
+                                    $"it as {converter.FieldType}");
+            }
         }
     }
 }

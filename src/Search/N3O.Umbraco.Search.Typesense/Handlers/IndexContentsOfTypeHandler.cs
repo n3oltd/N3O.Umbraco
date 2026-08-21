@@ -27,8 +27,6 @@ public class IndexContentsOfTypeHandler : IRequestHandler<IndexContentsOfTypeCom
     public Task<None> Handle(IndexContentsOfTypeCommand req, CancellationToken cancellationToken) {
         var contentTypeAlias = req.ContentType.Value;
         var allContentTypes = _contentTypeService.GetAll();
-        
-        return Task.FromResult(None.Empty);
 
         foreach (var contentType in allContentTypes) {
             if (contentType.Alias.EqualsInvariant(contentTypeAlias) ||

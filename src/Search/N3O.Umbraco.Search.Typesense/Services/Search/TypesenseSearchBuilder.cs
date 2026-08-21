@@ -22,8 +22,8 @@ public partial class TypesenseSearchBuilder<T> : ITypesenseSearchBuilder<T> wher
 
         _built = true;
 
-        foreach (var search in _appliedSearches) {
-            await search.ApplyAsync(this);
+        for (var i = 0; i < _appliedSearches.Count; i++) {
+            await _appliedSearches[i].ApplyAsync(this);
         }
 
         var searchParameters = new SearchParameters(_queryText, _queryFields ?? string.Empty);

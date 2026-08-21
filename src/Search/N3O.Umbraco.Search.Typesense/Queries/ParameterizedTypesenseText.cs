@@ -123,7 +123,14 @@ public class ParameterizedTypesenseText : Value {
             throw new Exception($"Could not find a converter for parameter of type {typeof(T).FullName.Quote()}");
         }
 
-        var convertedValues = value.Select(x => convert(x)).ToCsv();
+        var convertedValueList = value.Select(x => convert(x)).ToList();
+
+        if (convertedValueList.Any(x => x == null)) {
+            throw new Exception($"A null value cannot be expressed as a Typesense filter literal for " +
+                                $"parameter {name.Quote()}");
+        }
+
+        var convertedValues = convertedValueList.ToCsv();
 
         var parameter = new TypesenseParameters(name, convertedValues);
 

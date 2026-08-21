@@ -9,7 +9,7 @@ public class UriTypesenseConverter : StringTypesenseConverter<Uri> {
     }
 
     protected override Uri FromTypesense(string value) {
-        return value.HasValue() ? new Uri(value) : null;
+        return value.HasValue() ? new Uri(value, UriKind.RelativeOrAbsolute) : null;
     }
 
     protected override string ToTypesense(Uri value) {

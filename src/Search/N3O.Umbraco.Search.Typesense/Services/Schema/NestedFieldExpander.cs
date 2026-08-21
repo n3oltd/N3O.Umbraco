@@ -198,7 +198,7 @@ public static class NestedFieldExpander {
         var converter = TypesenseConverterRegistry.GetConverter(type);
 
         if (converter != null) {
-            return GetScalarFieldType(converter.UnderlyingTypesenseType);
+            return converter.FieldType;
         } else if (IsIdLookup(Nullable.GetUnderlyingType(type) ?? type)) {
             return FieldType.String;
         } else {
