@@ -15,8 +15,9 @@ public static class ReadOnlyDictionaryExtensions {
     public static TValue GetOrOther<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source,
                                                   TKey key,
                                                   TValue other) {
-        if (source.ContainsKey(key)) {
-            return source[key];
+        // A concurrent dictionary can lose the key between a containment check and the lookup.
+        if (source.TryGetValue(key, out var value)) {
+            return value;
         }
 
         return other;

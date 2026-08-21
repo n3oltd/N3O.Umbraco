@@ -2,15 +2,21 @@
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Services;
@@ -20,14 +26,16 @@ namespace N3O.Umbraco.Cloud.Platforms.Controllers;
 
 [ApiDocument(PlatformsConstants.DevToolsApiName)]
 public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
-    private const string CampaignsWebhookId = PlatformsConstants.WebhookIds.Campaigns;
-    private const string OfferingsWebhookId = PlatformsConstants.WebhookIds.Offerings;
+    private const string CampaignsWebhookId = PlatformsConstants.Webhooks.HookIds.Campaigns;
+    private const string OfferingsWebhookId = PlatformsConstants.Webhooks.HookIds.Offerings;
 
     private readonly IContentLocator _contentLocator;
     private readonly IUmbracoMapper _mapper;
     private readonly ICloudUrl _cloudUrl;
     private readonly IBackgroundJob _backgroundJob;
     private readonly IContentService _contentService;
+    private readonly IContentTypeService _contentTypeService;
+    private readonly IMediator _mediator;
     private readonly ILogger<PlatformsDevToolsController> _logger;
 
     public PlatformsDevToolsController(IContentLocator contentLocator,
@@ -35,13 +43,17 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
                                        ICloudUrl cloudUrl,
                                        IBackgroundJob backgroundJob,
                                        ILogger<PlatformsDevToolsController> logger,
-                                       IContentService contentService) {
+                                       IContentService contentService,
+                                       IContentTypeService contentTypeService,
+                                       IMediator mediator) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _cloudUrl = cloudUrl;
         _backgroundJob = backgroundJob;
         _logger = logger;
         _contentService = contentService;
+        _contentTypeService = contentTypeService;
+        _mediator = mediator;
     }
 
     [HttpPost("webhooks/resend/campaigns/all")]
@@ -129,5 +141,142 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
         }
 
         return Task.FromResult<ActionResult>(Ok());
+    }
+
+    [HttpGet("crowdfunders/migration/status")]
+    public Task<ActionResult<CrowdfunderMigrationStatusRes>> GetCrowdfunderMigrationStatus() {
+        var campaigns = EvaluateEnabledCampaigns();
+
+        var summary = new CrowdfunderMigrationSummaryRes();
+        summary.EnabledCampaignsCount = campaigns.Count;
+        summary.NotReadyCount = campaigns.Count(x => !x.Ready);
+        summary.ReadyCount = campaigns.Count(x => x.Ready);
+
+        var res = new CrowdfunderMigrationStatusRes();
+        res.Campaigns = campaigns;
+        res.CrowdfundersWithoutEnabledCampaign = GetCrowdfundersWithoutEnabledCampaign();
+        res.Summary = summary;
+
+        return Task.FromResult<ActionResult<CrowdfunderMigrationStatusRes>>(Ok(res));
+    }
+
+    [HttpPost("crowdfunders/migration/populate")]
+    public async Task<ActionResult> PopulateCrowdfunders() {
+        await _mediator.SendAsync<PopulateCrowdfundersCommand, None>(None.Empty);
+
+        return Ok();
+    }
+
+    [HttpPost("crowdfunders/migration/complete")]
+    public Task<ActionResult<CompleteCrowdfunderMigrationRes>> CompleteCrowdfunderMigration() {
+        var res = new CompleteCrowdfunderMigrationRes();
+        res.CompositionRemovedFrom = new List<string>();
+        res.NotReadyCampaigns = new List<CrowdfunderMigrationCampaignRes>();
+
+        var legacyContentType = _contentTypeService.Get(PlatformsConstants.CrowdfundingCampaign.CompositionAlias);
+
+        if (legacyContentType == null) {
+            _logger.LogInformation("The {Alias} content type no longer exists so there is nothing to do",
+                                   PlatformsConstants.CrowdfundingCampaign.CompositionAlias);
+
+            res.AlreadyCompleted = true;
+            res.Completed = true;
+
+            return Task.FromResult<ActionResult<CompleteCrowdfunderMigrationRes>>(Ok(res));
+        }
+
+        var notReadyCampaigns = EvaluateEnabledCampaigns().Where(x => !x.Ready).ToList();
+
+        if (notReadyCampaigns.HasAny()) {
+            _logger.LogWarning("Refusing to complete the crowdfunder migration as {Count} campaigns are not ready",
+                               notReadyCampaigns.Count);
+
+            res.NotReadyCampaigns = notReadyCampaigns;
+
+            return Task.FromResult<ActionResult<CompleteCrowdfunderMigrationRes>>(Ok(res));
+        }
+
+        var composedContentTypes = _contentTypeService.GetComposedOf(legacyContentType.Id).ToList();
+        var compositionRemovedFrom = new List<string>();
+
+        foreach (var contentType in composedContentTypes) {
+            // Only RemoveContentType purges the orphaned umbracoPropertyData rows on save.
+            contentType.RemoveContentType(PlatformsConstants.CrowdfundingCampaign.CompositionAlias);
+
+            _contentTypeService.Save(contentType);
+
+            compositionRemovedFrom.Add(contentType.Alias);
+
+            _logger.LogInformation("Removed the {Composition} composition from {ContentType}",
+                                   PlatformsConstants.CrowdfundingCampaign.CompositionAlias,
+                                   contentType.Alias);
+        }
+
+        _contentTypeService.Delete(legacyContentType);
+
+        _logger.LogInformation("Deleted the {Alias} content type",
+                               PlatformsConstants.CrowdfundingCampaign.CompositionAlias);
+
+        res.Completed = true;
+        res.CompositionRemovedFrom = compositionRemovedFrom;
+        res.LegacyCompositionDeleted = true;
+
+        return Task.FromResult<ActionResult<CompleteCrowdfunderMigrationRes>>(Ok(res));
+    }
+
+    private IReadOnlyList<CrowdfunderMigrationCampaignRes> EvaluateEnabledCampaigns() {
+        var results = new List<CrowdfunderMigrationCampaignRes>();
+        var crowdfunders = _contentService.GetCrowdfundersByCampaign(_contentTypeService);
+
+        foreach (var campaign in _contentService.GetCrowdfundingEnabledCampaigns(_contentTypeService)) {
+            var res = new CrowdfunderMigrationCampaignRes();
+            res.CampaignId = campaign.Key;
+            res.CampaignName = campaign.Name;
+
+            var crowdfunder = crowdfunders.GetValueOrDefault(campaign.Key);
+
+            res.HasCrowdfunder = crowdfunder != null;
+
+            foreach (var source in CrowdfunderContentSources.All) {
+                if (campaign.FirstAliasWithValue(source.SourceAliases) == null) {
+                    continue;
+                }
+
+                res.ExpectedCopies++;
+
+                if (crowdfunder?.FirstAliasWithValue([source.DestinationAlias]).HasValue() == true) {
+                    res.PopulatedCopies++;
+                }
+            }
+
+            res.Ready = res.HasCrowdfunder && res.PopulatedCopies == res.ExpectedCopies;
+
+            results.Add(res);
+        }
+
+        return results;
+    }
+
+    private IReadOnlyList<CrowdfunderWithoutEnabledCampaignRes> GetCrowdfundersWithoutEnabledCampaign() {
+        var results = new List<CrowdfunderWithoutEnabledCampaignRes>();
+        var alias = AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled);
+
+        foreach (var crowdfunder in _contentLocator.All<CrowdfunderContent>()) {
+            var campaign = crowdfunder.Campaign;
+
+            if (campaign == null || (campaign.HasProperty(alias) && campaign.Value<bool>(alias))) {
+                continue;
+            }
+
+            var res = new CrowdfunderWithoutEnabledCampaignRes();
+            res.CampaignId = campaign.Key;
+            res.CampaignName = campaign.Name;
+            res.CrowdfunderId = crowdfunder.Key;
+            res.CrowdfunderName = crowdfunder.Content().Name;
+
+            results.Add(res);
+        }
+
+        return results;
     }
 }
