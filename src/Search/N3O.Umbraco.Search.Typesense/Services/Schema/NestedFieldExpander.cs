@@ -185,9 +185,7 @@ public static class NestedFieldExpander {
 
         var underlyingElementType = Nullable.GetUnderlyingType(elementType) ?? elementType;
 
-        if (TypesenseConverterRegistry.GetConverter(elementType) is ITypesenseConverter converter) {
-            fields.Add(CreateField(path, converter.FieldType, true, false));
-        } else if (underlyingElementType == typeof(byte)) {
+        if (underlyingElementType == typeof(byte)) {
             return;
         } else if (GetFieldType(elementType) is FieldType elementFieldType) {
             fields.Add(CreateField(path, elementFieldType, true, false));

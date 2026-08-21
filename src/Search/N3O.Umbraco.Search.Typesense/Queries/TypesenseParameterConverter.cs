@@ -1,5 +1,6 @@
 using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
 using System.Reflection;
@@ -75,6 +76,14 @@ public static class TypesenseParameterConverter {
     }
 
     private static string ToLiteral(string json) {
-        return json.StartsWith('"') ? Backtick(json.Trim('"')) : json;
+        var token = JToken.Parse(json);
+
+        if (token.Type == JTokenType.String) {
+            return Backtick(token.Value<string>());
+        } else if (token.Type == JTokenType.Null) {
+            return null;
+        } else {
+            return json;
+        }
     }
 }

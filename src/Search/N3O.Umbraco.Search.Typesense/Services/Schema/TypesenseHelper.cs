@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search.Typesense.Attributes;
 using N3O.Umbraco.Search.Typesense.Models;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,7 +85,7 @@ public static class TypesenseHelper {
     }
 
     private static ITypesenseConverter GetElementConverter(Type type) {
-        if (type.IsCollectionType()) {
+        if (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string)) {
             return TypesenseConverterRegistry.GetConverter(type.GetCollectionType());
         } else {
             return null;

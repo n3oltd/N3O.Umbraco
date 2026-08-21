@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Collections;
 using System.Reflection;
 
 namespace N3O.Umbraco.Search.Typesense;
@@ -25,7 +26,7 @@ public class TypesenseJsonContractResolver : JsonContractResolver {
             jsonProperty.ShouldSerialize = instance => {
                 return converter.ToTypesenseValue(valueProvider?.GetValue(instance)) != null;
             };
-        } else if (jsonProperty.PropertyType.IsCollectionType() &&
+        } else if (typeof(IEnumerable).IsAssignableFrom(jsonProperty.PropertyType) &&
                    ResolveContract(jsonProperty.PropertyType) is JsonArrayContract arrayContract &&
                    arrayContract.CollectionItemType != null &&
                    TypesenseConverterRegistry.GetConverter(arrayContract.CollectionItemType) != null) {
