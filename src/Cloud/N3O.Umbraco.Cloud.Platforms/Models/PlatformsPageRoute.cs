@@ -20,8 +20,7 @@ public class PlatformsPageRoute : Value {
     }
     
     public static readonly PlatformsPageRoute[] All = [
-        // Order is important here as offerings fallback to campaign, and the crowdfunder route must precede the
-        // crowdfunding campaign so truncating a crowdfunder path cannot match its campaign page and redirect away
+        // Order matters: a route precedes every route whose page paths are prefixes of its own.
         new(SpecialPages.Donate, PublishedFileKinds.OfferingPage),
         new(SpecialPages.Donate, PublishedFileKinds.CampaignPage),
         new(SpecialPages.Crowdfunding, PublishedFileKinds.CrowdfunderPage),

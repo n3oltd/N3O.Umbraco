@@ -42,7 +42,7 @@ public class PlatformsContentFinder : IContentFinder {
         return found;
     }
 
-    private static SpecialContent GetSpecialPage(PublishedFileKind kind) {
+    private SpecialContent GetSpecialPage(PublishedFileKind kind) {
         if (kind == PublishedFileKinds.CampaignPage) {
             return PlatformsSpecialPages.Campaign;
         } else if (kind == PublishedFileKinds.CrowdfunderPage) {
