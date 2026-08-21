@@ -1,4 +1,4 @@
-using N3O.Umbraco.Extensions;
+﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search.Typesense.Models;
 using System;
 using System.Threading.Tasks;
@@ -23,7 +23,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         _searchDocumentBuilder = searchDocumentBuilder;
         _variationContextAccessor = variationContextAccessor;
     }
-
+    
     public bool CanIndex(IPublishedContent content) {
         return content is TContent;
     }
@@ -32,10 +32,6 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
 
         return collectionInfo.ContentTypeAliases.OrEmpty().InvariantContains(contentTypeAlias);
-    }
-
-    public bool IsIndexerFor(CollectionName collectionName) {
-        return TypesenseHelper.GetCollection<TDocument>().Name == collectionName;
     }
 
     public async Task DeleteAsync(Guid contentKey) {
@@ -48,7 +44,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         await _typesenseClient.DeleteDocuments(collectionInfo.Name.Resolve(), $"content_key:=`{contentKey}`");
     }
 
-    public async Task IndexAsync(IPublishedContent content, string culture = null, string targetCollectionName = null) {
+    public async Task IndexAsync(IPublishedContent content, string culture = null) {
         if (!_typesenseClient.HasValue()) {
             return;
         }
@@ -67,9 +63,8 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
 
         var document = _searchDocumentBuilder.Build();
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
-        var collectionName = targetCollectionName ?? collectionInfo.Name.Resolve();
-
-        await _typesenseClient.UpsertDocument(collectionName, document);
+        
+        await _typesenseClient.UpsertDocument(collectionInfo.Name.Resolve(), document);
     }
 
     protected abstract Task ProcessContentAsync(ISearchDocumentBuilder<TDocument> builder, TContent content);

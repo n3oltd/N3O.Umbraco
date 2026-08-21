@@ -1,9 +1,13 @@
+﻿using N3O.Umbraco.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 
 namespace N3O.Umbraco.Search.Typesense;
 
+// JsonComposer registers every JsonConverter as a serializer-level converter, which would apply Typesense
+// conversion to all JSON everywhere; this one is attached per property by TypesenseJsonContractResolver
+[NoRegisterAll]
 public class TypesenseDispatchJsonConverter : JsonConverter {
     public static readonly TypesenseDispatchJsonConverter Instance = new();
 
