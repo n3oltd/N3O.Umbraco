@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search.Typesense.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,8 @@ public class SearchDocumentBuilder<T> : ISearchDocumentBuilder<T> where T : Sear
     }
 
     private object TransformObject(T document) {
-        return JObject.Parse(_typesenseJsonProvider.SerializeObject(document)).ConvertToObject();
+        var serializer = JsonSerializer.Create(_typesenseJsonProvider.GetSettings());
+
+        return JObject.FromObject(document, serializer).ConvertToObject();
     }
 }
