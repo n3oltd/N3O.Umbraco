@@ -11,7 +11,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class ContentExtensions {
     public static Guid? GetCrowdfunderCampaignKey(this IContent content) {
-        var value = content.GetValue<string>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.Campaign);
+        var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
+        var value = content.GetValue<string>(alias);
 
         if (UdiParser.TryParse(value, out GuidUdi udi)) {
             return udi.Guid;
@@ -29,7 +30,7 @@ public static class ContentExtensions {
     }
 
     public static bool IsCrowdfunder(this IContent content) {
-        return content.ContentType.Alias == PlatformsConstants.Crowdfunders.Crowdfunder.Alias;
+        return content.ContentType.Alias == PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias;
     }
 
     public static bool IsFeed(this IContent content) {

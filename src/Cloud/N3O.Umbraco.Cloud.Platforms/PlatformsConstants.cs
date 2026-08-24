@@ -23,20 +23,20 @@ public static class PlatformsConstants {
         public const string Sponsorship = "platformsSponsorshipCrossSell";
     }
 
-    public static class Crowdfunders {
-        public const string Alias = "platformsCrowdfunders";
+    public static class CrowdfundingCampaign {
+        public const string CompositionAlias = "platformsCrowdfundingCampaign";
+    }
 
-        public static class Crowdfunder {
-            public const string Alias = "platformsCrowdfunder";
+    public static class CrowdfundingCampaigns {
+        public const string Alias = "platformsCrowdfundingCampaigns";
+
+        public static class CrowdfundingCampaign {
+            public const string Alias = "platformsCrowdfundingCampaign";
 
             public static class Properties {
                 public const string Campaign = "campaign";
             }
         }
-    }
-
-    public static class CrowdfundingCampaign {
-        public const string CompositionAlias = "platformsCrowdfundingCampaign";
     }
 
     public static class DonationFormContent {
