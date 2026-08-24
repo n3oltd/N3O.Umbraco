@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Crowdfunders.Crowdfunder.Alias)]
+[UmbracoContent(PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias)]
 public class CrowdfunderContent : UmbracoContent<CrowdfunderContent> {
     public Guid Key => Content().Key;
 

@@ -53,10 +53,12 @@ public class PopulateCrowdfundersHandler : IRequestHandler<PopulateCrowdfundersC
     private void CreateCrowdfunder(Guid crowdfundersId, IContent campaign) {
         var contentPublisher = _contentEditor.New(campaign.Name,
                                                  crowdfundersId,
-                                                 PlatformsConstants.Crowdfunders.Crowdfunder.Alias);
+                                                 PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias);
+
+        var campaignAlias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
 
         contentPublisher.Content
-                        .Property<ContentPickerPropertyBuilder>(PlatformsConstants.Crowdfunders.Crowdfunder.Properties.Campaign)
+                        .Property<ContentPickerPropertyBuilder>(campaignAlias)
                         .SetContent(campaign.Key);
 
         if (CrowdfunderContentSources.All.None()) {
@@ -102,14 +104,14 @@ public class PopulateCrowdfundersHandler : IRequestHandler<PopulateCrowdfundersC
     }
 
     private IContent GetOrCreateCrowdfunders() {
-        if (_contentTypeService.Get(PlatformsConstants.Crowdfunders.Alias) == null) {
+        if (_contentTypeService.Get(PlatformsConstants.CrowdfundingCampaigns.Alias) == null) {
             _logger.LogInformation("No {Alias} document type found, skipping crowdfunder creation",
-                                   PlatformsConstants.Crowdfunders.Alias);
+                                   PlatformsConstants.CrowdfundingCampaigns.Alias);
 
             return null;
         }
 
-        var crowdfunders = GetFirstOfType(PlatformsConstants.Crowdfunders.Alias);
+        var crowdfunders = GetFirstOfType(PlatformsConstants.CrowdfundingCampaigns.Alias);
 
         if (crowdfunders != null) {
             return crowdfunders;
@@ -126,7 +128,7 @@ public class PopulateCrowdfundersHandler : IRequestHandler<PopulateCrowdfundersC
 
         var contentPublisher = _contentEditor.New("Crowdfunders",
                                                  platforms.Key,
-                                                 PlatformsConstants.Crowdfunders.Alias);
+                                                 PlatformsConstants.CrowdfundingCampaigns.Alias);
 
         var result = contentPublisher.SaveAndPublish();
 

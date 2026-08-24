@@ -29,7 +29,8 @@ public static class CrowdfunderMigrationExtensions {
     public static Dictionary<Guid, IContent> GetCrowdfundersByCampaign(this IContentService contentService,
                                                                       IContentTypeService contentTypeService) {
         var crowdfunders = new Dictionary<Guid, IContent>();
-        var contentType = contentTypeService.Get(PlatformsConstants.Crowdfunders.Crowdfunder.Alias);
+        var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias;
+        var contentType = contentTypeService.Get(alias);
 
         if (contentType == null) {
             return crowdfunders;
