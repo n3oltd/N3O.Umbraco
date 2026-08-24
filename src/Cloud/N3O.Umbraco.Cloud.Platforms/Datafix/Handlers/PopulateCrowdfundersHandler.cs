@@ -52,8 +52,8 @@ public class PopulateCrowdfundersHandler : IRequestHandler<PopulateCrowdfundersC
 
     private void CreateCrowdfunder(Guid crowdfundersId, IContent campaign) {
         var contentPublisher = _contentEditor.New(campaign.Name,
-                                                 crowdfundersId,
-                                                 PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias);
+                                                  crowdfundersId,
+                                                  PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias);
 
         var campaignAlias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
 
