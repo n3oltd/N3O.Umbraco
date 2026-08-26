@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Features;
 using N3O.Umbraco.Hosting;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
@@ -23,6 +24,10 @@ public class LlmsTxt : ILlmsTxt {
     }
 
     public async Task PublishAsync() {
+        if (FeatureFlags.IsNotSet(FeatureFlags.LlmsTxt)) {
+            return;
+        }
+
         var llmsTxt = GetContent();
 
         if (llmsTxt.HasValue()) {
