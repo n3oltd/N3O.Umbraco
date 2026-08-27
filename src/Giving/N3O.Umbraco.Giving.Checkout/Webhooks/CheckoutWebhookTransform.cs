@@ -54,7 +54,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformTags(jObject);
+        TransformTags(checkout, jObject);
         
         return jObject;
     }
@@ -114,8 +114,9 @@ public class CheckoutWebhookTransform : WebhookTransform {
         }
     }
     
-    private void TransformTags(JObject jObject) {
-        var language = LocalizationSettings.GetLanguageName(_cultureAccessor.GetCulture()) ?? Site.Language;
+    private void TransformTags(Entities.Checkout checkout, JObject jObject) {
+        var language = LocalizationSettings.GetLanguageName(_cultureAccessor.GetCulture(checkout.Culture)) ??
+                       Site.Language;
 
         if (language.HasValue()) {
             AddTag(jObject, "SiteLanguageTag", language);
