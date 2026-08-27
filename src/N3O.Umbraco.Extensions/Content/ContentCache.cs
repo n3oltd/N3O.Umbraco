@@ -13,7 +13,7 @@ public class ContentCache : IContentCache {
     private readonly IContentLocator _contentLocator;
     private readonly ConcurrentDictionary<string, object> _typedStore = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly ConcurrentDictionary<string, IReadOnlyList<IPublishedContent>> _untypedStore = new(StringComparer.InvariantCultureIgnoreCase);
-    private readonly ConcurrentHashSet<string> _heldContentTypes = [];
+    private readonly ConcurrentDictionary<string, ConcurrentHashSet<string>> _cacheKeysByContentType = new(StringComparer.InvariantCultureIgnoreCase);
 
     public ContentCache(IContentLocator contentLocator) {
         _contentLocator = contentLocator;
@@ -23,19 +23,15 @@ public class ContentCache : IContentCache {
         var cacheKey = GetCacheKey<T>();
 
         var all = (IReadOnlyList<T>) _typedStore.GetOrAdd(cacheKey, _ => _contentLocator.All<T>());
-        IReadOnlyList<T> res;
+
+        Hold(cacheKey, AliasHelper<T>.ContentTypeAlias());
+        Hold(cacheKey, all.Select(GetContentTypeAlias));
 
         if (predicate == null) {
-            res = all;
+            return all;
         } else {
-            res = all.Where(predicate).ToList();
+            return all.Where(predicate).ToList();
         }
-
-        if (res.HasAny()) {
-            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias().ToLowerInvariant());
-        }
-
-        return res;
     }
     
     public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
@@ -43,49 +39,42 @@ public class ContentCache : IContentCache {
         var cacheKey = GetCacheKey(contentTypeAlias);
 
         var all = _untypedStore.GetOrAdd(cacheKey, _ => _contentLocator.All(contentTypeAlias));
-        IReadOnlyList<IPublishedContent> res;
+
+        Hold(cacheKey, contentTypeAlias);
+        Hold(cacheKey, all.Select(x => x.ContentType.Alias));
 
         if (predicate == null) {
-            res = all;
+            return all;
         } else {
-            res = all.Where(predicate).ToList();
+            return all.Where(predicate).ToList();
         }
-        
-        _heldContentTypes.AddRangeIfNotExists(res.Select(x => x.ContentType.Alias.ToLowerInvariant()));
-
-        return res;
-    }
-    
-    public bool ContainsContentType(string contentTypeAlias) {
-        return _heldContentTypes.Contains(contentTypeAlias.ToLowerInvariant());
     }
 
     public void Flush() {
-        _heldContentTypes.Clear();
+        _cacheKeysByContentType.Clear();
         _typedStore.Clear();
         _untypedStore.Clear();
         
         Flushed?.Invoke(this, EventArgs.Empty);
     }
 
-    public T Single<T>(Func<T, bool> predicate = null) {
-        var res = All(predicate).SingleOrDefault();
+    public void Flush(string contentTypeAlias) {
+        if (_cacheKeysByContentType.TryRemove(contentTypeAlias, out var cacheKeys)) {
+            foreach (var cacheKey in cacheKeys) {
+                _typedStore.TryRemove(cacheKey, out _);
+                _untypedStore.TryRemove(cacheKey, out _);
+            }
 
-        if (res.HasValue()) {
-            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias().ToLowerInvariant());
+            Flushed?.Invoke(this, EventArgs.Empty);
         }
-
-        return res;
     }
-    
-    public IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null) {
-        var res = All(contentTypeAlias, predicate).SingleOrDefault();
-        
-        if (res.HasValue()) {
-            _heldContentTypes.AddIfNotExists(res.ContentType.Alias.ToLowerInvariant());
-        }
 
-        return res;
+    public T Single<T>(Func<T, bool> predicate = null) {
+        return All(predicate).SingleOrDefault();
+    }
+
+    public IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null) {
+        return All(contentTypeAlias, predicate).SingleOrDefault();
     }
 
     public event EventHandler Flushed;
@@ -99,5 +88,27 @@ public class ContentCache : IContentCache {
         var cacheKey = CacheKey.Generate<ContentCache>(value);
         
         return cacheKey;
+    }
+
+    private string GetContentTypeAlias<T>(T item) {
+        if (item is IPublishedContent publishedContent) {
+            return publishedContent.ContentType.Alias;
+        } else if (item is IUmbracoContent umbracoContent) {
+            return umbracoContent.Content()?.ContentType.Alias;
+        } else {
+            return null;
+        }
+    }
+
+    private void Hold(string cacheKey, string contentTypeAlias) {
+        if (contentTypeAlias.HasValue()) {
+            _cacheKeysByContentType.GetOrAdd(contentTypeAlias, _ => []).AddIfNotExists(cacheKey);
+        }
+    }
+
+    private void Hold(string cacheKey, IEnumerable<string> contentTypeAliases) {
+        foreach (var contentTypeAlias in contentTypeAliases) {
+            Hold(cacheKey, contentTypeAlias);
+        }
     }
 }
