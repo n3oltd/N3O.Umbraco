@@ -33,8 +33,16 @@ public class LlmsTxt : ILlmsTxt {
         if (llmsTxt.HasValue()) {
             await WebRoot.SaveTextAsync(_webHostEnvironment, LlmsFileName, llmsTxt);
         } else {
-            WebRoot.DeleteFile(_webHostEnvironment, LlmsFileName);
+            Remove();
         }
+    }
+
+    public void Remove() {
+        if (FeatureFlags.IsNotSet(FeatureFlags.LlmsTxt)) {
+            return;
+        }
+
+        WebRoot.DeleteFile(_webHostEnvironment, LlmsFileName);
     }
 
     private string GetContent() {
