@@ -39,8 +39,10 @@ public class FlushContentCacheHandlers :
 
 
     private void Process(IEnumerable<IContent> entities) {
-        foreach (var contentTypeAlias in entities.Select(x => x.ContentType.Alias).Distinct()) {
-            _contentCache.Flush(contentTypeAlias);
+        var contentTypeAliases = entities.Select(x => x.ContentType.Alias).Distinct().ToList();
+
+        if (contentTypeAliases.Any(x => _contentCache.ContainsContentType(x))) {
+            _contentCache.Flush();
         }
     }
 }
