@@ -143,9 +143,25 @@ by hand.
 
 ## Requirements
 
-- .NET 10 SDK/runtime (the project targets `net10.0`).
+- **To build:** .NET 10 SDK (the project targets `net10.0`).
+- **To run:** nothing, if you use the standalone exe below — it carries its own runtime. Running via
+  `dotnet run` instead needs the .NET 10 SDK, and the framework-dependent build needs the .NET 10 runtime.
 - **SQL Server** (full or LocalDB). SQLite is not supported.
 - A database backup taken before running with `--apply`.
+
+### Standalone exe (no .NET on the target machine)
+
+```
+dotnet publish -c Release -p:StandaloneExe=true
+```
+
+Produces a single **self-contained** `bin\Release\net10.0\win-x64\publish\nc-migrate.exe` (~40 MB) that needs
+no .NET runtime, no SDK and no restore on the machine it runs on — copy that one file to the database server
+and run it. The accompanying `.pdb` is symbols only and does not need to go with it.
+
+The publish is not trimmed and must stay that way: `Microsoft.Data.SqlClient` resolves types by reflection, so
+a trimmed build fails at `Open()` rather than at publish time. The target needs ICU (in-box on Windows 10
+1903 / Server 2019 and later) because the tool cannot run under invariant globalization — see the `.csproj`.
 
 ## Usage
 

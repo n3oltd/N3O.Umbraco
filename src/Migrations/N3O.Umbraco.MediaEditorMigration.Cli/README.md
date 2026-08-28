@@ -78,7 +78,19 @@ media-migrate --connection "<conn>" (--dry-run | --apply) [--editor cropper|uplo
 - `--verbose` log each data type / value / media node.
 - `--log <path>` log file (default `media-migrate-<UTC>.log`).
 
-Build a single-file exe if you prefer: `dotnet publish -c Release -r win-x64 --self-contained false`.
+### Standalone exe (no .NET on the target machine)
+
+```
+dotnet publish -c Release -p:StandaloneExe=true
+```
+
+Produces a single **self-contained** `bin\Release\net10.0\win-x64\publish\media-migrate.exe` (~40 MB) that
+needs no .NET runtime, no SDK and no restore on the machine it runs on — copy that one file to the database
+server and run it. The accompanying `.pdb` is symbols only and does not need to go with it.
+
+The publish is not trimmed and must stay that way: `Microsoft.Data.SqlClient` resolves types by reflection, so
+a trimmed build fails at `Open()` rather than at publish time. The target needs ICU (in-box on Windows 10
+1903 / Server 2019 and later) because the tool cannot run under invariant globalization — see the `.csproj`.
 
 ## Per-site procedure (IMPORTANT)
 
