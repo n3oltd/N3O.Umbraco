@@ -1,50 +1,31 @@
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
-using System.Net;
+using N3O.Umbraco.GeoIP;
 using Umbraco.Engage.Data.Analytics.Collection.Pageview;
 using Umbraco.Engage.Infrastructure.Analytics.Processed;
 using Umbraco.Engage.Infrastructure.Analytics.Processing.Extractors;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Marketing;
 
 public class EngageLocationExtractor : IRawPageviewLocationExtractor {
-    private static readonly string CityHeader = "cf-ipcity";
-    private static readonly string CountryHeader = "CF-IPCountry";
-    private static readonly string RegionHeader = "cf-region";
     private static readonly int MaxColumnWidth = 100;
 
-    private readonly ILookups _lookups;
+    private readonly IIPGeoLocationProvider _ipGeoLocationProvider;
 
-    public EngageLocationExtractor(ILookups lookups) {
-        _lookups = lookups;
+    public EngageLocationExtractor(IIPGeoLocationProvider ipGeoLocationProvider) {
+        _ipGeoLocationProvider = ipGeoLocationProvider;
     }
 
     public ILocation Extract(IRawPageview rawPageview) {
-        if (!IPAddress.TryParse(rawPageview?.IpAddress, out var ipAddress) || IPAddress.IsLoopback(ipAddress)) {
-            return null;
-        }
+        var geoLookupResult = _ipGeoLocationProvider.GeoLocateAsync().GetAwaiter().GetResult();
 
-        var headers = rawPageview.Headers;
-
-        if (headers == null) {
-            return null;
-        }
-
-        var countryCode = headers.GetValue(CountryHeader);
-        var city = headers.GetValue(CityHeader);
-        var region = headers.GetValue(RegionHeader);
-
-        if (!countryCode.HasValue() && !city.HasValue() && !region.HasValue()) {
+        if (!geoLookupResult.Success) {
             return null;
         }
 
         var location = new EngageLocation();
-        location.City = WithinColumnWidth(city);
-        location.Country = countryCode.HasValue() ? _lookups.GetAll<Country>().FindByCode(countryCode)?.Name : null;
-        // Cloudflare carries no second-level subdivision, so this component is never resolvable.
+        location.City = WithinColumnWidth(geoLookupResult.City);
+        location.Country = geoLookupResult.Country?.Name;
         location.County = Location.Unknown.County;
-        location.Province = WithinColumnWidth(region);
+        location.Province = WithinColumnWidth(geoLookupResult.Province);
 
         return location;
     }

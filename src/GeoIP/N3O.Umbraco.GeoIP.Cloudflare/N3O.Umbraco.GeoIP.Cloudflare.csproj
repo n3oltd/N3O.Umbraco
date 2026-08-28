@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Marketing</RootNamespace>
+        <RootNamespace>N3O.Umbraco.GeoIP.Cloudflare</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
@@ -12,7 +12,7 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Marketing</PackageId>
+        <PackageId>N3O.Umbraco.GeoIP.Cloudflare</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -33,8 +33,7 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\GeoIP\N3O.Umbraco.GeoIP\N3O.Umbraco.GeoIP.csproj" />
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.GeoIP\N3O.Umbraco.GeoIP.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
@@ -42,6 +41,5 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Umbraco.Engage.Core" Version="13.8.0" />
     </ItemGroup>
 </Project>
