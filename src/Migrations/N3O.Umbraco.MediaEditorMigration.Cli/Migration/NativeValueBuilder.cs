@@ -6,41 +6,27 @@ using Newtonsoft.Json.Linq;
 
 namespace N3O.Umbraco.MediaEditorMigration.Cli;
 
-// Builds the native Umbraco JSON shapes for both migration targets. Pure functions — no DB access.
-//
-//   --target inline      Umbraco.ImageCropper / Umbraco.UploadField. Both store the file path ON THE PROPERTY
-//                        with no media library node, exactly as the retired N3O editors did, so nothing is
-//                        created and every path carries over verbatim.
-//   --target mediapicker Umbraco.MediaPicker3, which references the media library by GUID, so each file is
-//                        first registered as a media node (see MediaNodeFactory) and the value holds its key.
+// Native Umbraco JSON shapes for both --target values. Pure functions, no DB access.
 public static class NativeValueBuilder {
-    // The Umbraco.ImageCropper stored property value. Returns the serialised JSON plus what the caller must
-    // flag for review — see BuildCrops for the two ways a crop can come out imperfect.
-    //
-    // Crop width/height are written for fidelity, but Umbraco's ImageCropperConfigurationExtensions
-    // .ApplyConfiguration rebuilds the crop list from the DATA TYPE config on read, matching by alias and
-    // keeping only the coordinates. So a crop alias that is not in the data type config is discarded on read,
-    // which is why the same cropDefinitions must be written to both the value and the config.
+    // Umbraco's ImageCropperConfigurationExtensions.ApplyConfiguration rebuilds the crop list from the DATA
+    // TYPE config on read, matching by alias, so an alias missing from the config is discarded — which is why
+    // the same cropDefinitions go into both the value and the config.
     public static (string Json, CropOutcome Crops) BuildImageCropperValue(
         SourceFile file, IReadOnlyList<CropDefinition> cropDefinitions) {
 
         var (crops, outcome) = BuildCrops(file, cropDefinitions);
 
-        // focalPoint is left null: the retired Cropper had no focal point, and a null one makes a crop without
-        // coordinates fall back to a centre crop rather than to an invented focal point.
+        // focalPoint stays null: the retired Cropper had none, and null makes an uncoordinated crop fall back
+        // to a centre crop rather than to an invented focal point.
         var value = new JObject {
             ["src"] = file.Src,
             ["crops"] = crops,
             ["focalPoint"] = null
         };
 
-        // Umbraco.ImageCropper has no alt-text slot, and with the file on the property there is no media node
-        // whose name could carry it, so the original text is preserved as a non-standard member instead of
-        // being thrown away. ImageCropperValue ignores members it does not know, so this is inert to Umbraco;
-        // N3O.Umbraco.Extensions' IPublishedElement.AltText(alias) reads it back off the raw source value.
-        //
-        // This is migration continuity, not a permanent home: it survives publishing, but an editor saving the
-        // property in the backoffice makes Umbraco re-serialise from ImageCropperValue and the text is lost.
+        // No alt-text slot on this editor and no media node to name, so the text rides along as a non-standard
+        // member. Inert to Umbraco (ImageCropperValue ignores unknown members) and read back by
+        // IPublishedElement.AltText(alias). Migration continuity only: a backoffice re-save loses it.
         if (!string.IsNullOrWhiteSpace(file.AltText)) {
             value["altText"] = file.AltText;
         }
@@ -48,8 +34,7 @@ public static class NativeValueBuilder {
         return (JsonConvert.SerializeObject(value), outcome);
     }
 
-    // The data type config when flipping to Umbraco.ImageCropper: ImageCropperConfiguration has a single
-    // [ConfigurationField("crops")] of {alias, width, height}.
+    // ImageCropperConfiguration is a single [ConfigurationField("crops")] of {alias, width, height}.
     public static string BuildImageCropperConfig(IReadOnlyList<CropDefinition> cropDefinitions) {
         var crops = new JArray();
 
@@ -64,12 +49,9 @@ public static class NativeValueBuilder {
         return JsonConvert.SerializeObject(new JObject { ["crops"] = crops });
     }
 
-    // The data type config when flipping to Umbraco.UploadField. The retired Uploader stored its restriction as
-    // a comma-separated, dot-prefixed string (".png, .jpg"); the native editor wants a bare lower-case
-    // array (["png","jpg"]), matching Umbraco's own built-in upload data types. An empty array means
-    // "no restriction", which is what an unset allowedExtensions meant on the old editor.
-    //
-    // maxFileSizeMb, imagesOnly and altTextRequired have no equivalent on the native editor and are dropped.
+    // The old Uploader stored ".png, .jpg"; UploadField wants ["png","jpg"], and an empty array means "no
+    // restriction" just as an unset allowedExtensions did. maxFileSizeMb, imagesOnly and altTextRequired have
+    // no native equivalent and are dropped.
     public static string BuildUploadFieldConfig(string allowedExtensions) {
         var extensions = new JArray();
 
@@ -80,20 +62,17 @@ public static class NativeValueBuilder {
         return JsonConvert.SerializeObject(new JObject { ["fileExtensions"] = extensions });
     }
 
-    // Shared by both targets: Umbraco.ImageCropper's crops and Umbraco.MediaPicker3's per-item local crops are
-    // the same ImageCropperCrop shape, so one builder serves both.
+    // ImageCropper crops and MediaPicker3 local crops are the same shape, so one builder serves both.
     //
-    // The retired Cropper stored its rectangles POSITIONALLY — the i-th rectangle belongs to the i-th entry of
-    // the data type's cropDefinitions, with no alias on the rectangle itself. So the definitions drive the loop,
-    // and a value holding more rectangles than the data type now defines has had crop definitions removed since
-    // it was saved; those rectangles have no alias to be written under and are counted as dropped.
+    // The old Cropper stored rectangles POSITIONALLY — rectangle i belongs to cropDefinitions[i], with no alias
+    // on the rectangle. Hence definitions drive the loop; surplus rectangles mean definitions were removed
+    // after the value was saved, so they have no alias to be written under and count as dropped.
     private static (JArray Crops, CropOutcome Outcome) BuildCrops(
         SourceFile file, IReadOnlyList<CropDefinition> cropDefinitions) {
 
         var outcome = new CropOutcome();
         var crops = new JArray();
 
-        // Map each positional crop rectangle to its crop definition (alias/size) and convert px → fractions.
         for (var i = 0; i < cropDefinitions.Count; i++) {
             var def = cropDefinitions[i];
             var crop = new JObject {

@@ -10,9 +10,8 @@ public sealed class RunTotals {
     // --target mediapicker only: media library nodes created for the files the retired editors stored without one.
     public int MediaNodesCreated { get; set; }
 
-    // Values that carried alt text. No native editor has a slot for it, so it is carried as far as each target
-    // allows: the media node's name under --target mediapicker, and a non-standard "altText" member of the
-    // Umbraco.ImageCropper JSON under --target inline (read back via IPublishedElement.AltText(alias)).
+    // No native editor has an alt-text slot, so it goes as far as each target allows: the media node's name
+    // under mediapicker, a non-standard "altText" JSON member under inline.
     public int AltTextPreserved { get; set; }
 
     // Values whose alt text could not be carried anywhere: Umbraco.UploadField stores a bare path string, so
@@ -28,14 +27,12 @@ public sealed class RunTotals {
     // whole cache on next start. Without it the site keeps serving the pre-migration values.
     public bool PublishedCacheInvalidated { get; set; }
 
-    // Cropper/Uploader values found nested inside a Block List / Block Grid / Perplex block rather than
-    // directly in umbracoPropertyData. AliasesFixed counts entries that had no value but whose stale
-    // editorAlias still had to stop naming a retired editor.
+    // Values nested inside another editor's value rather than in umbracoPropertyData directly. AliasesFixed
+    // counts entries with no value whose stale editorAlias still had to stop naming a retired editor.
     public int NestedValuesConverted { get; set; }
     public int NestedAliasesFixed { get; set; }
 
-    // Block List / Block Grid values still in the Umbraco 13 udi shape (properties keyed by alias, lower-case
-    // "layout", "udi" instead of "key") that were rewritten to the v14+ key-based shape. These only survive
-    // nested inside another editor's value, which Umbraco's own 13->17 upgrade never traverses.
+    // Block values still in the v13 udi shape, rewritten to v14+. These only survive nested inside another
+    // editor's value, which Umbraco's own 13->17 upgrade never traverses.
     public int LegacyBlockShapesNormalized { get; set; }
 }

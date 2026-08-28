@@ -2,9 +2,8 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.MediaEditorMigration.Cli;
 
-// A file reference parsed from a stored N3O Cropper / Uploader property value. Both editors stored raw files on
-// MediaFileManager.FileSystem at /media/{nodaTimeTicks}/{filename} with NO Umbraco media node — this captures
-// everything the migration needs to register that file as a media node and rebuild the value natively.
+// A file reference parsed from a stored Cropper/Uploader value. Both editors put raw files on
+// MediaFileManager.FileSystem at /media/{ticks}/{filename} with NO media node.
 public sealed class SourceFile {
     public string Src { get; set; }        // "/media/{ticks}/{filename}" — reused verbatim as the media file path
     public string MediaId { get; set; }    // "{ticks}" — the folder segment of Src

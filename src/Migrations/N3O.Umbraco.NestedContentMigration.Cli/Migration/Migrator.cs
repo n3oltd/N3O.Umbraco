@@ -25,8 +25,7 @@ public sealed class Migrator {
     // makes Umbraco rebuild the whole published cache on the next start.
     private const string CacheSerializerKey = "Umbraco.Web.PublishedCache.NuCache.Serializer";
 
-    // SQL Server caps a single command at 2100 parameters; stay safely under it. A larger set fails fast with
-    // a clear message rather than an opaque SQL error (batching is out of scope for the single transaction).
+    // SQL Server caps a command at 2100 parameters; QueryIn batches at this size to stay under it.
     private const int MaxInClauseParameters = 2000;
 
     private readonly CliOptions _options;
@@ -47,10 +46,8 @@ public sealed class Migrator {
         Log.Info($"Detected schema: {(hasUiAliasColumn ? "Umbraco 14+" : "Umbraco 13")} " +
                  $"(umbracoDataType.propertyEditorUiAlias {(hasUiAliasColumn ? "present" : "absent")}).");
 
-        // This tool only migrates Umbraco 13 databases (it writes the v13 udi-based Block List shape). On the
-        // v14+ schema Block List is already native and Nested Content no longer exists — refuse, so we never
-        // write a v13-shape value onto a newer schema. Run this BEFORE upgrading; Umbraco's own 13→17 upgrade
-        // then converts the udi-based values to the key-based shape.
+        // Refuse a v14+ schema: this writes the v13 udi shape, and Umbraco's own 13->17 upgrade is what turns
+        // that into the key-based shape. Run before upgrading.
         if (hasUiAliasColumn) {
             Log.Error("This database is on the Umbraco 14+ schema — this tool only migrates Umbraco 13 databases.");
             Log.Error("Run it before upgrading Umbraco; the Umbraco 13→17 upgrade converts the Block List values itself.");
@@ -62,13 +59,10 @@ public sealed class Migrator {
 
         var succeeded = Migrate(connection, transaction);
 
-        // cmsContentNu is a serialized snapshot of every content item and this tool does not write it, so
-        // without invalidating it the site keeps serving pre-migration Nested Content and throws
-        // "Cannot deserialize the current JSON array ... into type 'BlockValue'" on every affected page.
-        // In the normal 13->17 flow the Umbraco upgrade rebuilds the cache anyway, but a site that stays on
-        // v13 after this migration would otherwise be broken until someone rebuilt it by hand. Clearing
-        // Umbraco's cache-serializer marker makes Umbraco rebuild it itself on the next start.
-        // NOTE: deleting cmsContentNu instead does NOT work — neither v13 nor v17 rebuilds an empty cache.
+        // cmsContentNu is a snapshot this tool does not write, so without invalidating it the site keeps
+        // serving pre-migration values and throws on every affected page. Clearing Umbraco's cache-serializer
+        // marker makes Umbraco rebuild it on next start; deleting cmsContentNu does NOT work, as neither v13
+        // nor v17 rebuilds an empty cache.
         if (succeeded) {
             var cleared = Execute(connection,
                                   transaction,
@@ -139,15 +133,9 @@ public sealed class Migrator {
 
         Log.Info($"Found {dataTypes.Count} Nested Content data type(s).");
 
-        // EVERY Nested Content data type is converted, including any that no content-type property currently
-        // points at. Umbraco.NestedContent does not exist from Umbraco 14 on, so a data type left on it shows
-        // as "This property editor could not be found" in the v17 backoffice even when nothing references it.
-        //
-        // Unassigned ones were previously skipped on the grounds that Perplex ContentBlocks v3 block
-        // definitions point at an NC data type and require that editor. That reasoning does not survive the
-        // upgrade: Perplex v4 stores no data type reference at all (verified — no Perplex.ContentBlocks config
-        // in a migrated database mentions one), so those data types are dead weight in v17, and leaving them on
-        // a non-existent editor is strictly worse than converting them.
+        // EVERY data type is converted, including ones no property points at: Umbraco.NestedContent does not
+        // exist from v14 on, so one left behind shows as "This property editor could not be found" regardless.
+        // Skipping them for Perplex v3's sake would be wrong — Perplex v4 stores no data type reference at all.
         var usedDataTypeIds = new HashSet<int>(QueryIn(cn, tx,
             "SELECT DISTINCT dataTypeId FROM cmsPropertyType WHERE dataTypeId IN ({0})",
             "u",
@@ -157,11 +145,8 @@ public sealed class Migrator {
         var unassigned = dataTypes.Where(dt => !usedDataTypeIds.Contains(dt.Id)).ToList();
 
         if (unassigned.Count > 0) {
-            Log.Info($"{unassigned.Count} Nested Content data type(s) are not assigned to any content property. " +
-                     "They have no values to convert but are still converted, because Umbraco.NestedContent does " +
-                     "not exist in Umbraco 14+. Most are Perplex ContentBlocks v3 per-block data types (named " +
-                     "after the block) which Perplex v4 no longer uses — safe to delete afterwards if the " +
-                     "clutter is unwanted, but that is left as a deliberate decision rather than done here.");
+            Log.Info($"{unassigned.Count} data type(s) have no content property but are converted anyway " +
+                     "(mostly Perplex v3 per-block ones) — see the README.");
 
             foreach (var dt in unassigned) {
                 Log.Verbose(_options.Verbose, $"Data type {dt.Id} has no content property assigned (config only).");
@@ -219,7 +204,6 @@ public sealed class Migrator {
             Log.Verbose(_options.Verbose, $"Data type {dt.Id} → Block List ({string.Join(", ", aliasMap[dt.Id])}).");
         }
 
-        Log.Info($"Converted {dataTypes.Count} data type(s) to Block List, renaming {renamed}.");
 
         // Step 4: convert the stored property values.
         var dataTypeIds = dataTypes.Select(d => d.Id).Cast<object>().ToList();
@@ -281,7 +265,8 @@ public sealed class Migrator {
 
                 if (result.Json == null) {
                     unchanged++;
-                    issues.Add("NOT MIGRATED — value is not a Nested Content array (already migrated, empty, or an unrecognised shape); left untouched.");
+                    issues.Add("NOT MIGRATED — not a Nested Content array (already migrated, empty or an " +
+                               "unrecognised shape); left untouched");
                 } else {
                     Execute(cn, tx, "UPDATE umbracoPropertyData SET textValue = @value WHERE id = @id",
                             ("@value", result.Json), ("@id", pv.Id));
@@ -295,19 +280,22 @@ public sealed class Migrator {
                     totalCollisions += result.PropertyCollisionNames.Count;
 
                     if (result.SkippedAliases.Count > 0) {
-                        issues.Add($"{result.SkippedAliases.Count} block(s) DROPPED — element-type alias not found: {string.Join(", ", result.SkippedAliases.Distinct())}.");
+                        issues.Add($"{result.SkippedAliases.Count} block(s) DROPPED, element type not found: " +
+                                   $"{string.Join(", ", result.SkippedAliases.Distinct())}");
                     }
 
                     if (result.NestedContentPropertyNames.Count > 0) {
-                        issues.Add($"{result.NestedContentPropertyNames.Count} nested Nested Content propertie(s) could NOT be converted and were copied verbatim — convert manually: {string.Join(", ", result.NestedContentPropertyNames.Distinct())}.");
+                        issues.Add("nested NC copied verbatim, convert by hand: " +
+                                   $"{string.Join(", ", result.NestedContentPropertyNames.Distinct())}");
                     }
 
                     if (result.PropertyCollisionNames.Count > 0) {
-                        issues.Add($"{result.PropertyCollisionNames.Count} element propertie(s) DROPPED (clash with reserved Block List field names): {string.Join(", ", result.PropertyCollisionNames.Distinct())}.");
+                        issues.Add("propertie(s) DROPPED, name clashes with a reserved Block List field: " +
+                                   $"{string.Join(", ", result.PropertyCollisionNames.Distinct())}");
                     }
 
                     if (result.GeneratedKeys > 0) {
-                        issues.Add($"{result.GeneratedKeys} block(s) had a missing/invalid key — a new GUID key was generated.");
+                        issues.Add($"{result.GeneratedKeys} block(s) had no valid key; new GUIDs generated");
                     }
 
                     Log.Verbose(_options.Verbose, $"Property value {pv.Id} (node {pv.NodeDescription}, '{pv.PropertyAlias}'): {result.Blocks} block(s) converted.");
@@ -322,24 +310,20 @@ public sealed class Migrator {
             }
         }
 
-        if (totalNestedContent > 0) {
-            Log.Warn($"{totalNestedContent} element propertie(s) contain nested Nested Content that could NOT be converted — copied verbatim. Convert these manually.");
+        Log.Info($"Data types  : {dataTypes.Count} converted, {renamed} renamed");
+        Log.Info($"Values      : {converted} converted, {unchanged} unchanged, {failed} failed");
+        Log.Info($"Blocks      : {totalBlocks} converted" +
+                 (totalSkipped > 0 ? $", {totalSkipped} skipped (unmatched element type)" : ""));
+        Log.Info($"Nested NC   : {totalNestedConverted} converted recursively" +
+                 (totalNestedContent > 0 ? $", {totalNestedContent} left verbatim — convert by hand" : ""));
+
+        if (totalCollisions > 0 || totalGeneratedKeys > 0) {
+            Log.Info($"Also        : {totalCollisions} reserved-name collision(s) skipped, " +
+                     $"{totalGeneratedKeys} key(s) generated");
         }
 
-        if (totalCollisions > 0) {
-            Log.Warn($"{totalCollisions} element propertie(s) collided with reserved Block List field names and were skipped.");
-        }
-
-        Log.Info("------------------------------------------------------------");
-        Log.Info($"Data types converted : {dataTypes.Count}");
-        Log.Info($"Property values      : {converted} converted, {unchanged} left unchanged, {failed} failed");
-        Log.Info($"Blocks               : {totalBlocks} converted, {totalSkipped} skipped (unmatched element type)");
-        Log.Info($"Nested NC properties : {totalNestedConverted} converted recursively, {totalNestedContent} left verbatim");
-        Log.Info($"Generated keys       : {totalGeneratedKeys} (NC items with no/invalid key)");
-        Log.Info("------------------------------------------------------------");
-
-        if (unchanged + failed + totalSkipped + totalNestedContent + totalCollisions + totalGeneratedKeys > 0) {
-            Log.Info($"Items needing a manual check are marked [REVIEW] above and saved in the log file: {Log.FilePath}");
+        if (unchanged + failed + totalSkipped + totalNestedContent + totalCollisions > 0) {
+            Log.Info($"[REVIEW] items are in {Log.FilePath}");
         }
 
         // A failed value conversion means the data type has already been flipped to Block List while some of
@@ -353,14 +337,12 @@ public sealed class Migrator {
         return true;
     }
 
-    // Second pass (--include-perplex): convert Perplex.ContentBlocks property values from the v3 shape (each
-    // block's content is a NestedContent array) to the v4 Block Editor shape. Perplex v4 ships no content
-    // migration and Umbraco's 13→17 upgrade does not touch Perplex's custom value, so this writes the FINAL v4
-    // shape directly (element/content-type keys are stable across the upgrade, so v4 keys written on v13 still
-    // resolve on v17). Runs on the v13 DB while offline — never leave a v4-shape value on a running v3 site.
+    // --include-perplex: Perplex.ContentBlocks v3 (block content is an NC array) -> v4 Block Editor shape.
+    // Perplex ships no content migration and Umbraco's upgrade ignores its custom value, so this writes the
+    // FINAL v4 shape directly; content-type keys are stable across the upgrade so v13-written keys resolve on
+    // v17. Runs offline on the v13 DB — never leave a v4 value on a running v3 site.
     private bool MigratePerplex(SqlConnection cn, SqlTransaction tx) {
-        Log.Info("------------------------------------------------------------");
-        Log.Info("Perplex ContentBlocks v3 → v4 conversion (--include-perplex).");
+        Log.Info("Perplex ContentBlocks v3 -> v4 (--include-perplex):");
 
         var dataTypeIds = Query(cn, tx,
             "SELECT nodeId FROM umbracoDataType WHERE propertyEditorAlias = 'Perplex.ContentBlocks'",
@@ -431,7 +413,8 @@ public sealed class Migrator {
 
                 if (result.Json == null) {
                     unchanged++;
-                    issues.Add("NOT CONVERTED — value is not a Perplex v3 ContentBlocks value (already v4, empty, or an unrecognised shape); left untouched.");
+                    issues.Add("NOT CONVERTED — not a Perplex v3 value (already v4, empty or an unrecognised " +
+                               "shape); left untouched");
                 } else {
                     Execute(cn, tx, "UPDATE umbracoPropertyData SET textValue = @value WHERE id = @id",
                             ("@value", result.Json), ("@id", pv.Id));
@@ -446,24 +429,27 @@ public sealed class Migrator {
                     totalNestedVerbatim += result.NestedContentLeftVerbatim.Count;
 
                     if (result.NestedContentLeftVerbatim.Count > 0) {
-                        issues.Add($"{result.NestedContentLeftVerbatim.Count} nested Nested Content block propertie(s) could NOT be converted and were copied verbatim — convert manually: {string.Join(", ", result.NestedContentLeftVerbatim.Distinct())}.");
+                        issues.Add($"nested NC copied verbatim, convert by hand: " +
+                                   $"{string.Join(", ", result.NestedContentLeftVerbatim.Distinct())}");
                     }
 
                     if (result.SkippedAliases.Count > 0) {
-                        issues.Add($"{result.SkippedAliases.Count} block(s) DROPPED — element-type alias not found: {string.Join(", ", result.SkippedAliases.Distinct())}.");
+                        issues.Add($"{result.SkippedAliases.Count} block(s) DROPPED, element type not found: " +
+                                   $"{string.Join(", ", result.SkippedAliases.Distinct())}");
                     }
 
                     if (result.OrphanedProperties.Count > 0) {
-                        issues.Add($"{result.OrphanedProperties.Distinct().Count()} orphaned propertie(s) DROPPED (not on the element type — value from a removed property): {string.Join(", ", result.OrphanedProperties.Distinct())}.");
+                        issues.Add($"orphaned propertie(s) DROPPED (removed from the element type): " +
+                                   $"{string.Join(", ", result.OrphanedProperties.Distinct())}");
                     }
 
                     if (result.HadVariants) {
                         variantValues++;
-                        issues.Add("Block(s) had Perplex v3 'variants' (culture/segment variant content) — NOT carried across; verify variant content manually.");
+                        issues.Add("Perplex v3 'variants' (culture/segment content) NOT carried across");
                     }
 
                     if (result.GeneratedKeys > 0) {
-                        issues.Add($"{result.GeneratedKeys} block(s) had a missing/invalid key — a new GUID key was generated.");
+                        issues.Add($"{result.GeneratedKeys} block(s) had no valid key; new GUIDs generated");
                     }
 
                     Log.Verbose(_options.Verbose, $"Perplex value {pv.Id} (node {pv.NodeDescription}, '{pv.PropertyAlias}'): {result.Blocks} block(s) → v4.");
@@ -478,14 +464,15 @@ public sealed class Migrator {
             }
         }
 
-        Log.Info("------------------------------------------------------------");
-        Log.Info($"Perplex values       : {converted} converted, {unchanged} left unchanged, {failed} failed");
-        Log.Info($"Perplex blocks       : {totalBlocks} converted, {totalDropped} dropped (unmatched element type)");
-        Log.Info($"Orphaned props       : {totalOrphaned} value(s) DROPPED (property not on the element type)");
-        Log.Info($"Variant content      : {variantValues} value(s) had v3 variants NOT carried across");
-        Log.Info($"Nested NC in blocks  : {totalNestedConvertedInBlocks} propertie(s) converted ({totalNestedBlocks} block(s)), {totalNestedVerbatim} left verbatim");
-        Log.Info($"Generated keys       : {totalGeneratedKeys}");
-        Log.Info("------------------------------------------------------------");
+        Log.Info($"Perplex     : {converted} value(s) converted, {unchanged} unchanged, {failed} failed; " +
+                 $"{totalBlocks} block(s)");
+        Log.Info($"Nested NC   : {totalNestedConvertedInBlocks} propertie(s) in {totalNestedBlocks} block(s)" +
+                 (totalNestedVerbatim > 0 ? $", {totalNestedVerbatim} left verbatim — convert by hand" : ""));
+
+        if (totalDropped + totalOrphaned + variantValues + totalGeneratedKeys > 0) {
+            Log.Info($"Dropped     : {totalDropped} block(s) (unmatched element type), {totalOrphaned} orphaned " +
+                     $"propertie(s), {variantValues} value(s) with v3 variants; {totalGeneratedKeys} key(s) generated");
+        }
 
         // A failed value conversion means some Perplex values would be left as raw v3 — abort so the whole
         // transaction rolls back rather than committing a half-converted set.
@@ -622,12 +609,8 @@ public sealed class Migrator {
         return aliases;
     }
 
-    // Nested Content's item limits. Both keys are optional; a missing one means "no limit".
-    //
-    // NOT carried across, because Umbraco 17 has nowhere to put them: BlockListConfiguration exposes only
-    // blocks / validationLimit / useSingleBlockMode, and its BlockConfiguration only the two element-type
-    // keys. So Nested Content's per-content-type `nameTemplate` (the item label template), and its
-    // `confirmDeletes` / `showIcons` / `expandsOnLoad` / `hideLabel` flags, are all dropped.
+    // Both keys are optional; missing means "no limit". Nested Content's nameTemplate, confirmDeletes,
+    // showIcons, expandsOnLoad and hideLabel have nowhere to go in BlockListConfiguration and are dropped.
     private static (int? Min, int? Max) ParseItemLimits(string config, int dataTypeId) {
         if (string.IsNullOrWhiteSpace(config)) {
             return (null, null);
@@ -684,13 +667,8 @@ public sealed class Migrator {
         return JsonConvert.SerializeObject(config);
     }
 
-    // "Nested Price Handle (0, 5)" -> "Price Handle Block List (0, 5)", keeping the min/max suffix where the
-    // name has one. Returns null when the name does not use the "Nested X" convention, which leaves it alone —
-    // notably the Perplex ContentBlocks v3 per-block data types, named after their block ("Hero Image Banner
-    // Block"), which were never called "Nested" anything.
-    //
-    // The leading part is trimmed rather than split on a single space: at least one real name is
-    // "Nested  Challenges Testimonial Item (2, 10)", with two.
+    // "Nested Price Handle (0, 5)" -> "Price Handle Block List (0, 5)". Returns null for a name not using the
+    // "Nested X" convention, leaving it alone. Trimmed rather than split on one space: real names exist with two.
     private static string BuildBlockListName(string name) {
         if (string.IsNullOrWhiteSpace(name)) {
             return null;
@@ -751,10 +729,8 @@ public sealed class Migrator {
         return cmd.ExecuteNonQuery();
     }
 
-    // Adds a parameter with an explicit SqlDbType inferred from the CLR type, rather than SqlClient's
-    // AddWithValue (which infers the type and sizes each string to its exact length — hurting plan reuse and
-    // occasionally forcing an implicit conversion). All string parameters are nvarchar(max) so plans are
-    // reused and large textValue / config payloads are carried without truncation.
+    // Explicit SqlDbType rather than AddWithValue, which sizes each string to its exact length and so wrecks
+    // plan reuse. Strings are all nvarchar(max): plans are reused and large payloads are not truncated.
     private static void AddParameter(SqlCommand cmd, string name, object value) {
         var parameter = new SqlParameter(name, ToSqlDbType(value));
 
@@ -776,10 +752,8 @@ public sealed class Migrator {
         };
     }
 
-    // Runs one query per batch of at most MaxInClauseParameters ids and concatenates the results, so a set
-    // larger than SQL Server's 2100-parameter command limit is handled instead of aborting the migration — a
-    // site with a few thousand Nested Content properties would otherwise be unmigratable. sqlFormat takes the
-    // IN-clause placeholder list as {0}.
+    // One query per batch of MaxInClauseParameters ids, so a set past SQL Server's 2100-parameter command limit
+    // still works instead of aborting. sqlFormat takes the IN-clause placeholder list as {0}.
     private static List<T> QueryIn<T>(SqlConnection cn, SqlTransaction tx, string sqlFormat, string prefix,
                                       IEnumerable<object> values, Func<SqlDataReader, T> map) {
         var results = new List<T>();

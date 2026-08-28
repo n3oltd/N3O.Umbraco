@@ -6,15 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace N3O.Umbraco.MediaEditorMigration.Cli;
 
-// Runs the N3O Cropper/Uploader → native Umbraco editor migration directly against an Umbraco 17 SQL Server
-// database. Everything happens inside a single transaction; a dry run rolls it back, so partial migrations can
-// never be left behind and the dry run still validates the SQL against the real schema.
-//
-// Two targets, selected with --target (see MigrationTarget):
-//   inline       Umbraco.ImageCropper / Umbraco.UploadField — both keep the file path on the property, exactly
-//                as the retired N3O editors did, so no media nodes are invented.
-//   mediapicker  Umbraco.MediaPicker3 — references the media library by GUID, so each distinct file is first
-//                registered as a media node reusing its existing path.
+// N3O Cropper/Uploader -> native Umbraco editors, run against an Umbraco 17 database. One transaction; a dry
+// run rolls it back, so a partial migration is impossible and the dry run still validates the SQL for real.
+// See MigrationTarget for what --target inline and --target mediapicker each produce.
 public sealed class Migrator {
     private const string CropperAlias = "N3O.Umbraco.Cropper";
     private const string UploaderAlias = "N3O.Umbraco.Uploader";
@@ -53,9 +47,7 @@ public sealed class Migrator {
 
         using var transaction = connection.BeginTransaction();
 
-        // This tool targets the Umbraco 14+ schema (data types carry a propertyEditorUiAlias column, and media
-        // versions live in umbracoMediaVersion). Refuse anything older so we never write v17 shapes onto a
-        // legacy schema.
+        // Refuse anything older than the v14+ schema, so v17 shapes never land on a legacy database.
         if (!Db.ColumnExists(connection, transaction, "umbracoDataType", "propertyEditorUiAlias")
             || (!Inline && !TableExists(connection, transaction, "umbracoMediaVersion"))) {
             Log.Error("This database is not on the Umbraco 14+/17 schema (umbracoDataType.propertyEditorUiAlias " +
@@ -91,10 +83,8 @@ public sealed class Migrator {
         // Cropper/Uploader binding is gone and nested values can no longer be matched to their crop definitions.
         var nestedTargets = BuildNestedTargets(connection, transaction);
 
-        // Every pass runs even if an earlier one hit a bad value, and every value inside a pass is attempted:
-        // the whole point of --dry-run is to get the COMPLETE list of what needs attention in one run, and
-        // stopping at the first failure would surface them one restore-and-retry at a time. Nothing is
-        // committed until the end, so continuing past a failure is free — totals.ValuesFailed decides below.
+        // Every pass and every value is attempted even after a failure, so one --dry-run lists everything
+        // needing attention. Nothing commits until the end, so totals.ValuesFailed decides below.
         if (_options.Editor is EditorScope.Both or EditorScope.Cropper) {
             MigrateEditor(connection, transaction, factory, totals, CropperAlias, isCropper: true);
         }
@@ -115,9 +105,7 @@ public sealed class Migrator {
 
         nested.Run(totals);
 
-        // Runs last: the legacy nested block shape can only be rewritten once the 13->17 upgrade has
-        // happened, and each value entry's editorAlias is read from the live data types so it picks up the
-        // native aliases the passes above have just written.
+        // Runs last so its editorAlias lookup picks up the native aliases the passes above just wrote.
         new NestedBlockShapeNormalizer(connection, transaction, _options.Verbose).Run(totals);
 
         totals.MediaNodesCreated = factory?.Created ?? 0;
@@ -193,13 +181,10 @@ public sealed class Migrator {
         return targets;
     }
 
-    // cmsContentNu is a serialized snapshot of every content item and this tool rewrites property values
-    // underneath it, so without invalidating it the site keeps serving pre-migration values and every affected
-    // page hands a retired editor's value shape to a native value editor, which throws.
-    //
-    // Clearing Umbraco's cache-serializer marker makes its own DatabaseCacheRebuilder rebuild the whole cache
-    // on the next start, using Umbraco's serializer rather than anything reimplemented here. Deleting
-    // cmsContentNu is NOT a substitute: neither v13 nor v17 rebuilds an empty cache.
+    // cmsContentNu is a snapshot this tool rewrites values underneath, so without invalidating it every
+    // affected page hands a retired editor's shape to a native value editor and throws. Clearing the
+    // cache-serializer marker lets Umbraco's own DatabaseCacheRebuilder redo it; deleting cmsContentNu does
+    // NOT work, as neither v13 nor v17 rebuilds an empty cache.
     private int InvalidatePublishedCache(SqlConnection cn, SqlTransaction tx) {
         var rows = Db.Execute(cn,
                               tx,
@@ -312,8 +297,8 @@ public sealed class Migrator {
 
             if (file == null) {
                 totals.ValuesUnchanged++;
-                issues.Add("NOT MIGRATED — value is not a recognised Cropper/Uploader object (already migrated, empty, " +
-                           "or an unexpected shape); left untouched.");
+                issues.Add("NOT MIGRATED — not a recognised Cropper/Uploader value (already migrated, empty or " +
+                           "an unexpected shape); left untouched");
                 Log.Item(header, issues);
 
                 return;
@@ -321,8 +306,7 @@ public sealed class Migrator {
 
             if (string.IsNullOrWhiteSpace(file.Src)) {
                 totals.ValuesFailed++;
-                issues.Add("FAILED — no file path (src/urlPath) in the stored value; nothing to point the native " +
-                           "editor at.");
+                issues.Add("FAILED — no file path (src/urlPath) in the stored value");
                 Log.Item(header, issues);
 
                 return;
@@ -349,39 +333,27 @@ public sealed class Migrator {
 
             if (crops.WithoutCoordinates.Count > 0) {
                 totals.CropsWithoutCoordinates += crops.WithoutCoordinates.Count;
-                issues.Add($"{crops.WithoutCoordinates.Count} crop(s) kept their alias/size but got NO coordinates " +
-                           $"(source image dimensions missing): {string.Join(", ", crops.WithoutCoordinates)}. The " +
-                           $"crop falls back to {(Inline ? "a centre crop" : "the focal point")} — verify these.");
+                issues.Add($"no coordinates for crop(s) {string.Join(", ", crops.WithoutCoordinates)} " +
+                           "(source image dimensions missing); falls back to " +
+                           $"{(Inline ? "a centre crop" : "the focal point")}");
             }
 
             if (crops.DroppedRectangles > 0) {
                 totals.CropRectanglesDropped += crops.DroppedRectangles;
-                issues.Add($"{crops.DroppedRectangles} stored crop rectangle(s) DROPPED — the value holds more " +
-                           $"rectangles than the data type now defines crops for ({cropDefinitions.Count}), so " +
-                           "there is no alias to write them under. Re-crop this item if those crops are still in use.");
+                issues.Add($"{crops.DroppedRectangles} crop rectangle(s) DROPPED — more rectangles stored than " +
+                           $"the data type defines crops for ({cropDefinitions.Count})");
             }
 
+            // Carried-over alt text is counted, not reported: it is the expected outcome, and one [REVIEW] line
+            // each buried the real findings (9,523 of them on one site). Only the lost case is worth reporting.
             if (file.AltText != null) {
-                if (!Inline) {
-                    totals.AltTextPreserved++;
-                    issues.Add($"Alt text '{file.AltText}' has no native media-picker slot — used as the media " +
-                               "node name; re-apply it on the content/media item manually if required.");
-                } else if (isCropper) {
-                    totals.AltTextPreserved++;
-                    issues.Add($"Alt text '{file.AltText}' has no Umbraco.ImageCropper slot — preserved as a " +
-                               "non-standard 'altText' member of the stored JSON, readable via " +
-                               "IPublishedElement.AltText(alias). It is LOST if an editor re-saves this " +
-                               "property in the backoffice.");
-                } else {
+                if (Inline && !isCropper) {
                     totals.AltTextDropped++;
-                    issues.Add($"Alt text '{file.AltText}' has been DROPPED — Umbraco.UploadField stores a bare " +
-                               "path string, so there is nowhere to keep it. Re-author it on the content item " +
-                               "if required.");
+                    issues.Add($"alt text '{file.AltText}' DROPPED — Umbraco.UploadField stores a bare path");
+                } else {
+                    totals.AltTextPreserved++;
                 }
             }
-
-            Log.Verbose(_options.Verbose,
-                        $"Property value {value.Id} ({value.NodeDescription}, '{value.PropertyAlias}') → {file.Src}.");
         } catch (Exception ex) {
             totals.ValuesFailed++;
             issues.Add($"FAILED to convert — {ex.Message}");
@@ -450,33 +422,36 @@ public sealed class Migrator {
                               ("@t", table)) > 0;
     }
 
+    // One line per figure that matters, and lines that are only meaningful for one target or when non-zero are
+    // omitted rather than printed as a zero, so a clean run reads at a glance.
     private void Report(RunTotals totals) {
-        Log.Info("------------------------------------------------------------");
-        Log.Info($"Data types converted : {totals.DataTypesConverted}");
-        Log.Info($"Property values      : {totals.ValuesConverted} converted, {totals.ValuesUnchanged} left unchanged, {totals.ValuesFailed} failed");
+        Log.Info($"Data types  : {totals.DataTypesConverted} converted");
+        Log.Info($"Values      : {totals.ValuesConverted} converted, {totals.ValuesUnchanged} unchanged, " +
+                 $"{totals.ValuesFailed} failed");
+        Log.Info($"In blocks   : {totals.NestedValuesConverted} converted, {totals.NestedAliasesFixed} " +
+                 $"alias(es) fixed, {totals.LegacyBlockShapesNormalized} legacy shape(s) normalised");
 
         if (!Inline) {
-            Log.Info($"Media nodes created  : {totals.MediaNodesCreated}");
+            Log.Info($"Media nodes : {totals.MediaNodesCreated} created");
         }
 
-        Log.Info(Inline
-                     ? $"Alt text preserved   : {totals.AltTextPreserved} (as an 'altText' member of the cropper JSON; " +
-                       "lost if the property is re-saved in the backoffice)"
-                     : $"Alt text moved       : {totals.AltTextPreserved} (used as the media node name; re-apply manually if needed)");
+        Log.Info($"Alt text    : {totals.AltTextPreserved} kept" +
+                 (totals.AltTextDropped > 0 ? $", {totals.AltTextDropped} DROPPED" : ""));
 
-        Log.Info($"Alt text DROPPED     : {totals.AltTextDropped} (Umbraco.UploadField has nowhere to keep it)");
+        if (totals.CropsWithoutCoordinates > 0 || totals.CropRectanglesDropped > 0) {
+            Log.Info($"Crops       : {totals.CropsWithoutCoordinates} without coordinates, " +
+                     $"{totals.CropRectanglesDropped} rectangle(s) DROPPED");
+        }
 
-        Log.Info($"Crops w/o coords     : {totals.CropsWithoutCoordinates} " +
-                 $"({(Inline ? "fall back to a centre crop" : "auto-cropped to the focal point")})");
-        Log.Info($"Crop rects DROPPED   : {totals.CropRectanglesDropped} (no crop definition left to name them)");
-        Log.Info($"Nested in blocks     : {totals.NestedValuesConverted} value(s) converted, {totals.NestedAliasesFixed} empty alias(es) fixed");
-        Log.Info($"Legacy block shapes  : {totals.LegacyBlockShapesNormalized} normalised to the v14+ key-based shape");
-        Log.Info($"Published cache      : {(totals.PublishedCacheInvalidated ? "will rebuild on next site start" : "NOT invalidated — rebuild manually")}");
-        Log.Info("------------------------------------------------------------");
+        if (!totals.PublishedCacheInvalidated) {
+            Log.Warn("Published cache NOT invalidated — rebuild it manually.");
+        }
 
-        if (totals.ValuesUnchanged + totals.ValuesFailed + totals.AltTextDropped + totals.CropsWithoutCoordinates
-            + totals.CropRectanglesDropped > 0) {
-            Log.Info($"Items needing a manual check are marked [REVIEW] above and saved in the log file: {Log.FilePath}");
+        var needsReview = totals.ValuesUnchanged + totals.ValuesFailed + totals.AltTextDropped
+                          + totals.CropsWithoutCoordinates + totals.CropRectanglesDropped;
+
+        if (needsReview > 0) {
+            Log.Info($"[REVIEW] items are in {Log.FilePath}");
         }
     }
 

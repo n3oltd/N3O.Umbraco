@@ -9,19 +9,16 @@ namespace N3O.Umbraco.MediaEditorMigration.Cli;
 
 // Rewrites Block List / Block Grid values still in the Umbraco 13 "udi" shape into the v14+ key-based shape.
 //
-// Umbraco's own 13->17 upgrade rewrites the block values of properties it owns but never traverses INTO
-// another editor's value, so a Block List nested inside a Perplex ContentBlocks value keeps the legacy shape
-// permanently: properties keyed by alias, a lower-case "layout", and a "udi" per contentData entry instead of
-// a "key". v17 still reads it, so the content renders, but the un-upgraded shape may not survive a future major.
+// Umbraco's own 13->17 upgrade never traverses INTO another editor's value, so a Block List nested inside a
+// Perplex ContentBlocks value keeps the legacy shape permanently: alias-keyed properties, lower-case "layout",
+// "udi" instead of "key".
 //
-// Runs last, after the media passes: the target shape is only knowable post-upgrade, and each value entry
-// needs an "editorAlias", resolved from the LIVE umbracoDataType rows so the aliases written are the v17 ones
-// rather than stale v13 names. Note the target "Layout" is capitalised and retains contentUdi alongside the
-// new contentKey, and gains an "expose" array — that is what Umbraco produces, so it is reproduced exactly.
+// Runs last, after the media passes: each entry needs an "editorAlias" read from the LIVE umbracoDataType rows,
+// so it picks up the native aliases those passes just wrote. The capitalised "Layout", the retained contentUdi
+// and the "expose" array are what Umbraco itself produces, reproduced exactly.
 //
-// Both the value and each layout item are cloned and then adjusted, never rebuilt from a fixed list of keys, so
-// members this normaliser does not model survive — notably a Block GRID layout item's "columnSpan"/"rowSpan"
-// and its "areas" tree.
+// Values and layout items are cloned then adjusted, never rebuilt from a fixed key list, so members not modelled
+// here survive — notably a Block GRID item's "columnSpan"/"rowSpan" and its "areas" tree.
 public sealed class NestedBlockShapeNormalizer {
     private static readonly HashSet<string> EntryReservedKeys =
         new(StringComparer.OrdinalIgnoreCase) { "contentTypeKey", "udi", "key", "values" };
@@ -37,8 +34,8 @@ public sealed class NestedBlockShapeNormalizer {
         _verbose = verbose;
     }
 
-    // Failures are recorded on totals.ValuesFailed rather than returned: the caller decides whether to abort
-    // once every pass has run, so there is no per-pass success to report.
+    // Failures go on totals.ValuesFailed rather than a return value: the caller decides whether to abort once
+    // every pass has run.
     public void Run(RunTotals totals) {
         LoadEditorAliases();
 
@@ -65,25 +62,19 @@ public sealed class NestedBlockShapeNormalizer {
             return;
         }
 
-        // Every row is attempted even after one fails, so a dry run reports every problem in the database
-        // rather than only the first. totals.ValuesFailed is what aborts the run, back in Migrator.
+        // Every row is attempted even after one fails, so a dry run reports everything, not just the first.
         foreach (var row in rows) {
             NormalizeRow(row, totals);
         }
     }
 
-    // (element content-type key, property alias) -> the property's CURRENT editor alias.
+    // (element content-type key, property alias) -> the property's CURRENT editor alias, resolved ACROSS
+    // COMPOSITIONS. Element types used in blocks compose heavily (a block item's "linkText" usually comes from a
+    // shared "Link" type), and reading cmsPropertyType alone made every inherited property unresolvable, writing
+    // "editorAlias": null onto real values so Umbraco stopped rendering them — 6,926 values on one site.
     //
-    // Properties are resolved ACROSS COMPOSITIONS, not just the ones declared on the content type itself.
-    // Element types used inside blocks compose heavily — a block item's "linkText"/"linkContent" typically comes
-    // from a shared "Link" element type — and every inherited property is a real property of the block. Reading
-    // cmsPropertyType alone made all of them unresolvable, which wrote "editorAlias": null onto real values and
-    // stopped Umbraco rendering them (measured on one production site: 6,926 values across 8 inherited aliases).
-    //
-    // The NC migration CLI carries its own copy of this walk (BuildEditorAliases). The duplication is deliberate:
-    // each tool is a standalone executable with no project reference to the other or to any N3O package, so that
-    // it can run against a database whose site is not upgraded. Sharing would mean giving both a common library
-    // and losing that. Keep the two in step.
+    // nc-migrate has its own copy of this walk (BuildEditorAliases). Deliberate: each tool is a standalone exe
+    // with no reference to the other or to any N3O package, so sharing would mean a common library. Keep in step.
     private void LoadEditorAliases() {
         var propertyRows = Db.Query(_cn,
                                     _tx,
@@ -141,8 +132,7 @@ public sealed class NestedBlockShapeNormalizer {
                               $"(across {effective.Count} content type(s), compositions resolved).");
     }
 
-    // A content type's full property set: inherited properties first, then its own, so an alias declared on the
-    // type itself wins over the same alias inherited from a composition.
+    // Inherited properties first, then own, so a locally declared alias wins over an inherited one.
     private static Dictionary<string, string> ResolveProperties(
             int contentTypeId,
             IReadOnlyDictionary<int, Dictionary<string, string>> ownProperties,
@@ -360,11 +350,9 @@ public sealed class NestedBlockShapeNormalizer {
                 // leaves a null behind on every block that ever had it, and there is nothing for anyone to do
                 // about an inert null — reporting those buried the real ones 3:1 on one production site.
                 if (editorAlias == null && propertyValue != null && propertyValue.Type != JTokenType.Null) {
-                    context.Issues.Add($"block property '{property.Name}' has a value but could not be matched " +
-                                       $"to a property editor (element content type " +
-                                       $"{contentTypeKey?.ToString() ?? "unknown"} has no such property, even " +
-                                       "through its compositions), so its editorAlias is null and Umbraco will " +
-                                       "not render it — check this item.");
+                    context.Issues.Add($"'{property.Name}': has a value but no such property on element type " +
+                                       $"{contentTypeKey?.ToString() ?? "unknown"} (compositions included), so " +
+                                       "editorAlias is null and Umbraco will not render it");
                 }
 
                 values.Add(new JObject {

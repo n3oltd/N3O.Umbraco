@@ -32,10 +32,8 @@ public static class Log {
         }
     }
 
-    // Writes a clearly-separated, multi-line entry for a single item that needs manual attention, to both the
-    // console and the log file — so every unmigrated / partially-migrated item is easy to find and act on.
+    // One multi-line entry for an item needing manual attention, to console and log file alike.
     public static void Item(string header, IReadOnlyList<string> reasons) {
-        WriteLine(ConsoleColor.Yellow, new string('-', 70));
         WriteLine(ConsoleColor.Yellow, "[REVIEW] " + header);
 
         foreach (var reason in reasons) {

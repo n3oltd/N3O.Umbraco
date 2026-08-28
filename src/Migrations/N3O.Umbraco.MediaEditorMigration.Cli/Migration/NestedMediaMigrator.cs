@@ -50,8 +50,8 @@ public sealed class NestedMediaMigrator {
         _targets = targets;
     }
 
-    // Failures are recorded on totals.ValuesFailed rather than returned: the caller decides whether to abort
-    // once every pass has run, so there is no per-pass success to report.
+    // Failures go on totals.ValuesFailed rather than a return value: the caller decides whether to abort once
+    // every pass has run.
     public void Run(RunTotals totals) {
         // Target exactly the rows that still mention a retired editor anywhere in their JSON. That is the
         // stale nested editorAlias, so it finds Block List, Block Grid and Perplex values (and values nested
@@ -84,8 +84,7 @@ public sealed class NestedMediaMigrator {
 
         Log.Info($"Found {rows.Count} block value(s) to inspect for nested Cropper/Uploader data.");
 
-        // Every row is attempted even after one fails, so a dry run reports every problem in the database
-        // rather than only the first. totals.ValuesFailed is what aborts the run, back in Migrator.
+        // Every row is attempted even after one fails, so a dry run reports everything, not just the first.
         foreach (var row in rows) {
             ConvertRow(row, totals);
         }
@@ -265,17 +264,13 @@ public sealed class NestedMediaMigrator {
 
         var file = isCropper ? SourceParsers.ParseCropper(json) : SourceParsers.ParseUploader(json);
 
-        // The value is not a shape this tool can rebuild, so it has to be left for a human. The editorAlias is
-        // still corrected, for the same reason as the no-value branch above: this entry is only reached because
-        // the alias names a RETIRED editor, and its data type has already been flipped to the native one, so
-        // leaving the stale alias behind hands the native value editor the wrong shape. The value is counted as
-        // unchanged rather than failed — one unreadable value should not roll back the whole migration.
+        // Not a shape this tool can rebuild, so the value is left for a human — but the editorAlias is still
+        // corrected for the same reason as the no-value branch above. Counted as unchanged, not failed: one
+        // unreadable value should not roll back the whole migration.
         if (file == null) {
             context.Totals.ValuesUnchanged++;
-            context.Issues.Add($"nested property '{alias}' has a {(isCropper ? "Cropper" : "Uploader")} " +
-                               "editorAlias but its value is not a recognised value shape. The value was left " +
-                               "untouched and needs converting by hand; its editorAlias was still corrected to " +
-                               $"'{nativeAlias}' so it names an editor that exists.");
+            context.Issues.Add($"'{alias}': unrecognised {(isCropper ? "Cropper" : "Uploader")} value, left " +
+                               $"untouched — convert by hand (editorAlias still corrected to '{nativeAlias}')");
 
             if (setEditorAlias) {
                 entry["editorAlias"] = nativeAlias;
@@ -290,9 +285,8 @@ public sealed class NestedMediaMigrator {
         if (contentTypeKey.HasValue && _targets.TryGetValue((contentTypeKey.Value, alias), out var target)) {
             cropDefinitions = target.CropDefinitions;
         } else if (isCropper) {
-            context.Issues.Add($"nested property '{alias}' could not be matched to its data type " +
-                               "(element content-type key missing or property removed), so its crops were " +
-                               "dropped — check this item.");
+            context.Issues.Add($"'{alias}': no data type match (element key missing or property removed), so " +
+                               "its crops were dropped");
         }
 
         CropOutcome crops;
@@ -324,34 +318,24 @@ public sealed class NestedMediaMigrator {
 
         if (crops.WithoutCoordinates.Count > 0) {
             context.Totals.CropsWithoutCoordinates += crops.WithoutCoordinates.Count;
-            context.Issues.Add($"nested property '{alias}': crop(s) without coordinates " +
-                               $"({string.Join(", ", crops.WithoutCoordinates)}) — " +
-                               $"{(_factory != null ? "auto-cropped to the focal point" : "fall back to a centre crop")}.");
+            context.Issues.Add($"'{alias}': no coordinates for crop(s) " +
+                               $"{string.Join(", ", crops.WithoutCoordinates)} (source dimensions missing)");
         }
 
         if (crops.DroppedRectangles > 0) {
             context.Totals.CropRectanglesDropped += crops.DroppedRectangles;
-            context.Issues.Add($"nested property '{alias}': {crops.DroppedRectangles} stored crop rectangle(s) " +
-                               "DROPPED — the value holds more rectangles than the data type now defines crops " +
-                               "for, so there is no alias to write them under. Re-crop this item if those crops " +
-                               "are still in use.");
+            context.Issues.Add($"'{alias}': {crops.DroppedRectangles} crop rectangle(s) DROPPED — more " +
+                               "rectangles stored than the data type defines crops for");
         }
 
+        // Carried-over alt text is counted only — see the equivalent note in Migrator.ConvertValue.
         if (!string.IsNullOrWhiteSpace(file.AltText)) {
-            if (_factory != null) {
-                context.Totals.AltTextPreserved++;
-                context.Issues.Add($"nested property '{alias}': alt text '{file.AltText}' has no native " +
-                                   "media-picker slot — used as the media node name; re-apply it manually if " +
-                                   "required.");
-            } else if (isCropper) {
-                context.Totals.AltTextPreserved++;
-                context.Issues.Add($"nested property '{alias}': alt text '{file.AltText}' preserved as a " +
-                                   "non-standard 'altText' member of the cropper JSON; LOST if the property is " +
-                                   "re-saved in the backoffice.");
-            } else {
+            if (_factory == null && !isCropper) {
                 context.Totals.AltTextDropped++;
-                context.Issues.Add($"nested property '{alias}': alt text '{file.AltText}' has been DROPPED — " +
-                                   "Umbraco.UploadField stores a bare path string, so there is nowhere to keep it.");
+                context.Issues.Add($"'{alias}': alt text '{file.AltText}' DROPPED — Umbraco.UploadField stores " +
+                                   "a bare path");
+            } else {
+                context.Totals.AltTextPreserved++;
             }
         }
     }
