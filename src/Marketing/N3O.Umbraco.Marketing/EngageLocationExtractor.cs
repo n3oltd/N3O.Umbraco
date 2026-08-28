@@ -12,6 +12,7 @@ public class EngageLocationExtractor : IRawPageviewLocationExtractor {
     private static readonly string CityHeader = "cf-ipcity";
     private static readonly string CountryHeader = "CF-IPCountry";
     private static readonly string RegionHeader = "cf-region";
+    private static readonly int MaxColumnWidth = 100;
 
     private readonly ILookups _lookups;
 
@@ -30,21 +31,26 @@ public class EngageLocationExtractor : IRawPageviewLocationExtractor {
             return null;
         }
 
-        // Cloudflare only populates these beyond CF-IPCountry when the visitor location headers managed transform
-        // is enabled, and reports XX for an unknown country and T1 for Tor, neither of which is a country code.
         var countryCode = headers.GetValue(CountryHeader);
-        var country = _lookups.GetAll<Country>().FindByCode(countryCode);
+        var city = headers.GetValue(CityHeader);
+        var region = headers.GetValue(RegionHeader);
+
+        if (!countryCode.HasValue() && !city.HasValue() && !region.HasValue()) {
+            return null;
+        }
 
         var location = new EngageLocation();
-        location.City = Decode(headers.GetValue(CityHeader));
-        location.Country = country?.Name;
-        location.Province = Decode(headers.GetValue(RegionHeader));
+        location.City = WithinColumnWidth(city);
+        location.Country = countryCode.HasValue() ? _lookups.GetAll<Country>().FindByCode(countryCode)?.Name : null;
+        // Cloudflare carries no second-level subdivision, so this component is never resolvable.
+        location.County = Location.Unknown.County;
+        location.Province = WithinColumnWidth(region);
 
         return location;
     }
 
-    // Cloudflare percent-encodes location header values that are not plain ASCII.
-    private string Decode(string value) {
-        return value.HasValue() ? WebUtility.UrlDecode(value) : null;
+    // Engage stores city and province as nvarchar(100), and a longer value faults its processing pipeline.
+    private static string WithinColumnWidth(string value) {
+        return value?.Length > MaxColumnWidth ? null : value;
     }
 }

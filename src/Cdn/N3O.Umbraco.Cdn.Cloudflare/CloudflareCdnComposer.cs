@@ -3,6 +3,7 @@ using N3O.Umbraco.Cdn.Cloudflare.Clients;
 using N3O.Umbraco.Cdn.Cloudflare.Content;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Utilities;
@@ -14,6 +15,7 @@ namespace N3O.Umbraco.Cdn.Cloudflare;
 public class CloudflareCdnComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddScoped<ICloudflareStreams, CloudflareStreams>();
+        builder.Services.AddSingleton<IRemoteIpAddressAccessor, CloudflareIpAddressAccessor>();
         
         RegisterStreams(builder);
     }
