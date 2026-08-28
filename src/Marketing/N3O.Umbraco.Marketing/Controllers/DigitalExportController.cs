@@ -7,6 +7,7 @@ using N3O.Umbraco.Marketing.Content;
 using N3O.Umbraco.Marketing.Models;
 using N3O.Umbraco.Marketing.Services;
 using NodaTime.Text;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -48,6 +49,12 @@ public class DigitalExportController : ApiController {
 
         if (res == null) {
             return NotFound();
+        }
+
+        if (!res.Goals.Any() &&
+            !res.Traffic.Any() &&
+            !await _digitalExport.HasRecordedTrafficAsync(siteId, cancellationToken)) {
+            return Conflict("Umbraco Engage has recorded no pageviews for this site's configured host");
         }
 
         return Ok(res);

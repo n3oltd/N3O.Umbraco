@@ -9,5 +9,4 @@ public class TrafficRow {
     public string Referrer { get; set; }
     public int Sessions { get; set; }
     public string Source { get; set; }
-    public int Users { get; set; }
 }

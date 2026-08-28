@@ -18,6 +18,44 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Marketing.Services;
 
 public class DigitalExport : IDigitalExport {
+    private const string AnyPageviewsSql = @"
+SELECT TOP 1 1
+FROM umbracoEngageAnalyticsPageview pv
+INNER JOIN umbracoEngageAnalyticsPage p ON p.id = pv.pageId
+WHERE p.domain = @0 OR p.domain = @1";
+
+    private const string GoalsSql = @"
+;WITH CandidateSessions AS (
+    SELECT DISTINCT pv.sessionId
+    FROM umbracoEngageAnalyticsPageview pv
+    WHERE pv.timestamp >= @0 AND pv.timestamp < @1
+),
+SessionFirstPageview AS (
+    SELECT pv.sessionId, MIN(pv.id) AS pageviewId
+    FROM umbracoEngageAnalyticsPageview pv
+    WHERE pv.sessionId IN (SELECT sessionId FROM CandidateSessions)
+    GROUP BY pv.sessionId
+)
+SELECT g.name AS Name,
+       gc.value AS Value,
+       pv.timestamp AS Timestamp,
+       pv.utmSource AS Source,
+       pv.utmMedium AS Medium,
+       pv.utmCampaign AS Campaign,
+       rp.domain AS ReferrerDomain
+FROM umbracoEngageAnalyticsGoalCompletion gc
+INNER JOIN umbracoEngageAnalyticsPageview gpv ON gpv.id = gc.pageviewId
+INNER JOIN umbracoEngageAnalyticsSession s ON s.id = gpv.sessionId
+INNER JOIN SessionFirstPageview fp ON fp.sessionId = s.id
+INNER JOIN umbracoEngageAnalyticsPageview pv ON pv.id = fp.pageviewId
+INNER JOIN umbracoEngageAnalyticsPage p ON p.id = pv.pageId
+INNER JOIN umbracoEngageAnalyticsVisitor v ON v.id = s.visitorId
+INNER JOIN umbracoEngageSettingsGoal g ON g.id = gc.goalId
+LEFT JOIN umbracoEngageAnalyticsPage rp ON rp.id = pv.referrerPageId
+WHERE v.visitorType = 0
+  AND (p.domain = @2 OR p.domain = @3)
+  AND s.id IN (SELECT sessionId FROM CandidateSessions)";
+
     private const string SessionsSql = @"
 ;WITH CandidateSessions AS (
     SELECT DISTINCT pv.sessionId
@@ -59,38 +97,6 @@ INNER JOIN VisitorFirstSession vfs ON vfs.visitorId = s.visitorId
 LEFT JOIN umbracoEngageAnalyticsPage rp ON rp.id = pv.referrerPageId
 WHERE v.visitorType = 0 AND (p.domain = @2 OR p.domain = @3)";
 
-    private const string GoalsSql = @"
-;WITH CandidateSessions AS (
-    SELECT DISTINCT pv.sessionId
-    FROM umbracoEngageAnalyticsPageview pv
-    WHERE pv.timestamp >= @0 AND pv.timestamp < @1
-),
-SessionFirstPageview AS (
-    SELECT pv.sessionId, MIN(pv.id) AS pageviewId
-    FROM umbracoEngageAnalyticsPageview pv
-    WHERE pv.sessionId IN (SELECT sessionId FROM CandidateSessions)
-    GROUP BY pv.sessionId
-)
-SELECT g.name AS Name,
-       gc.value AS Value,
-       pv.timestamp AS Timestamp,
-       pv.utmSource AS Source,
-       pv.utmMedium AS Medium,
-       pv.utmCampaign AS Campaign,
-       rp.domain AS ReferrerDomain
-FROM umbracoEngageAnalyticsGoalCompletion gc
-INNER JOIN umbracoEngageAnalyticsPageview gpv ON gpv.id = gc.pageviewId
-INNER JOIN umbracoEngageAnalyticsSession s ON s.id = gpv.sessionId
-INNER JOIN SessionFirstPageview fp ON fp.sessionId = s.id
-INNER JOIN umbracoEngageAnalyticsPageview pv ON pv.id = fp.pageviewId
-INNER JOIN umbracoEngageAnalyticsPage p ON p.id = pv.pageId
-INNER JOIN umbracoEngageAnalyticsVisitor v ON v.id = s.visitorId
-INNER JOIN umbracoEngageSettingsGoal g ON g.id = gc.goalId
-LEFT JOIN umbracoEngageAnalyticsPage rp ON rp.id = pv.referrerPageId
-WHERE v.visitorType = 0
-  AND (p.domain = @2 OR p.domain = @3)
-  AND s.id IN (SELECT sessionId FROM CandidateSessions)";
-
     private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
     private readonly IContentCache _contentCache;
     private readonly ILocalClock _localClock;
@@ -117,7 +123,11 @@ WHERE v.visitorType = 0
         }
 
         var zone = _localClock.GetZone();
-        var host = new Uri(site.Url).Host;
+        var host = GetHost(siteId);
+
+        if (host == null) {
+            return null;
+        }
 
         // The padding absorbs the timezone shift: a session is bucketed by its local date, so the
         // UTC filter must reach a day either side of the requested window
@@ -139,6 +149,20 @@ WHERE v.visitorType = 0
         return res;
     }
 
+    public async Task<bool> HasRecordedTrafficAsync(string siteId, CancellationToken cancellationToken) {
+        var host = GetHost(siteId);
+
+        if (host == null) {
+            return false;
+        }
+
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var any = await db.FirstOrDefaultAsync<int?>(AnyPageviewsSql, host, ToggleWww(host));
+
+            return any.HasValue;
+        }
+    }
+
     public SiteRes GetSite(string siteId) {
         var site = GetSites().SingleOrDefault(x => x.Id.EqualsInvariant(siteId));
 
@@ -150,7 +174,7 @@ WHERE v.visitorType = 0
         var root = settings?.Content()?.Root();
 
         if (root == null) {
-            return new List<SiteRes>();
+            return [];
         }
 
         var res = new SiteRes();
@@ -160,11 +184,15 @@ WHERE v.visitorType = 0
         res.TimeZone = _localClock.GetZone().Id;
         res.Url = root.Url(mode: UrlMode.Absolute);
 
-        return new List<SiteRes> { res };
+        return [res];
     }
 
-    // Grouped case-insensitively so a visitor counts once per real channel, but left as the site
-    // recorded it - the "none" sentinel for an absent value is digital's vocabulary, not the export's
+    private string GetHost(string siteId) {
+        var site = GetSite(siteId);
+
+        return site != null && Uri.TryCreate(site.Url, UriKind.Absolute, out var siteUri) ? siteUri.Host : null;
+    }
+
     private static string Canonicalize(string value) {
         return value.HasValue() ? value.Trim().ToLowerInvariant() : null;
     }
@@ -237,7 +265,6 @@ WHERE v.visitorType = 0
             row.Referrer = group.Key.Referrer;
             row.Sessions = group.Select(x => x.Row.SessionId).Distinct().Count();
             row.Source = group.Key.Source;
-            row.Users = group.Select(x => x.Row.VisitorId).Distinct().Count();
 
             yield return row;
         }

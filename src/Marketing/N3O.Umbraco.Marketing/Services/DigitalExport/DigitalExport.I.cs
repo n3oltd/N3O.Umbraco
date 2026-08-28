@@ -8,6 +8,7 @@ namespace N3O.Umbraco.Marketing.Services;
 
 public interface IDigitalExport {
     Task<DailyRes> GetDailyAsync(string siteId, LocalDate from, LocalDate to, CancellationToken cancellationToken);
+    Task<bool> HasRecordedTrafficAsync(string siteId, CancellationToken cancellationToken);
     SiteRes GetSite(string siteId);
     IReadOnlyList<SiteRes> GetSites();
 }
