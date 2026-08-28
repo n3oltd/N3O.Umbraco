@@ -1,4 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
+using N3O.Umbraco.Marketing.Services;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Engage.Infrastructure.Analytics.Collection.Extractors;
@@ -13,5 +15,6 @@ public class MarketingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddUnique<IHttpContextIpAddressExtractor, EngageIpAddressExtractor>();
         builder.Services.AddUnique<IRawPageviewLocationExtractor, EngageLocationExtractor>();
+        builder.Services.AddTransient<IDigitalExport, DigitalExport>();
     }
 }

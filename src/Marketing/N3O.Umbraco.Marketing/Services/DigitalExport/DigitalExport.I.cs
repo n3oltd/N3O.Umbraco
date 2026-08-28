@@ -1,0 +1,13 @@
+using N3O.Umbraco.Marketing.Models;
+using NodaTime;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace N3O.Umbraco.Marketing.Services;
+
+public interface IDigitalExport {
+    Task<DailyRes> GetDailyAsync(string siteId, LocalDate from, LocalDate to, CancellationToken cancellationToken);
+    SiteRes GetSite(string siteId);
+    IReadOnlyList<SiteRes> GetSites();
+}
