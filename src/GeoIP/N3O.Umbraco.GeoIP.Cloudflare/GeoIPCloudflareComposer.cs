@@ -2,10 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace N3O.Umbraco.GeoIP;
+namespace N3O.Umbraco.GeoIP.Cloudflare;
 
-public class GeoIPComposer : Composer {
+public class GeoIPCloudflareComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        builder.Services.AddSingleton<IIPGeoLookupCache, IPGeoLookupCache>();
+        builder.Services.AddTransient<IIPGeoLocationProvider, CloudflareIPGeoLocationProvider>();
     }
 }
