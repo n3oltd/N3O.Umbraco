@@ -106,7 +106,6 @@ public static class Program {
         return new CliOptions {
             ConnectionString = connection,
             DryRun = dryRun,
-            Apply = apply,
             Verbose = verbose,
             IncludePerplex = includePerplex,
             LogFilePath = logPath
@@ -128,7 +127,8 @@ public static class Program {
         Console.WriteLine("nc-migrate — Nested Content → Block List data migration (standalone, SQL Server)");
         Console.WriteLine();
         Console.WriteLine("USAGE:");
-        Console.WriteLine("  nc-migrate --connection \"<conn>\" (--dry-run | --apply) [--verbose] [--log <path>]");
+        Console.WriteLine("  nc-migrate --connection \"<conn>\" (--dry-run | --apply) [--include-perplex]");
+        Console.WriteLine("             [--verbose] [--log <path>]");
         Console.WriteLine();
         Console.WriteLine("Migrates an Umbraco 13 database in place to the v13 (udi-based) Block List shape. Run it");
         Console.WriteLine("before upgrading Umbraco; the 13->17 upgrade then converts the values to the v17 shape.");
@@ -151,14 +151,17 @@ public static class Program {
         Console.WriteLine();
         Console.WriteLine("NOTES:");
         Console.WriteLine("  - You must pass exactly one of --dry-run or --apply.");
-        Console.WriteLine("  - Only data types ASSIGNED to a content property are converted; unused Nested");
-        Console.WriteLine("    Content data types are skipped (they hold no values, and converting them can");
-        Console.WriteLine("    break editors that require Nested Content, e.g. Perplex ContentBlocks).");
+        Console.WriteLine("  - EVERY Nested Content data type is converted, including ones no content property");
+        Console.WriteLine("    points at. Umbraco.NestedContent does not exist from v14 on, so one left behind");
+        Console.WriteLine("    shows as \"this property editor could not be found\" even with no values in it.");
+        Console.WriteLine("  - Data types named \"Nested X (min, max)\" are renamed \"X Block List (min, max)\",");
+        Console.WriteLine("    and minItems/maxItems carry across to the Block List validationLimit.");
         Console.WriteLine("  - Converted Block List data types have inline editing mode enabled.");
         Console.WriteLine("  - ALWAYS back up the database before --apply. The only rollback is a restore.");
         Console.WriteLine("  - Take the site OFFLINE first (one long transaction over umbracoPropertyData).");
-        Console.WriteLine("  - AFTER --apply you MUST rebuild caches or content will render stale/empty:");
-        Console.WriteLine("    clear NuCache (delete the on-disk NuCache.*.db), rebuild Examine, republish.");
+        Console.WriteLine("  - The published cache invalidates itself: this tool clears Umbraco's cache-serializer");
+        Console.WriteLine("    marker, so Umbraco rebuilds the whole cache on the next start. Delete the on-disk");
+        Console.WriteLine("    NuCache.*.db before that start, and rebuild the Examine indexes afterwards.");
         Console.WriteLine("  - Runs on the Umbraco 13 database only; it refuses a v14+ schema. After --apply,");
         Console.WriteLine("    upgrade Umbraco normally — its own migrations convert udi-based values to key-based.");
         Console.WriteLine();

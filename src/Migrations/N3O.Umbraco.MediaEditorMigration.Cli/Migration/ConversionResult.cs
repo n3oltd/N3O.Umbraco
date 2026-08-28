@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace N3O.Umbraco.MediaEditorMigration.Cli;
 
 // Aggregate counters for a migration run, surfaced in the summary and used to decide the exit code.
@@ -23,6 +21,9 @@ public sealed class RunTotals {
 
     public int CropsWithoutCoordinates { get; set; }
 
+    // Stored crop rectangles that had no crop definition left to name them, so they could not be carried over.
+    public int CropRectanglesDropped { get; set; }
+
     // True when Umbraco's published-cache serializer marker was cleared, which makes Umbraco rebuild the
     // whole cache on next start. Without it the site keeps serving the pre-migration values.
     public bool PublishedCacheInvalidated { get; set; }
@@ -37,6 +38,4 @@ public sealed class RunTotals {
     // "layout", "udi" instead of "key") that were rewritten to the v14+ key-based shape. These only survive
     // nested inside another editor's value, which Umbraco's own 13->17 upgrade never traverses.
     public int LegacyBlockShapesNormalized { get; set; }
-
-    public List<string> NeedsReview { get; } = new();
 }

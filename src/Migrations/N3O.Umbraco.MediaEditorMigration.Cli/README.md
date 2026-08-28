@@ -24,8 +24,8 @@ arise. Its cost is the two columns of data loss above. `mediapicker` costs a med
 text and dimensions, and is what `N3O.Umbraco.Extensions`' own `IMediaUrl`/`InlineSvg` abstraction is typed
 against.
 
-It is the data-migration half of the Cropper/Uploader → native switch (the framework/editor removal lives in the
-N3O.Umbraco repo; see its `CROPPER_UPLOADER_NATIVE_MIGRATION.md`). It mirrors the design of the sibling
+It is the data-migration half of the Cropper/Uploader → native switch; the other half is the removal of the
+`N3O.Umbraco.Cropper` and `N3O.Umbraco.Uploader` projects from this repository. It mirrors the design of the sibling
 `N3O.Umbraco.NestedContentMigration.Cli` (`nc-migrate`): one transaction, `--dry-run`/`--apply`, raw SQL via
 `Microsoft.Data.SqlClient`, and a per-item `[REVIEW]` log.
 
@@ -71,7 +71,8 @@ media-migrate --connection "<conn>" (--dry-run | --apply) [--editor cropper|uplo
 - `--editor` `cropper` | `uploader` | `both` (default `both`).
 - `--target` `inline` | `mediapicker` (default `inline`) — see the table above.
 - `--media-parent` `--target mediapicker` only: `umbracoNode` id of the media folder for the new nodes
-  (default `-1`, the Media root).
+  (default `-1`, the Media root). Passing it with `--target inline` is **rejected** rather than ignored, since
+  that target creates no media nodes at all.
 - `--dry-run` run in a transaction then roll back (validates SQL + media inserts, reports what would change).
 - `--apply` commit (mutually exclusive with `--dry-run`).
 - `--verbose` log each data type / value / media node.
@@ -199,4 +200,29 @@ shape, which is correct).
   values are left alone rather than broken. On one large production site: **16,385 nested values
   converted, 1,089 empty
   `editorAlias` entries corrected, 1,864 media nodes created** (only 250 before this fix).
-- A failed value conversion aborts the whole run (rollback) so nothing is left half-migrated.
+- A failed value conversion rolls back the whole run, so nothing is left half-migrated — but every other value
+  and every later pass is still **attempted** first, so one `--dry-run` reports every problem in the database
+  instead of stopping at the first one. Nothing commits until the end, so continuing past a failure is free.
+- **Crop rectangles with no crop definition left to name them are dropped and counted.** The retired Cropper
+  stored its rectangles *positionally* — the i-th rectangle belongs to the i-th entry of the data type's
+  `cropDefinitions`, with no alias on the rectangle itself. If crop definitions were removed from the data type
+  after a value was saved, the surplus rectangles have no alias to be written under; they appear as
+  `Crop rects DROPPED` in the summary and as a `[REVIEW]` line naming the item.
+- **A value whose shape this tool cannot parse keeps its data, but still gets its `editorAlias` corrected.**
+  Leaving a nested entry pointing at `N3O.Umbraco.Cropper` after its data type has been flipped would hand the
+  native value editor the wrong shape; the value itself is left for you to convert by hand and reported as
+  `[REVIEW]`.
+- **Block property editor aliases are resolved across compositions.** Normalising a legacy block value has to
+  stamp each property with its `editorAlias`, which Umbraco uses to pick the value editor. Element types used
+  inside blocks compose heavily (a block item's `linkText`/`linkContent` usually comes from a shared `Link`
+  element type), so resolving only the properties declared directly on the content type leaves every inherited
+  property with `"editorAlias": null` and stops Umbraco rendering it. Measured on one production site before
+  this was fixed: **6,926 values across 8 inherited aliases**. A property that is still unresolvable after
+  compositions **and** holds a non-null value is reported as `[REVIEW]` — that means the property was renamed or
+  deleted after the value was saved (1,148 such values on the same site, e.g. `dimension1` where the element
+  type now declares `dimension1DataList`). Unresolvable properties holding `null` are carried across silently;
+  there is nothing to do about an inert null and reporting them buried the real ones 3:1.
+- **Block Grid layout metadata survives normalisation.** A Block Grid layout item carries `columnSpan`,
+  `rowSpan` and an `areas` array holding a whole nested item tree. Values and layout items are cloned and then
+  adjusted rather than rebuilt from a fixed key list, so members this tool does not model are preserved, and
+  nested `areas[].items[]` get the same key-based fields as top-level items.

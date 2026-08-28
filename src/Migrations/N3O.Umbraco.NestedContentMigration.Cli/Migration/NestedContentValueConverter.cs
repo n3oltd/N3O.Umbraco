@@ -23,7 +23,9 @@ public static class NestedContentValueConverter {
 
     // Property names that carry Block List identity on the contentData entry — a source element property
     // with one of these names would clobber the block identity, so it is skipped (and counted).
-    private static readonly string[] ReservedProperties = { "udi", "contentTypeKey", "contentTypeAlias", "key" };
+    // "key" is deliberately absent: it is Nested Content's own item key, so DroppedProperties (checked first)
+    // already removes it, and listing it here as well would only look like a collision that can never happen.
+    private static readonly string[] ReservedProperties = { "udi", "contentTypeKey", "contentTypeAlias" };
 
     // Converts a Nested Content value into a Block List value. Result.Json is null when the input is not a
     // Nested Content array (not valid JSON, or already a Block List / other shape) — the caller must then

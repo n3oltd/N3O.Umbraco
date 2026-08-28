@@ -34,3 +34,15 @@ public sealed class CropDefinition {
     public int Width { get; set; }
     public int Height { get; set; }
 }
+
+// The two ways converting one value's crops can come out imperfect, both of which the caller reports as
+// [REVIEW] items. Kept together so neither can be surfaced without the other.
+public sealed class CropOutcome {
+    // Crop aliases that kept their size but got no coordinates, because the stored value has no source image
+    // width/height to convert the pixel rectangle against. The crop falls back to a centre crop / focal point.
+    public List<string> WithoutCoordinates { get; } = new();
+
+    // Stored crop rectangles with no crop definition left to name them — crop definitions removed from the data
+    // type after the value was saved. There is nowhere to write these, so they are lost.
+    public int DroppedRectangles { get; set; }
+}

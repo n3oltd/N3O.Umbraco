@@ -2,8 +2,11 @@ namespace N3O.Umbraco.NestedContentMigration.Cli;
 
 public sealed class CliOptions {
     public string ConnectionString { get; set; }
+
+    // --apply is the absence of --dry-run: Program requires exactly one of the two, so one flag holds both
+    // states and there is no way for them to disagree.
     public bool DryRun { get; set; }
-    public bool Apply { get; set; }
+
     public bool Verbose { get; set; }
     public string LogFilePath { get; set; }
 

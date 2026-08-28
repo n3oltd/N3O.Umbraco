@@ -14,17 +14,17 @@ namespace N3O.Umbraco.MediaEditorMigration.Cli;
 //   --target mediapicker Umbraco.MediaPicker3, which references the media library by GUID, so each file is
 //                        first registered as a media node (see MediaNodeFactory) and the value holds its key.
 public static class NativeValueBuilder {
-    // The Umbraco.ImageCropper stored property value. Returns the serialised JSON plus the list of crop aliases
-    // that could NOT be given coordinates (image dimensions missing) so the caller can flag them for review.
+    // The Umbraco.ImageCropper stored property value. Returns the serialised JSON plus what the caller must
+    // flag for review — see BuildCrops for the two ways a crop can come out imperfect.
     //
     // Crop width/height are written for fidelity, but Umbraco's ImageCropperConfigurationExtensions
     // .ApplyConfiguration rebuilds the crop list from the DATA TYPE config on read, matching by alias and
     // keeping only the coordinates. So a crop alias that is not in the data type config is discarded on read,
     // which is why the same cropDefinitions must be written to both the value and the config.
-    public static (string Json, List<string> CropsWithoutCoordinates) BuildImageCropperValue(
+    public static (string Json, CropOutcome Crops) BuildImageCropperValue(
         SourceFile file, IReadOnlyList<CropDefinition> cropDefinitions) {
 
-        var (crops, cropsWithoutCoordinates) = BuildCrops(file, cropDefinitions);
+        var (crops, outcome) = BuildCrops(file, cropDefinitions);
 
         // focalPoint is left null: the retired Cropper had no focal point, and a null one makes a crop without
         // coordinates fall back to a centre crop rather than to an invented focal point.
@@ -41,11 +41,11 @@ public static class NativeValueBuilder {
         //
         // This is migration continuity, not a permanent home: it survives publishing, but an editor saving the
         // property in the backoffice makes Umbraco re-serialise from ImageCropperValue and the text is lost.
-        if (file.AltText.HasValue()) {
+        if (!string.IsNullOrWhiteSpace(file.AltText)) {
             value["altText"] = file.AltText;
         }
 
-        return (JsonConvert.SerializeObject(value), cropsWithoutCoordinates);
+        return (JsonConvert.SerializeObject(value), outcome);
     }
 
     // The data type config when flipping to Umbraco.ImageCropper: ImageCropperConfiguration has a single
@@ -82,10 +82,15 @@ public static class NativeValueBuilder {
 
     // Shared by both targets: Umbraco.ImageCropper's crops and Umbraco.MediaPicker3's per-item local crops are
     // the same ImageCropperCrop shape, so one builder serves both.
-    private static (JArray Crops, List<string> WithoutCoordinates) BuildCrops(
+    //
+    // The retired Cropper stored its rectangles POSITIONALLY — the i-th rectangle belongs to the i-th entry of
+    // the data type's cropDefinitions, with no alias on the rectangle itself. So the definitions drive the loop,
+    // and a value holding more rectangles than the data type now defines has had crop definitions removed since
+    // it was saved; those rectangles have no alias to be written under and are counted as dropped.
+    private static (JArray Crops, CropOutcome Outcome) BuildCrops(
         SourceFile file, IReadOnlyList<CropDefinition> cropDefinitions) {
 
-        var withoutCoordinates = new List<string>();
+        var outcome = new CropOutcome();
         var crops = new JArray();
 
         // Map each positional crop rectangle to its crop definition (alias/size) and convert px → fractions.
@@ -109,19 +114,25 @@ public static class NativeValueBuilder {
                 crop["coordinates"] = null;
 
                 if (rect != null && (rect.Width > 0 || rect.Height > 0)) {
-                    withoutCoordinates.Add(def.Alias);
+                    outcome.WithoutCoordinates.Add(def.Alias);
                 }
             }
 
             crops.Add(crop);
         }
 
-        return (crops, withoutCoordinates);
+        for (var i = cropDefinitions.Count; i < file.Crops.Count; i++) {
+            var rect = file.Crops[i];
+
+            if (rect.Width > 0 || rect.Height > 0) {
+                outcome.DroppedRectangles++;
+            }
+        }
+
+        return (crops, outcome);
     }
 
-    private static bool HasValue(this string value) => !string.IsNullOrWhiteSpace(value);
-
-    public static IReadOnlyList<string> ParseExtensions(string allowedExtensions) {
+    private static IReadOnlyList<string> ParseExtensions(string allowedExtensions) {
         if (string.IsNullOrWhiteSpace(allowedExtensions)) {
             return Array.Empty<string>();
         }
@@ -138,12 +149,12 @@ public static class NativeValueBuilder {
     // ---------------------------------------------------------------------------------------------------
 
     // The MediaPicker3 stored property value: a JSON array of one media item (these editors were single-value).
-    // crops/focalPoint are only populated for Cropper. Returns the serialised JSON plus the list of crop aliases
-    // that could NOT be given coordinates (image dimensions missing) so the caller can flag them for review.
-    public static (string Json, List<string> CropsWithoutCoordinates) BuildPickerValue(
+    // crops/focalPoint are only populated for Cropper. Returns the serialised JSON plus what the caller must
+    // flag for review — see BuildCrops.
+    public static (string Json, CropOutcome Crops) BuildPickerValue(
         Guid mediaKey, SourceFile file, IReadOnlyList<CropDefinition> cropDefinitions) {
 
-        var (crops, cropsWithoutCoordinates) = BuildCrops(file, cropDefinitions);
+        var (crops, outcome) = BuildCrops(file, cropDefinitions);
 
         var item = new JObject {
             ["key"] = Guid.NewGuid().ToString(),
@@ -152,7 +163,7 @@ public static class NativeValueBuilder {
             ["focalPoint"] = null
         };
 
-        return (JsonConvert.SerializeObject(new JArray(item)), cropsWithoutCoordinates);
+        return (JsonConvert.SerializeObject(new JArray(item)), outcome);
     }
 
     // The data type config when flipping to Umbraco.MediaPicker3. Single item; crops carried over for Cropper.

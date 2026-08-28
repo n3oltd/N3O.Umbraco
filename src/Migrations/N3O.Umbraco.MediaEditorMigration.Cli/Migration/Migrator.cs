@@ -91,36 +91,34 @@ public sealed class Migrator {
         // Cropper/Uploader binding is gone and nested values can no longer be matched to their crop definitions.
         var nestedTargets = BuildNestedTargets(connection, transaction);
 
-        var ok = true;
-
+        // Every pass runs even if an earlier one hit a bad value, and every value inside a pass is attempted:
+        // the whole point of --dry-run is to get the COMPLETE list of what needs attention in one run, and
+        // stopping at the first failure would surface them one restore-and-retry at a time. Nothing is
+        // committed until the end, so continuing past a failure is free — totals.ValuesFailed decides below.
         if (_options.Editor is EditorScope.Both or EditorScope.Cropper) {
-            ok &= MigrateEditor(connection, transaction, factory, totals, CropperAlias, isCropper: true);
+            MigrateEditor(connection, transaction, factory, totals, CropperAlias, isCropper: true);
         }
 
-        if (ok && _options.Editor is EditorScope.Both or EditorScope.Uploader) {
-            ok &= MigrateEditor(connection, transaction, factory, totals, UploaderAlias, isCropper: false);
+        if (_options.Editor is EditorScope.Both or EditorScope.Uploader) {
+            MigrateEditor(connection, transaction, factory, totals, UploaderAlias, isCropper: false);
         }
 
         // Values nested inside Block List / Block Grid / Perplex blocks are not umbracoPropertyData rows of
         // their own, so the passes above never see them even though their data types were flipped.
-        if (ok) {
-            var nested = new NestedMediaMigrator(connection,
-                                                 transaction,
-                                                 factory,
-                                                 _options.Verbose,
-                                                 _options.Editor is EditorScope.Both or EditorScope.Cropper,
-                                                 _options.Editor is EditorScope.Both or EditorScope.Uploader,
-                                                 nestedTargets);
+        var nested = new NestedMediaMigrator(connection,
+                                             transaction,
+                                             factory,
+                                             _options.Verbose,
+                                             _options.Editor is EditorScope.Both or EditorScope.Cropper,
+                                             _options.Editor is EditorScope.Both or EditorScope.Uploader,
+                                             nestedTargets);
 
-            ok &= nested.Run(totals);
-        }
+        nested.Run(totals);
 
         // Runs last: the legacy nested block shape can only be rewritten once the 13->17 upgrade has
         // happened, and each value entry's editorAlias is read from the live data types so it picks up the
         // native aliases the passes above have just written.
-        if (ok) {
-            ok &= new NestedBlockShapeNormalizer(connection, transaction, _options.Verbose).Run(totals);
-        }
+        new NestedBlockShapeNormalizer(connection, transaction, _options.Verbose).Run(totals);
 
         totals.MediaNodesCreated = factory?.Created ?? 0;
 
@@ -128,7 +126,10 @@ public sealed class Migrator {
 
         Report(totals);
 
-        if (!ok) {
+        // A failed value means its data type has already been flipped to a native editor while the value is
+        // still in the retired editor's shape — abort so nothing is left half-migrated.
+        if (totals.ValuesFailed > 0) {
+            Log.Error($"{totals.ValuesFailed} value(s) failed to convert — see the [REVIEW] entries above.");
             transaction.Rollback();
             Log.Error("Migration aborted — all changes rolled back.");
 
@@ -199,14 +200,18 @@ public sealed class Migrator {
     // Clearing Umbraco's cache-serializer marker makes its own DatabaseCacheRebuilder rebuild the whole cache
     // on the next start, using Umbraco's serializer rather than anything reimplemented here. Deleting
     // cmsContentNu is NOT a substitute: neither v13 nor v17 rebuilds an empty cache.
-    private static int InvalidatePublishedCache(SqlConnection cn, SqlTransaction tx) {
+    private int InvalidatePublishedCache(SqlConnection cn, SqlTransaction tx) {
         var rows = Db.Execute(cn,
                               tx,
                               "DELETE FROM umbracoKeyValue WHERE [key] = @key",
                               ("@key", CacheSerializerKey));
 
         if (rows > 0) {
-            Log.Info("Cleared the published-cache serializer marker; Umbraco will rebuild the cache on next start.");
+            Log.Info(_options.DryRun
+                         ? "WOULD clear the published-cache serializer marker, making Umbraco rebuild the cache " +
+                           "on next start (rolled back with the rest of this dry run)."
+                         : "Cleared the published-cache serializer marker; Umbraco will rebuild the cache on " +
+                           "next start.");
         } else {
             Log.Warn($"No '{CacheSerializerKey}' row found, so the published cache was NOT invalidated. Rebuild " +
                      "the database cache manually or the site will keep serving pre-migration values.");
@@ -215,7 +220,7 @@ public sealed class Migrator {
         return rows;
     }
 
-    private bool MigrateEditor(SqlConnection cn, SqlTransaction tx, MediaNodeFactory factory, RunTotals totals,
+    private void MigrateEditor(SqlConnection cn, SqlTransaction tx, MediaNodeFactory factory, RunTotals totals,
                                string editorAlias, bool isCropper) {
         var dataTypes = Db.Query(cn, tx,
             "SELECT nodeId, [config] FROM umbracoDataType WHERE propertyEditorAlias = @alias",
@@ -225,21 +230,17 @@ public sealed class Migrator {
         if (dataTypes.Count == 0) {
             Log.Info($"No '{editorAlias}' data types found — nothing to migrate for this editor.");
 
-            return true;
+            return;
         }
 
         Log.Info($"Found {dataTypes.Count} '{editorAlias}' data type(s).");
 
         foreach (var dataType in dataTypes) {
-            if (!MigrateDataType(cn, tx, factory, totals, dataType, isCropper)) {
-                return false;
-            }
+            MigrateDataType(cn, tx, factory, totals, dataType, isCropper);
         }
-
-        return true;
     }
 
-    private bool MigrateDataType(SqlConnection cn, SqlTransaction tx, MediaNodeFactory factory, RunTotals totals,
+    private void MigrateDataType(SqlConnection cn, SqlTransaction tx, MediaNodeFactory factory, RunTotals totals,
                                  DataTypeRow dataType, bool isCropper) {
         var cropDefinitions = isCropper ? ParseCropDefinitions(dataType.Config, dataType.Id) : new List<CropDefinition>();
 
@@ -250,28 +251,25 @@ public sealed class Migrator {
             ("@dataTypeId", dataType.Id)).Cast<object>().ToList();
 
         if (propertyTypeIds.Count > 0) {
-            var (inClause, parameters) = Db.BuildInClause("p", propertyTypeIds);
-
-            var values = Db.Query(cn, tx,
-                $"SELECT pd.id, pd.textValue, pt.Alias, cv.nodeId, n.text " +
-                $"FROM umbracoPropertyData pd " +
-                $"INNER JOIN cmsPropertyType pt ON pt.id = pd.propertyTypeId " +
-                $"LEFT JOIN umbracoContentVersion cv ON cv.id = pd.versionId " +
-                $"LEFT JOIN umbracoNode n ON n.id = cv.nodeId " +
-                $"WHERE pd.propertyTypeId IN ({inClause}) AND pd.textValue IS NOT NULL AND pd.textValue <> ''",
+            var values = Db.QueryIn(cn, tx,
+                "SELECT pd.id, pd.textValue, pt.Alias, cv.nodeId, n.text " +
+                "FROM umbracoPropertyData pd " +
+                "INNER JOIN cmsPropertyType pt ON pt.id = pd.propertyTypeId " +
+                "LEFT JOIN umbracoContentVersion cv ON cv.id = pd.versionId " +
+                "LEFT JOIN umbracoNode n ON n.id = cv.nodeId " +
+                "WHERE pd.propertyTypeId IN ({0}) AND pd.textValue IS NOT NULL AND pd.textValue <> ''",
+                "p",
+                propertyTypeIds,
                 r => new PropertyDataRow {
                     Id = r.GetInt32(0),
                     TextValue = r.GetString(1),
                     PropertyAlias = r.IsDBNull(2) ? null : r.GetString(2),
                     NodeId = r.IsDBNull(3) ? (int?) null : r.GetInt32(3),
                     NodeName = r.IsDBNull(4) ? null : r.GetString(4)
-                },
-                parameters);
+                });
 
             foreach (var value in values) {
-                if (!ConvertValue(cn, tx, factory, totals, value, cropDefinitions, isCropper)) {
-                    return false;
-                }
+                ConvertValue(cn, tx, factory, totals, value, cropDefinitions, isCropper);
             }
         }
 
@@ -302,11 +300,9 @@ public sealed class Migrator {
         totals.DataTypesConverted++;
         Log.Verbose(_options.Verbose,
                     $"Data type {dataType.Id} → {editor} ({cropDefinitions.Count} crop definition(s)).");
-
-        return true;
     }
 
-    private bool ConvertValue(SqlConnection cn, SqlTransaction tx, MediaNodeFactory factory, RunTotals totals,
+    private void ConvertValue(SqlConnection cn, SqlTransaction tx, MediaNodeFactory factory, RunTotals totals,
                               PropertyDataRow value, List<CropDefinition> cropDefinitions, bool isCropper) {
         var header = $"value id {value.Id} | node {value.NodeDescription} | property '{value.PropertyAlias}'";
         var issues = new List<string>();
@@ -320,7 +316,7 @@ public sealed class Migrator {
                            "or an unexpected shape); left untouched.");
                 Log.Item(header, issues);
 
-                return true;
+                return;
             }
 
             if (string.IsNullOrWhiteSpace(file.Src)) {
@@ -329,21 +325,21 @@ public sealed class Migrator {
                            "editor at.");
                 Log.Item(header, issues);
 
-                return false;
+                return;
             }
 
             string native;
-            List<string> cropsWithoutCoordinates;
+            CropOutcome crops;
 
             if (!Inline) {
                 var mediaKey = factory.GetOrCreate(file);
-                (native, cropsWithoutCoordinates) = NativeValueBuilder.BuildPickerValue(mediaKey, file, cropDefinitions);
+                (native, crops) = NativeValueBuilder.BuildPickerValue(mediaKey, file, cropDefinitions);
             } else if (isCropper) {
-                (native, cropsWithoutCoordinates) = NativeValueBuilder.BuildImageCropperValue(file, cropDefinitions);
+                (native, crops) = NativeValueBuilder.BuildImageCropperValue(file, cropDefinitions);
             } else {
                 // Umbraco.UploadField stores the file path as a plain string.
                 native = file.Src;
-                cropsWithoutCoordinates = new List<string>();
+                crops = new CropOutcome();
             }
 
             Db.Execute(cn, tx, "UPDATE umbracoPropertyData SET textValue = @value WHERE id = @id",
@@ -351,11 +347,18 @@ public sealed class Migrator {
 
             totals.ValuesConverted++;
 
-            if (cropsWithoutCoordinates.Count > 0) {
-                totals.CropsWithoutCoordinates += cropsWithoutCoordinates.Count;
-                issues.Add($"{cropsWithoutCoordinates.Count} crop(s) kept their alias/size but got NO coordinates " +
-                           $"(source image dimensions missing): {string.Join(", ", cropsWithoutCoordinates)}. The " +
+            if (crops.WithoutCoordinates.Count > 0) {
+                totals.CropsWithoutCoordinates += crops.WithoutCoordinates.Count;
+                issues.Add($"{crops.WithoutCoordinates.Count} crop(s) kept their alias/size but got NO coordinates " +
+                           $"(source image dimensions missing): {string.Join(", ", crops.WithoutCoordinates)}. The " +
                            $"crop falls back to {(Inline ? "a centre crop" : "the focal point")} — verify these.");
+            }
+
+            if (crops.DroppedRectangles > 0) {
+                totals.CropRectanglesDropped += crops.DroppedRectangles;
+                issues.Add($"{crops.DroppedRectangles} stored crop rectangle(s) DROPPED — the value holds more " +
+                           $"rectangles than the data type now defines crops for ({cropDefinitions.Count}), so " +
+                           "there is no alias to write them under. Re-crop this item if those crops are still in use.");
             }
 
             if (file.AltText != null) {
@@ -384,14 +387,12 @@ public sealed class Migrator {
             issues.Add($"FAILED to convert — {ex.Message}");
             Log.Item(header, issues);
 
-            return false;
+            return;
         }
 
         if (issues.Count > 0) {
             Log.Item(header, issues);
         }
-
-        return true;
     }
 
     private static List<CropDefinition> ParseCropDefinitions(string config, int dataTypeId) {
@@ -467,12 +468,14 @@ public sealed class Migrator {
 
         Log.Info($"Crops w/o coords     : {totals.CropsWithoutCoordinates} " +
                  $"({(Inline ? "fall back to a centre crop" : "auto-cropped to the focal point")})");
+        Log.Info($"Crop rects DROPPED   : {totals.CropRectanglesDropped} (no crop definition left to name them)");
         Log.Info($"Nested in blocks     : {totals.NestedValuesConverted} value(s) converted, {totals.NestedAliasesFixed} empty alias(es) fixed");
         Log.Info($"Legacy block shapes  : {totals.LegacyBlockShapesNormalized} normalised to the v14+ key-based shape");
         Log.Info($"Published cache      : {(totals.PublishedCacheInvalidated ? "will rebuild on next site start" : "NOT invalidated — rebuild manually")}");
         Log.Info("------------------------------------------------------------");
 
-        if (totals.ValuesUnchanged + totals.ValuesFailed + totals.AltTextDropped + totals.CropsWithoutCoordinates > 0) {
+        if (totals.ValuesUnchanged + totals.ValuesFailed + totals.AltTextDropped + totals.CropsWithoutCoordinates
+            + totals.CropRectanglesDropped > 0) {
             Log.Info($"Items needing a manual check are marked [REVIEW] above and saved in the log file: {Log.FilePath}");
         }
     }

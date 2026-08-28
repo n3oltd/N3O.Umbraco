@@ -10,33 +10,29 @@ package. It exists so you can:
 It replaces the old on-startup `PackageMigrationPlan` (`N3ONestedContentMigrationPlan` +
 `NestedContentToBlockListMigration` in the `N3O.Umbraco` repo's `N3O.Umbraco.Extensions`, now commented out).
 
-This is a self-contained project that lives **outside** the `N3O.Umbraco` repository (it is a sibling
-folder, `D:\AI Migration Test\N3O.Umbraco.NestedContentMigration.Cli`). It has no dependency on that repo;
-run every command below from this project's folder.
+Although it lives in this repository, it takes **no dependency** on any project in it — it talks to SQL Server
+directly and references only `Microsoft.Data.SqlClient` and `Newtonsoft.Json`, so it runs against a database
+whose site has not been upgraded yet. It is marked `IsPackable=false`, so it is built by CI but never packaged.
 
 ## What it does
 
 Inside a single transaction:
 
-1. Finds every data type using `Umbraco.NestedContent` **that is assigned to at least one content property**
-   (data types no property uses are skipped — see the note below).
+1. Finds **every** data type using `Umbraco.NestedContent`, whether or not a content property points at it
+   (see [Converts EVERY Nested Content data type](#converts-every-nested-content-data-type-and-renames-them)).
 2. Resolves each Nested Content element-type alias → content-type key (GUID).
 3. Converts those data types **in place** to `Umbraco.BlockList` (config rebuilt from the element types, with
-   **inline editing mode enabled** — `useInlineEditingAsDefault: true`).
+   **inline editing mode enabled** — `useInlineEditingAsDefault: true`), carrying `minItems`/`maxItems` across
+   to `validationLimit` and renaming `Nested X (min, max)` to `X Block List (min, max)`.
 4. Rewrites every stored property value (`umbracoPropertyData.textValue`) from the Nested Content JSON
    array to the Block List JSON shape.
 
 A **dry run** executes all of the above and then **rolls back**, so it validates the SQL against the real
-schema and reports the exact counts without changing anything.
+schema and reports the exact counts without changing anything. Every value is attempted even after one fails,
+so one dry run gives you the complete list of what needs attention.
 
 > The tool converts the Nested Content data type **in place** — you do **not** need a pre-existing Block
 > List data type. The element types referenced by the Nested Content config must exist (they normally do).
-
-> **Only *in-use* data types are converted.** A Nested Content data type that no content property references
-> is **skipped** (and reported). It holds no stored values, and converting it can only break other editors
-> that embed a Nested Content data type internally and require it to stay Nested Content — notably **Perplex
-> ContentBlocks**, whose block definitions throw `DataType should be Nested Content, but was '...'` if their
-> backing data type is flipped to Block List.
 
 ## Perplex ContentBlocks v3 → v4 (`--include-perplex`)
 
@@ -147,7 +143,7 @@ by hand.
 
 ## Requirements
 
-- .NET 8 runtime (the project targets `net8.0`).
+- .NET 10 SDK/runtime (the project targets `net10.0`).
 - **SQL Server** (full or LocalDB). SQLite is not supported.
 - A database backup taken before running with `--apply`.
 
@@ -162,8 +158,8 @@ dotnet run -- \
   [--verbose] [--log <path>]
 ```
 
-(Or from anywhere: `dotnet run --project "D:\AI Migration Test\N3O.Umbraco.NestedContentMigration.Cli" -- ...`.
-Or build once with `dotnet build -c Release` and run `bin\Release\net8.0\nc-migrate.exe -- ...`.)
+(Or from anywhere: `dotnet run --project src/Migrations/N3O.Umbraco.NestedContentMigration.Cli -- ...`.
+Or build once with `dotnet build -c Release` and run `bin\Release\net10.0\nc-migrate.exe ...`.)
 
 | Option | Meaning |
 |---|---|
@@ -248,11 +244,10 @@ Exit code is `0` on success, `1` on validation failure or error.
   untouched, never overwritten. After a successful `--apply` the data types are already Block List, so a
   second run finds nothing to do.
 - **All-or-nothing:** if any property value fails to convert, the entire transaction is rolled back — a data
-  type is never committed as Block List while some of its values are still raw Nested Content.
-- **Only data types used by a content property are converted.** A Nested Content data type with no
-  `cmsPropertyType` reference is **skipped** and reported — it has no values to convert, and flipping it can
-  break editors that embed a Nested Content data type and require it to stay Nested Content (notably **Perplex
-  ContentBlocks**). This is deliberate, not an error; the skipped count appears in the summary.
+  type is never committed as Block List while some of its values are still raw Nested Content. Every remaining
+  value is still *attempted* first, so the log lists all of them rather than stopping at the first.
+- **Every Nested Content data type is converted**, including ones with no `cmsPropertyType` reference — see
+  [Converts EVERY Nested Content data type](#converts-every-nested-content-data-type-and-renames-them).
 - **Inline editing mode** is enabled on every converted Block List data type
   (`useInlineEditingAsDefault: true`).
 - **Nested Content inside Nested Content is NOT converted** — the inner value is copied verbatim and the

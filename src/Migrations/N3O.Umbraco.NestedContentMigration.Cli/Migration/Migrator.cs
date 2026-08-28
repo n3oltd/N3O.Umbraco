@@ -76,7 +76,11 @@ public sealed class Migrator {
                                   ("@key", CacheSerializerKey));
 
             if (cleared > 0) {
-                Log.Info("Cleared the published-cache serializer marker; Umbraco will rebuild the cache on next start.");
+                Log.Info(_options.DryRun
+                             ? "WOULD clear the published-cache serializer marker, making Umbraco rebuild the " +
+                               "cache on next start (rolled back with the rest of this dry run)."
+                             : "Cleared the published-cache serializer marker; Umbraco will rebuild the cache " +
+                               "on next start.");
             } else {
                 Log.Warn($"No '{CacheSerializerKey}' row found, so the published cache was NOT invalidated. " +
                          "Rebuild the published cache manually or the site will keep serving pre-migration content.");
@@ -144,11 +148,11 @@ public sealed class Migrator {
         // upgrade: Perplex v4 stores no data type reference at all (verified — no Perplex.ContentBlocks config
         // in a migrated database mentions one), so those data types are dead weight in v17, and leaving them on
         // a non-existent editor is strictly worse than converting them.
-        var (usedIn, usedParams) = BuildInClause("u", dataTypes.Select(d => (object) d.Id));
-        var usedDataTypeIds = new HashSet<int>(Query(cn, tx,
-            $"SELECT DISTINCT dataTypeId FROM cmsPropertyType WHERE dataTypeId IN ({usedIn})",
-            r => r.GetInt32(0),
-            usedParams));
+        var usedDataTypeIds = new HashSet<int>(QueryIn(cn, tx,
+            "SELECT DISTINCT dataTypeId FROM cmsPropertyType WHERE dataTypeId IN ({0})",
+            "u",
+            dataTypes.Select(d => (object) d.Id),
+            r => r.GetInt32(0)));
 
         var unassigned = dataTypes.Where(dt => !usedDataTypeIds.Contains(dt.Id)).ToList();
 
@@ -172,14 +176,13 @@ public sealed class Migrator {
         var contentTypeKeys = new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase);
 
         if (allAliases.Count > 0) {
-            var (inClause, parameters) = BuildInClause("a", allAliases.Cast<object>());
-
-            var rows = Query(cn, tx,
-                $"SELECT ct.alias, n.uniqueId FROM cmsContentType ct " +
-                $"INNER JOIN umbracoNode n ON n.id = ct.nodeId " +
-                $"WHERE ct.isElement = 1 AND ct.alias IN ({inClause})",
-                r => new { Alias = r.GetString(0), Key = r.GetGuid(1) },
-                parameters);
+            var rows = QueryIn(cn, tx,
+                "SELECT ct.alias, n.uniqueId FROM cmsContentType ct " +
+                "INNER JOIN umbracoNode n ON n.id = ct.nodeId " +
+                "WHERE ct.isElement = 1 AND ct.alias IN ({0})",
+                "a",
+                allAliases.Cast<object>(),
+                r => new { Alias = r.GetString(0), Key = r.GetGuid(1) });
 
             foreach (var row in rows) {
                 contentTypeKeys[row.Alias] = row.Key;
@@ -220,12 +223,12 @@ public sealed class Migrator {
 
         // Step 4: convert the stored property values.
         var dataTypeIds = dataTypes.Select(d => d.Id).Cast<object>().ToList();
-        var (propTypeIn, propTypeParams) = BuildInClause("d", dataTypeIds);
 
-        var propertyTypes = Query(cn, tx,
-            $"SELECT id, dataTypeId FROM cmsPropertyType WHERE dataTypeId IN ({propTypeIn})",
-            r => new { Id = r.GetInt32(0), DataTypeId = r.GetInt32(1) },
-            propTypeParams);
+        var propertyTypes = QueryIn(cn, tx,
+            "SELECT id, dataTypeId FROM cmsPropertyType WHERE dataTypeId IN ({0})",
+            "d",
+            dataTypeIds,
+            r => new { Id = r.GetInt32(0), DataTypeId = r.GetInt32(1) });
 
         if (propertyTypes.Count == 0) {
             Log.Info("No properties reference the migrated data types — no values to convert.");
@@ -234,18 +237,19 @@ public sealed class Migrator {
         }
 
         var propertyTypeIds = propertyTypes.Select(p => (object) p.Id).ToList();
-        var (propDataIn, propDataParams) = BuildInClause("p", propertyTypeIds);
 
         // Also pull the owning content node (id + name) and the property alias so every per-item review entry
         // points at a real, findable item. The node joins are LEFT joins so the set of values converted is
         // unchanged even if a row's version/node can't be resolved.
-        var values = Query(cn, tx,
-            $"SELECT pd.id, pd.propertyTypeId, pd.textValue, pt.Alias, cv.nodeId, n.text " +
-            $"FROM umbracoPropertyData pd " +
-            $"INNER JOIN cmsPropertyType pt ON pt.id = pd.propertyTypeId " +
-            $"LEFT JOIN umbracoContentVersion cv ON cv.id = pd.versionId " +
-            $"LEFT JOIN umbracoNode n ON n.id = cv.nodeId " +
-            $"WHERE pd.propertyTypeId IN ({propDataIn}) AND pd.textValue IS NOT NULL AND pd.textValue <> ''",
+        var values = QueryIn(cn, tx,
+            "SELECT pd.id, pd.propertyTypeId, pd.textValue, pt.Alias, cv.nodeId, n.text " +
+            "FROM umbracoPropertyData pd " +
+            "INNER JOIN cmsPropertyType pt ON pt.id = pd.propertyTypeId " +
+            "LEFT JOIN umbracoContentVersion cv ON cv.id = pd.versionId " +
+            "LEFT JOIN umbracoNode n ON n.id = cv.nodeId " +
+            "WHERE pd.propertyTypeId IN ({0}) AND pd.textValue IS NOT NULL AND pd.textValue <> ''",
+            "p",
+            propertyTypeIds,
             r => new PropertyDataRow {
                 Id = r.GetInt32(0),
                 PropertyTypeId = r.GetInt32(1),
@@ -253,8 +257,7 @@ public sealed class Migrator {
                 PropertyAlias = r.IsDBNull(3) ? null : r.GetString(3),
                 NodeId = r.IsDBNull(4) ? (int?) null : r.GetInt32(4),
                 NodeName = r.IsDBNull(5) ? null : r.GetString(5)
-            },
-            propDataParams);
+            });
 
         Log.Info($"Found {values.Count} property value(s) to convert.");
 
@@ -376,11 +379,11 @@ public sealed class Migrator {
         var contentTypeKeys = BuildElementTypeKeys(cn, tx, out var nodeIdByKey);
         var editorAliases = BuildEditorAliases(cn, tx, nodeIdByKey);
 
-        var (propTypeIn, propTypeParams) = BuildInClause("d", dataTypeIds);
-        var propertyTypeIds = Query(cn, tx,
-            $"SELECT id FROM cmsPropertyType WHERE dataTypeId IN ({propTypeIn})",
-            r => (object) r.GetInt32(0),
-            propTypeParams);
+        var propertyTypeIds = QueryIn(cn, tx,
+            "SELECT id FROM cmsPropertyType WHERE dataTypeId IN ({0})",
+            "d",
+            dataTypeIds,
+            r => (object) r.GetInt32(0));
 
         if (propertyTypeIds.Count == 0) {
             Log.Info("No properties reference the Perplex data types — no values to convert.");
@@ -388,15 +391,15 @@ public sealed class Migrator {
             return true;
         }
 
-        var (propDataIn, propDataParams) = BuildInClause("p", propertyTypeIds);
-
-        var values = Query(cn, tx,
-            $"SELECT pd.id, pd.propertyTypeId, pd.textValue, pt.Alias, cv.nodeId, n.text " +
-            $"FROM umbracoPropertyData pd " +
-            $"INNER JOIN cmsPropertyType pt ON pt.id = pd.propertyTypeId " +
-            $"LEFT JOIN umbracoContentVersion cv ON cv.id = pd.versionId " +
-            $"LEFT JOIN umbracoNode n ON n.id = cv.nodeId " +
-            $"WHERE pd.propertyTypeId IN ({propDataIn}) AND pd.textValue IS NOT NULL AND pd.textValue <> ''",
+        var values = QueryIn(cn, tx,
+            "SELECT pd.id, pd.propertyTypeId, pd.textValue, pt.Alias, cv.nodeId, n.text " +
+            "FROM umbracoPropertyData pd " +
+            "INNER JOIN cmsPropertyType pt ON pt.id = pd.propertyTypeId " +
+            "LEFT JOIN umbracoContentVersion cv ON cv.id = pd.versionId " +
+            "LEFT JOIN umbracoNode n ON n.id = cv.nodeId " +
+            "WHERE pd.propertyTypeId IN ({0}) AND pd.textValue IS NOT NULL AND pd.textValue <> ''",
+            "p",
+            propertyTypeIds,
             r => new PropertyDataRow {
                 Id = r.GetInt32(0),
                 PropertyTypeId = r.GetInt32(1),
@@ -404,8 +407,7 @@ public sealed class Migrator {
                 PropertyAlias = r.IsDBNull(3) ? null : r.GetString(3),
                 NodeId = r.IsDBNull(4) ? (int?) null : r.GetInt32(4),
                 NodeName = r.IsDBNull(5) ? null : r.GetString(5)
-            },
-            propDataParams);
+            });
 
         Log.Info($"Found {values.Count} Perplex property value(s) to inspect.");
 
@@ -774,14 +776,50 @@ public sealed class Migrator {
         };
     }
 
+    // Runs one query per batch of at most MaxInClauseParameters ids and concatenates the results, so a set
+    // larger than SQL Server's 2100-parameter command limit is handled instead of aborting the migration — a
+    // site with a few thousand Nested Content properties would otherwise be unmigratable. sqlFormat takes the
+    // IN-clause placeholder list as {0}.
+    private static List<T> QueryIn<T>(SqlConnection cn, SqlTransaction tx, string sqlFormat, string prefix,
+                                      IEnumerable<object> values, Func<SqlDataReader, T> map) {
+        var results = new List<T>();
+
+        foreach (var batch in Batch(values)) {
+            var (clause, parameters) = BuildInClause(prefix, batch);
+
+            results.AddRange(Query(cn, tx, string.Format(sqlFormat, clause), map, parameters));
+        }
+
+        return results;
+    }
+
+    private static IEnumerable<List<object>> Batch(IEnumerable<object> values) {
+        var batch = new List<object>(MaxInClauseParameters);
+
+        foreach (var value in values) {
+            batch.Add(value);
+
+            if (batch.Count == MaxInClauseParameters) {
+                yield return batch;
+
+                batch = new List<object>(MaxInClauseParameters);
+            }
+        }
+
+        // No trailing empty batch: an empty id set yields no batches at all, so QueryIn returns nothing rather
+        // than issuing an "IN ()" that SQL Server would reject.
+        if (batch.Count > 0) {
+            yield return batch;
+        }
+    }
+
     private static (string Clause, (string, object)[] Parameters) BuildInClause(string prefix, IEnumerable<object> values) {
         var list = values.ToList();
 
         if (list.Count > MaxInClauseParameters) {
             throw new InvalidOperationException(
                 $"Cannot build an IN clause with {list.Count} parameter(s) — SQL Server caps a command at 2100. " +
-                $"This database has more than {MaxInClauseParameters} items of one kind to match; handling a set this " +
-                $"large would need query batching, which is out of scope for the single-transaction design.");
+                $"Use QueryIn, which batches.");
         }
 
         var names = new string[list.Count];

@@ -99,13 +99,55 @@ public static class Db {
         };
     }
 
+    // Runs one query per batch of at most MaxInClauseParameters ids and concatenates the results, so a set
+    // larger than SQL Server's 2100-parameter command limit is handled instead of aborting the migration.
+    // sqlFormat takes the IN-clause placeholder list as {0}; extraParameters are repeated on every batch, so
+    // their names must not collide with the generated "@<prefix><n>".
+    public static List<T> QueryIn<T>(SqlConnection cn, SqlTransaction tx, string sqlFormat, string prefix,
+                                     IEnumerable<object> values, Func<SqlDataReader, T> map,
+                                     params (string Name, object Value)[] extraParameters) {
+        var results = new List<T>();
+
+        foreach (var batch in Batch(values)) {
+            var (clause, parameters) = BuildInClause(prefix, batch);
+
+            results.AddRange(Query(cn,
+                                   tx,
+                                   string.Format(sqlFormat, clause),
+                                   map,
+                                   parameters.Concat(extraParameters).ToArray()));
+        }
+
+        return results;
+    }
+
+    private static IEnumerable<List<object>> Batch(IEnumerable<object> values) {
+        var batch = new List<object>(MaxInClauseParameters);
+
+        foreach (var value in values) {
+            batch.Add(value);
+
+            if (batch.Count == MaxInClauseParameters) {
+                yield return batch;
+
+                batch = new List<object>(MaxInClauseParameters);
+            }
+        }
+
+        // No trailing empty batch: an empty id set yields no batches at all, so QueryIn returns nothing rather
+        // than issuing an "IN ()" that SQL Server would reject.
+        if (batch.Count > 0) {
+            yield return batch;
+        }
+    }
+
     public static (string Clause, (string, object)[] Parameters) BuildInClause(string prefix, IEnumerable<object> values) {
         var list = values.ToList();
 
         if (list.Count > MaxInClauseParameters) {
             throw new InvalidOperationException(
                 $"Cannot build an IN clause with {list.Count} parameter(s) — SQL Server caps a command at 2100. " +
-                $"Handling a set this large would need query batching, which is out of scope for the single-transaction design.");
+                $"Use QueryIn, which batches.");
         }
 
         var names = new string[list.Count];

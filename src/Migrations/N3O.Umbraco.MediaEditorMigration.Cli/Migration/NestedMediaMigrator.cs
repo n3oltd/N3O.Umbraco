@@ -50,7 +50,9 @@ public sealed class NestedMediaMigrator {
         _targets = targets;
     }
 
-    public bool Run(RunTotals totals) {
+    // Failures are recorded on totals.ValuesFailed rather than returned: the caller decides whether to abort
+    // once every pass has run, so there is no per-pass success to report.
+    public void Run(RunTotals totals) {
         // Target exactly the rows that still mention a retired editor anywhere in their JSON. That is the
         // stale nested editorAlias, so it finds Block List, Block Grid and Perplex values (and values nested
         // inside those) without enumerating container editors.
@@ -77,21 +79,19 @@ public sealed class NestedMediaMigrator {
         if (rows.Count == 0) {
             Log.Info("No block values found — nothing to migrate inside blocks.");
 
-            return true;
+            return;
         }
 
         Log.Info($"Found {rows.Count} block value(s) to inspect for nested Cropper/Uploader data.");
 
+        // Every row is attempted even after one fails, so a dry run reports every problem in the database
+        // rather than only the first. totals.ValuesFailed is what aborts the run, back in Migrator.
         foreach (var row in rows) {
-            if (!ConvertRow(row, totals)) {
-                return false;
-            }
+            ConvertRow(row, totals);
         }
-
-        return true;
     }
 
-    private bool ConvertRow(NestedRow row, RunTotals totals) {
+    private void ConvertRow(NestedRow row, RunTotals totals) {
         var header = $"nested value id {row.Id} | node {row.NodeDescription} | property '{row.PropertyAlias}'";
         var issues = new List<string>();
 
@@ -104,7 +104,7 @@ public sealed class NestedMediaMigrator {
                 issues.Add("NOT MIGRATED — value mentions a retired editor but is not valid JSON; left untouched.");
                 Log.Item(header, issues);
 
-                return true;
+                return;
             }
 
             var context = new WalkContext(totals, issues);
@@ -128,14 +128,10 @@ public sealed class NestedMediaMigrator {
             if (issues.Count > 0) {
                 Log.Item(header, issues);
             }
-
-            return true;
         } catch (Exception ex) {
             issues.Add($"FAILED to convert — {ex.Message}");
             Log.Item(header, issues);
             totals.ValuesFailed++;
-
-            return false;
         }
     }
 
@@ -269,9 +265,22 @@ public sealed class NestedMediaMigrator {
 
         var file = isCropper ? SourceParsers.ParseCropper(json) : SourceParsers.ParseUploader(json);
 
+        // The value is not a shape this tool can rebuild, so it has to be left for a human. The editorAlias is
+        // still corrected, for the same reason as the no-value branch above: this entry is only reached because
+        // the alias names a RETIRED editor, and its data type has already been flipped to the native one, so
+        // leaving the stale alias behind hands the native value editor the wrong shape. The value is counted as
+        // unchanged rather than failed — one unreadable value should not roll back the whole migration.
         if (file == null) {
+            context.Totals.ValuesUnchanged++;
             context.Issues.Add($"nested property '{alias}' has a {(isCropper ? "Cropper" : "Uploader")} " +
-                               "editorAlias but its value is not a recognised value shape — left untouched.");
+                               "editorAlias but its value is not a recognised value shape. The value was left " +
+                               "untouched and needs converting by hand; its editorAlias was still corrected to " +
+                               $"'{nativeAlias}' so it names an editor that exists.");
+
+            if (setEditorAlias) {
+                entry["editorAlias"] = nativeAlias;
+                context.AliasesFixed++;
+            }
 
             return;
         }
@@ -286,25 +295,25 @@ public sealed class NestedMediaMigrator {
                                "dropped — check this item.");
         }
 
-        List<string> cropsWithoutCoordinates;
+        CropOutcome crops;
 
         if (_factory != null) {
             var mediaKey = _factory.GetOrCreate(file);
-            var (nativeJson, without) = NativeValueBuilder.BuildPickerValue(mediaKey, file, cropDefinitions);
+            var (nativeJson, outcome) = NativeValueBuilder.BuildPickerValue(mediaKey, file, cropDefinitions);
 
             // A nested complex editor value is stored as a serialized JSON string, matching how Umbraco writes
             // every other nested editor value inside a block.
             entry["value"] = nativeJson;
-            cropsWithoutCoordinates = without;
+            crops = outcome;
         } else if (isCropper) {
-            var (nativeJson, without) = NativeValueBuilder.BuildImageCropperValue(file, cropDefinitions);
+            var (nativeJson, outcome) = NativeValueBuilder.BuildImageCropperValue(file, cropDefinitions);
 
             entry["value"] = nativeJson;
-            cropsWithoutCoordinates = without;
+            crops = outcome;
         } else {
             // Umbraco.UploadField stores the file path as a plain string, not as JSON.
             entry["value"] = file.Src;
-            cropsWithoutCoordinates = new List<string>();
+            crops = new CropOutcome();
         }
 
         if (setEditorAlias) {
@@ -313,11 +322,19 @@ public sealed class NestedMediaMigrator {
 
         context.Converted++;
 
-        if (cropsWithoutCoordinates.Count > 0) {
-            context.Totals.CropsWithoutCoordinates += cropsWithoutCoordinates.Count;
+        if (crops.WithoutCoordinates.Count > 0) {
+            context.Totals.CropsWithoutCoordinates += crops.WithoutCoordinates.Count;
             context.Issues.Add($"nested property '{alias}': crop(s) without coordinates " +
-                               $"({string.Join(", ", cropsWithoutCoordinates)}) — " +
+                               $"({string.Join(", ", crops.WithoutCoordinates)}) — " +
                                $"{(_factory != null ? "auto-cropped to the focal point" : "fall back to a centre crop")}.");
+        }
+
+        if (crops.DroppedRectangles > 0) {
+            context.Totals.CropRectanglesDropped += crops.DroppedRectangles;
+            context.Issues.Add($"nested property '{alias}': {crops.DroppedRectangles} stored crop rectangle(s) " +
+                               "DROPPED — the value holds more rectangles than the data type now defines crops " +
+                               "for, so there is no alias to write them under. Re-crop this item if those crops " +
+                               "are still in use.");
         }
 
         if (!string.IsNullOrWhiteSpace(file.AltText)) {
