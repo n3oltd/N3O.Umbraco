@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.GeoIP.Cloudflare;
 
 public class CloudflareIPGeoLocationProvider : IIPGeoLocationProvider {
-    private static readonly string CityHeader = "cf-ipcity";
+    private static readonly string CityHeader = "CF-IPCity";
     private static readonly string CountryHeader = "CF-IPCountry";
-    private static readonly string RegionHeader = "cf-region";
+    private static readonly string RegionHeader = "CF-Region";
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILookups _lookups;
