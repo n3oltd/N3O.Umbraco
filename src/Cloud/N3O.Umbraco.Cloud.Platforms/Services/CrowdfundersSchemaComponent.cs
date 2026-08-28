@@ -43,17 +43,7 @@ public class CrowdfundersSchemaComponent : IComponent {
 
     // Only the campaign picker: the page properties differ per client and are added in the backoffice.
     private void CreateDocumentTypes() {
-        var compositionAlias = PlatformsConstants.CrowdfundingCampaign.CompositionAlias;
-        var legacyComposition = _contentTypeService.Value.Get(compositionAlias);
-
-        if (legacyComposition == null) {
-            _logger.LogInformation("No {Alias} composition found, skipping crowdfunder document types",
-                                   compositionAlias);
-
-            return;
-        }
-
-        CreateCrowdfunderDocumentType(legacyComposition.Icon);
+        CreateCrowdfunderDocumentType();
         CreateCrowdfundersDocumentType();
     }
 
@@ -78,11 +68,11 @@ public class CrowdfundersSchemaComponent : IComponent {
         designer.Save();
     }
 
-    private void CreateCrowdfunderDocumentType(string icon) {
+    private void CreateCrowdfunderDocumentType() {
         var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias;
         var designer = _contentTypeEditor.Value.NewDocument("Crowdfunder", alias);
 
-        designer.SetIcon(icon);
+        designer.SetIcon("icon-target color-black");
         designer.InFolder("Platforms", "Crowdfunders");
         designer.WithDeterministicId();
 
@@ -109,8 +99,8 @@ public class CrowdfundersSchemaComponent : IComponent {
 
         // Refuse rather than collide: uSync and Umbraco both silently mangle an alias clash.
         if (_contentTypeService.Value.Get(toAlias) != null) {
-            _logger.LogError("Cannot rename {FromAlias} to {ToAlias} because {ToAlias} already exists - complete "
-                             + "the crowdfunder migration on this site first", fromAlias, toAlias, toAlias);
+            _logger.LogError("Cannot rename {FromAlias} to {ToAlias} because {ToAlias} already exists - remove the "
+                             + "legacy composition from this site first", fromAlias, toAlias, toAlias);
 
             return;
         }
