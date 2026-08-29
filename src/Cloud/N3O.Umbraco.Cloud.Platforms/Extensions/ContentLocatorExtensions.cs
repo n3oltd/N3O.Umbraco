@@ -23,6 +23,24 @@ public static class ContentLocatorExtensions {
         }
     }
     
+    public static string GetCrowdfundingCampaignPath(this IContentCache contentCache,
+                                                     ISlugHelper slugHelper,
+                                                     string name) {
+        var crowdfundingCampaignPage = contentCache.Special(PlatformsSpecialPages.CrowdfundingCampaign);
+
+        if (crowdfundingCampaignPage.HasValue()) {
+            var crowdfundingCampaignSlug = slugHelper.GenerateSlug(name);
+            var crowdfundingCampaignUrl = new Url(crowdfundingCampaignPage.RelativeUrl());
+
+            crowdfundingCampaignUrl.RemovePathSegment();
+            crowdfundingCampaignUrl.AppendPathSegment(crowdfundingCampaignSlug);
+
+            return crowdfundingCampaignUrl;
+        } else {
+            return null;
+        }
+    }
+
     public static string GetOfferingPath(this IContentCache contentCache,
                                          ISlugHelper slugHelper,
                                          string campaignName,

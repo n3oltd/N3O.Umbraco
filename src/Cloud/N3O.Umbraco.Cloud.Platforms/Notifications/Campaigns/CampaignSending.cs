@@ -1,5 +1,4 @@
-﻿using Flurl;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
@@ -10,14 +9,12 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using Slugify;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
@@ -60,17 +57,8 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         if (variant.State == ContentSavedState.Published) {
             var campaignPath = _contentCache.Value.GetCampaignPath(_slugHelper.Value, variant.Name);
 
-            var urlSettings = _contentCache.Value.Single<UrlSettingsContent>();
-
             if (campaignPath.HasValue()) {
-                var stagingUrl = new Url(urlSettings.StagingBaseUrl).AppendPathSegment(campaignPath);
-                var production = new Url(urlSettings.ProductionBaseUrl).AppendPathSegment(campaignPath);
-
-                var urls = new List<UrlInfo>();
-                urls.Add(new UrlInfo(stagingUrl, true, null));
-                urls.Add(new UrlInfo(production, true, null));
-                
-                notification.Content.Urls = urls.ToArray();
+                notification.SetPlatformsUrls(_contentCache.Value.Single<UrlSettingsContent>(), campaignPath);
             }
         }
     }
