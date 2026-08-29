@@ -6,7 +6,6 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Utilities;
 using Slugify;
 using System;
 using System.Linq;
@@ -58,7 +57,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
             var campaignPath = _contentCache.Value.GetCampaignPath(_slugHelper.Value, variant.Name);
 
             if (campaignPath.HasValue()) {
-                notification.SetPlatformsUrls(_contentCache.Value.Single<UrlSettingsContent>(), campaignPath);
+                notification.SetPlatformsUrls(_contentCache.Value, campaignPath);
             }
         }
     }

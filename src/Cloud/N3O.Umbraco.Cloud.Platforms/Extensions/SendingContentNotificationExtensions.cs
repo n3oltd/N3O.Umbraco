@@ -1,4 +1,5 @@
 ﻿using Flurl;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Utilities;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Notifications;
@@ -8,8 +9,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class SendingContentNotificationExtensions {
     public static void SetPlatformsUrls(this SendingContentNotification notification,
-                                        UrlSettingsContent urlSettings,
+                                        IContentCache contentCache,
                                         string path) {
+        var urlSettings = contentCache.Single<UrlSettingsContent>();
+
         var stagingUrl = new Url(urlSettings.StagingBaseUrl).AppendPathSegment(path);
         var productionUrl = new Url(urlSettings.ProductionBaseUrl).AppendPathSegment(path);
 

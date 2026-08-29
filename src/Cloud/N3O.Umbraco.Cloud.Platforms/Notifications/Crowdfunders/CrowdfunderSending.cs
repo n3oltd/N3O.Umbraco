@@ -2,7 +2,6 @@
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Utilities;
 using Slugify;
 using System;
 using System.Threading;
@@ -39,7 +38,7 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
             var path = _contentCache.Value.GetCrowdfundingCampaignPath(_slugHelper.Value, variant.Name);
 
             if (path.HasValue()) {
-                notification.SetPlatformsUrls(_contentCache.Value.Single<UrlSettingsContent>(), path);
+                notification.SetPlatformsUrls(_contentCache.Value, path);
             }
         }
     }
