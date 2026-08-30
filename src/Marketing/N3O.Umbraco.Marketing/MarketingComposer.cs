@@ -15,6 +15,6 @@ public class MarketingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddUnique<IHttpContextIpAddressExtractor, EngageIpAddressExtractor>();
         builder.Services.AddUnique<IRawPageviewLocationExtractor, EngageLocationExtractor>();
-        builder.Services.AddTransient<IDigitalExport, DigitalExport>();
+        builder.Services.AddTransient<IMarketingExport, MarketingExport>();
     }
 }

@@ -31,6 +31,9 @@ n3o-tool clients --url "https://localhost:6001/swagger/Cart/swagger.json" --lang
 n3o-tool clients --url "https://localhost:6001/swagger/Checkout/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-checkout-client" --name "CheckoutClient" --package-name "@n3oltd/umbraco-giving-checkout-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/Checkout/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Giving/Checkout" --name "CheckoutClient" --namespace "N3O.Umbraco.Clients.Giving.Checkout"
 
+n3o-tool clients --url "https://localhost:6001/swagger/MarketingExport/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-marketing-export-client" --name "MarketingExportClient" --package-name "@n3oltd/umbraco-marketing-export-client" --package-description "TODO"
+n3o-tool clients --url "https://localhost:6001/swagger/MarketingExport/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Marketing" --name "MarketingExportClient" --namespace "N3O.Umbraco.Clients.Marketing"
+
 n3o-tool clients --url "https://localhost:6001/swagger/Newsletters/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-newsletters-client" --name "NewslettersClient" --package-name "@n3oltd/umbraco-newsletters-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/Newsletters/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Newsletters" --name "NewslettersClient" --namespace "N3O.Umbraco.Clients.Newsletters"
 

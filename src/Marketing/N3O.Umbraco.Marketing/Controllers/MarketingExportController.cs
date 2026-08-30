@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
@@ -8,21 +9,19 @@ using N3O.Umbraco.Marketing.Models;
 using N3O.Umbraco.Marketing.Services;
 using NodaTime.Text;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Marketing.Controllers;
 
 [ApiDocument(MarketingConstants.ApiName)]
-public class DigitalExportController : ApiController {
+public class MarketingExportController : ApiController {
     private readonly IContentCache _contentCache;
-    private readonly IDigitalExport _digitalExport;
+    private readonly IMarketingExport _marketingExport;
 
-    public DigitalExportController(IContentCache contentCache, IDigitalExport digitalExport) {
+    public MarketingExportController(IContentCache contentCache, IMarketingExport marketingExport) {
         _contentCache = contentCache;
-        _digitalExport = digitalExport;
+        _marketingExport = marketingExport;
     }
 
     [HttpGet("v1/daily")]
@@ -45,7 +44,7 @@ public class DigitalExportController : ApiController {
             return BadRequest("from must not be later than to");
         }
 
-        var res = await _digitalExport.GetDailyAsync(siteId, fromResult.Value, toResult.Value, cancellationToken);
+        var res = await _marketingExport.GetDailyAsync(siteId, fromResult.Value, toResult.Value, cancellationToken);
 
         if (res == null) {
             return NotFound();
@@ -53,7 +52,7 @@ public class DigitalExportController : ApiController {
 
         if (!res.Goals.Any() &&
             !res.Traffic.Any() &&
-            !await _digitalExport.HasRecordedTrafficAsync(siteId, cancellationToken)) {
+            !await _marketingExport.HasRecordedTrafficAsync(siteId, cancellationToken)) {
             return Conflict("Umbraco Engage has recorded no pageviews for this site's configured host");
         }
 
@@ -67,7 +66,7 @@ public class DigitalExportController : ApiController {
         }
 
         var res = new SitesRes();
-        res.Sites = _digitalExport.GetSites();
+        res.Sites = _marketingExport.GetSites();
 
         return Ok(res);
     }
@@ -78,7 +77,7 @@ public class DigitalExportController : ApiController {
             return Unauthorized();
         }
 
-        var res = _digitalExport.GetSite(siteId);
+        var res = _marketingExport.GetSite(siteId);
 
         if (res == null) {
             return NotFound();
@@ -88,17 +87,8 @@ public class DigitalExportController : ApiController {
     }
 
     private bool IsAuthorized() {
-        var settings = _contentCache.Single<DigitalExportSettingsContent>();
-        var exportKey = settings?.ExportKey;
+        var settings = _contentCache.Single<MarketingExportSettingsContent>();
 
-        if (!exportKey.HasValue()) {
-            return false;
-        }
-
-        Request.Headers.TryGetValue(MarketingConstants.HttpHeaders.ExportKey, out var suppliedKey);
-
-        // Compared in fixed time because the export key is a long-lived secret an attacker can probe
-        return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(exportKey),
-                                                       Encoding.UTF8.GetBytes(suppliedKey.ToString()));
+        return Request.HasKey(HttpHeaders.ExportKey, settings?.ExportKey);
     }
 }

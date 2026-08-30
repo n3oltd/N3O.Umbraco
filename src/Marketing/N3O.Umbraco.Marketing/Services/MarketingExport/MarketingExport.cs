@@ -17,7 +17,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Marketing.Services;
 
-public class DigitalExport : IDigitalExport {
+public class MarketingExport : IMarketingExport {
     private const string AnyPageviewsSql = @"
 SELECT TOP 1 1
 FROM umbracoEngageAnalyticsPageview pv
@@ -102,7 +102,7 @@ WHERE v.visitorType = 0 AND (p.domain = @2 OR p.domain = @3)";
     private readonly ILocalClock _localClock;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
 
-    public DigitalExport(IBaseCurrencyAccessor baseCurrencyAccessor,
+    public MarketingExport(IBaseCurrencyAccessor baseCurrencyAccessor,
                          IContentCache contentCache,
                          ILocalClock localClock,
                          IUmbracoDatabaseFactory umbracoDatabaseFactory) {
@@ -170,7 +170,7 @@ WHERE v.visitorType = 0 AND (p.domain = @2 OR p.domain = @3)";
     }
 
     public IReadOnlyList<SiteRes> GetSites() {
-        var settings = _contentCache.Single<DigitalExportSettingsContent>();
+        var settings = _contentCache.Single<MarketingExportSettingsContent>();
         var root = settings?.Content()?.Root();
 
         if (root == null) {
