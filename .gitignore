@@ -254,6 +254,9 @@ src/**/Generated/
 !src/lib-be-*/*.Abstractions/Generated/
 !src/lib-be-*/TypeScript/dist/
 
+# Generated API client packages (compiled output ships in the package)
+!clients/@n3oltd/*/dist/
+
 # Playwright artifacts (test runner output + MCP page snapshots)
 test-results/
 playwright-report/
