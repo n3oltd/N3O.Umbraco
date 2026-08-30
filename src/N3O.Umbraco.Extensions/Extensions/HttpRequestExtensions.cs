@@ -13,7 +13,6 @@ public static class HttpRequestExtensions {
 
         request.Headers.TryGetValue(headerName, out var suppliedKey);
 
-        // Compared in fixed time because a long-lived key is one an attacker can probe
         return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(expectedKey),
                                                        Encoding.UTF8.GetBytes(suppliedKey.ToString()));
     }
