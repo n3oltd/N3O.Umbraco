@@ -15,6 +15,7 @@ namespace N3O.Umbraco.Marketing;
 public class MarketingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(MarketingConstants.ApiName);
+        
         builder.Services.AddUnique<IHttpContextIpAddressExtractor, EngageIpAddressExtractor>();
         builder.Services.AddUnique<IRawPageviewLocationExtractor, EngageLocationExtractor>();
         builder.Services.AddTransient<IMarketingExport, MarketingExport>();
