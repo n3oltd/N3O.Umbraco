@@ -1,4 +1,4 @@
-using Humanizer;
+﻿using Humanizer;
 using N3O.Umbraco.Extensions;
 using System;
 using Umbraco.Cms.Core.Models;
@@ -101,8 +101,7 @@ public abstract class PropertyTypeBuilder<TSelf> : IPropertyTypeBuilder where TS
         }
 
         if (dataType == null) {
-            throw new Exception($"Could not resolve a data type for property {context.PropertyAlias.Quote()} " +
-                                $"on content type {context.ContentTypeAlias.Quote()}");
+            throw new DataTypeNotFoundException(_dataTypeNameOrKey, context.ContentTypeAlias, context.PropertyAlias);
         }
 
         return dataType;

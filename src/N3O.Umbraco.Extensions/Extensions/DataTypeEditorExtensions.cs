@@ -1,4 +1,4 @@
-using N3O.Umbraco.DataTypes;
+﻿using N3O.Umbraco.DataTypes;
 
 namespace N3O.Umbraco.Extensions;
 
@@ -17,6 +17,18 @@ public static class DataTypeEditorExtensions {
 
     public static ColorPickerDataTypeDesigner NewColorPicker(this IDataTypeEditor editor, string name) {
         return editor.New<ColorPickerDataTypeDesigner>(name);
+    }
+
+    public static ContentmentDataListDataTypeDesigner NewContentmentDataList(this IDataTypeEditor editor, string name) {
+        return editor.New<ContentmentDataListDataTypeDesigner>(name);
+    }
+
+    public static ContentmentListItemsDataTypeDesigner NewContentmentListItems(this IDataTypeEditor editor, string name) {
+        return editor.New<ContentmentListItemsDataTypeDesigner>(name);
+    }
+
+    public static ContentmentTemplatedLabelDataTypeDesigner NewContentmentTemplatedLabel(this IDataTypeEditor editor, string name) {
+        return editor.New<ContentmentTemplatedLabelDataTypeDesigner>(name);
     }
 
     public static ContentPickerDataTypeDesigner NewContentPicker(this IDataTypeEditor editor, string name) {
@@ -74,6 +86,10 @@ public static class DataTypeEditorExtensions {
 
     public static MultiUrlPickerDataTypeDesigner NewMultiUrlPicker(this IDataTypeEditor editor, string name) {
         return editor.New<MultiUrlPickerDataTypeDesigner>(name);
+    }
+
+    public static NestedContentDataTypeDesigner NewNestedContent(this IDataTypeEditor editor, string name) {
+        return editor.New<NestedContentDataTypeDesigner>(name);
     }
 
     public static NumericDataTypeDesigner NewNumeric(this IDataTypeEditor editor, string name) {

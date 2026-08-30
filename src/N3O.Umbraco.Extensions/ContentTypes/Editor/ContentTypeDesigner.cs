@@ -1,4 +1,4 @@
-using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -23,6 +23,9 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
     private string _icon;
     private Guid? _id;
     private string _name;
+    private bool _overwriteDescription;
+    private bool _overwriteIcon;
+    private bool _overwriteName;
     private bool _varyByCulture;
     private bool _varyBySegment;
 
@@ -61,16 +64,20 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
     }
 
     public IContentType Save() {
-        var contentType = FindExisting() ?? Create();
+        var existing = FindExisting();
+        var contentType = existing ?? Create();
 
-        contentType.Name = _name;
         contentType.IsElement = _isElement;
+        
+        if (existing == null || _overwriteName) {
+            contentType.Name = _name;
+        }
 
-        if (_icon.HasValue()) {
+        if (_icon.HasValue() && (existing == null || _overwriteIcon)) {
             contentType.Icon = _icon;
         }
 
-        if (_description.HasValue()) {
+        if (_description.HasValue() && (existing == null || _overwriteDescription)) {
             contentType.Description = _description;
         }
 
@@ -91,16 +98,19 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         return contentType;
     }
 
-    public void SetDescription(string description) {
+    public void SetDescription(string description, bool overwriteExisting = false) {
         _description = description;
+        _overwriteDescription = overwriteExisting;
     }
 
-    public void SetIcon(string icon) {
+    public void SetIcon(string icon, bool overwriteExisting = false) {
         _icon = icon;
+        _overwriteIcon = overwriteExisting;
     }
 
-    public void SetName(string name) {
+    public void SetName(string name, bool overwriteExisting = false) {
         _name = name;
+        _overwriteName = overwriteExisting;
     }
 
     public IPropertyContainerBuilder Tab(string name) {
@@ -141,7 +151,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         var contentType = _contentTypeService.Get(alias);
 
         if (contentType == null) {
-            throw new Exception($"No content type found with alias {alias.Quote()}");
+            throw new ContentTypeNotFoundException(alias);
         }
 
         return contentType;
@@ -159,25 +169,72 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
     }
 
     private void ApplyContainer(IContentType contentType, PropertyContainerBuilder container, int sortOrder) {
-        var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == container.Alias);
+        var containerType = container.IsTab ? PropertyGroupType.Tab : PropertyGroupType.Group;
 
+        // ToSafeAlias preserves the casing of the name, but Umbraco validates groups by name and a site's
+        // existing groups are usually camel cased, so a case sensitive match here adds a second group with
+        // the same name and the save is then rejected for the duplicate. The kind has to match as well: a
+        // site that nests its groups holds both a "general" tab and a "general/general" group, and binding
+        // a group to that empty tab places the property above the group rather than inside it
+        var group = contentType.PropertyGroups
+                               .FirstOrDefault(x => x.Alias.EqualsInvariant(container.Alias) &&
+                                                    x.Type == containerType);
+
+        // Tab nesting is encoded in the alias, so a site that put this group under a tab holds it as
+        // "tab/group". Adopting that keeps a new property beside its siblings instead of creating a second
+        // group with the same leaf name alongside the one the site already uses
         if (group == null) {
-            contentType.AddPropertyGroup(container.Alias, container.Name);
+            var nested = contentType.PropertyGroups
+                                    .Where(x => x.Type == containerType &&
+                                                x.Alias.EndsWith($"/{container.Alias}",
+                                                                 StringComparison.InvariantCultureIgnoreCase))
+                                    .ToList();
 
-            group = contentType.PropertyGroups.First(x => x.Alias == container.Alias);
-
-            if (_deterministic) {
-                group.Key = UmbracoId.Deterministic(IdScope.ContentTypeContainer, Alias, container.Alias);
+            if (nested.Count == 1) {
+                group = nested.Single();
             }
         }
 
-        group.Type = container.IsTab ? PropertyGroupType.Tab : PropertyGroupType.Group;
-        group.SortOrder = sortOrder;
+        // A site already holding every property this container declares has arranged them its own way, so
+        // creating the container would add an empty group beside the ones the site actually uses
+        var isNeeded = container.Properties.Any(x => !contentType.PropertyTypeExists(x.Alias));
+
+        if (group == null && isNeeded) {
+            // A tab already holding this alias means the site nests its groups, so the group this designer
+            // creates goes under that tab instead of colliding with the tab's own alias
+            var nestUnderTab = !container.IsTab &&
+                               contentType.PropertyGroups
+                                          .Any(x => x.Alias.EqualsInvariant(container.Alias) &&
+                                                    x.Type == PropertyGroupType.Tab);
+
+            var alias = nestUnderTab ? $"{container.Alias}/{container.Alias}" : container.Alias;
+
+            contentType.AddPropertyGroup(alias, container.Name);
+
+            group = contentType.PropertyGroups.First(x => x.Alias.EqualsInvariant(alias));
+
+            if (_deterministic) {
+                group.Key = UmbracoId.Deterministic(IdScope.ContentTypeContainer, Alias, alias);
+            }
+
+            // Only a group this designer created gets its type and position set. Rewriting an existing one
+            // turns a site's tab into a group, and Umbraco then rejects every composition that shares the
+            // alias because the same alias must be the same type across all of them. For the same reason a
+            // new group takes the type a composition already gives that alias, in preference to our own
+            var composed = contentType.ContentTypeComposition
+                                      .SelectMany(x => x.PropertyGroups.OrEmpty())
+                                      .FirstOrDefault(x => x.Alias.EqualsInvariant(alias));
+
+            group.Type = composed?.Type ?? containerType;
+            group.SortOrder = sortOrder;
+        }
 
         var propertySortOrder = 0;
 
+        // The adopted group keeps its own alias, so properties must be placed using that and not the
+        // alias this designer derived, or they land in a group that does not exist
         foreach (var (propertyAlias, builder) in container.Properties) {
-            ApplyProperty(contentType, container, propertyAlias, builder, propertySortOrder++);
+            ApplyProperty(contentType, container, group, propertyAlias, builder, propertySortOrder++);
         }
     }
 
@@ -195,6 +252,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
     private void ApplyProperty(IContentType contentType,
                                PropertyContainerBuilder container,
+                               PropertyGroup group,
                                string propertyAlias,
                                IPropertyTypeBuilder builder,
                                int sortOrder) {
@@ -213,10 +271,12 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
             builder.Apply(existing, context);
 
-            if (currentContainer?.Alias != container.Alias) {
-                contentType.MovePropertyType(propertyAlias, container.Alias);
+            // A property the site already placed in a group of its own stays there; only one that is
+            // somewhere else entirely gets moved, so a site's own layout survives a re-seed
+            if (currentContainer == null && group != null) {
+                contentType.MovePropertyType(propertyAlias, group.Alias);
             }
-        } else if (!contentType.PropertyTypeExists(propertyAlias)) {
+        } else if (group != null && !contentType.PropertyTypeExists(propertyAlias)) {
             var dataType = builder.ResolveDataType(context);
             var propertyType = new PropertyType(_shortStringHelper, dataType);
 
@@ -230,7 +290,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
             builder.Apply(propertyType, context);
 
-            contentType.AddPropertyType(propertyType, container.Alias, container.Name);
+            contentType.AddPropertyType(propertyType, group.Alias, group.Name);
         }
     }
 

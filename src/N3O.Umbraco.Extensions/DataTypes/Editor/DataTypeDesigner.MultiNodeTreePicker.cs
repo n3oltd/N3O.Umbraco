@@ -48,6 +48,14 @@ public class MultiNodeTreePickerDataTypeDesigner : DataTypeDesigner {
             configuration.Filter = _filter;
         }
 
+        // The start node names a node in this site's tree, so it can only ever be set by the site. Carrying
+        // the existing one forward is what stops a re-seed rooting every picker back at the tree root
+        var existingStartNode = (existing?.Configuration as MultiNodePickerConfiguration)?.TreeSource;
+
+        if (existingStartNode != null) {
+            configuration.TreeSource = existingStartNode;
+        }
+
         return configuration;
     }
 
