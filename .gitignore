@@ -139,6 +139,7 @@ web_modules/
 out
 .nuxt
 dist
+esm
 .output
 .vuepress/dist
 .temp
@@ -252,10 +253,15 @@ out-tsc/
 # Build-time codegen output (regenerated on every build, e.g. Refitter)
 src/**/Generated/
 !src/lib-be-*/*.Abstractions/Generated/
+!src/svc-be-*/*.Abstractions/Generated/
 !src/lib-be-*/TypeScript/dist/
 
 # Generated API client packages (compiled output ships in the package)
 !clients/@n3oltd/*/dist/
+!clients/@n3oltd/*/esm/
+
+# n3o CLI local state
+.n3o-switch.json
 
 # Playwright artifacts (test runner output + MCP page snapshots)
 test-results/
