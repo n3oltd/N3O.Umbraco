@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.ContentTypes;
+using N3O.Umbraco.ContentTypes;
 using System;
 using System.Linq.Expressions;
 
@@ -45,7 +45,7 @@ public static class PropertyContainerBuilderExtensions {
     }
 
     public static ContentmentDataListPropertyTypeBuilder ContentmentDataList(this IPropertyContainerBuilder builder,
-                                                                       string propertyAlias) {
+                                                                             string propertyAlias) {
         return builder.Property<ContentmentDataListPropertyTypeBuilder>(propertyAlias);
     }
 
@@ -56,7 +56,7 @@ public static class PropertyContainerBuilderExtensions {
     }
 
     public static ContentmentListItemsPropertyTypeBuilder ContentmentListItems(this IPropertyContainerBuilder builder,
-                                                                        string propertyAlias) {
+                                                                               string propertyAlias) {
         return builder.Property<ContentmentListItemsPropertyTypeBuilder>(propertyAlias);
     }
 
@@ -66,8 +66,9 @@ public static class PropertyContainerBuilderExtensions {
         return builder.Property<ContentmentListItemsPropertyTypeBuilder, TProperty>(expression);
     }
 
-    public static ContentmentTemplatedLabelPropertyTypeBuilder ContentmentTemplatedLabel(this IPropertyContainerBuilder builder,
-                                                                             string propertyAlias) {
+    public static ContentmentTemplatedLabelPropertyTypeBuilder ContentmentTemplatedLabel(
+        this IPropertyContainerBuilder builder,
+        string propertyAlias) {
         return builder.Property<ContentmentTemplatedLabelPropertyTypeBuilder>(propertyAlias);
     }
 

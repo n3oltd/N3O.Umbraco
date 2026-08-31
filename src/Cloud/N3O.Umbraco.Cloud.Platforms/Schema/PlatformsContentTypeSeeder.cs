@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.ContentTypes;
-using Umbraco.Cms.Core.Services;
+using N3O.Umbraco.Utilities;
 using System;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
@@ -51,9 +52,12 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
         Seed(PlatformsConstants.Qurbani.Season.Category.Alias, SeedQurbaniSeasonCategory);
         Seed(PlatformsConstants.Qurbani.Season.Alias, SeedQurbaniSeason);
 
-        Seed(PlatformsConstants.Zakat.Settings.Calculator.Alias, SeedZakatCalculatorSettings);
-        Seed(PlatformsConstants.Zakat.Settings.Calculator.Section.Alias, SeedZakatCalculatorSection);
+        // A parent names its children as allowed, and an allowed child is resolved when the parent is saved,
+        // so a child seeded after its parent leaves the parent for the next boot. Seeded leaf upwards, the
+        // whole calculator arrives in one, the same way a season category is seeded before its season
         Seed(PlatformsConstants.Zakat.Settings.Calculator.Field.Alias, SeedZakatCalculatorField);
+        Seed(PlatformsConstants.Zakat.Settings.Calculator.Section.Alias, SeedZakatCalculatorSection);
+        Seed(PlatformsConstants.Zakat.Settings.Calculator.Alias, SeedZakatCalculatorSettings);
     }
 
     // Only a type the site does not have is created. A type it already holds is left exactly as its editors
@@ -63,7 +67,7 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
     // import is manual outside development, so until it has been run there is nothing to build against and
     // the type is left for a later boot. That is an ordinary state, not a failure, so it is not logged as one
     private void Seed(string alias, Action seed) {
-        if (_contentTypeService.Get(alias) != null) {
+        if (Exists(alias)) {
             return;
         }
 
@@ -71,8 +75,22 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
             seed();
         } catch (Exception ex) when (ex is DataTypeNotFoundException or ContentTypeNotFoundException) {
             _logger.LogInformation("Deferred platforms content type {Alias}: {Reason}", alias, ex.Message);
+        } catch (ContentTypeKindMismatchException ex) {
+            // Not something the site recovers from on its own, and not something to convert on its behalf,
+            // so it is reported for someone to decide what the type should be
+            _logger.LogWarning("Platforms content type {Alias} disagrees with the site: {Reason}",
+                               alias,
+                               ex.Message);
         } catch (Exception ex) {
             _logger.LogError(ex, "Could not create platforms content type {Alias}", alias);
         }
+    }
+
+    // Mirrors how the designer itself finds an existing type. An alias can be renamed while the key stays,
+    // so matching on the alias alone would miss a type the designer then adopts by key and rewrites, and
+    // would go on missing it every boot
+    private bool Exists(string alias) {
+        return _contentTypeService.Get(UmbracoId.Deterministic(IdScope.ContentType, alias)) != null ||
+               _contentTypeService.Get(alias) != null;
     }
 }

@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -67,8 +67,15 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         var existing = FindExisting();
         var contentType = existing ?? Create();
 
-        contentType.IsElement = _isElement;
-        
+        // The kind decides where the type's content can live, so a site that holds it as the other one is
+        // not converged by reassigning the flag; that would convert the type under everything already using
+        // it. Refusing here names the disagreement and leaves the rest of the type untouched
+        if (existing == null) {
+            contentType.IsElement = _isElement;
+        } else if (existing.IsElement != _isElement) {
+            throw new ContentTypeKindMismatchException(Alias, existing.IsElement);
+        }
+
         if (existing == null || _overwriteName) {
             contentType.Name = _name;
         }
@@ -267,12 +274,13 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
             existing.DataTypeId = dataType.Id;
             existing.DataTypeKey = dataType.Key;
-            existing.SortOrder = sortOrder;
 
-            builder.Apply(existing, context);
+            builder.Apply(existing, context, false);
 
-            // A property the site already placed in a group of its own stays there; only one that is
-            // somewhere else entirely gets moved, so a site's own layout survives a re-seed
+            // Where a property sits is how a site's editors have arranged the type, so the order given here
+            // is only applied to a property this designer creates. One the site already placed in a group of
+            // its own likewise stays there, and only one that is somewhere else entirely gets moved, so a
+            // site's own layout survives a re-seed
             if (currentContainer == null && group != null) {
                 contentType.MovePropertyType(propertyAlias, group.Alias);
             }
@@ -288,7 +296,7 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
                 propertyType.Key = UmbracoId.Deterministic(IdScope.PropertyType, Alias, propertyAlias);
             }
 
-            builder.Apply(propertyType, context);
+            builder.Apply(propertyType, context, true);
 
             contentType.AddPropertyType(propertyType, group.Alias, group.Name);
         }

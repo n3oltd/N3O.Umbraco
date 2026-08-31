@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.DataTypes;
+using N3O.Umbraco.DataTypes;
 
 namespace N3O.Umbraco.Extensions;
 
@@ -23,11 +23,13 @@ public static class DataTypeEditorExtensions {
         return editor.New<ContentmentDataListDataTypeDesigner>(name);
     }
 
-    public static ContentmentListItemsDataTypeDesigner NewContentmentListItems(this IDataTypeEditor editor, string name) {
+    public static ContentmentListItemsDataTypeDesigner NewContentmentListItems(this IDataTypeEditor editor,
+                                                                               string name) {
         return editor.New<ContentmentListItemsDataTypeDesigner>(name);
     }
 
-    public static ContentmentTemplatedLabelDataTypeDesigner NewContentmentTemplatedLabel(this IDataTypeEditor editor, string name) {
+    public static ContentmentTemplatedLabelDataTypeDesigner NewContentmentTemplatedLabel(this IDataTypeEditor editor,
+                                                                                         string name) {
         return editor.New<ContentmentTemplatedLabelDataTypeDesigner>(name);
     }
 

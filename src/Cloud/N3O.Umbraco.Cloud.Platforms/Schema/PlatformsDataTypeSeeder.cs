@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.DataTypes;
@@ -18,10 +19,14 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
 
     private readonly IDataTypeEditor _dataTypeEditor;
     private readonly IDataTypeService _dataTypeService;
+    private readonly ILogger<PlatformsDataTypeSeeder> _logger;
 
-    public PlatformsDataTypeSeeder(IDataTypeEditor dataTypeEditor, IDataTypeService dataTypeService) {
+    public PlatformsDataTypeSeeder(IDataTypeEditor dataTypeEditor,
+                                   IDataTypeService dataTypeService,
+                                   ILogger<PlatformsDataTypeSeeder> logger) {
         _dataTypeEditor = dataTypeEditor;
         _dataTypeService = dataTypeService;
+        _logger = logger;
     }
 
     public void Seed() {
@@ -39,13 +44,20 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
     // Only a data type the site does not have is created, for the same reason a content type is. A designer
     // rebuilds a configuration from what it was told and assigns the whole of it, so re-seeding one a site
     // already holds replaces every value in it with a default the site never asked for. Changing one a site
-    // already holds is a migration step, so a value an editor set is not overwritten on the next boot
+    // already holds is a migration step, so a value an editor set is not overwritten on the next boot.
+    // Umbraco does not catch what a component throws while initialising, and the folder create, the editor
+    // lookup and the save all throw, so a data type that cannot be built leaves the site short of that one
+    // rather than failing the boot
     private void Seed(string name, Action seed) {
         if (Exists(name)) {
             return;
         }
 
-        seed();
+        try {
+            seed();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Could not create platforms data type {Name}", name);
+        }
     }
 
     // Mirrors how the designer itself finds an existing data type, so a site holding one under a name of its

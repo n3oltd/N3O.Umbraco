@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
@@ -60,10 +63,18 @@ public class PlatformsSchemaComponent : IComponent {
         _contentTypeSeeder.Value.Seed();
 
         // Changes to a type the site already holds arrive only as a migration step, which runs once
-        if (CanMigrate()) {
+        var blockers = FindMigrationBlockers().ToList();
+
+        if (blockers.None()) {
             var upgrader = new Upgrader(new PlatformsSchemaPlan());
 
             upgrader.Execute(_migrationPlanExecutor.Value, _scopeProvider.Value, _keyValueService.Value);
+        } else {
+            // Blocked is not a state the site recovers from on its own, so it is reported as a warning. A
+            // step that ran against a missing type would fail, and a failed step leaves the scope unusable
+            // for the rest of the boot, which takes the uSync import down with it
+            _logger.LogWarning("Platforms schema migrations blocked, waiting on {Blockers}",
+                               string.Join(", ", blockers));
         }
 
         // A site does not have to hold every platforms type, so a gap is reported rather than treated as a
@@ -75,9 +86,29 @@ public class PlatformsSchemaComponent : IComponent {
 
     public void Terminate() { }
 
-    private bool CanMigrate() {
-        return PlatformsSchemaPlan.RequiredContentTypes.All(x => _contentTypeService.Get(x) != null) &&
-               PlatformsSchemaPlan.RequiredDataTypes.All(x => _dataTypeService.GetDataType(x) != null);
+    // A type is looked up the way its designer would find it, by deterministic key as well as by the alias
+    // or name, so a site that renamed one is not read as not having it and blocked from every step forever
+    private IEnumerable<string> FindMigrationBlockers() {
+        foreach (var alias in PlatformsSchemaPlan.RequiredContentTypes) {
+            var contentType = _contentTypeService.Get(UmbracoId.Deterministic(IdScope.ContentType, alias)) ??
+                              _contentTypeService.Get(alias);
+
+            if (contentType == null) {
+                yield return alias;
+            } else if (contentType.IsElement) {
+                // Every step builds these as document types, so one the site holds as an element would have
+                // the step refuse it. Reporting it here keeps that out of the plan, where a step that threw
+                // would leave the scope unusable for the rest of the boot
+                yield return $"{alias} (held as an element type)";
+            }
+        }
+
+        foreach (var name in PlatformsSchemaPlan.RequiredDataTypes) {
+            if (_dataTypeService.GetDataType(UmbracoId.Deterministic(IdScope.DataType, name)) == null &&
+                _dataTypeService.GetDataType(name) == null) {
+                yield return name;
+            }
+        }
     }
 
     private bool IsEnabled() {
