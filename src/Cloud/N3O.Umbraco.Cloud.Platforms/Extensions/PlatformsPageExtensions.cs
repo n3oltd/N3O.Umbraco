@@ -5,6 +5,7 @@ using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
+using PlatformsPage = N3O.Umbraco.Cloud.Platforms.Models.PlatformsPage;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
