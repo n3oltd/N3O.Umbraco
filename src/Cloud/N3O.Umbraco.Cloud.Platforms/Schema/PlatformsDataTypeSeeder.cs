@@ -3,9 +3,7 @@ using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.DataTypes;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Utilities;
 using System;
-using Umbraco.Cms.Core.Services;
 using DataTypeNames = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.DataTypes;
 using Folders = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Folders;
 using QurbaniItemDataSource = N3O.Umbraco.Giving.Allocations.Lookups.QurbaniItemDataSource;
@@ -18,14 +16,10 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
     private const string EmbedCodeTemplate = "<label>{{model.value}}</label>";
 
     private readonly IDataTypeEditor _dataTypeEditor;
-    private readonly IDataTypeService _dataTypeService;
     private readonly ILogger<PlatformsDataTypeSeeder> _logger;
 
-    public PlatformsDataTypeSeeder(IDataTypeEditor dataTypeEditor,
-                                   IDataTypeService dataTypeService,
-                                   ILogger<PlatformsDataTypeSeeder> logger) {
+    public PlatformsDataTypeSeeder(IDataTypeEditor dataTypeEditor, ILogger<PlatformsDataTypeSeeder> logger) {
         _dataTypeEditor = dataTypeEditor;
-        _dataTypeService = dataTypeService;
         _logger = logger;
     }
 
@@ -49,7 +43,7 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
     // lookup and the save all throw, so a data type that cannot be built leaves the site short of that one
     // rather than failing the boot
     private void Seed(string name, Action seed) {
-        if (Exists(name)) {
+        if (_dataTypeEditor.Find(name) != null) {
             return;
         }
 
@@ -58,13 +52,6 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
         } catch (Exception ex) {
             _logger.LogError(ex, "Could not create platforms data type {Name}", name);
         }
-    }
-
-    // Mirrors how the designer itself finds an existing data type, so a site holding one under a name of its
-    // own is still recognised as having it
-    private bool Exists(string name) {
-        return _dataTypeService.GetDataType(UmbracoId.Deterministic(IdScope.DataType, name)) != null ||
-               _dataTypeService.GetDataType(name) != null;
     }
 
     private void SeedAnalyticsTagsList() {

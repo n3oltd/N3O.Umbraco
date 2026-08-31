@@ -13,5 +13,6 @@ public class ZakatCalculatorSectionSettingsContent : UmbracoContent<ZakatCalcula
     // no one model behind this property. Only its presence is read here and it is rendered through
     // IBlocksRenderer by alias, which handles both
     public new object Content => GetValue(x => x.Content);
-    public IEnumerable<ZakatCalculatorFieldSettingsContent> Fields => Content().Children.As<ZakatCalculatorFieldSettingsContent>();
+    public IReadOnlyList<ZakatCalculatorFieldSettingsContent> Fields =>
+        Content().Children.As<ZakatCalculatorFieldSettingsContent>();
 }

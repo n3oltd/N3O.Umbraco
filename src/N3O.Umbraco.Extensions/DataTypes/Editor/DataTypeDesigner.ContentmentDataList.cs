@@ -69,16 +69,20 @@ public class ContentmentDataListDataTypeDesigner : DataTypeDesigner {
             listEditorValue["enableMultiple"] = "1";
         }
 
+        var dataSource = new Dictionary<string, object>();
+
+        dataSource["key"] = _dataSourceKey;
+        dataSource["value"] = new Dictionary<string, object>();
+
+        var listEditor = new Dictionary<string, object>();
+
+        listEditor["key"] = ItemPickerEditor;
+        listEditor["value"] = listEditorValue;
+
         var configuration = new Dictionary<string, object>();
 
-        configuration["dataSource"] = new[] {
-            new Dictionary<string, object> { ["key"] = _dataSourceKey, ["value"] = new Dictionary<string, object>() }
-        };
-
-        configuration["listEditor"] = new[] {
-            new Dictionary<string, object> { ["key"] = ItemPickerEditor, ["value"] = listEditorValue }
-        };
-
+        configuration["dataSource"] = new[] { dataSource };
+        configuration["listEditor"] = new[] { listEditor };
         configuration["preview"] = null;
 
         return configuration;

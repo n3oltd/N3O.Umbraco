@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.ContentTypes;
+using N3O.Umbraco.DataTypes;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,39 +19,39 @@ namespace N3O.Umbraco.Cloud.Platforms;
 // reads once at startup, so turning the feature on takes a pod restart before this sees it
 public class PlatformsSchemaComponent : IComponent {
     private readonly IConfiguration _configuration;
-    private readonly IContentTypeService _contentTypeService;
-    private readonly IDataTypeService _dataTypeService;
+    private readonly IContentTypeEditor _contentTypeEditor;
     private readonly Lazy<IPlatformsContentTypeSeeder> _contentTypeSeeder;
+    private readonly IDataTypeEditor _dataTypeEditor;
     private readonly Lazy<IPlatformsDataTypeSeeder> _dataTypeSeeder;
     private readonly Lazy<IKeyValueService> _keyValueService;
-    private readonly Lazy<IMigrationPlanExecutor> _migrationPlanExecutor;
-    private readonly Lazy<ICoreScopeProvider> _scopeProvider;
-    private readonly Lazy<IPlatformsSchemaAudit> _schemaAudit;
     private readonly ILogger<PlatformsSchemaComponent> _logger;
+    private readonly Lazy<IMigrationPlanExecutor> _migrationPlanExecutor;
     private readonly IRuntimeState _runtimeState;
+    private readonly Lazy<IPlatformsSchemaAudit> _schemaAudit;
+    private readonly Lazy<ICoreScopeProvider> _scopeProvider;
 
     public PlatformsSchemaComponent(IConfiguration configuration,
-                                    IContentTypeService contentTypeService,
-                                    IDataTypeService dataTypeService,
+                                    IContentTypeEditor contentTypeEditor,
                                     Lazy<IPlatformsContentTypeSeeder> contentTypeSeeder,
+                                    IDataTypeEditor dataTypeEditor,
                                     Lazy<IPlatformsDataTypeSeeder> dataTypeSeeder,
                                     Lazy<IKeyValueService> keyValueService,
-                                    Lazy<IMigrationPlanExecutor> migrationPlanExecutor,
-                                    Lazy<ICoreScopeProvider> scopeProvider,
-                                    Lazy<IPlatformsSchemaAudit> schemaAudit,
                                     ILogger<PlatformsSchemaComponent> logger,
-                                    IRuntimeState runtimeState) {
+                                    Lazy<IMigrationPlanExecutor> migrationPlanExecutor,
+                                    IRuntimeState runtimeState,
+                                    Lazy<IPlatformsSchemaAudit> schemaAudit,
+                                    Lazy<ICoreScopeProvider> scopeProvider) {
         _configuration = configuration;
-        _contentTypeService = contentTypeService;
-        _dataTypeService = dataTypeService;
+        _contentTypeEditor = contentTypeEditor;
         _contentTypeSeeder = contentTypeSeeder;
+        _dataTypeEditor = dataTypeEditor;
         _dataTypeSeeder = dataTypeSeeder;
         _keyValueService = keyValueService;
-        _migrationPlanExecutor = migrationPlanExecutor;
-        _scopeProvider = scopeProvider;
-        _schemaAudit = schemaAudit;
         _logger = logger;
+        _migrationPlanExecutor = migrationPlanExecutor;
         _runtimeState = runtimeState;
+        _schemaAudit = schemaAudit;
+        _scopeProvider = scopeProvider;
     }
 
     public void Initialize() {
@@ -63,7 +64,7 @@ public class PlatformsSchemaComponent : IComponent {
         _contentTypeSeeder.Value.Seed();
 
         // Changes to a type the site already holds arrive only as a migration step, which runs once
-        var blockers = FindMigrationBlockers().ToList();
+        var blockers = FindMigrationBlockers();
 
         if (blockers.None()) {
             var upgrader = new Upgrader(new PlatformsSchemaPlan());
@@ -88,27 +89,25 @@ public class PlatformsSchemaComponent : IComponent {
 
     // A type is looked up the way its designer would find it, by deterministic key as well as by the alias
     // or name, so a site that renamed one is not read as not having it and blocked from every step forever
-    private IEnumerable<string> FindMigrationBlockers() {
+    private IReadOnlyList<string> FindMigrationBlockers() {
+        var blockers = new List<string>();
+
         foreach (var alias in PlatformsSchemaPlan.RequiredContentTypes) {
-            var contentType = _contentTypeService.Get(UmbracoId.Deterministic(IdScope.ContentType, alias)) ??
-                              _contentTypeService.Get(alias);
+            var contentType = _contentTypeEditor.Find(alias);
 
             if (contentType == null) {
-                yield return alias;
+                blockers.Add(alias);
             } else if (contentType.IsElement) {
                 // Every step builds these as document types, so one the site holds as an element would have
                 // the step refuse it. Reporting it here keeps that out of the plan, where a step that threw
                 // would leave the scope unusable for the rest of the boot
-                yield return $"{alias} (held as an element type)";
+                blockers.Add($"{alias} (held as an element type)");
             }
         }
 
-        foreach (var name in PlatformsSchemaPlan.RequiredDataTypes) {
-            if (_dataTypeService.GetDataType(UmbracoId.Deterministic(IdScope.DataType, name)) == null &&
-                _dataTypeService.GetDataType(name) == null) {
-                yield return name;
-            }
-        }
+        blockers.AddRange(PlatformsSchemaPlan.RequiredDataTypes.Where(x => _dataTypeEditor.Find(x) == null));
+
+        return blockers;
     }
 
     private bool IsEnabled() {

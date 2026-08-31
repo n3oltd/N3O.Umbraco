@@ -18,18 +18,14 @@ public class PlatformsSchemaPlan : MigrationPlan {
     // touches the database afterwards fails with it, uSync's import included. The plan therefore states what
     // its steps read, and is not executed at all until a site has all of it. A new step adds whatever it
     // needs here
-    public static IEnumerable<string> RequiredContentTypes {
-        get {
-            yield return PlatformsConstants.Campaigns.CompositionAlias;
-            yield return PlatformsConstants.CrossSells.CompositionAlias;
-            yield return PlatformsConstants.Offerings.CompositionAlias;
-        }
-    }
+    public static IReadOnlyList<string> RequiredContentTypes => [
+        PlatformsConstants.Campaigns.CompositionAlias,
+        PlatformsConstants.CrossSells.CompositionAlias,
+        PlatformsConstants.Offerings.CompositionAlias
+    ];
 
-    public static IEnumerable<string> RequiredDataTypes {
-        get {
-            yield return DataTypeNames.ElementEmbedCodeLabel;
-            yield return Shared.Money;
-        }
-    }
+    public static IReadOnlyList<string> RequiredDataTypes => [
+        DataTypeNames.ElementEmbedCodeLabel,
+        Shared.Money
+    ];
 }

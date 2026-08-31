@@ -1,7 +1,9 @@
 using Humanizer;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Utilities;
 using System;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 
@@ -18,6 +20,14 @@ public class ContentTypeEditor : IContentTypeEditor {
         _serviceProvider = serviceProvider;
         _contentTypeService = contentTypeService;
         _shortStringHelper = shortStringHelper;
+    }
+
+    // Mirrors how a designer resolves an existing type, so a caller deciding whether to create one reaches the
+    // same answer the designer would. An alias can be renamed while the key stays, and matching on the alias
+    // alone would read a renamed type as absent
+    public IContentType Find(string alias) {
+        return _contentTypeService.Get(UmbracoId.Deterministic(IdScope.ContentType, alias)) ??
+               _contentTypeService.Get(alias);
     }
 
     public IContentTypeDesigner ForExisting(string alias) {

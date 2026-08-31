@@ -19,5 +19,6 @@ public class ZakatCalculatorSettingsContent : UmbracoContent<ZakatCalculatorSett
     public FundDimension1 FundDimension2 => GetValue(x => x.FundDimension2);
     public FundDimension1 FundDimension3 => GetValue(x => x.FundDimension3);
     public FundDimension1 FundDimension4 => GetValue(x => x.FundDimension4);
-    public IEnumerable<ZakatCalculatorSectionSettingsContent> Sections => Content().Children.As<ZakatCalculatorSectionSettingsContent>();
+    public IReadOnlyList<ZakatCalculatorSectionSettingsContent> Sections =>
+        Content().Children.As<ZakatCalculatorSectionSettingsContent>();
 }
