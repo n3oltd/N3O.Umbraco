@@ -1,4 +1,5 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
@@ -6,23 +7,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSaved : INotificationAsyncHandler<ContentSavedNotification> {
     private readonly Lazy<IContentEditor> _contentEditor;
     private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly IContentTypeService _contentTypeService;
 
-    public CampaignSaved(Lazy<IContentEditor> contentEditor, Lazy<IContentLocator> contentLocator) {
+    public CampaignSaved(Lazy<IContentEditor> contentEditor,
+                         Lazy<IContentLocator> contentLocator,
+                         IContentTypeService contentTypeService) {
         _contentEditor = contentEditor;
         _contentLocator = contentLocator;
+        _contentTypeService = contentTypeService;
     }
 
     public Task HandleAsync(ContentSavedNotification notification, CancellationToken cancellationToken) {
-        var alias = AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled);
-
         foreach (var content in notification.SavedEntities) {
-            if (content.HasProperty(alias)) {
+            if (content.IsCampaign(_contentTypeService)) {
                 SyncCrowdfunderNames(content.Key, content.Name);
             }
         }
