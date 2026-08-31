@@ -12,9 +12,6 @@ using Shared = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.SharedDataTy
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public partial class PlatformsContentTypeSeeder {
-    // A site renders page content with either Umbraco block grids or Perplex content blocks, never both, and
-    // names the data type to suit. The property takes whichever the site has; where a site has neither it is
-    // left for the site to define rather than seeded against the wrong editor
     private string BlockContentDataType() {
         return new[] { Shared.PageBlockGrid, Shared.PerplexBlocks }.FirstOrDefault(HasDataType);
     }
@@ -99,7 +96,7 @@ public partial class PlatformsContentTypeSeeder {
     }
 
     private void SeedZakatFundDimension(IPropertyContainerBuilder<ZakatCalculatorSettingsContent> container,
-                                        Expression<Func<ZakatCalculatorSettingsContent, FundDimension1>> expression,
+                                        Expression<Func<ZakatCalculatorSettingsContent, IFundDimension>> expression,
                                         string dataTypeName) {
         if (HasDataType(dataTypeName)) {
             container.ContentmentDataList(expression).DataType(dataTypeName);

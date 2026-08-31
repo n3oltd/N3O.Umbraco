@@ -21,13 +21,11 @@ public class PlatformsComposer : Composer {
         builder.Services.AddSingleton<ICampaignAccessor, CampaignAccessor>();
         builder.Services.AddSingleton<ICampaignIdAccessor, CampaignIdAccessor>();
         builder.Services.AddSingleton<INisab, Nisab>();
-        builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
-        builder.Services.AddSingleton<ITagHelperComponent, PlatformsTagHelperComponent>();
-
-        // The editors these take are themselves transient, and all three run once while the site boots
         builder.Services.AddTransient<IPlatformsContentTypeSeeder, PlatformsContentTypeSeeder>();
         builder.Services.AddTransient<IPlatformsDataTypeSeeder, PlatformsDataTypeSeeder>();
+        builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
         builder.Services.AddTransient<IPlatformsSchemaAudit, PlatformsSchemaAudit>();
+        builder.Services.AddSingleton<ITagHelperComponent, PlatformsTagHelperComponent>();
         
         builder.Services.AddScoped<PlatformsCdnFailureMiddleware>();
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();

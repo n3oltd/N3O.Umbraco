@@ -11,8 +11,6 @@ using Shared = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.SharedDataTy
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-// These are element types in the CMS but UmbracoContent in code, so NewElement<T> cannot take them. The
-// aliases still come off the model expressions, which is what keeps them in step with what GetValue reads
 public partial class PlatformsContentTypeSeeder {
     private static string Of<T, TProperty>(Expression<Func<T, TProperty>> expression) {
         return AliasHelper<T>.PropertyAlias(expression);

@@ -6,13 +6,14 @@ public static class PlatformsSchemaConstants {
     // The state a site has reached, recorded by Umbraco in umbracoKeyValue
     public static class Migrations {
         public const string PlanName = "N3O.Platforms.Schema";
-        public const string DonationPopupEmbedCodes = "2026.08.31";
+        public const string PlatformsContentTypesMigrationV2 = "2026.08.31";
     }
 
     public static class Folders {
         public const string Calculator = "Calculator";
         public const string Campaigns = "Campaigns";
         public const string CrossSells = "Cross Sells";
+        public const string Crowdfunders = "Crowdfunders";
         public const string DonationForms = "Donation Forms";
         public const string Offerings = "Offerings";
         public const string Platforms = "Platforms";

@@ -15,8 +15,6 @@ using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-// Gated on the platforms site feature, which reaches the pod as Platforms:Enabled. The Key Vault provider
-// reads once at startup, so turning the feature on takes a pod restart before this sees it
 public class PlatformsSchemaComponent : IComponent {
     private readonly IConfiguration _configuration;
     private readonly IContentTypeEditor _contentTypeEditor;
@@ -64,6 +62,8 @@ public class PlatformsSchemaComponent : IComponent {
         _dataTypeSeeder.Value.Seed();
         _contentTypeSeeder.Value.Seed();
 
+        AllowCrowdfundersUnderPlatforms();
+
         var blockers = FindMigrationBlockers();
 
         if (blockers.None()) {
@@ -71,14 +71,10 @@ public class PlatformsSchemaComponent : IComponent {
 
             upgrader.Execute(_migrationPlanExecutor.Value, _scopeProvider.Value, _keyValueService.Value);
         } else {
-            // Not a state the site recovers from on its own. A step run against a missing type would fail,
-            // and a failed step leaves the scope unusable for the rest of the boot, uSync's import included
             _logger.LogWarning("Platforms schema migrations blocked, waiting on {Blockers}",
                                string.Join(", ", blockers));
         }
 
-        // A site does not have to hold every platforms type, so a gap is reported rather than failed on; it
-        // is the only way to see what a site is missing without opening its backoffice
         foreach (var gap in _schemaAudit.Value.FindGaps()) {
             _logger.LogInformation("Platforms schema gap: {Gap}", gap);
         }
@@ -86,23 +82,45 @@ public class PlatformsSchemaComponent : IComponent {
 
     public void Terminate() { }
 
+    // A uSync import of the platforms type drops the container from its allowed children, so unlike the types
+    // themselves this is not something a site reaches once and keeps. It is checked on every boot, and the
+    // type is saved only when the child is actually missing. It cannot be a seed for that reason: a seed is
+    // skipped entirely on a site that already holds the type, which is every site this has to repair
+    private void AllowCrowdfundersUnderPlatforms() {
+        var crowdfunders = _contentTypeEditor.Find(PlatformsConstants.CrowdfundingCampaigns.Alias);
+        var platforms = _contentTypeEditor.Find(PlatformsConstants.Platforms.Alias);
+
+        if (crowdfunders == null ||
+            platforms == null ||
+            platforms.AllowedContentTypes.OrEmpty().Any(x => x.Alias == crowdfunders.Alias)) {
+            return;
+        }
+
+        // Umbraco does not catch what a component throws while initialising, and both the cast and the save
+        // can, so a site this cannot be repaired on is reported rather than left unable to boot
+        try {
+            var designer = (IDocumentTypeDesigner) _contentTypeEditor.ForExisting(platforms.Alias);
+
+            designer.AllowChildren(crowdfunders.Alias);
+
+            designer.Save();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Could not allow {Alias} under the platforms type", crowdfunders.Alias);
+        }
+    }
+
+
+    // What a step reads reaches a site through uSync, whose import is manual outside development, so until it
+    // has run these are missing as a matter of course. The plan is left alone until they are there rather than
+    // failing on every boot in the meantime. Anything else a step objects to fails the plan and is reported
+    // with the exception by Umbraco, which is the louder signal and the right one for a site that will not
+    // converge on its own.
     // Looked up the way a designer would, by deterministic key as well as by alias or name, so a site that
     // renamed one is not read as not having it and blocked from every step forever
     private IReadOnlyList<string> FindMigrationBlockers() {
         var blockers = new List<string>();
 
-        foreach (var alias in PlatformsSchemaPlan.RequiredContentTypes) {
-            var contentType = _contentTypeEditor.Find(alias);
-
-            if (contentType == null) {
-                blockers.Add(alias);
-            } else if (contentType.IsElement) {
-                // Every step builds these as document types, so a step would refuse one the site holds as an
-                // element. Catching it here keeps that throw out of the plan, where it would poison the scope
-                blockers.Add($"{alias} (held as an element type)");
-            }
-        }
-
+        blockers.AddRange(PlatformsSchemaPlan.RequiredContentTypes.Where(x => _contentTypeEditor.Find(x) == null));
         blockers.AddRange(PlatformsSchemaPlan.RequiredDataTypes.Where(x => _dataTypeEditor.Find(x) == null));
 
         return blockers;

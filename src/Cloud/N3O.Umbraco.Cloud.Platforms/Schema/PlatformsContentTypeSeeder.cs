@@ -53,6 +53,8 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
             (PlatformsConstants.Campaigns.RegularGiving, SeedRegularGivingCampaign),
             (PlatformsConstants.Offerings.CompositionAlias, SeedOffering),
             (PlatformsConstants.CrossSells.CompositionAlias, SeedCrossSell),
+            (PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias, SeedCrowdfunder),
+            (PlatformsConstants.CrowdfundingCampaigns.Alias, SeedCrowdfunders),
             (PlatformsConstants.Qurbani.Season.Category.Alias, SeedQurbaniSeasonCategory),
             (PlatformsConstants.Qurbani.Season.Alias, SeedQurbaniSeason),
 
@@ -62,8 +64,6 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
         ];
     }
 
-    // A subscription defines however many fund dimensions it uses, so the data type behind a higher
-    // dimension legitimately does not exist on every site and that property is simply not part of its schema
     private bool HasDataType(string name) {
         return _dataTypeEditor.Find(name) != null;
     }
@@ -83,8 +83,6 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
         } catch (Exception ex) when (ex is DataTypeNotFoundException or ContentTypeNotFoundException) {
             _logger.LogInformation("Deferred platforms content type {Alias}: {Reason}", alias, ex.Message);
         } catch (ContentTypeKindMismatchException ex) {
-            // Not something the site recovers from on its own, and not something to convert on its behalf,
-            // so it is reported for someone to decide what the type should be
             _logger.LogWarning("Platforms content type {Alias} disagrees with the site: {Reason}",
                                alias,
                                ex.Message);

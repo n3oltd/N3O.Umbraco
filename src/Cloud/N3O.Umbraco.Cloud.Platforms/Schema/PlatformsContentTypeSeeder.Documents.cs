@@ -9,8 +9,6 @@ using Shared = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.SharedDataTy
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public partial class PlatformsContentTypeSeeder {
-    // The tree root. Its allowed children are the container types, which carry no content class and so are
-    // not seeded here; a site keeps whatever children it already permits
     private void SeedPlatforms() {
         var designer = _contentTypeEditor.NewDocument<PlatformsContent>();
 
@@ -95,6 +93,36 @@ public partial class PlatformsContentTypeSeeder {
         designer.Group(Groups.Options)
                 .ContentmentDataList(x => x.TargetCampaigns)
                 .DataType(DataTypeNames.CampaignsMultiple);
+
+        designer.Save();
+    }
+
+    // Only the campaign picker. The page properties differ per client and are added in the backoffice, so
+    // seeding any of them here would put a property on a type whose shape is the site's own
+    private void SeedCrowdfunder() {
+        var designer = _contentTypeEditor.NewDocument<CrowdfunderContent>();
+
+        designer.SetName("Crowdfunder");
+        designer.SetIcon("icon-target color-black");
+        designer.InFolder(Folders.Platforms, Folders.Crowdfunders);
+        designer.WithDeterministicId();
+
+        designer.Tab("Crowdfunder")
+                .ContentPicker(x => x.Campaign)
+                .DataType(Shared.ContentPicker)
+                .Mandatory()
+                .Description("The campaign this crowdfunder raises for");
+
+        designer.Save();
+    }
+
+    private void SeedCrowdfunders() {
+        var designer = _contentTypeEditor.NewDocument("Crowdfunders", PlatformsConstants.CrowdfundingCampaigns.Alias);
+
+        designer.SetIcon("icon-file-cabinet color-black");
+        designer.InFolder(Folders.Platforms, Folders.Crowdfunders);
+        designer.WithDeterministicId();
+        designer.AllowChildren(PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias);
 
         designer.Save();
     }

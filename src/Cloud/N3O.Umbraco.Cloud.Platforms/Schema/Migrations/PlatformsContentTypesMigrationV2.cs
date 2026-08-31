@@ -12,10 +12,10 @@ namespace N3O.Umbraco.Cloud.Platforms;
 // embed has been empty everywhere; cross-sell amount is the same gap on the sites that lack it.
 // Keys are stamped deterministically, as the seeder stamps them: without that the same property would carry
 // a different key in every environment that ran the step, and uSync matches on key
-public class AddDonationPopupEmbedCodes : MigrationBase {
+public class PlatformsContentTypesMigrationV2 : MigrationBase {
     private readonly IContentTypeEditor _contentTypeEditor;
 
-    public AddDonationPopupEmbedCodes(IMigrationContext context, IContentTypeEditor contentTypeEditor)
+    public PlatformsContentTypesMigrationV2(IMigrationContext context, IContentTypeEditor contentTypeEditor)
         : base(context) {
         _contentTypeEditor = contentTypeEditor;
     }
