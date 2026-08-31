@@ -8,6 +8,399 @@
 
 ## Current State
 
+**DECIDED 2026-08-26 (Talha) — end-to-end v13→v17 migration test. These are standing decisions for this workstream:**
+- **Packaging route = MyGet betas, NOT manual `ProjectReference`.** Sites must consume real `N3O.*` packages so the nupkg `staticwebassets/` + `buildTransitive` delivery path is exercised — a `ProjectReference` resolves RCL assets through the project graph and would *hide* a plugin whose `App_Plugins` assets fail to ship in the package, which is the most likely defect class this migration introduced (12+ projects converted to RCL).
+- **Site scope = 3 representative DBs** (all Umbraco 13, all local SQL Server, `*-postmigration-25Aug2026`):
+  - `site-mhuk-stg-postmigration-25Aug2026` — **0** N3O Cropper/Uploader, 3 NC data types / 5 props, no Perplex, 28 BlockList + 2 BlockGrid (the already-modernised path).
+  - `site-afhuk-stg-postmigration-25Aug2026` — worst case: 38 Cropper DTs / 53 props, 12 Uploader DTs / 33 props, **130** NC DTs / 68 props, 2 Perplex.
+  - `site-tdp-prod-postmigration-25Aug2026` — minimal control: 1 Cropper DT / 3 props, 1 NC DT / 2 props, 1 Perplex.
+- **Depth = full**, and it **must use the two existing external CLIs** (do not re-implement, do not use the removed on-startup migration):
+  - `D:\AI Migration Test\Nested Content Migration` → `nc-migrate` (net8) — NC→BlockList **plus** `--include-perplex` for Perplex v3→v4. Runs on the **v13** DB.
+  - `D:\AI Migration Test\Cropper Uploader Migration` → `media-migrate` (net8) — N3O Cropper/Uploader → `Umbraco.MediaPicker3`. **Umbraco 17 schema only** (refuses to run without `umbracoDataType.propertyEditorUiAlias` / `umbracoMediaVersion`), so it runs **after** the 13→17 upgrade.
+- **Resulting fixed order** (forced by the tools' own requirements): `nc-migrate --include-perplex` on v13 → Umbraco 13→17 upgrade → `media-migrate` on v17 → rebuild NuCache + Examine → verify backoffice + front-end render → uSync export + Data import/export round-trip.
+
+**E2E PROGRESS 2026-08-26 — Phase 0 + Phase 1 DONE.**
+- **Phase 0 (CI/packaging) — fixed + verified, UNCOMMITTED.** `.github/workflows/v17-ci.yml` +`setup-node: true`; root `Directory.Build.targets` + a `Condition="$(Version.Contains('-'))"` PropertyGroup stripping the prerelease suffix off `AssemblyVersion`/`FileVersion` (one place, not 100 csprojs). Verified: `Extensions` at `-beta` builds 0 errors and emits `AssemblyVersion=2026.8.26.99` / `AssemblyInformationalVersion=2026.8.26.99-beta+sha`; **reverse-checked** (fix removed → CS7034 returns); **full-solution `dotnet pack` = 101 packages, 0 errors**. Local nupkg folder feed = `C:\Users\TALHAM~1\AppData\Local\Temp\claude\pkgout` (same staticwebassets path as MyGet, so CI need not be green to test).
+- **`App_Plugins` assets confirmed inside the nupkgs** (this was the reason for choosing packages over ProjectReference): ReactRuntime 10, Data 12, Cloud.Platforms 6, EditorJs 5, and 3 each for Cms, Blocks.StaticAssets, Cells, SerpEditor, TextResourceEditor, WelcomeDashboard, Scheduler, Cloud.Platforms.Marketing. The 5 wrapper `.StaticAssets` (Maps.Google/Forms/Marketing/UIBuilder/Workflows) ship 0 — expected, they are documented pass-throughs.
+- **Site-side recipe found: 11 of site-mh's 50 `N3O.*` refs no longer exist on v17.** 4 = Cropper/Uploader (deleted, #939). 7 = `*.StaticAssets` **consolidated into their parent** by the RCL conversion — `Data.StaticAssets`→`Data`, `Scheduler.StaticAssets`→`Scheduler`, `SerpEditor.StaticAssets`→`SerpEditor`, `TextResourceEditor.StaticAssets`→`TextResourceEditor`, `EditorJs.StaticAssets`→`EditorJs`, `Cloud.Platforms.StaticAssets`→`Cloud.Platforms`, `Cloud.Platforms.Marketing.StaticAssets`→`Cloud.Platforms.Marketing`. Per-site change = delete those 11 lines; parents already carry the assets.
+- **Phase 1 (v13-side data migration) — DONE.** Working copies cloned via COPY_ONLY BACKUP/RESTORE (re-clonable in seconds): `e2e-mhuk-v17test`, `e2e-afhuk-v17test`, `e2e-tdp-v17test`. `nc-migrate --include-perplex` dry-run then `--apply`, all committed, **0 failed / 0 unmatched element types** everywhere:
+
+| copy | NC DTs conv | NC values | NC blocks | Perplex values | Perplex blocks | [REVIEW] |
+|---|---|---|---|---|---|---|
+| `e2e-mhuk-v17test` | 3 | 279 | 824 | none | — | 0 |
+| `e2e-afhuk-v17test` | 52 | 671 | 1799 | 2083 | **8570** | 14 nested-NC + 6 orphaned |
+| `e2e-tdp-v17test` | 1 | 89 | 221 | 38 (all empty) | 0 | 0 |
+
+- **Two real findings from the afhuk run:**
+  1. **Nested Nested Content is NOT converted** — the tool copies it verbatim and warns. Only 2 content nodes affected (×2 versions): node 1415 "Footer" property `linksLists` → inner `links`, and node 1419 "Header" property `menu` → inner `items`. After the 13→17 upgrade `Umbraco.NestedContent` no longer exists, so these inner values will not render — **needs a manual fix or a recursive pass in `nc-migrate` before any real run.**
+  2. **6 orphaned Perplex props silently DROPPED** — `volunteerSignUpFormBlock.backgroundImage` on nodes 2713 / 2715 / 4252. By design (property no longer on the element type) but it is data loss; confirm intended.
+- **tdp cannot validate the Perplex v3→v4 path** — all 38 of its Perplex values are literally `{"version":3,"header":null,"blocks":[]}`. afhuk is the only Perplex test bed of the three.
+- **Expected leftover:** `e2e-afhuk-v17test` still has **78** `Umbraco.NestedContent` data types (130 total − 52 in-use). The tool deliberately skips not-in-use data types; they will appear as orphaned data types in v17 Settings → Data Types, matching the "~134 orphaned" note already in the Blocks backlog item. Harmless but visible.
+- **NEXT (Phase 2):** stand up a v17 site consuming the local nupkg feed, point it at each copy, boot to run the Umbraco 13→17 upgrade, then `media-migrate` (v17-only), then rebuild NuCache + Examine, then verify backoffice + front-end, uSync export and Data import/export round-trip.
+
+**✅ ROUND 8 COMPLETE 2026-08-27 — mhuk and tdp run through the same data pipeline. Both fully migrated, 0 failures, both start clean under v17.**
+
+Working copies `wc-mhuk` / `wc-tdp` were cloned by COPY_ONLY backup+restore from `site-mhuk-stg-postmigration-25Aug2026` and `site-tdp-prod-postmigration-25Aug2026`; **the originals were only read, never modified or dropped.**
+
+**Profiles differ a lot from afh, which made this a real test of the tools:**
+
+| | schema | NestedContent | N3O Cropper | N3O Uploader | Umb Cropper | Perplex | BlockList | docs |
+|---|---|---|---|---|---|---|---|---|
+| mhuk | v13 | 3 | **0** | **0** | 1 | 0 | 28 | 1,533 |
+| tdp | v13 | 1 | 1 | 0 | 1 | 1 | 0 | 66 |
+| afh | v13 | 130 | 38 | 12 | 1 | 2 | 0 | 1,695 |
+
+**Results (`nc-migrate --apply --include-perplex` → 13→17 upgrade → `media-migrate --apply --editor both`, target inline):**
+- **mhuk**: 3 data types converted + 3 renamed, **279 values / 824 blocks, 0 failed**; no Perplex. media-migrate correctly found **nothing to do** (0 N3O editors — MH uses Umbraco's own croppers), having inspected 1,022 block values for nested data. Upgrade **0 errors**.
+- **tdp**: 1 data type converted + 1 renamed, **89 values / 221 blocks, 0 failed**; Perplex 38 values converted / 0 blocks (the values hold no blocks, 0 dropped). media-migrate converted its 1 `N3O.Umbraco.Cropper` data type with **0 values** — **verified genuinely unused**, not a miss: `Crowdfunding Hero Image Cropper` is bound to 3 non-element properties with 0 value rows each, and there are **0** cropper-shaped values anywhere in the database. Flipping it anyway is required, or it would render as a broken editor. Upgrade **0 errors**.
+
+**Post-migration audit — both databases:** v17 schema, **0** `Umbraco.NestedContent`, **0** N3O Cropper/Uploader data types, **0** values anywhere mentioning either, renames and `validationLimit` carried (`Webhook Block List (0, n)`, `Platforms Suggested Amount Block List (0, 3)`, `Firewall Rule Block List (0, n)`). Both then **boot with "Application started" and 0 startup errors**, with a healthy rebuilt published cache (**7,192** rows mhuk, **164** tdp).
+
+**⚠️ `Umbraco.MediaPicker` is 2 on BOTH sites as well** — the same two legacy built-ins (`Media Picker (legacy)`, `Multiple Media Picker (legacy)`) found on afh. Confirms it is a **universal Umbraco 13→17 upgrade artefact affecting every site**, not site-specific: v17 has no legacy `MediaPickerPropertyEditor`, so all three sites will show *"This property editor could not be found"* for those two until they are removed. They have no bound properties anywhere, so deletion is safe.
+
+**Scope limits, stated honestly:**
+- Only the **data** pipeline was run for mhuk/tdp. There is no v17 site code for either (only afh has been ported), so **no page rendering was verified** for them — the equivalent of afh's byte-level page comparison has not been done.
+- The 13→17 upgrade was performed by the **afh v17 app** pointed at each database. The CMS-level migrations are site-agnostic, but the package set running the upgrade is afh's, not each site's own. uSync's first-boot import was force-disabled (`uSync__Settings__ImportOnFirstBoot=false`) so afh's uSync folder could not overwrite another site's settings — boot script `scratchpad/boot_db.sh`.
+
+**✅ ROUND 7 2026-08-27 — multi-crop behaviour confirmed, alt text now PRESERVED, cropper helpers moved into `N3O.Umbraco.Extensions`. ⚠️ Final render verification still pending (see bottom).**
+
+**1. Multiple crops per data type — works, verified on real data.** All `cropDefinitions` go into `ImageCropperConfiguration.crops`, and the stored value's rectangles map **positionally** (index *i* → `cropDefinitions[i]`). Confirmed with a real migrated value for the two-crop Partnerships logo: aliases `x` (230x70) and `y` (110x110) each got their own, correctly different, coordinates. Three afhuk data types are multi-crop (`Template Header Menu Cropper` l/m/s, `Our Partner Logo Cropper` h/v, `Partnerships And Consortiums Logo Cropper` x/y).
+- All definitions **must** be written to the data type config, because Umbraco's `ApplyConfiguration` rebuilds the crop list from the config on read and discards any alias not listed there.
+- Positional mapping assumes stored order still matches config order; a definition inserted/reordered after values were saved would shift them. Fewer rectangles than definitions → extra crops get `coordinates: null` (centre crop); more → ignored.
+- **Checked for silent loss with real JSON queries (SQL Server `OPENJSON`), not string matching:** of **775** valid top-level Cropper values, **all 775 have exactly one rectangle, 0 have `rotate <> 0`, and 0 have `scaleX`/`scaleY <> 1`** — so the `rotate`/`scale` fields and the separate `cropBoxes` array (backoffice UI state), which have no `ImageCropperValue` equivalent, cost nothing here.
+
+**2. Alt text is now PRESERVED rather than dropped.** There is **no** alt-text slot anywhere in v17's cropper/media types (checked `ImageCropperValue`, `ApiImageCropperValue`, `MediaWithCrops` — no alt/caption/description member), and Umbraco's own docs recommend `alt="@Model.Photo.Name"`, i.e. a **media node's name**, which the inline route has no equivalent of. So `media-migrate` writes the original text as a non-standard `"altText"` member of the ImageCropper JSON. `ImageCropperValue` ignores unknown members, so this is inert to Umbraco.
+- **⚠️ This is migration continuity, not a permanent home.** It survives publishing, but the moment an editor saves that property in the backoffice Umbraco re-serialises from `ImageCropperValue` and the text is gone. A durable slot needs a real property (or the `--target mediapicker` route, where it lives on the media node name).
+- Counters split accordingly: `Alt text preserved` vs `Alt text DROPPED`. Only **Umbraco.UploadField** values now genuinely lose it — a bare path string has nowhere to keep it.
+
+**3. Cropper helpers moved into the framework** (`N3O.Umbraco.Extensions/Extensions/ImageCropperExtensions.cs`), replacing the site-local copy, which was deleted:
+- `CropUrl()` / `CropUrl(cropAlias)` on `ImageCropperValue`.
+- `AltText(this IPublishedElement content, string propertyAlias)` — reads the preserved text off the property's **raw source value**, since the typed `ImageCropperValue` has already discarded it. That is why the signature takes the element + alias rather than the value.
+- Package repacked at the same version `2026.8.26.99-beta` into the local feed with the NuGet cache entry cleared, so the site picks it up without a version bump.
+- Site views re-pointed: **76** call sites, `X.SomeProp?.AltText()` → `X.AltText("someProp")`, with the alias read from the generated models (348 property→alias pairs extracted) rather than guessed. 0 old-form sites remain.
+
+**✅ VERIFIED (Rider session stopped, pipeline re-run from pristine).** Build 0 errors; nc-migrate 130 data types / 671 values / 2,083 Perplex / 5,340 nested, 0 failed; upgrade 0 errors; media-migrate **9,523 alt texts PRESERVED, 0 dropped** (so every alt-text-bearing value was a Cropper one — no Uploader value carried any). Both pages HTTP 200, no Razor compilation failures.
+- **Homepage alt text is now at exact v13 parity: 38 non-empty + 1 empty, against 38 + 1 on v13** (it was 14 + 44 before this change). The alt VALUES are byte-identical to v13 — the 48 alt-bearing diff lines differ only in the `src` on the same line (v17 crop query vs v13's pre-generated crop path). Real authored text is back: "gaza amputees", "Lebanon emergency", "children down syndrome", "SUHA AND HER ORPHANS".
+- Home vs v13 is down to **56 changed lines from 92**, and the only non-`src`/`href`/`alt` differences are still the 5 benign ones (`<n3o-css-bundle>`/`<n3o-js-bundle>` wrappers, one `<img/>`).
+- **The inline route's alt output is cleaner than the media-picker route's.** On the Kilimanjaro page mediapicker emitted 81 non-empty alts but **24 of them were just filenames** (`1.svg`, `CHS_LOGO_MEMBER.png`) because the media node name falls back to the filename when there is no alt text. Inline emits **0** filename-alts — 68 genuinely authored ones and `alt=""` otherwise, which is the correct HTML for an unlabelled image.
+
+**One site POCO needed threading through.** `AppealsTiles2BlockModel` is a hand-written POCO, not an `IPublishedElement`, so `item.AltText("image")` did not compile there (runtime Razor, so it surfaced as a 500 on the homepage rather than a build error). Fixed by giving the POCO an `AltText` property, populated in `AppealsTiles2BlockViewModel` from the source element. It was the **only** such case — it is the only POCO in `ActionForHumanity.Core/Models` holding an `ImageCropperValue`.
+
+**Community practice on cropper alt text (searched, 2026-08-27).** Alt text is **not** built into the Image Cropper and is an open feature request ([Umbraco-CMS Discussion #13690](https://github.com/umbraco/Umbraco-CMS/discussions/13690)). The consensus answer is a **separate `altText` field on the Image media type**, with a fallback to the media node name via an extension method like `image.AltText()`. Both of those presuppose a media library node, so they apply to `--target mediapicker`, not to an image cropper local to a document. For the inline route the documented practice would be a dedicated alt-text property per image property — which is the durable option if the preserved-JSON approach's "lost on backoffice re-save" caveat is unacceptable.
+
+**✅ ROUND 6 COMPLETE 2026-08-27 — Nested Content min/max item limits were being DROPPED by `nc-migrate`. Fixed; media-side config translation audited and found complete.**
+
+**1. The bug (reported by Talha).** `BuildBlockListConfig` hardcoded `"validationLimit":{"min":null,"max":null}`, so Nested Content's `minItems`/`maxItems` were lost on every one of the 130 data types — every Block List came out accepting any number of blocks. Fixed by parsing them from the NC config and carrying them across; an absent key means "no limit" on both editors and becomes `null` (`BlockListConfiguration.NumberRange` is `int? Min`/`int? Max`, verified against v17 source).
+- **Result: 125 of 130 carry a limit, 5 have none — and exactly 5 NC configs had neither key in v13, so that matches.** Verified surviving the 13→17 upgrade: `Price Handle Block List (0, 5)` → `{"min":0,"max":5}`, `Feedback Custom Field Block List (0, n)` → `{"min":0,"max":null}` (the "n" correctly becoming unlimited).
+
+**2. Names can disagree with limits — pre-existing v13 drift, not ours.** `Nested Accordian Item (1, 6)` really has `minItems: 3`; `Nested Agenda Item (1, n)` really has `maxItems: 5`; `Nested Appeals Tile Item Info Item (0, 3)` really has `maxItems: 4`. Confirmed against the pristine v13 database. The tool carries the **config** (what Umbraco enforces) and preserves the name suffix as-is, so some renamed data types have a suffix that does not match their limits.
+
+**3. Also dropped, and there is nowhere to put them:** NC's per-content-type `nameTemplate` (item label template) and its `confirmDeletes` / `showIcons` / `expandsOnLoad` / `hideLabel` flags. v17's `BlockListConfiguration` exposes only `blocks`, `validationLimit`, `useSingleBlockMode`, and `BlockConfiguration` only `ContentElementTypeKey` + `SettingsElementTypeKey` — no server-side label. Documented rather than guessed at.
+
+**4. Audited the media side for the same class of bug — it is clean.** Checked the v17 contracts directly: `FileUploadConfiguration` has **only** `fileExtensions`, and `ImageCropperConfiguration` **only** `Crops` (of `{Alias, Width, Height}`). So the retired editors' `maxFileSizeMb` / `imagesOnly` / `altTextRequired`, and the Cropper's per-crop `label` / `filters` and its `altText` flag, have no native home — they are correctly dropped, not overlooked. Nothing to fix.
+
+**5. Pipeline re-run from scratch again** (restore → nc-migrate → upgrade → media-migrate → boot): 130 data types converted + renamed, 671 values / 1,949 blocks / 2,083 Perplex values / 8,570 Perplex blocks / 5,340 nested NC in blocks, media 50 / 940 / 16,385 / 5,340, **0 failed anywhere, upgrade 0 errors**. Both pages HTTP 200 at byte-identical sizes to the previous run (144,797 / 122,134), confirming the config fix changed no rendered output.
+
+**✅ ROUND 5 COMPLETE 2026-08-27 — `nc-migrate` was leaving 78 of 130 Nested Content data types BROKEN in the v17 backoffice. Fixed, data types renamed, pipeline re-run from scratch.**
+
+**1. The bug (reported by Talha: data types `5bcf5bcf-381f-4c78-8854-56cbb12d8a2a` and `d7765740-36c2-47b0-bbc8-2b17b84a4ae8` showing *"This property editor could not be found"*).**
+- `nc-migrate` converted only data types assigned to a content-type property, skipping the rest. On afhuk that skipped **78 of 130**, all left on `Umbraco.NestedContent` — an editor that **does not exist from Umbraco 14 on**, so each one renders as a broken editor in the backoffice regardless of whether it holds values.
+- The skip's stated reason was that Perplex ContentBlocks v3 block definitions point at an NC data type and require that editor. **That premise does not survive the upgrade:** Perplex v4 stores no data type reference at all — verified, zero `Perplex.ContentBlocks` configs in the migrated DB mention one.
+- The 78 split into two populations: **76** Perplex v3 per-block data types (named after the block, e.g. *"Hero Image Banner Block"*) and **2** genuine site data types that merely had no property bound — which are exactly the two reported. All 78 verified **fully orphaned**: 0 property bindings, 0 config references, 0 stored values, 0 relations.
+- Fix: convert all of them. The Perplex leftovers are dead weight in v17 and are **reported, not deleted** — deletion stays a deliberate decision.
+
+**2. Data types renamed** (also requested). `Nested {Name} ({min}, {max})` → `{Name} Block List ({min}, {max})`, suffix carried across unchanged; `Nested Speaker Details Item` → `Speaker Details Item Block List`. Tolerates the real double-space case (`Nested  Challenges Testimonial Item (2, 10)`). Names not starting with `Nested` are left alone, which is what preserves the Perplex per-block names. Unit-checked against all the real shapes plus edge cases (`"Nested"` alone, empty, null, `"Something Nested Here (1, 2)"` — all correctly unchanged).
+
+**3. Pipeline re-run FROM SCRATCH** (restore pristine → nc-migrate → 13→17 upgrade → media-migrate → boot):
+- nc-migrate: **130 data types converted (was 52), 130 renamed**, and every value count unchanged — 671 top-level values / 1,949 blocks / 34 nested NC / 2,083 Perplex values / 8,570 Perplex blocks / 5,340 nested NC in blocks / **0 failed**.
+- Upgrade: **0 errors**. media-migrate: unchanged at 50 data types, 940 values, 16,385 nested, 1,089 aliases, 5,340 block shapes, 0 failed.
+- Verified: **0** `Umbraco.NestedContent` data types, **0** `N3O.Umbraco.Cropper/Uploader`, **0** names still starting with `Nested`, and both reported GUIDs now `Umbraco.BlockList` named `Price Handle Block List (0, 5)` / `Feedback Custom Field Block List (0, n)`.
+- **Reverse-checked that the fix changed no output:** both pages still HTTP 200 at byte-identical sizes to the pre-fix run (144,797 / 122,134), and home vs the v13 baseline is still **zero text-content differences** (same 7 benign lines: the `<n3o-css-bundle>`/`<n3o-js-bundle>` wrapper tags and one `<img/>`). Correct — those 78 data types held no values.
+
+**⚠️ STILL BROKEN, NOT OURS TO FIX HERE: `Umbraco.MediaPicker`.** Two of Umbraco's own built-in data types — `Media Picker (legacy)` (node 1048) and `Multiple Media Picker (legacy)` (node 1049) — are still on `Umbraco.MediaPicker`, which **v17 does not have** (only `MediaPicker3PropertyEditor` exists in `Umbraco.Infrastructure` 17.3.5). Umbraco's own 13→17 upgrade neither converts nor removes them, so they show the same *"could not be found"* error. Both have **0 bound properties**, so deleting them is safe; outside the remit of `nc-migrate`/`media-migrate`, which own Nested Content and the N3O editors.
+
+**✅ ROUND 4 COMPLETE 2026-08-27 — `media-migrate` now offers BOTH native targets, and the whole v13→v17 pipeline was re-run FROM SCRATCH on the inline one. Both test pages render with zero text differences.**
+
+**1. `--target inline|mediapicker` added to `media-migrate`** (default **`inline`**). See the table at the top of its README.
+- `inline`: Cropper → `Umbraco.ImageCropper`, Uploader → `Umbraco.UploadField`. Both keep the file path ON THE PROPERTY exactly as the retired N3O editors did, so **no media nodes are created** and the whole "media node has no published-cache row → `No data for media <id>`" failure class cannot arise.
+- `mediapicker`: the previous behaviour, unchanged and still available.
+- Every v17 shape was verified against Umbraco 17.3/17.4 source **and** against real v17-written rows, not assumed: editor/UI alias pairs (`Umb.PropertyEditorUi.ImageCropper` / `...UploadField`), `ImageCropperConfiguration` = `[ConfigurationField("crops")]` of `{alias,width,height}`, `ImageCropperValue` = `{src, crops[{alias,width,height,coordinates{x1,y1,x2,y2}}], focalPoint}` (camelCase, no `[JsonPropertyName]` anywhere), `UploadField` = `{fileExtensions:[...]}` with a plain-path value, and nested complex values stored as serialized JSON strings.
+- The px→fraction crop maths did **not** change: the coordinates are edge insets, which Umbraco hands to ImageSharp as `cc=left,top,right,bottom`, and `MediaPicker3`'s local crops are the same `ImageCropperCrop` type. One shared `BuildCrops` now serves both targets.
+- Uploader's `allowedExtensions` (`".png, .jpg"`) is carried over as `fileExtensions: ["png","jpg"]`. `maxFileSizeMb`, `imagesOnly`, `altTextRequired` have no native equivalent and are dropped.
+
+**2. TWO REAL DATA LOSSES ON `--target inline`** (neither applies to `mediapicker`) — these are the whole trade-off:
+- **Alt text: 9,523 values on afhuk.** Neither native editor has an alt-text slot, and with the file on the property there is no media node whose *name* could carry it. Measured on the rendered pages: the homepage went from **38 images with alt text to 14**, Kilimanjaro from 30-odd to the hardcoded ones only.
+- **Source image width/height.** The N3O Cropper value stored them; `ImageCropperValue` has no slot. This broke a real view: `PartnershipsAndConsortiumsBlock` picked the square vs wide logo crop from the source aspect ratio. It now always takes the wide crop, with a comment saying why.
+
+**3. Full pipeline re-run FROM SCRATCH.** `bacpac-afhuk` was dropped and restored from the untouched pristine v13 DB `site-afhuk-stg-postmigration-25Aug2026` (COPY_ONLY backup → RESTORE WITH REPLACE; the `site-*-postmigration` DBs themselves were only read, never dropped). Then: `nc-migrate --apply --include-perplex` → boot (13→17 upgrade, **0 errors**) → `media-migrate --apply --editor both` (target inline) → boot.
+- nc-migrate reproduced its verified numbers exactly: **2,083 Perplex values / 8,570 blocks / 5,340 nested NC properties (17,121 blocks) / 0 failed**.
+- media-migrate: **50 data types, 940 top-level values, 16,385 nested values + 1,089 aliases fixed, 5,340 legacy block shapes normalised, 0 failed** — structurally identical to the mediapicker run, but **69 media nodes (unchanged from pristine) instead of 1,864 created**.
+- Verified afterwards: **0** data types and **0** property values anywhere still mention `N3O.Umbraco.Cropper`/`Uploader`; 39 `Umbraco.ImageCropper` + 17 `Umbraco.UploadField` data types with the correct UI aliases; published cache rebuilt itself to 3,285 rows on restart.
+
+**4. Site read-side re-pointed for the inline target** (all in `D:\AI Migration Test\site-afh-v17`, build **0 errors**):
+- 69 generated-model files: **109** `MediaWithCrops` references → `ImageCropperValue` and **66** → `string`, split by consulting the pristine sites-repo copy (which still distinguishes `CroppedImage` from `FileUpload`) and matching lines by content, not position. The **14** files that were *already* `MediaWithCrops` in v13 (native Platforms media pickers) were confirmed untouched.
+- Views: `.Src` and `.AltText` reverted to the v13 spelling (`ImageCropperValue.Src` exists natively), `.Crop.Src` → `.CropUrl()`, `.Src` **dropped** on the 16 Uploader-backed property names (the value IS the path), and the `Logo["x"]`/`GetUncroppedImage()` forms hand-fixed.
+- New `ActionForHumanity.Core/Extensions/ImageCropperExtensions.cs`: `CropUrl()` / `CropUrl(alias)` (v17 has **no** `GetCropUrl` overload taking an `ImageCropperValue` as receiver — the local-crop form is `string.GetCropUrl(ImageCropperValue, cropAlias:)`, and it needs an alias the old single `.Crop` never named, so it is taken from the value's own first crop), plus `AltText()` returning `string.Empty` as the single documented seam for the loss.
+- Hand-written: `AppealsTiles2BlockModel.Image`, `NavMenu.SecondLevelItem` (was an N3O `ImageCrop`; nothing constructs it), `OurPlatformsPagePublisher` (`.MediaUrl()` → `.Src`).
+
+**5. Verification — diffed the rendered HTML of the inline run against BOTH baselines.**
+- **vs v13 homepage: zero text-content differences.** 100 changed lines, 85 of them `src`/`href`/`alt`; the other 15 are the `<n3o-css-bundle>`/`<n3o-js-bundle>` wrapper tags (a pre-existing v13→v17 tag-helper difference), live forex rates, and the render timestamp. All **60** `nav a` entries and all **16** `footer a` entries are byte-identical, images 58 / broken 43 identical.
+- **vs the mediapicker run (Kilimanjaro): zero text-content differences.** After normalising the per-request random accordion GUIDs, the only changes are the image query strings and `alt`.
+- ⚠️ **The mediapicker run was silently NOT applying crops.** Its `<img>` URLs carry only a `?v=` cache-buster; the inline run's carry `?cc=x1,y1,x2,y2&width=W&height=H`. `MediaWithCrops.GetCropUrl()` with no crop alias returns the plain media URL, so the "byte-identical" mediapicker result matched v13's *text* while serving uncropped originals. **The inline route renders crops correctly and the mediapicker route needs its call sites revisited if it is chosen.**
+- Also fixed a boot blocker unrelated to media: `N3O_DataRegion` must be set (`eu1`) or `SubscriptionAccessor` builds a `SubscriptionInfo` with a null `DataRegion` and the Layout's `LinkBuilderJsTagHelper` throws an NRE in `CloudUrl.ForLinkBuilder` on **every** page. Recorded in `scratchpad/boot_afh.sh`.
+
+**Removed during this round:** `--media-parent`, `MediaNodeFactory` and `MediaTypes` were deleted while the tool was inline-only, then **restored** when the second target was requested (recovered by decompiling the pre-delete `bin/Release` assembly; the tool directory is not a git repo). `NativeValueBuilder.BuildUmbracoFileValue`/`BuildPickerValue`/`BuildMediaPickerConfig` are all present and used again.
+
+**✅ ROUND 3 COMPLETE 2026-08-27 — legacy nested block shapes normalised, nc-migrate cache gap closed, site running on HTTPS. Both pages still byte-identical to the v13 baseline.**
+
+**1. Legacy nested Block List shape — FIXED** (`media-migrate/Migration/NestedBlockShapeNormalizer.cs`, wired in **last** in `Migrator.Run`; `RunTotals.LegacyBlockShapesNormalized` + a `Legacy block shapes` summary line).
+- The target shape was **read from a top-level value Umbraco itself upgraded in the same database**, not guessed. Two details would not have been guessable: `Layout` is **capitalised**, and it **keeps `contentUdi`** alongside the new `contentKey`; there is also a new `expose` array of `{contentKey, culture, segment}`.
+- Runs last on purpose: the shape is only knowable post-upgrade, and each `values[]` entry needs an `editorAlias` which is resolved from the **live** `umbracoDataType` rows — so it writes the v17 aliases (including the `Umbraco.MediaPicker3` ones the media passes just wrote) rather than stale v13 names. Already-key-based values are skipped, so it is re-runnable.
+- **Result: 5,340 legacy block values normalised** — exactly the number of nested NC properties `nc-migrate` creates inside Perplex blocks, a clean cross-check.
+- **Verified: 0 populated legacy `"udi"` keys remain anywhere**, nested or top-level. The 1,660 remaining `"udi": null` occurrences are Perplex's own v4 shape and are correct.
+
+**2. `nc-migrate` published-cache gap — FIXED** (same mechanism as media-migrate: delete the `Umbraco.Web.PublishedCache.NuCache.Serializer` marker inside the transaction, so `--dry-run` rolls it back). Only matters for a site that stays on v13 after migrating, which was previously broken until someone rebuilt the cache by hand. Build 0 errors, 0 warnings. README documents it, including that deleting `cmsContentNu` is NOT a substitute.
+
+**3. site-afh v17 now runs on HTTPS.** A trusted ASP.NET Core dev certificate already existed (`CN=localhost`, thumbprint `95F55FD2…`, valid to 2027-03-27), so **no elevation was needed** — `dotnet dev-certs https --check --trust` confirmed it. Boot with:
+```
+ASPNETCORE_URLS="https://localhost:5443;http://localhost:5100"
+```
+(plus the same env vars as before). Both endpoints listen; HTTPS home and the Kilimanjaro page both return **200**, and the Kilimanjaro response is the same 120,847 bytes over HTTPS as over HTTP.
+
+**Re-verified after all of the above, in Chrome over HTTPS, against the recorded v13 baselines — every metric still identical:** homepage title / footer **12** / nav **59** / images 58-43 / footer texts byte-identical; Kilimanjaro title / innerText **11,605 characters exactly** / **21** headings (list identical) / 14 block elements / images 106-71 / 16 footer links.
+
+**Full verified pipeline (afh):** pristine bacpac → `nc-migrate --apply --include-perplex` → boot (13→17 upgrade) → `media-migrate --apply --editor both` → boot. Totals on the final run: 50 data types, 940 top-level values, **1,864 media nodes**, **16,385 nested media values** + 1,089 aliases, **5,340 legacy block shapes**, published cache self-rebuilding.
+
+**🎉 END-TO-END v13→v17 MIGRATION NOW VERIFIED FOR site-afh 2026-08-27 — both test pages render IDENTICALLY to the v13 baseline.**
+
+Full clean pipeline from the pristine bacpac: `nc-migrate --apply --include-perplex` → Umbraco 13→17 upgrade → `media-migrate --apply --editor both` → restart (cache rebuilds itself). Both pages **HTTP 200**, measured in Chrome MCP against the recorded v13 baselines:
+
+| page | metric | v13 | v17 |
+|---|---|---|---|
+| `/` | title / footer links / nav links | — / **12** / **59** | identical / **12** / **59** |
+| `/` | images / broken | 58 / 43 | 58 / 43 |
+| `/` | footer link texts | 12 texts | **byte-identical** |
+| `/challenges/kilimanjaro-trek-2026/` | innerText length | **11,605** | **11,605** (character-exact) |
+| " | headings / block elements | **21** / 14 | **21** / 14 — heading list identical |
+| " | images / broken / footer links | 106 / 71 / 16 | 106 / 71 / 16 |
+
+The Kilimanjaro page holds the largest Perplex value in the DB (94,912 chars); its innerText matching to the character is strong evidence the whole block tree — NC→BlockList, Perplex v3→v4, and nested media — round-tripped losslessly. (`imgBroken` matching is expected: media lives on an unreachable blob account, so it is a comparison constant, not a defect.)
+
+**✅ NESTED-MEDIA GAP IN `media-migrate` FIXED + VERIFIED 2026-08-27** — new `Migration/NestedMediaMigrator.cs` + `Migration/NestedMediaTarget.cs`, wired into `Migrator.Run` after the editor passes; `RunTotals` gained `NestedValuesConverted`/`NestedAliasesFixed` and a `Nested in blocks` summary line. Build **0 errors, 0 warnings**.
+- **Root cause:** the main pass rewrites only `umbracoPropertyData` rows whose own data type is Cropper/Uploader, but it flips the data type for *every* property bound to it — including element-type properties used inside blocks. Nested values were therefore left in the old shape against an `Umbraco.MediaPicker3` data type, giving `System.Text.Json.JsonException: The JSON value could not be converted to IEnumerable<...MediaWithCropsDto>. Path: $ | LineNumber: 0`.
+- **TWO nested shapes exist and both had to be handled — this was the subtle part:**
+  1. **Post-upgrade shape** `{contentTypeKey, key, values:[{editorAlias, culture, segment, alias, value}]}`. After the 13→17 upgrade **Block List, Block Grid and Perplex all share this shape** and each entry carries `editorAlias`, so one uniform rule covers all three; the stale `editorAlias` both identifies the value and is corrected to `Umbraco.MediaPicker3`.
+  2. **Legacy Umbraco 13 udi shape** `{contentTypeKey, udi, <alias>: <value>}` — properties keyed by alias, **no `editorAlias` at all**. It survives *inside a Perplex value* because Umbraco's 13→17 upgrade does not traverse another editor's value. Resolved via a `(element content-type key, property alias)` map captured **before** the data types are flipped (once `propertyEditorAlias` becomes `Umbraco.MediaPicker3`, the Cropper binding and its crop definitions are gone). **This shape held the bulk of the media: handling it took nested values from 3,608 to 16,385 and media nodes from 820 to 1,864.**
+- **Result on afhuk: 16,385 nested values converted, 1,089 empty `editorAlias` entries corrected, 1,864 media nodes created** (only 250 before any nested handling), 0 failed, and **0 rows anywhere in the DB still reference `N3O.Umbraco.Cropper`/`Uploader`**.
+- Nested values are written back as serialized JSON strings (how Umbraco stores every nested editor value in a block). `--editor cropper|uploader` scope is honoured, so an out-of-scope editor's nested values are left alone rather than broken.
+- ⚠️ **Latent issue spotted, NOT fixed (needs a decision):** a Block List nested inside a Perplex value keeps the **v13 udi shape permanently** — Umbraco's 13→17 upgrade never rewrites it to the v17 key-based shape. v17 still reads it (that is how the media error surfaced) so it renders today, but it is an un-upgraded value shape sitting in the database that may not survive a future Umbraco major.
+
+**✅ CACHE-REBUILD GAP IN `media-migrate` FIXED + VERIFIED 2026-08-27.**
+- **Mechanism:** the tool now deletes Umbraco's stored cache-serializer marker — `umbracoKeyValue` key **`Umbraco.Web.PublishedCache.NuCache.Serializer`** (value was `MessagePack`) — inside the same transaction as the migration, so `--dry-run` rolls it back too. Umbraco's own `Umbraco.Cms.Infrastructure.HybridCache.DatabaseCacheRebuilder.RebuildDatabaseCacheIfSerializerChanged` then rebuilds the entire published cache on the next start, using Umbraco's serializer. No Umbraco reference added to the tool (its hard constraint), no backoffice auth needed.
+- **Changes:** `Migration/Migrator.cs` — new `CacheSerializerKey` const + `InvalidatePublishedCache()` called before commit, a `Published cache : ...` summary line, and the success message no longer tells the operator to rebuild by hand; `Migration/ConversionResult.cs` — new `RunTotals.PublishedCacheInvalidated`. Build **0 errors, 0 warnings**. `README.md` step 6 + notes + limitations rewritten.
+- **Verified on a clean full pipeline** (pristine bacpac → `nc-migrate --apply --include-perplex` → 13→17 upgrade → `media-migrate --apply`): the site **started**, **0** `No data for media` errors, and `cmsContentNu` rebuilt automatically to **3,535** rows (3,285 pre-existing + 250 new media nodes). Reverse case already recorded: every earlier run terminated with `No data for media 4957` / `2702`.
+- Also logs a **warning** if the marker row is absent, rather than silently leaving the cache stale.
+- ⚠️ `nc-migrate` has the **same** latent gap: after it runs, a still-v13 site serves the stale `cmsContentNu` and 500s (observed). It is masked in the v13→17 flow only because the Umbraco upgrade rebuilds the cache itself. Apply the same one-line invalidation there if `nc-migrate` is ever run on a site that stays on v13.
+
+**\U0001F534 NEW BLOCKER FOUND — `media-migrate` does not convert NESTED Cropper/Uploader values (third instance of the same nesting bug).**
+- The tool rewrites only top-level `umbracoPropertyData` rows. A Cropper/Uploader value stored **inside** a Block List `contentData` entry or a Perplex block's `values[]` keeps the old shape **and** its nested `"editorAlias":"N3O.Umbraco.Cropper"`, while the data type is already `Umbraco.MediaPicker3`.
+- Proven on afhuk: `heroImageBannerBlock.image` inside a Perplex block still holds
+  `"{\"src\":\"/media/17639927888154255/trekkillmanjaro.jpg\",\"mediaId\":...,\"crops\":[{...}],\"cropBoxes\":[...]}"`.
+  Page fails with `System.Text.Json.JsonException: The JSON value could not be converted to IEnumerable<...MediaWithCropsDto>. Path: $ | LineNumber: 0 | BytePositionInLine: 1` via `MediaPickerWithCropsValueConverter` → `HeroImageBannerBlock.get_Image()`.
+- **This is why the homepage still 500s** after the full pipeline, and why the Perplex/Kilimanjaro comparison is still unverified. It is NOT a cache problem — the cache fix above is confirmed working.
+- Fix needs the same recursion as `nc-migrate`, plus media-node creation for the nested values (reuse `MediaNodeFactory`), and it must rewrite the nested `editorAlias` to `Umbraco.MediaPicker3`.
+- **Detection gotcha:** searching for the Cropper markers with `CHARINDEX('"crops":', ...)` finds **0** — nested JSON escapes the quotes (`\"crops\":`). Search for the escaped form, or parse the JSON.
+
+**site-afh IS NOW v17-BUILDABLE AND RENDERS 2026-08-26 — homepage byte-identical to the v13 baseline. One blocker remains (published-cache rebuild after `media-migrate`).**
+
+Isolated workspace: **`D:\AI Migration Test\site-afh-v17`** (a copy of `sites/src/site-afh`, so the sites repo is untouched). Runs on `http://localhost:5100` against `bacpac-afhuk`. Local package feed = `C:\Users\TALHAM~1\AppData\Local\Temp\claude\pkgout` (101 nupkgs at `2026.8.26.99-beta`), wired via `NuGet.Config` `local-v17` source with `N3O.*` package-source-mapping (and `N3O.*` removed from the nuget.org mapping so it cannot win).
+
+**✅ RESULT — v13 vs v17 homepage, measured in Chrome MCP, ALL IDENTICAL:** title, footer links **12 = 12**, header/nav links **59 = 59**, images **58 = 58**, broken images **43 = 43**, and the 12 footer link texts byte-for-byte equal. That validates the nested-NC fix end to end: nested Nested Content → `nc-migrate` → Umbraco 13→17 upgrade → renders the same. The 13→17 upgrade itself ran clean (`Runtime level: Upgrading - UpgradeMigrations` → `Upgrade completed!`, plus Perplex's own migration in 426ms, no exceptions).
+
+**Second nested-NC bug found and fixed — MUCH bigger than the first.** `PerplexContentBlocksValueConverter` copied a block property value verbatim (`["value"] = property.Value.DeepClone()`), so Nested Content nested *inside a Perplex block* was never converted, while step 1 had already flipped its data type to Block List. Symptom: every page 500s with `Cannot deserialize the current JSON array ... into type 'BlockValue'`. Fix reuses the same recursion (made `NestedContentValueConverter.ConvertNestedContentProperty` public rather than shipping a second copy); new `NestedContentConverted`/`NestedContentBlocks`/`NestedContentLeftVerbatim` on `PerplexConversionResult` and a `Nested NC in blocks` summary line. **On afhuk: 5,340 properties / 17,121 blocks converted, 0 left verbatim** (vs 34 properties / 150 blocks for the plain NC-in-NC case). Verified: **0 values anywhere in the DB still contain `ncContentTypeAlias`** (was 999 across 293 nodes).
+
+⚠️ **Two of my own verification queries were false negatives — do not repeat these mistakes:**
+- **`[` is a wildcard in T-SQL `LIKE`.** `LIKE '%"value":[%'` opens an unterminated character class and matches nothing. Use `CHARINDEX`.
+- **`cmsContentNu` stores the payload in `dataRaw` (varbinary), with `data` NULL** on this DB (all 3,284 rows). `CAST(data AS NVARCHAR)` checks prove nothing.
+
+**Site-code changes needed to compile on net10/Umbraco 17 (747 errors → 0), all in the isolated copy:**
+1. **1,296 errors — `IPublishedSnapshotAccessor` gone** (Umbraco 14 retired NuCache). ModelsBuilder 17 emits `IPublishedContentTypeCache contentTypeCache`; rewrote all **324** generated model files (verified against `DemoSite.Core`'s v17-generated models).
+2. **~194 errors — Cropper/Uploader value types gone.** `global::N3O.Umbraco.Cropper.Models.CroppedImage` and `global::N3O.Umbraco.Uploader.Models.FileUpload` → `global::Umbraco.Cms.Core.Models.MediaWithCrops` (69 generated files) plus 3 hand-written files (`AppealsTiles2BlockModel`, `NavMenu` — its `SecondLevelItem.Image` is dead code with no callers, `OurPlatformsPagePublisher`).
+3. **`Umbraco.Cms.Web.BackOffice.Security` → `Umbraco.Cms.Api.Management.Security`** (confirmed against `N3O.Umbraco.Authentication.Auth0` on v17).
+4. **`BackOfficeExternalLoginProviderOptions.AutoRedirectLoginToExternalProvider` REMOVED in v17** — the imperative line in `ActionForHumanityComposer` was deleted (commented, with a note). v17 drives this from N3O's own Auth0 `AutoRedirect` option in **config**, so this is a per-site appsettings change, not code.
+5. **`IContentmentDataSource` is now ambiguous** — v17 added `N3O.Umbraco.IContentmentDataSource` (a marker over `IDataSourceValueConverter`) alongside Contentment's. `PageOptionsDataSource` implements Contentment's full contract, so it was qualified to `Umbraco.Community.Contentment.DataEditors.IContentmentDataSource`; its `Fields` return type also had to become `IEnumerable<ContentmentConfigurationField>`.
+6. **`CroppedImage.Crop.Url` → `MediaWithCrops.MediaUrl()`.**
+
+**Perplex 4 rendering API changed — 5 views + a new adapter:**
+- `IContentBlockRenderer` → **`IContentBlocksRenderer`**, and `Html.RenderContentBlocks(blocks, renderer)` is **gone**. v4 is `IContentBlocksRenderer.RenderAsync(IContentBlocks, RenderViewComponentAsync, RenderPartialViewAsync, bool isBackOfficePreview)` where `RenderViewComponentAsync(Type, object)` and `RenderPartialViewAsync(string, object)` (obtained by reflecting `Perplex.ContentBlocks.dll`; the N3O repo has no Perplex views to copy).
+- Rather than repeat the 4-arg call in 5 views, added **`ActionForHumanity.Core/Extensions/ContentBlocksRenderingExtensions.cs`** reinstating `Html.RenderContentBlocks(...)` over the v4 API (resolves `IViewComponentHelper` from `RequestServices` and `Contextualize`s it). The 5 views (`Cart`, `Checkout`, `CheckoutCartSummaryContent`, `EventPage`, `Page`) only needed the interface rename.
+
+**View media API ported (73 files, 188 call sites):** `.Crop.Src` → `.GetCropUrl()` (61), `.Src` → `.GetCropUrl()` (50), `.AltText` → `.Name` (77). `GetCropUrl()` with no alias is the plain media URL (per `N3O.Umbraco.Media.MediaUrl.GetMediaUrl`); `.Name` is right because `media-migrate` carries old alt text over as the media node's name. I first tried a C# 14 extension-property shim to avoid touching views — **it compiles in the project but runtime-compiled Razor does NOT honour the project's `LangVersion`, so extension members are invisible in views.** Shim removed; `LangVersion` reverted to 12.
+
+**⚠️ THE BIG BEHAVIOURAL FINDING — Nested Content and Block List have different model shapes.** ModelsBuilder emitted NC collections as `IEnumerable<TElement>` and NC **never returned null**; Block List returns `BlockListModel` (of `BlockListItem`), so `Value<IEnumerable<TElement>>(...)` **type-mismatches and yields null** → `foreach` NREs in views. Fixed in the generated models (which we own) so **no view loop had to change**: project the blocks back to element models —
+`this.Value<BlockListModel>(fallback, "alias")?.Select(x => x.Content).OfType<TElement>() ?? Enumerable.Empty<TElement>()`
+— restoring both the element type and the never-null contract. Applied to **56 properties in 50 files**, plus 1 heterogeneous `IEnumerable<IPublishedElement>` case (`TemplateHeaderMenuListItem.Links` — the nested header menu). Correctly skipped 6 non-element collections that are pickers, not NC: `BlogCategory`, `ConsentCategory`, `CountryProjectCategory`, `EventCategory`, `ProjectCategory`, `UpsellOffer`. **This is the single highest-risk item to review for every other site.**
+
+**`media-migrate` on afhuk (run AFTER the upgrade, as its v17-schema guard requires):** 50 data types, **940 property values, 250 media nodes created, 290 alt texts moved to media node names**, 0 crops without coords, 0 failed.
+
+**🔴 REMAINING BLOCKER — `media-migrate` leaves a v17 site unbootable; the published cache must be rebuilt and nothing does it.**
+- media-migrate writes the relational media rows but **no `cmsContentNu` rows** for the 250 media nodes it creates. On boot, `Umbraco.Cms.Infrastructure.HybridCache...MediaCacheService.SeedAsync` → `DatabaseCacheRepository.CreateMediaNodeKit` throws **`InvalidOperationException: No data for media <id>`** and the app **terminates**, so you cannot reach the backoffice to press *Rebuild Database Cache*.
+- **`DELETE FROM cmsContentNu` does NOT work as a substitute** — neither Umbraco 13 nor 17 auto-rebuilds an empty table. v13 fails the same way; v17 boots only if seeding is disabled (`Umbraco__CMS__Cache__DocumentBreadthFirstSeedCount=0`, `Umbraco__CMS__Cache__MediaBreadthFirstSeedCount=0` — section is `Umbraco:CMS:Cache`), and then every request 500s with `InvalidOperationException: There is no PublishedContent` because the cache is empty (verified: 0 rows).
+- The 13→17 upgrade **does** build a correct cache (that is why the homepage comparison above succeeded — it was measured after the upgrade and *before* media-migrate).
+- **Fix belongs in `media-migrate`:** either insert `cmsContentNu` rows for the media nodes it creates, or make the documented procedure "rebuild the cache while the site is up" actually reachable (it currently is not, because the site cannot start). Its README step 6 assumes the backoffice is usable, which on v17 it is not.
+- Consequence for the run order: **the Kilimanjaro/Perplex page comparison is still unverified** — before media-migrate it 500s because Cropper properties resolve to null (editor gone), and after media-migrate the site will not boot. v13 baseline for it: title `Trek Killimanjaro | Action For Humanity`, innerText 11,605 chars, 21 headings, 14 block-like elements, 106 images / 71 broken.
+
+**Still owed:** the cache-rebuild fix, then re-verify the Perplex page; `bacpac-mhuk` and `bacpac-tdp` end-to-end; uSync export + Data import/export round-trip; and **revert `git checkout -- src/site-afh/src/ActionForHumanity.Web/appsettings.Development.json` in the sites repo** (the `Umbraco:Storage` removal is still in place).
+
+**v13 BASELINE CAPTURED 2026-08-26 (Chrome MCP) — site-afh running locally against `bacpac-afhuk`.**
+
+*How to boot site-afh locally (this took several dead ends — reuse it):*
+```
+cd D:\Development\n3oltd\sites\src\site-afh\src\ActionForHumanity.Web
+ASPNETCORE_ENVIRONMENT=Development  ASPNETCORE_URLS=http://localhost:5099
+ConnectionStrings__umbracoDbDSN="Data Source=(local);Database=bacpac-afhuk;Integrated Security=true;TrustServerCertificate=true"
+uSync__Settings__ImportOnFirstBoot=false  uSync__Settings__ImportAtStartup=None
+Umbraco__CMS__Unattended__InstallUnattended=false
+N3O_DataRegion=eu1  N3O_SubscriptionId=00000067-0000-0000-0000-000000000000
+dotnet run --no-build --no-launch-profile
+```
+- **The dev profile never applies under `dotnet run`.** `ActionForHumanity.Web/Program.cs` registers it as `if (System.Diagnostics.Debugger.IsAttached) { DevSettings.UseProfile<UK>(); }`, so without a debugger there is no subscription and startup dies with an NRE in `CloudUrl.ForCdn` (via `NumberFormatter` ctor -> `PublishedLocalizationSettingsAccessor.GetSettings()`). Supply it instead through `EnvironmentData`'s env-var fallback, which is `N3O_<key>` (see `EnvironmentData.GetOurKey`).
+- **`N3O_SubscriptionId` must be the GUID form, not the code.** `SubscriptionId.TryParse` = `FromId(s) ?? FromCode(s)`, and `FromId` throws `FormatException` on the implicit `EntityId` cast instead of returning null, so the `FromCode` fallback is never reached. `FromCode` pads the code: afh UK code `67` -> `00000067-0000-0000-0000-000000000000` (from `Dev/Profiles/UK.cs`; CA is `70`). Nothing secret — it is derivable.
+- **`ASPNETCORE_ENVIRONMENT` must be Development/Staging/Production.** A custom name (`E2ETest`) throws `Unrecognised value E2ETest for string` from `UrlSettingsContent.BaseUrl`, so the trick of dodging `appsettings.Development.json` by renaming the environment does NOT work.
+- **Azure Blob media is unreachable here, so the Storage section must be removed to render pages.** `*.blob.core.windows.net` fails real DNS resolution from this machine (verified via `[System.Net.Dns]::GetHostAddresses` in PowerShell, not just nslookup — an early `nslookup | grep Address` reading was a FALSE POSITIVE that matched the DNS server's own address line). `cdn.n3o.cloud` resolves fine, so it is specific to blob endpoints; cannot tell from here whether the accounts are gone or the endpoints are blocked. `AzureStorageComposer` gates on the mere *existence* of the `umbraco:storage:azureBlob` **section**, so an env var cannot switch it off. **The `Umbraco:Storage` section lives only in `appsettings.Development.json`** (not `appsettings.json`), and it was temporarily removed to boot; the file was clean beforehand, so restore with `git checkout -- src/site-afh/src/ActionForHumanity.Web/appsettings.Development.json`. **THIS EDIT IS STILL IN PLACE — revert it.**
+- ⚠️ The same file holds a **live plaintext storage account key** (already flagged above). Rotate.
+- First request takes ~110s (NuCache build for 2,480 nodes); subsequent ~17s. Hangfire jobs run and some fail against unreachable endpoints — harmless on a test copy.
+
+*Baselines saved under `<scratchpad>/e2e/` — `baseline-v13-afhuk.json`, `chrome-v13-home.json`, `chrome-v13-perplex.json`, `v13-home.jpeg`, `v13-perplex-kilimanjaro.jpeg`.*
+
+| target | v13 measurement | why it matters |
+|---|---|---|
+| Home `/` footer links | **12** ("Gaza Emergency", "Syria Emergency", "Yemen Emergency", "Sponsor an Orphan", "Ramadan Feedback", "Our story", "Reports", "Careers", "Contact us", "Complaints", "Terms and conditions", "Privacy Policy") | rendered from **nested NC** node 1415 Footer `linksLists`->`links` — the exact data the recursive fix converts |
+| Home `/` header/nav links | **59** (live DOM; 57 in raw HTML) | rendered from **nested NC** node 1419 Header `menu`->`items` |
+| Home images | 58 total / **43 broken** | broken is EXPECTED (blob unreachable); use as the comparison constant, not a defect |
+| `/challenges/kilimanjaro-trek-2026/` | title "Trek Killimanjaro \| Action For Humanity", innerText **11,605** chars, **21** headings, 14 block-like elements, 106 imgs / 71 broken, 16 footer links | largest **Perplex** value in the DB (94,912 chars) — proves the v3->v4 conversion of 8,570 blocks |
+| Perplex headings (first few) | TREK KILIMANJARO 2026 / Step by step to the roof of Africa / KILIMANJARO IN PICTURES / Agenda / Why Trek Kilimanjaro / STRIVING FOR A CHALLENGE | if v3->v4 breaks, these disappear |
+
+**Chrome MCP needs Chrome started with remote debugging first** — it does not launch it:
+`chrome.exe --remote-debugging-port=9222 --user-data-dir=<temp profile> --no-first-run --no-default-browser-check`
+
+**NEXT:** `bacpac-afhuk` is still UN-migrated. Now run `nc-migrate --apply --include-perplex` on it, then upgrade the site to v17 (local nupkg feed at `C:\Users\TALHAM~1\AppData\Local\Temp\claude\pkgout`, plus the 11 dead `N3O.*` refs to delete), then `media-migrate`, rebuild NuCache/Examine, and re-measure every row above.
+
+**nested-NC GAP FIXED 2026-08-26 in `nc-migrate` (uncommitted in `D:\AI Migration Test\Nested Content Migration`).**
+- **Root cause:** `NestedContentValueConverter.CopyElementProperties` copied an element property whose own value was Nested Content **verbatim** and only flagged it. But step 1 of the migration flips *every in-use* NC data type to Block List — element-type properties are `cmsPropertyType` rows too, so the inner data types were already converted. Result: data type said Block List while the stored value was still an NC array, and the inner content would silently fail to render after the 13→17 upgrade.
+- **Fix:** recursion. New `ConvertNestedContentProperty` + `Merge` in `NestedContentValueConverter.cs`; `LooksLikeNestedContent` replaced by `TryGetNestedContentString` (returns the inner JSON, not just a bool); `NestedContentConvertedNames` added to `ConversionResult`; `Migrator.cs` gained a `totalNestedConverted` counter and a `Nested NC properties : N converted recursively, N left verbatim` summary line. `NestedContentPropertyNames`/the WARN now mean *genuine failure only*.
+- **Representation preserved** — verified against real v13 data that a nested value is stored as a *serialized JSON string* (`"links":"[{...}]"`), so string in → string out; a live array yields a live object.
+- **Build: 0 warnings, 0 errors.**
+- **Verified on real afhuk data (before → after, same pristine input):** `Blocks 1799 → 1949`; `nested NC 14 left verbatim → 34 converted recursively, 0 verbatim`; the `[REVIEW]` entries for node 1415 "Footer" `linksLists`→`links` and node 1419 "Header" `menu`→`items` are gone. Output JSON inspected directly: outer Block List (2 blocks), inner `links` is a **string** holding a valid Block List (5 blocks), inner entries carry `contentTypeKey`+`udi`, `layout.contentUdi` matches `contentData.udi`, **no `ncContentTypeAlias` anywhere in the value**, real content intact (`linkText: "Gaza Emergency"`).
+- **No regression:** mhuk (824 blocks) and tdp (221 blocks) are byte-identical to their pre-fix numbers, 0 nested either way.
+
+**Clean-slate retest source switched to the bacpacs 2026-08-26 (Talha).** `D:\Db Backups\MH CA BAckup` is **NOT** a Muslim Hands Canada backup despite the folder name — it holds `.bacpac` exports of **14** of the `site-*-postmigration-25Aug2026` databases (afhuk, amt, bmhc, bsc, geruk, iacuk, mhuk, mpb, mruk, mthuk, onuk, pima, tdp, tf — no germy/grf). Import with the `sqlpackage` dotnet tool (`~/.dotnet/tools/sqlpackage.exe /Action:Import`), ~20s each.
+- The mutated `e2e-*-v17test` clones were dropped; the harness DBs are now **`bacpac-mhuk`, `bacpac-afhuk`, `bacpac-tdp`**, imported fresh and verified to match the original inventory exactly (afhuk 130 NC / 38 Cropper, mhuk 3 NC / 0 Cropper, tdp 1 NC / 1 Cropper).
+- **These three are deliberately left UN-migrated.** Talha's verification plan is: run the site on **v13 first and record content via Chrome MCP**, then migrate + upgrade, then re-inspect the *same* content on v17 and compare. Applying `nc-migrate` before capturing the v13 baseline would destroy the comparison.
+- ⚠️ **Open question for Talha:** whether the 14 original `site-*-postmigration-25Aug2026` databases should also be dropped to reclaim space (they are recoverable from these bacpacs). Not done — too destructive to assume.
+- **Observation, not changed (out of scope):** the NC path keeps the `PropType` element property in `contentData`, while the Perplex path deliberately drops it as "not a content property". Pre-existing behaviour, unaffected by this fix — worth a decision separately.
+
+**Media-store decision 2026-08-26 (Talha, after I recommended against it):** the E2E harness points at the **live production Azure Blob media containers**, with read-only discipline. Concern was raised and Talha reaffirmed — proceeding. Mandatory safeguards for anyone continuing this work:
+- **NEVER run `media-migrate` procedure step 8** ("delete the orphaned pre-generated Cropper crop files") — that would delete from production media.
+- Access the containers with a **read-only SAS**, not the account key, so any accidental write fails loudly instead of silently mutating production media.
+- `media-migrate` itself needs no blob write (it reuses existing `/media/{ticks}/` paths and creates DB rows only); the write risk is Umbraco recomputing media metadata on a re-save in the backoffice.
+- ⚠️ **Security, unrelated to this task:** `site-mh/src/MuslimHands.Web/appsettings.Development.json` contains a **live plaintext storage account key** for the production media account. Rotate it.
+
+**Blocker found 2026-08-26 — `v17-ci.yml` has NEVER successfully published; the MyGet v17 feed is empty.** All 12 runs on `v17` failed (latest `32463806676`). Two independent causes, both fixable in this repo (not `n3oltd/actions`):
+1. **`npm ci` exits 217/1/254** at `Directory.Build.targets(15,9)` across 10 projects — job log shows `setup-node: false`, i.e. no Node on the runner. The shared `n3oltd/actions` workflow does download `actions/setup-node`, so the input exists; `v17-ci.yml` just never passes it. (Predicted by `POST_MIGRATION_CI.md`.)
+2. **`error CS7034: version string '2026.8.21.45-beta' does not conform`** on `N3O.Umbraco.Extensions` + `N3O.Umbraco.Clients` — `version-suffix: beta` flows into `$(Version)`, and the csprojs do `<AssemblyVersion>$(Version)</AssemblyVersion>`/`<FileVersion>$(Version)</FileVersion>`; `AssemblyVersion` cannot carry a prerelease suffix. `main` is unaffected (no suffix).
+- Verified against the live feed: `n3o.umbraco.cms` / `.extensions` / `.cropper` all show only `main`-line net8 versions up to `2026.8.25.1981`, **zero `-beta`**.
+- ⚠️ `n3oltd/umbraco-extensions` is **public** (`gh repo view --json isPrivate` → `false`) — any PR needs Talha's verbatim title/body sign-off first.
+
+**Also noted:** `site-mh` still `PackageReference`s `N3O.Umbraco.Cropper`, `N3O.Umbraco.Uploader` and both `.StaticAssets` (deleted on `v17` by #939) even though its data uses none of them → MH's site-side change is just deleting those 4 references. Every one of the 16 site DBs also carries 2 legacy `Umbraco.MediaPicker` and 1–2 `Umbraco.TinyMCE` data types (both removed in v14), so those are in scope too, not only NC + Cropper.
+
+
+**Latest (2026-08-20) — adversarial review of #951 (fluent designers) + obsolete-API modernization; all build-verified & pushed (branch `fwd-fluent-designers`, tip `4b11d9663`, OPEN/MERGEABLE, base `v17`):**
+- **4-lens adversarial-critique workflow (Opus) of #951 vs #936.** Verdict: **faithful port, no blocker.** The one HIGH finding (six designers "gutted" to `return null`) was **refuted** by direct 17.3.5 DLL reflection — `DateTimeConfiguration.Format/OffsetTime`, `ContentPickerConfiguration.ShowOpenButton` and the Email/EyeDropper/Markdown/Toggle config classes are all **removed in v17**, so `null` is forced+correct. Namespace-collision cleared across all 102 projects; every `Deterministic()` call byte-identical in scope+args; config round-trip + editor shapes verified correct.
+- **⚠️ Corrects the 2026-08-19 pm entry below (line ~31): ImageCropper/BlockGrid/RichText designers are NOT omitted — they were restored in `fc52b8445`** (+ `Deterministic()` SHA256 ids + `NewBlockList`). PR body rewritten to match (the old body wrongly said "intentionally omitted").
+- **Residuals actioned this session (commits on `fwd-fluent-designers`):**
+  - `1e9ffcd04` — one-line "why null" comments on the 6 config-less designers (no-silent-removals in code; each names the v17-removed config).
+  - `4b11d9663` — **de-obsoleted designer persistence** (Talha chose DataType+ContentType): sync `IDataTypeService`/`IContentTypeService` `Save`/`GetDataType(name)`/`GetContainers`/`CreateContainer` (all `[Obsolete]`, removal in Umbraco 18) → `CreateAsync`/`UpdateAsync`/`GetAsync` + injected **`IDataTypeContainerService`** (threaded through the base + **all 32 DataTypeDesigner subclasses** — 29 in Extensions + Maps.Google/Cells/SerpEditor; the full-solution build caught the 3 external ones). ContentType side needed only `Save`→Create/UpdateAsync (its `Get`/containers are NOT obsolete), so no ctor ripple there. `SuperUserKey` aliased (`UmbracoSecurity`) to dodge the `N3O.Umbraco.Constants` collision (same trap as [[forward-port-new-namespace-collision]]). Verified DI: `UmbracoBuilder.cs:217-218` registers both container services; swap mirrors what Umbraco's own `DataTypeService` does internally.
+  - Not done (out of scope / by design): BlockGrid per-area element-type allowlist (v17 removed `SpecifiedAllowance`; **0 designer consumers** in repo or sites — site-mh's v9 uSync uses it but that's site-level v17-core behaviour, not the designer); deterministic seed-delimiter ambiguity (must NOT change — persisted GUIDs).
+- **Full-solution C# build (frontend excluded): 0 errors, 102 projects** — verified after each change.
+- **✅ `.sln` phantom-entry defect FIXED → PR [#959](https://github.com/n3oltd/umbraco-extensions/pull/959)** (base `v17`, branch `v17-sln-cleanup`, tip `af091273a`, OPEN/MERGEABLE). `origin/v17`'s `src/N3O.Umbraco.sln` listed **6 Cropper/Uploader project entries whose folders #939 deleted** → full-solution build failed `MSB3202`. #959 surgically removes just those 6 entries (48-line deletion, no churn); full-solution C# build 0 errors. This IS the "final solution-wide PR" — but scoped to the `.sln` only: the migration `*.md` working docs + `CLAUDE.md` + `inspect_usync.csx` are **deliberately kept off public `v17`** (client names / `n3oltd/work` links / incident detail — leak risk; matches line ~24 "docs live on v17-Talha by design"), `UploadDataTypes.cs` was pure line-ending noise, and the generic `docs/frontend/**` dev guides were left on `v17-Talha` (optional separate publish, per Talha "go without the docs").
+- Scratch worktree `D:/AI Migration Test/fwd-fluent-designers` removed (clean, all pushed).
+- **`v17-Talha` brought up to date + PUSHED.** All 11 forward-port PRs (#947–#958, base `v17`) were MERGED into `origin/v17` on 2026-08-19; the earlier `de277ce9f` merge (`435a543ee` v17-Talha ⊕ `origin/v17`@`2b52375eb`) already captured them, so nothing new remained to merge (local was 0 behind `origin/v17`). Verified: v17-Talha's `.sln` is clean (no phantom Cropper/Uploader entries — unlike `origin/v17`), **full-solution C# build 0 errors**, then pushed `435a543ee..de277ce9f` → `origin/v17-Talha` (was 13 behind; now in sync, 0 behind `origin/v17`). **#951 is the only forward-port still OPEN** (this session's work; its content is on `fwd-fluent-designers`, not yet in v17-Talha).
+
+**Latest (2026-08-19 pm) — full fidelity+coverage audit of the forward-ports; ALL 13 forward-port PRs re-based onto `v17` (not `v17-Talha`); defects fixed:**
+- **Base-branch correction (per Talha): every forward-port PR now targets `v17`, not `v17-Talha`.** `origin/v17` and `v17-Talha` have diverged (v17-Talha +176 commits); each branch's forward-port commits were `git rebase --onto origin/v17 <fork>`-replayed onto `origin/v17`. The 6 open PRs (#947–#952) were rebased + retargeted in place; the 5 already-merged ones (#942–#946) were re-cut as new `-v17` branches → **new PRs #953–#957** (their content stays merged in `v17-Talha` too — Talha accepted the duplication). Expect **red CI on `v17` until the surrounding migration lands there** (same accepted pattern as #905). `#952` (crowdfunder) is STACKED on `fwd-fluent-designers` (base = that branch); everything else base `v17`.
+- **Final PR roster (all base `v17` except #952):** #947 storage · #948 CDN · #949 culture · #950 SEO · #951 fluent · #952 crowdfunder(stacked on #951) · #953 scheduler · #954 analytics · #955 subscription · #956 offering-visibility · #957 canonical · **#958 job version-fencing (#918, NEW)**.
+- **Audit findings + fixes:**
+  - **#948 CDN was BROKEN** (wouldn't compile: nested `Webhooks.HookIds` defined but 23 consumers used flat `WebhookIds`). **Fixed** → restored flat `PlatformsConstants.WebhookIds` (9 canonical + new `Crowdfunder`) + `WebhookEventTypes`; build 0 errors, verified.
+  - **#950 SEO had 2 real misses** (both fixed on the rebased branch): dropped `LanguageStructuredDataProvider` (whole multilingual GEO JSON-LD feature; orphaned JsonLd helpers were the tell) and the #917 sitemap-URL-from-`.Url` fix (was re-slugifying Names → sitemap `<loc>` disagreed with canonical/og:url + emitted null locs). Build 0 errors.
+  - **#951 fluent had a BUILD-BREAKING miss** Talha caught: #936 introduced the `N3O.Umbraco.DataTypes` namespace which collides with the `N3O.Umbraco.Data.Lookups.DataTypes` lookup — #936's `using DataLookups=` disambiguation in `Newsletters.SendGrid` `CellExtensions.cs`+`FieldDefinitionExtensions.cs` was dropped by the port → `N3O.Umbraco.Newsletters.SendGrid` failed with 7×CS0234 (the fluent agent only built 4 of the affected projects, so it slipped). **Fixed** (new commit `f0375a17b` on `fwd-fluent-designers`, fast-forward) — verified Newsletters.SendGrid + EditorJs + Blocks all build 0 errors; confirmed no other `DataTypes`/`ContentTypes` collision site.
+  - **#918 (`a9dad34b4`) job version/queue fence — the one genuinely-missing functional commit** from the coverage sweep (HIGH: real rolling-deploy sitemap/compositions/redirects data-loss). Ported → **#958**.
+- **Coverage sweep (all 86 non-merge `origin/main` commits) verdict:** 62 PRESENT, 17 CHORE/CI (→ final solution-wide PR), 4 SUPERSEDED (AngleSharp 1.5.2 / AWSSDK 4.0.100.6 already higher on v17), and only 3 MISSING — #917 sitemap-URL (fixed in #950), #918 (ported as #958), and #913 `CampaignSending` one-liner = intentional RR-05 deferral (its feature `SendingContentNotification` was removed in Umbraco 14; absent — leave deferred; the identical `OfferingSending` gap in `104c48673` is the same RR-05).
+- **Pre-existing-file-modification audit (Talha's ContentPicker prompt):** `PropertyBuilder.ContentPicker.cs` is the OLD (pre-existing) builder family, already on v17, untouched by #936 — correctly not in any PR; the #936 ContentPicker builder is the NEW `PropertyTypeBuilder.ContentPicker.cs`, present in #951. Only old-family file missing from v17 = `PropertyBuilder.Nested.cs` (NestedContent, removed in Umbraco 14 → deliberate clean base-migration removal). Of #936's 5 edits to pre-existing files: 2 cosmetic `UdiEntityType` alias (ContentPicker/BlockDataConverter — not ported, harmless), 2 the Newsletters `DataLookups` disambiguation (build-critical — now fixed), 1 `UmbracoId` deliberate `Generate` adaptation.
+- **Recommended merge order into `v17`:** #947,#948,#949,#950,#951,#953,#954,#955,#956,#957,#958 independent (any order — but #948 CDN and #918/#958 both touch JobTrigger/SchedulerConstants only if the scheduler PRs overlap: #953 scheduler-settings and #958 job-fence both touch JobTrigger/SchedulerComposer/SchedulerConstants → reconcile at merge); then **#951 before #952** (stacked). #948↔#949 also both edit `PlatformsPageAccessor.cs` → second-to-merge resolves.
+- All build-verified (0 errors on affected projects) but **NOT runtime-verified**. Scratch worktrees cleaned up.
+
+**Latest (2026-08-19) — remaining main→v17 forward-ports done: 6 more PRs opened (#947–#952), #942–#946 merged into `v17-Talha`:**
+- **#942–#946 merged** into `v17-Talha` (merge commits; branches kept). `v17-Talha` tip = `435a543ee`. Local was fast-forwarded to match.
+- **The deferred NEEDS-DECISION batch was then forward-ported** (per Talha: port-now everything, #936 "port adapted", #940/#941 "port both"), each build-verified (0 errors) in an isolated worktree, pushed, and opened as its own PR assigned to `talhamalik4025`. **NOT runtime-verified** (no live site here). Base `v17-Talha` unless noted:
+  - **[#947](https://github.com/n3oltd/umbraco-extensions/pull/947)** `fwd-storage-workload-identity` (`f98d2fde8`) — #924/#925 workload-identity blob storage (DefaultAzureCredential when `ServiceUrl` set; `SingleContainer` toggle; `FileExtensionContentTypeProvider`). Storage.Azure 0 errors.
+  - **[#948](https://github.com/n3oltd/umbraco-extensions/pull/948)** `fwd-cdn-invalidation` (`3c9cf9ccd`) — CDN trio #902/#934/#937 (302-not-301 transient + 503 infra; `ICdnClient.Evict` pre-max-age; `CrowdfunderReceiver`). ⚠️ Fidelity fix applied: the cherry-pick initially reverted the base's flat `PlatformsConstants.WebhookIds` back to nested `Webhooks.HookIds`; corrected to keep the base's flat `WebhookIds` (verified 0 `Webhooks.HookIds`).
+  - **[#949](https://github.com/n3oltd/umbraco-extensions/pull/949)** `fwd-culture-accessor` (`e8feed1ac`) — #921 single `ICultureAccessor`; `SpecialContentPathParser` reworked to per-explicit-culture cache; removed `LocalizationSettings.CultureCode`. Fully **replaces** (no duplicate of) the already-present #919 mechanism.
+  - **[#950](https://github.com/n3oltd/umbraco-extensions/pull/950)** `fwd-seo-multisitemap` (`622306102`) — new SEO features (feature-flagged multi-sitemap index, per-section/language child sitemaps, hreflang/x-default, BOM-free XML, GEO/@graph JSON-LD, robots sitemap URL + crawl-delay drop, AI-crawler) + #917 leftovers (sitemap BOM, `ExceptionMiddleware` rethrow, not-found excluded). ⚠️ `SitemapEntry` public ctor changed — **sites monorepo checked: 0 consumers** (non-breaking downstream). robots crawl-delay drop is a deliberate runtime output change.
+  - **[#951](https://github.com/n3oltd/umbraco-extensions/pull/951)** `fwd-fluent-designers` (`ddf9e9802`) — #936 fluent CT/DT designer framework, ADAPTED to v17 (real v13→v17 rewrite: `IDataType.ConfigurationData`, `IDataTypeService.GetAsync(Guid)`, `ContentTypeSort(Guid)`, `UmbracoId.Generate`, slimmed config classes — verified via ilspycmd vs Umbraco.Core 17.3.5). **Capability reduction (no silent removals):** ImageCropper, BlockGrid, and RichText designers OMITTED (not faithfully portable to v17; 0 consumers here or in sites). Kept native Upload/UploadField. Extensions+Maps.Google+Cells+SerpEditor 0 errors.
+  - **[#952](https://github.com/n3oltd/umbraco-extensions/pull/952)** `fwd-crowdfunder-node` (`eb0fb81f2`) — #940 crowdfunder standalone node (code-created doc types via the #936 framework, content/webhook/notification wiring, dev-tools datafix migration) + #941 regenerated Cloud clients. **STACKED: base = `fwd-fluent-designers`; must merge AFTER #951.** `CrowdfundersSchemaComponent` needed no rewrite once the framework was present (uses only a `ContentPicker` prop — no omitted designer). ⚠️ #941 clients track the **beta** backend contract (2026-08-18); regenerate if it shifts. `SubscriptionId` (#944): no reconciliation needed (no `SubscriptionDescriptor`/`.Number` refs).
+- **Merge order:** #947–#951 independent (any order into `v17-Talha`); then #951 before #952 (retarget #952 base → `v17-Talha` after #951 merges).
+- **Infra gotcha found + saved to memory ([[worktree-isolation-wrong-base]]):** `Agent(isolation:"worktree")` nondeterministically branched some worktrees off `origin/main` not the intended base; add a `git switch -C <branch> <sha>` base-guard as the agent's first step. One agent's false "already present, skip" was caused by this.
+- **STILL DEFERRED (not started):** Connect-client regen as a standalone (superseded here by #941's snapshot), Maps.Google product decision beyond the #936 designer, plus anything net-new landing on `origin/main` after `82f16bec6`. CI/chore (10× `.gitignore` sync, bot configs, PR template) → the final solution-wide PR.
+
+**Latest (2026-08-18) — main→v17 catch-up: bulk merge found UNVIABLE; 5 selective forward-port PRs opened (#942–#946):**
+- **A full `git merge origin/main` into a branch off `origin/v17` was attempted and ABORTED as unviable.** `origin/main` is **117 commits** ahead of v17/v17-Talha since merge-base `8f37f1dd8`. The merge produced 26 conflicts **and auto-merged 126 new main files** — entire post-branch subsystems (fluent ContentTypes/DataTypes designer API ~79 files #936, new projects `Maps.Google` + `Cloud.Platforms.Search`, canonical/sitemap #917, `CultureAccessor` #921, `SubscriptionId` #922) that use **v13 Umbraco APIs and don't compile on v17.3.5** (e.g. `BlockGridConfiguration` nested types), and **resurrected the Cropper/Uploader plugin files #939 deleted**. Conclusion: a bulk merge is the wrong vehicle — it drags in all of main's divergence + undoes deletions. Nothing committed; branches cleaned up.
+- **Selective forward-port instead.** A 3-agent inventory classified main's 117 commits vs `v17-Talha`. **Already forward-ported (SKIP):** currency rounders, unified Giving campaign type, server-authoritative charge, Typesense per-culture, YouTube, Mailchimp, ExceptionMiddleware null-ref, OpenGraph refactor, DayOfWeek, dictionary validator, #907/#919/#920, Sentry `ILoggerSettings`. **Superseded:** AWSSDK (branch 4.0.100.6) / AngleSharp (branch 1.5.2). **CI/chore** (10× `.gitignore` sync, bot configs, PR template) → final solution-wide PR.
+- **5 forward-port PRs opened (base `v17-Talha`, each built 0 errors, ported in isolated worktrees, NOT runtime-verified):**
+  - **[#942](https://github.com/n3oltd/umbraco-extensions/pull/942)** `fwd-scheduler-workercount` — finish #908 (`SchedulerComposer` WorkerCount → `settings.Default/LongJobsWorkerCount`; the earlier #908 forward-port left these 2 lines hardcoded to 1).
+  - **[#943](https://github.com/n3oltd/umbraco-extensions/pull/943)** `fwd-analytics-hardening` — **security**: restore `IJsonProvider.SerializeObjectForScript` (HTML-escape inline analytics) + `[ResponseCache NoCache]` on checkout stage (#6b4c50de3).
+  - **[#944](https://github.com/n3oltd/umbraco-extensions/pull/944)** `fwd-subscription-id` — #922 in full: rename `SubscriptionDescriptor`→`SubscriptionId` + webhook URL emits **Code** not Number. ⚠️ Downstream: `N3O.Umbraco.TestSite` `TestSiteCloudProfile` uses `SubscriptionDescriptor.FromCode` (now private) — update to `Parse`/`TryParse` when next built.
+  - **[#945](https://github.com/n3oltd/umbraco-extensions/pull/945)** `fwd-campaign-offering-visibility` — #203 `CampaignOfferingVisibility` filters in `Cloud.Platforms.Search`.
+  - **[#946](https://github.com/n3oltd/umbraco-extensions/pull/946)** `fwd-canonical-og-jsonld` — #917 **fixes only** (canonical/og:url on virtual routes, JSON-LD invariant-date/alpha-2); the homepage-in-sitemap `DescendantsOrSelf` fix was already on v17. Public `IOpenGraphProvider.AddOpenGraph`→`AddOpenGraphAsync` — sites subclass `OpenGraphProvider<T>` (protected sync unchanged) so site-mh/site-mruk unaffected.
+- **DEFERRED (NEEDS-DECISION, not ported) — for follow-up decisions:** **#936** fluent CT/DT designers (~107 files, heavy v13→v17 rewrite — async `IDataTypeService`/`ConfigurationData`/BlockGrid config — and resurrects Cropper/Uploader → needs keep-or-drop call); **#921** culture accessor (large refactor; the 404 it rode with is already fixed differently on v17); **#924/#925** workload-identity blob storage (verify v17 `StorageProviders` API first); **CDN trio #937/#934/#902** (large, concurrency-sensitive `CdnClient` rewrite + middleware + webhook receiver); **Connect-client regen** (#941 etc. — needs the **live backend** OpenAPI); **Maps.Google** (needs #936 + product call); **new SEO features** (multi-sitemap index, GEO structured data, AI-crawler robots). Also #946 left #917's **sitemap-BOM fix + ExceptionMiddleware rethrow** out of scope (small follow-up).
+
+**Latest (2026-08-18) — remaining project increments sliced into PRs #938 + #939; `v17-Talha` cleanups:**
+- **PR [#938](https://github.com/n3oltd/umbraco-extensions/pull/938) — Data** (base `v17`, branch `v17-Data`): unused-using cleanup + `ImportsConfigurator : KonstruktConfigurator → UIBuilderConfigurator`. 5 files, internal-only, no behaviour change.
+- **PR [#939](https://github.com/n3oltd/umbraco-extensions/pull/939) — Remove retired Cropper + Uploader** (base `v17`, branch `v17-Cropper-Uploader-Removal`): deletes the `N3O.Umbraco.Cropper` + `N3O.Umbraco.Uploader` plugin projects (Cropper 50 files, Uploader 35 — incl. `.Data`/`.StaticAssets`), `N3O.Umbraco.Clients` `CropperClient`/`UploaderClient` + their DI, and repoints `ImageProcessing`'s `ProjectReference` off Uploader → `N3O.Umbraco.Plugins`. 87 D + 2 M; branch verified an exact match to `v17-Talha`. **⚠️ Breaking for the sites estate — checked per the pre-removal rule:** the sites monorepo (`D:\Development\n3oltd\sites`) shows **17 client sites** take `N3O.Umbraco.Cropper`/`Uploader` package refs and **334 generated-model files** embed `N3O.Umbraco.Cropper.Models` types (e.g. `CroppedImage`). **Talha confirmed** the sites drop these (→ native `MediaWithCrops`) as part of their own v17 upgrade, so removal to `v17` is intended. `.sln` cleanup deferred to the final solution-wide PR (intermediate non-building `v17` accepted).
+- **`v17-Talha` cleanups (committed + pushed):** dropped 3 orphan `.d.ts` shims left after the merged plugin PRs — Cells `handsontable.d.ts` (superseded by a tsconfig `paths→handsontable/index.d.ts` mapping) + Cells/SerpEditor `uui-react.d.ts` (unused; the `.tsx` use no `uui-*` tags); both plugins `tsc --noEmit` clean without them (`c8fbabebf`). Reverted a stray 1-line `// TODO` in `PluginController.cs` to match `v17` (`c2a8db125`, "drop the Plugins TODO" — not worth a PR). `v17-Talha` pushed through `c2a8db125`.
+- **After #938 + #939 merge, the only remaining work → `v17` is the final solution-wide PR:** `N3O.Umbraco.sln` (remove the Cropper/Uploader/Bundling/StaticAssets project entries + keep the `Release|x64/x86` aliases), `Directory.Build.*`, and the root migration `*.md` docs + `docs/frontend/**` + `inspect_usync.csx`. The Search/Monitoring/Cloud/Sync/Cdn increments the older tracker listed are **already on `v17` (0 diff)** — the 2026-08-18 reconciliation confirmed the entire remaining `origin/v17 → v17-Talha` diff was only Cropper/Uploader + Data + Clients + ImageProcessing (+ docs/`.sln`).
+- **Cropper/Uploader review (2026-08-18) — carry-over + migration tool.** The deleted plugins' behaviours are documented in `CROPPER_UPLOADER_NATIVE_MIGRATION.md` and need **no in-repo carry-over**: `CropperContentSavingHandler` (pre-generated crop files on save) is obsolete under native on-the-fly ImageSharp crop URLs; `OpenGraphImageCropperHandler` (public abstract base, **0 site subclasses today**) is a per-site reimplement against `MediaWithCrops`. **Per-site DATA migration tool = the `media-migrate` CLI** (`N3O.Umbraco.MediaEditorMigration.Cli`, sibling folder `D:\AI Migration Test\Cropper Uploader Migration\`; mirrors `nc-migrate`): raw-SQL, single transaction, `--dry-run`/`--apply`. **It DOES cover data types** — `Migrator.MigrateDataType` flips each existing `N3O.Umbraco.Cropper`/`Uploader` datatype **in place** to `Umbraco.MediaPicker3` (same `umbracoDataType.nodeId`, so all `cmsPropertyType` bindings survive), with `NativeValueBuilder.BuildMediaPickerConfig` carrying the crop definitions into the native `crops` config; it also rewrites each property value to the native shape and registers the backing media nodes (`MediaNodeFactory`). Caveats: guards on the Umbraco 14+/17 schema (run **after** the site is on v17); rebuild NuCache + Examine after `--apply` (writes relational rows directly).
+- **⚠️ REQUIRED follow-up (Talha, 2026-08-18) — native media converter for `N3O.Umbraco.Data` is NEEDED (not an "accepted drop").** #939 removed `CropperPropertyConverter`/`UploaderPropertyConverter`, which gave the structured CSV import/export pipeline blob-column support for image/file properties (**export** → media URL via `GetCells`; **import** → `parser.Blob.Parse` a blob then `contentBuilder.Cropper(alias).SetImage(x).AutoCrop(config)` / `.Uploader(alias).SetFile(x)`), registered via `UploadDataTypes.Register(<alias>)` in each `.Data` composer. **EXPORT is now implemented** — `Data/N3O.Umbraco.Data/Converters/Properties/PropertyConverter.MediaPicker.cs` (`MediaPickerPropertyConverter : PropertyConverter<string>`, commit `a62c3544b`, build-verified 0 errors): `IsConverter` on the `Umbraco.MediaPicker3` alias, exports each picked item's media URL via `IContentHelper.GetMediaPickerValue(s)` + `IMediaUrl.GetMediaUrl` (single/multiple via `MediaPicker3Configuration.Multiple`); auto-discovered by `DataComposer` (`IPropertyConverter`). **IMPORT is now implemented** (commit `19a52726d`, build-verified 0 errors; **not runtime-verified** — needs a real Data import): per Talha's design (2026-08-18) there is **no distinction between imported and normal media** — `Import` creates a normal Umbraco media-library node from the uploaded file via `IMediaService.CreateMedia`(name=filename, parent=media root, type Image/File by extension) + `media.SetValue(..., "umbracoFile", filename, stream)`, so the configured storage provider (Azure Blob) stores it exactly like a backoffice upload (folder-per-item handled by Umbraco), then references it as a native MediaPicker3 value `[{key,mediaKey,crops:[],focalPoint:null}]` set through the `Raw` property builder. Registered `UploadDataTypes.Register("Umbraco.MediaPicker3")` so import treats it as a file column. Media-creation is inline in the converter (all Umbraco media services are DI-available — no Extensions change, so it stays inside the Data PR). Runbook §"In-repo consequence" corrected accepted→needed→done(export+import); tracked on #729.
+- **Non-picker (inline) native media editors also covered (2026-08-18):** the picker was only part of it — native **`Umbraco.UploadField`** and **`Umbraco.ImageCropper`** had **no** Data converter (the removed N3O converters matched only the custom aliases; sites use both — site-afh `UploadArticle/Audio/File` = UploadField, `Image` media type = ImageCropper). Added a shared `InlineMediaPropertyConverter` base + `UploadField`/`ImageCropper` subclasses (`PropertyConverter.InlineMedia.cs` / `.UploadField.cs` / `.ImageCropper.cs`, commit `ba884d74d`): unlike MediaPicker3 (media-node reference) these store the file **inline on the property**, so import writes the file to the media file system (`/media/{id}/{filename}` folder-per-item via `N3O.Umbraco.Plugins` `GetStoragePath`/`GetMediaUrlPath`, which Data already references) and the subclass writes the editor's value (UploadField → path string; ImageCropper → `ImageCropperValue`). Registered both as upload data types. Also **dropped the hard-coded image-extension set** in the MediaPicker3 converter for Umbraco's config-driven `ContentSettings.Imaging.ImageFileTypes` (commit `feee65ec5`) — new formats come from config, not code. All build-verified 0 errors; not runtime-verified. All folded into #938 (`7fa653bf1`).
+
+**Latest (2026-08-17) — Plugins PRs #928–#932 MERGED into `v17`; `v17-Talha` synced back (supersedes the 2026-08-10 "draft / not pushed" entry below):**
+- **All 5 stacked plugin PRs squash-merged into `v17`** (2026-08-17): **#928 WelcomeDashboard** (`5bf805e5a`) → **#929 TextResourceEditor** (`2c7489819`) → **#930 SerpEditor** (`3c7e0bc4d`) → **#931 Cells** (`cae4ee1e2`) → **#932 EditorJs** (`696bcc496`). All 5 `origin/v17-*` branches auto-deleted. **The Plugins migration is now complete on `v17`.**
+- **This session's follow-ups shipped in those PRs** (committed to `v17-Talha`, cherry-picked onto each PR branch, merged): SerpEditor + TextResourceEditor + Cells → backoffice-styled native inputs + `UmbChangeEvent` (replacing deprecated `UmbPropertyValueChangeEvent`); TextResourceEditor dropped the `uui-box` to match v13; **EditorJs re-architected to host EditorJS in a same-origin iframe** (fixes shadow-DOM style isolation + the `+`-toolbar-closes-on-click bug — EditorJS's `documentClicked` reads a retargeted `event.target=umb-app` under Umbraco's shadow DOM; the iframe gives it a real document). Verified live: styled render, `+` opens the block picker, content persisted to DB. Rationale is in #932's body.
+- **⚠️ `origin/v17` carried post-push review enhancements that were NOT on `v17-Talha`** — the PR branches were further edited (by review) after this session pushed, then merged. Notably **EditorJs** gained: `__n3oSetValue` live value-sync (replacing init-once semantics; the `value` setter now pushes into the frame), frame-load **error handling** (`#showFrameFailure` + `script.onerror` + null-doc guard), a **`requestSave`** bridge, and proper `UmbModalManagerContext` typing (dropped the `any` + eslint-disable). SerpEditor gained defensive `String(config?.getValueByAlias(...))` coercion; comment cleanup across all five. **These are now on `v17-Talha` via the sync-back** (resolved toward `origin/v17` for every plugin file — it is strictly ahead).
+- **Merged `origin/v17` → `v17-Talha`** (merge **`57cea1496`**, **NOT pushed** — left for Talha; undo with `git reset --hard a5f377f50`). Conflicts (all expected for a squash-merge-back): **plugin files → `origin/v17`** (the reviewed/enhanced versions above); **`WelcomeDashboard.cs`/`WelcomeDashboardComposer.cs` → accept delete** (stale pre-migration stubs #928 removed; dashboard is frontend-only); **`N3O.Umbraco.sln` → ours** (keeps Uploader/Cropper removed + the `Release|x64/x86` aliases — `origin/v17` still carries Uploader as that removal hasn't been PR'd yet; StaticAssets projects already removed on both sides); **`package-lock.json` → regenerated** (`npm install --package-lock-only`, "up to date" = already consistent). Verified: no conflict markers, `editor-js.ts` byte-identical to `origin/v17`, lockfile valid JSON, **zero** tracked Uploader/Cropper files re-introduced (only stale `bin`/`obj` remain on disk). `origin/v17` now fully contained in `v17-Talha` (0 incoming).
+- **Not full-solution-build-verified:** the merge adopts `origin/v17`'s already-merged plugin versions verbatim (git-resolution correctness verified as above); `v17` remains known-red on `DemoSite` (pre-existing) and there is no PR CI.
+
+**Latest (2026-08-10) — Plugins migration: 5 backoffice plugins → new `frontend/<app>` convention, one stacked PR each:**
+- Migrated **WelcomeDashboard, TextResourceEditor, SerpEditor, Cells, EditorJs** from the stale `.StaticAssets/Extensions/` layout (committed bundles, `@n3o/build`) to the current convention: `<MainProject>/frontend/<app>/` (shared `@repo/build-config` preset) + `<MainProject>/wwwroot/App_Plugins/<Folder>/umbraco-package.json` (only the manifest tracked; built `.js` git-ignored). Each main project became `Microsoft.NET.Sdk.Razor` + `<N3OReactPlugin>true</N3OReactPlugin>` (auto-refs ReactRuntime, builds via the shared root frontend targets — no per-project target). The separate `.StaticAssets` project is deleted per plugin; `SerpEditor.Data` / `Cells.Data` are untouched.
+- **Committed to `v17-Talha`** (local): WelcomeDashboard `1ff93fa75`, TextResourceEditor `598306917`, SerpEditor `e8d27cd19`, Cells `581affbe4`, EditorJs `ad6551a97`. **Not pushed to `origin/v17-Talha`** (left for Talha).
+- **Stacked draft PRs** (base = previous branch; merge bottom-up): **#928 WelcomeDashboard** (base `v17`) → **#929 TextResourceEditor** → **#930 SerpEditor** → **#931 Cells** → **#932 EditorJs**. All draft, assignee talhamalik4025, public-repo-safe (`no-work-issue`).
+- **Per-plugin specifics:** SerpEditor renamed the stale `@n3o/backoffice-core` import → `@n3oltd/backoffice-core` (auth-fetch). Cells bundles Handsontable 12.3.0 (+ a `handsontable.d.ts` ambient shim for its missing `types` export condition under `moduleResolution: bundler`) **and fixes a pre-existing manifest defect** — the manifest declared a `propertyEditorSchema` **and** `propertyEditorUi` with the same alias `N3O.Umbraco.Cells`, colliding with the backend `[DataEditor]` ("already registered", dropping the UI); removed the redundant manifest schema (schema now from backend, matching SerpEditor/TextResourceEditor). ⚠️ **Owed:** confirm the Cells `gridConfiguration` datatype-config field still renders (now backend `[ConfigurationField]`-only). EditorJs bundles `@editorjs/*` (+ `vendor.d.ts` ambient types) and its custom Umbraco image/link tools.
+- **Test site:** all 5 are wired into `DemoSite.Web` (WelcomeDashboard/TextResourceEditor/SerpEditor repointed StaticAssets→main RCL; **Cells + EditorJs were not referenced before — added**). DemoSite runs on `https://localhost:6001` against the **`DemoSite.Web.v17`** DB (admin `admin@demosite.local`), started with a runtime `ConnectionStrings__umbracoDbDSN` env override because the committed `appsettings.Development.json` points at `DemoSite.Website` (Talha's local DB) which doesn't exist here. Verified in the running backoffice: WelcomeDashboard renders the Help & Support panel; SerpEditor renders the SEO preview on a page's Title & Meta (incl. the computed title → the authed template-options API works via `@n3oltd/backoffice-core`); TextResourceEditor's property editor resolves on its Data Type; Cells + EditorJs load with no console errors + serve their bundles (no demo content/datatype exists for them, so their in-content editors weren't exercised). All 5 bundles serve 200 from the running host.
+- **Build gotcha (recurring):** `dotnet build` triggers `npm ci` which hits EPERM `-4048` (locked node_modules) after any `npm install`; touch `src/node_modules/.n3o-frontend-restored` + `.n3o-frontend-built` (both newer than `package-lock.json`) to make the frontend restore/build targets skip, then build.
+
+**Latest (2026-08-10) — PR #927 merged into `v17`; `v17-Talha` synced + Extensions converged:**
+- **PR #927 (post-DemoSite increments) merged into `v17`** — squash-merged as `52f3acf4e`; branch `v17-post-demosite-increments` deleted, worktree pruned. This also lands the `BlogPost.generated.cs` fix on `v17`, so the `#926` "broken generated file" issue below is now **resolved on `v17`**.
+- **Merged `origin/v17` → `v17-Talha`** (merge `2e8797a65`, pushed). One `.sln` conflict (the `Release|x64/x86` platform aliases `v17-Talha` carries, `origin/v17` lacks) — kept ours, per prior decision.
+- **Extensions converged to `v17` (Talha's call):** the merge had auto-kept `v17-Talha`'s version of 5 files that were *excluded* from #927 — 2 comments Talha deleted in the PR (`ContentHelper.cs`, `LanguageServiceExtensions.cs`) + 3 files reverted out of the PR (`UmbracoHealthCheck.cs`, `LocalizationComposer.cs` TryAddSingleton, `NotificationsComposer.cs` TryAddTransient). All 5 **aligned to `origin/v17`** (dropped from `v17-Talha`) so `N3O.Umbraco.Extensions` is now identical on both branches. Recoverable from git history if ever wanted.
+- **Earlier same-day:** removed the orphaned `Scheduler/N3O.Umbraco.Scheduler.StaticAssets/` (9 dead files, not in `.sln`, not referenced — superseded by the RCL dashboard inside `N3O.Umbraco.Scheduler`) from `v17-Talha` (`853e30ede`); it was never on `origin/v17`. The real `N3O.Umbraco.Scheduler` changes (SchedulerSettings + OpenIddict 7.2.0 pin) went into #927.
+- **Still pending → `v17`:** the **Plugins** migration (~200 files: Cropper/Uploader deleted, Cells/EditorJs/SerpEditor/TextResourceEditor/WelcomeDashboard to `frontend/<app>` + net10) and the remaining post-merge increments (Data, Clients, Search, Monitoring, Cloud, Sync, Cdn, ImageProcessing). `v17-Talha` still sits ahead of `v17` by these (expected).
+
+**Latest (2026-08-07) — DemoSite host merged into `v17` (PR #926); `v17-Talha` synced:**
+- **PR #926 (DemoSite Web + Core, the closing host) merged into `v17`** — squash-merged as `a52ca4de5`; `origin/v17-DemoSite` deleted. Merged `origin/v17` → `v17-Talha` (merge `4b6a2ae5a`, pushed).
+- **One merge conflict, in `BlogPost.generated.cs`** — kept `v17-Talha`'s correct `Categories => IEnumerable<BlogCategories>`. ⚠️ **`origin/v17` (as merged via #926) carries a broken ModelsBuilder output on that single line:** the element type is emitted as the raw GUID `87446633-60be-4dfc-b761-8339d6c55906` instead of `BlogCategories`, so **`DemoSite.Core` will not compile on `v17`** until the fix (`9ade6e03a`, which is on `v17-Talha`) reaches `v17`. Scope confirmed = that one line, `BlogPost` only — no other generated model on `v17` has a raw-GUID type ref. ✅ **Resolved on `v17` via #927 (merged 2026-08-10).**
+- **Working-tree cleanup:** discarded regeneration artifacts (a ModelsBuilder-re-added blank line in `BlogPost.generated.cs` + 3 `appsettings-schema`/`umbraco-package-schema` JSONs that differed only by EOL) and removed a stray `src/NUL` Windows device-name file.
+- **PR [#927](https://github.com/n3oltd/umbraco-extensions/pull/927) — ✅ MERGED 2026-08-10 (`52f3acf4e`)** (branch `v17-post-demosite-increments`, base `v17`, cut from `origin/v17`): the post-DemoSite increments — **(a)** the `BlogPost.generated.cs` GUID→`BlogCategories` fix; **(b)** **retire `N3O.Umbraco.Bundling`** (8 files + 2 `.sln` blocks); **(c)** `N3O.Umbraco.Extensions` 19-file sync (culture-aware `SpecialContentPathParser` + `FlushSpecialContentPathsComponent`, `ContentCache` lazy `GetOrAdd`, `Locator`/`UmbracoHealthCheck` → `GetPublishedRootContents`, `TryAdd*` DI dedup, verbatim stored-JSON in `ContentHelper`, unused-using cleanup); **(d)** `Storage.Azure.AddFileAsync` overwrite:true; **(e)** `Accounts` drops the retired Uploader dep (`FileUpload`→`MediaWithCrops`). Build-verified 0 errors: Extensions, Accounts, Storage.Azure. `DemoSite.Core` NOT fully built — pre-existing `net8` plugin gap (SerpEditor/TextResourceEditor/WelcomeDashboard still target net8.0 on `v17`; the separate **Plugins** migration). Worktree removed after push.
+
 **Latest (2026-08-04) — #914/#916 merged into `v17` and synced back; Bundling retired per nadrummond; post-#905 v13 forward-port started (5/9 landed):**
 - **Merged `origin/v17` → `v17-Talha`** (merge `6aad7f20c`): brings the merged **#914** (Blocks review follow-ups) and **#916** (small migrations batch). Conflict resolution favoured `origin/v17`'s **reviewed** #914 `ContentHelper`/`ElementsProperty` design (content vs settings kept **separate**: 5-arg `ElementsProperty` + `SettingsElements` + `AllElements`; validation uses `AllElements`, data export uses `Value`) over `v17-Talha`'s older combined-list form; kept v17-Talha's JSON-verbatim comment. Cropper kept **deleted** (retirement; #914's edit to `CropperContentSavingHandler` moot). ⚠️ Behaviour note: under the separated design, **block settings-data properties are excluded from the data export** (`Value` = content only) — matches how #914 was reviewed/merged.
 - **Retired `N3O.Umbraco.Bundling`** (`a50eb9b0c`) — removed `src/Bundling/**` + its `.sln` entry. **nadrummond ruled (closing PR #915)** that Bundling and the CMS-side Smidge seam must NOT come to v17; the package retires with the migration and the **5 sites** (mth/mr/mpb/afh/mh) move to bundling at source with **Vite** in their own repos. Reverses the earlier "Option 1: keep Smidge" plan. 0 in-repo consumers. Tracked in n3oltd/work#3211 (repurposed).
@@ -409,6 +802,155 @@ been added to `cropper.js` and `uploader.js` flagging that they **may or may not
 **native media/image picker + built-in Image Cropper** instead. **Do not rewrite these until Talha confirms.**
 
 ---
+
+## Block preview rebuilt (2026-08-29, framework `N3O.Umbraco.Blocks` + `.StaticAssets`) — SHIPPED IN PR #974 (draft)
+
+**Bug fixed.** `BlockPreviewBackofficeController` bound `[FromBody] BlockGridValue`. `BlockValue.Layout` is
+`IDictionary<string, IEnumerable<IBlockLayoutItem>>` — an interface element type — which MVC's System.Text.Json
+input formatter cannot deserialize, so every preview request threw
+`NotSupportedException: Deserialization of interface or abstract types is not supported. Type 'IBlockLayoutItem'`
+**in the formatter, before the action ran**, bypassing the controller's own catch and 500ing instead of returning
+an error banner. Umbraco's `IJsonSerializer` carries `JsonBlockValueConverter` (registered only on
+`SystemTextJsonSerializer`, not on MVC's `JsonOptions`) and reads the shape correctly, including the capitalised
+`Layout` key the database still holds. Fix: read the raw body and deserialize with `IJsonSerializer`.
+
+**Verified** by `scratchpad/BlockPreviewProbe` against the real Home page value (89 KB, 25 blocks, exported from
+`wc-mhuk`): the MVC path reproduces the exception verbatim (reverse check), the Umbraco path resolves 25
+references / 9 root layout items / 25 content / 17 settings for both the stored `Layout` and posted `layout`
+shapes. Site log went from 9 `[ERR] executing BlockPreviewBackoffice` to 0.
+
+**Preview redesigned** — the per-block endpoint was replaced by a batch one. Home has 25 blocks, so opening it
+previously meant 25 requests each carrying the same 89 KB grid value (~2.2 MB up) and 25 identical
+deserialize+clean+convert passes. Now:
+- `previewGridBlocks` takes the grid value once plus the block keys and returns `{ blockKey: markup }`; one
+  conversion per request, per-block try/catch so one bad block does not blank the rest.
+- Client `PreviewCoordinator` (one per `UmbBlockManagerContext`) batches, and skips any block whose own
+  content/settings/layout fingerprint has not moved since it last rendered — so editing one block re-renders one.
+- `IntersectionObserver` (400px margin) defers off-screen blocks, so opening a document renders what is on
+  screen rather than all 25.
+- `documentTypeKey` now carries the **document** type (from `contentTypeUnique`), not the block's element type.
+  The unpublished-document fallback looked up an element type key in `IContentTypeService` and could never hit.
+
+**Removed:** the `previewGridBlock` single-block endpoint (now 404); `BlockValueExtensions.DeserializeAndClean`
+(replaced by `ToEditorData`, which takes an already-deserialized value — no callers in this repo or in
+`n3oltd/sites`); the static never-invalidated `ConcurrentHashSet<IContentType>` element-type cache (a new element
+type broke previews until app restart) in favour of `IContentTypeService.GetMany`; the per-block failure toast
+(with batching a failure would raise one toast per block — the inline banner already shows in place).
+
+**Verified end to end in the MH backoffice.** Fixing the deserialization exposed four more v13->v17 defects in
+the same path, all now fixed and confirmed against the live Home page:
+
+1. **Null owner (the big one).** `ContentHelper.GetConvertedValue` passed `null` as the property owner to
+   `ConvertIntermediateToObject`. Harmless in v13; in v17 `BlockEditorVarianceHandler.AlignedExposeVarianceAsync`
+   reads `owner.ContentType.Variations`, but only once `BlockValue.Expose` has entries for the element. `Expose`
+   is v15+, so the v13 code always hit the early return. The v17 backoffice posts `expose` populated (25 entries
+   on Home), the guard no longer fires, and every block preview threw NRE inside Umbraco. `GetConvertedValue` now
+   takes an optional `IPublishedElement owner`; `IBlockPreviewer.PreviewBlockAsync` takes `IPublishedContent`
+   instead of just the type alias so the previewer can supply it.
+2. **`FormatBlockData` was dead in v17.** It branched on Newtonsoft `JObject`/`JArray`; Umbraco's serializer is
+   System.Text.Json from v14, so every structured value reached the converters unconverted. Now handles JsonNode.
+3. **MultiNodeTreePicker.** Posts `[{"type","unique"}]` but stores comma separated udis (verified against
+   `MultiNodeTreePickerPropertyValueEditor.FromEditor` and the DB). Blanket stringify produced JSON the converter
+   then split on commas -> `String "[{ "type": "document"" is not a valid udi`.
+4. **Nested and settings values were never formatted.** Formatting ran only over top level `ContentData`, so a
+   picker inside a nested Block List, or in `SettingsData`, kept its editor shape. Formatting now happens inside
+   `ToEditorData` (where the property types are resolved) over both lists and recursively into nested block
+   values, so no site has to remember to call it. MH's own `FormatBlockData()` call was removed.
+
+Also: the controller now logs the exception. Previously a failing block produced only a banner carrying
+`ex.Message`, so the stack was lost - which is why the original diagnosis stalled.
+
+**Result on Home:** preview failures 12 -> 1, and requests for the whole document 25 -> 1.
+
+**`OurBlockPreviewer` rewritten so every block previews** (Talha: "each should work ... but of course base
+structure should be of muslimhands"). It used to search the built grid for a handful of shapes and threw
+`No rows found for block id ...` for anything else - which was every root block, as MH puts a `GridSection` at
+the root of every page. It now locates the block in the grid and rebuilds only as much of the page around it as
+that position calls for: hero -> the hero partial; a section -> the section through the site's own
+`ourGrid.cshtml`, keeping its rows and styling; a section header -> `HeaderPreview.cshtml`; a block in a row ->
+that row's layout, so its width previews correctly; anything nested in a block's areas, at any depth -> on its
+own in a one column row. The `TabsBlock` / `DataDashboardBlock` special cases are gone, replaced by the generic
+recursive search, and nothing is keyed off element type any more.
+
+Two more fixed with it:
+- **`propertyAlias` is now sent by the editor** (from `UMB_PROPERTY_CONTEXT`) instead of the previewer assuming
+  `Page.Blocks`. `zakatCalculatorSettings` keeps its grid in `defaultContent`, the platforms types in
+  `offeringPageContent` / `campaignPageContent`, so the property type resolved to null and nothing rendered.
+- **`OurLayoutEngine` line 44** did `.Areas.Single(x => x.Alias == "header")`. A section added in the backoffice
+  has no areas until something is put in them, so adding a Section threw `Sequence contains no matching element`.
+  Both areas are now optional.
+
+**Verified:** Home (9 sections) and Zakat Calculator (`defaultContent`) both render real previews, and adding a
+Section produces 0 errors. The edit/settings/copy/delete action bar is Umbraco's own and appears on hover at the
+block's top right - confirmed present with 4 buttons and opacity 1 on hover.
+
+## Block preview + STJ seams shipped as PR #974 (2026-08-31)
+
+**Branch `v17-stj-and-block-preview`, worktree `D:\AI Migration Test\wt-v17-stj`, base `v17`, DRAFT.**
+Two commits: `570f038d0` (review fixes) and `6700da934` (comment trim). PR body rewritten in full.
+
+**Adversarial review round.** Three-agent panel found 8 merge blockers plus a materially inaccurate PR body;
+all were fixed. Coordinator: batches now serialise via `#flushAgain` instead of aborting on each flush (the
+abort version left 24 blocks stuck loading — reverted); `register` clears a stale fingerprint when the element
+*instance* changes; `setAuthFetch` ignores null so a dragged/deleted block cannot strip the shared token;
+`#pending.clear()` moved after the guards; `#join()` on `connectedCallback` so sorting cannot orphan a block.
+`BlockItemDataExtensions`: restored `List<T>` scalar-array handling, both multiple-textstring shapes,
+`UdiParser.TryParse` instead of throwing `Udi.Create`, empty-guid guard, and the load-bearing `UdiEntityType`
+using-alias (an agent called it a no-op; removing it is CS0234). Controller returns typed `PreviewBlocksRes`
+with a `failed` list so banner markup is not recorded as rendered. `CmsStartup` passes the options instance to
+`UseStaticFiles` and only sets `Cache-Control` when absent.
+
+**Verified at runtime** (25-block page): 25/25 framed, 0 stuck, 0 banners, 8 section shells, 0 duplicates.
+Reverse check on the sort fix, with a control — two keys in one area, one relocated then poked, the other poked
+in place:
+
+| | relocated, then poked | control: poked in place |
+|---|---|---|
+| with `#join()` | requested | requested |
+| `#join()` removed from the served bundle | **not requested** | requested |
+
+Done by patching the call out of the served bundle (13854 → 13828 bytes), re-running, then restoring. The
+control stays positive in both runs, so the negative is not a dead instrument.
+
+**Second review panel (4 agents) was stopped mid-run and produced NO findings** — the journal holds four
+`started` records and no completions, and agent thinking is encrypted, so nothing was recoverable. Its one
+useful output: the `JsonObjectConverter` producer-map claims in the PR body were verified against source.
+
+**Discovery worth reusing: a full Umbraco source clone at `D:\Development\Misc\Misc\Umbraco-CMS`, checked out
+at `release-17.3.5`** — the exact installed version. Two of four agents wasted turns hunting for `ilspycmd` and
+`strings`-ing nuget DLLs first. Saved to memory.
+
+**Two leads chased directly after the panel died:**
+1. **`'Umbraco.BlockGrid'` hardcoded in `#buildBlockValue` — not a defect.** The manifest is
+   `"forBlockEditor": "block-grid"` and Umbraco enforces it per editor type (`block-grid-entry.element.ts`
+   requires `UMB_BLOCK_GRID`, `block-list-entry.element.ts` requires `UMB_BLOCK_LIST`), so the element can
+   only mount inside a grid. Also closed: `HasAny` is null-safe on both object and collection.
+2. **`ToEditorData` vs the deleted `DeserializeAndClean` — filtering intact, but two real things.** The
+   content-type filtering survives (`RemoveAll` on unset `ContentTypeAlias`). **It also fixes a stale-cache
+   bug:** the old code held every element type in a process-wide static populated once behind
+   `if (!ContentTypes.HasAny())` and never invalidated, so any element type created later was invisible for
+   the process lifetime and its blocks were silently dropped from previews until restart. **And `ToEditorData`
+   now mutates its input** — `Convert` backfills `Key` from a `GuidUdi`, clears `RawPropertyValues`/`Udi` and
+   rewrites `Expose`, where the old code worked on a fresh copy deserialized from a string. Only caller passes
+   a request-scoped object, so no live bug; documented on the method. Both are now in the PR body.
+
+**NOT VERIFIED — worth a look.** `Convert` rewrites `Expose` with null culture/segment only for v13-format
+blocks, which is exactly what `AlignedExposeVarianceAsync` reads `owner.ContentType.Variations` against — the
+reason the `owner` parameter was added. Runtime testing was on an **invariant** document, so the
+culture-varying path is untested. Also: **About Us was never re-verified** after the section-shell fix; only
+the home page was.
+
+**`~/.claude/hooks/guard.py` fixed.** `check_pr_create` resolved repo visibility from the shell cwd, so a
+private-repo `--repo` PR was denied as a public-repo client-name leak because the session sat in a public
+checkout. It now reads `--repo`/`-R` when present, falling back to cwd. Reverse-checked across 6 cases: the
+false positive allows, and a client name still denies both with no `--repo` in a public cwd and with an
+explicitly public `--repo` target.
+
+**Sites repo: PR n3oltd/sites#154** removes one site's `ConfigureStaticFiles` override, which set
+`ServeUnknownFileTypes`. That setting has never taken effect (the argument-less `UseStaticFiles` discarded the
+instance), so #974 making the seam live would have switched it on at that site's v17 upgrade — serving
+unmapped extensions with no `Content-Type`, which the ASP.NET Core docs call a security risk. Zero-regression
+removal; branch cut from `origin/main` in a cone-mode sparse worktree.
 
 ## Remaining Work
 

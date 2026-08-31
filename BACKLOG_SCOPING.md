@@ -33,18 +33,103 @@ Achievability legend: ✅ Done · 🟢 Easy · 🟡 Moderate · 🔴 Hard · ⚠
 | **Other deprecated packages** | 🟢🟡 Easy–Moderate per item | See table below. |
 
 ### Newtonsoft.Json — scope
-- **301** files with `using Newtonsoft`; **~215** files carrying `[JsonProperty]`/`JObject`/`JArray`/converters.
-- **Root cause of the spread:** `IJsonProvider` (`N3O.Umbraco.Extensions/Json/JsonProvider.I.cs`) is **Newtonsoft-typed at its interface boundary** (`JsonSerializerSettings`, `JsonWriter`, `Formatting`). Every consumer of `IJsonProvider` is transitively coupled to Newtonsoft even with no direct `PackageReference`.
-- **Load-bearing sites:**
-  - Custom `JsonConverter`/`JsonContractResolver` subclasses in `N3O.Umbraco.Extensions/Json/` (`ByteSize`, `HtmlString`, `IPAddress`, `Lookup`, `PublishedContent`, `StorageToken`, …) — no direct STJ equivalents.
-  - MVC formatters `OurJsonInputFormatter`/`OurJsonOutputFormatter` extend `Microsoft.AspNetCore.Mvc.NewtonsoftJson` types (injects Newtonsoft into the whole request/response pipeline).
-  - `FlurlHttp.Clients.UseNewtonsoft()` global (`UtilitiesComposer.cs:13`) — all Flurl calls route through Newtonsoft.
-  - ~8 Refit clients (TotalProcessing, Opayo, DirectDebitUK, PayPal, Bambora, Cloudflare CDN, Auth0, Currencylayer) set `NewtonsoftJsonContentSerializer`.
-  - `N3O.Umbraco.Clients` — **entirely NSwag/Newtonsoft-generated** (dense `[JsonProperty]` + inline `JsonConvert`); migrating means re-generating with an STJ template.
-  - `IAttributionAccessor` returns `JObject` (`AttributionCookie.cs:13`, `AttributionAccessor.cs:13`) — public API change.
-  - `ImportReceiver.cs:80–113` parses webhooks via `JTokenType` — mechanical → `JsonElement.ValueKind`.
-- **Important caveat:** Umbraco 17.3.5 itself ships Newtonsoft transitively (`Umbraco.Cms.Core`). It will **not** leave the dependency graph after this work — only N3O's own code stops depending on it directly.
-- **Recommended phased approach:** (1) introduce an STJ-typed `IJsonProvider`; (2) ship Newtonsoft-backed + STJ-backed implementations side by side; (3) switch project-by-project; (4) regenerate NSwag clients with the STJ template; (5) drop the Newtonsoft packages.
+
+> **Re-verified 2026-08-30.** Counts and every load-bearing site below were re-checked against the tree
+> on that date; the corrections are called out inline. The headline estimate still looks like the right
+> order of magnitude, but it was attributed to raw file count, which **overstates the hand-work** (the
+> single largest block is generated) and **understates the coordination cost** of three breaking public
+> contracts. Re-scope before planning against a number.
+
+- **299** files with `using Newtonsoft` (was 301 — unchanged in substance). **160** carry
+  `[JsonProperty]`/`JObject`/`JArray`/`JToken`; the earlier "~215" counted converters too, so the two
+  figures are not directly comparable.
+- **Weight by project:** Giving.Allocations 39, Data 36, Payments.PayPal 30, Payments.Opayo 22, Cloud 21,
+  Payments.Bambora 19, Accounts 18, Payments.TotalProcessing 17, Extensions/Json 15.
+- **Root cause of the spread:** `IJsonProvider` (`N3O.Umbraco.Extensions/Json/JsonProvider.I.cs`) is
+  **Newtonsoft-typed at its interface boundary** (`JsonSerializerSettings`, `JsonWriter`, `Formatting`).
+  Every consumer is transitively coupled to Newtonsoft even with no direct `PackageReference`. ✅ still true.
+
+- **Cheaper than previously scoped:**
+  - MVC formatters `OurJsonInputFormatter`/`OurJsonOutputFormatter` are **deletable, not portable**. They
+    exist only to make MVC use `IJsonProvider`'s settings; ASP.NET Core already defaults to STJ, so this
+    becomes `JsonOptions.SerializerOptions` config and `Microsoft.AspNetCore.Mvc.NewtonsoftJson` drops out.
+  - `FlurlHttp.Clients.UseNewtonsoft()` (`UtilitiesComposer.cs:13`) — **Flurl is already 4.0.0**, where STJ
+    is the default serializer. Delete the line, drop `Flurl.Http.Newtonsoft`.
+  - **8** Refit clients (Auth0, Cloudflare CDN, Currencylayer, Bambora, DirectDebitUK, Opayo, PayPal,
+    TotalProcessing) set `NewtonsoftJsonContentSerializer` — 8 composer lines; Refit 10.2.0 supports STJ.
+  - `N3O.Umbraco.Clients` — **1,247** `[JsonProperty]` across 18 client files, but **generated**, so this is
+    an NSwag template change plus a diff review, not hand edits.
+  - `JsonContractResolver` does almost nothing: camelCase plus forcing `Writable` for non-public setters,
+    and `CreateProperties` is a **pure pass-through — a dead override that can just be deleted**. Maps to a
+    naming policy plus one `DefaultJsonTypeInfoResolver` modifier.
+
+- **The genuinely hard part is three breaking public contracts, not file count:**
+  - `IJsonProvider` — names Newtonsoft types in its own signature.
+  - `DataTypeParser<T>.TokenTypes` (`Data/N3O.Umbraco.Data/Parsing/DataTypeParser.cs:65`) —
+    `protected virtual IEnumerable<JTokenType>`, overridden by every parser across **23 files**. **Correction:**
+    the earlier note scoped this as `ImportReceiver.cs:80–113`, "mechanical → `JsonElement.ValueKind`". It is
+    a public extension point, so **any site with a custom parser breaks**.
+  - `IAttributionAccessor.GetAttribution()` returns `JObject`. **Correction:** this lives in
+    `N3O.Umbraco.Analytics` (`Context/AttributionCookie.cs:12`, `Services/AttributionAccessor/AttributionAccessor.cs:13`),
+    not Cloud.
+  - Plus the 9 custom converters in `Extensions/Json/Converters/` (`ByteSize`, `Content`, `HtmlString`,
+    `IPAddress`, `Lookup`, `PublishedContent`, `PublishedElement`, `SerializeToUrl`, `StorageToken`) —
+    bounded and mechanical, but real work.
+
+- **The real risk is strictness, not syntax.** Newtonsoft is lenient where STJ is strict: case-mismatched
+  property names, trailing commas, comments, numbers written as strings. Anywhere we read data we did not
+  write — imports, attribution cookies, third-party webhooks, migrated stored JSON — can start throwing on
+  payloads that parse today. Set the tolerance centrally when `IJsonProvider` is re-typed:
+  `PropertyNameCaseInsensitive`, `AllowTrailingCommas`, `ReadCommentHandling = Skip`,
+  `NumberHandling = AllowReadingFromString`, `PropertyNamingPolicy = CamelCase`. **Sequence by who wrote the
+  data:** internal-only paths first, foreign data last.
+
+- **Important caveat:** Umbraco 17.3.5 itself ships Newtonsoft transitively (`Umbraco.Cms.Core`). It will
+  **not** leave the dependency graph after this work — only N3O's own code stops depending on it directly.
+  The payoff is consistency and maintainability, not dependency reduction.
+
+- **Recommended phasing (revised 2026-08-30 — phase 0 and 1 are worth doing on their own):**
+
+  | Phase | Work | Breaking? |
+  |---|---|---|
+  | 0 | Boundary rule + banned-API analyzer; fix the violations found by the sweep below | No |
+  | 1 | Delete the MVC formatters; Flurl → STJ default; Refit ×8; NodaTime package swap | No — 4 packages drop |
+  | 2 | Re-type `IJsonProvider` to STJ; port the 9 converters and the resolver | Public API |
+  | 3 | Regenerate the NSwag clients on an STJ template | Generated DTOs need diffing |
+  | 4 | `JTokenType` parsers + `IAttributionAccessor` | Public API — coordinate with sites |
+  | 5 | Drop the remaining Newtonsoft packages | — |
+
+### Mixed-stack boundary rule
+
+Until the migration lands, the codebase is unavoidably mixed: Umbraco owns the property/editor/backoffice
+boundary and it has been System.Text.Json since v14. Consistency therefore means *unambiguous*, not *single*.
+
+| Data | Serializer | Never |
+|---|---|---|
+| Property / editor / block values, backoffice API payloads | Umbraco's `IJsonSerializer` | `JsonConvert`, `JObject`/`JArray`/`JToken` |
+| N3O domain — external clients, imports/exports, cookies, internal DTOs | `IJsonProvider` (Newtonsoft, for now) | `System.Text.Json` types |
+| Crossing between the two | a `string` | passing a parsed node across |
+
+Enforce with `Microsoft.CodeAnalysis.BannedApiAnalyzers` as a single `Directory.Build.props` entry plus one
+`BannedSymbols.txt`, carving out the places that legitimately still need Newtonsoft
+(`Data/N3O.Umbraco.Data/Parsing/**`, `N3O.Umbraco.Clients`, `Extensions/Json/**`, `Plugins/EditorJs/**`).
+There is currently **no `.editorconfig` and no analyzer package anywhere in the repo**, so this is new infra —
+but one central entry, not a per-project list.
+
+### Boundary-violation sweep (2026-08-30)
+
+Method: intersect files with `using Newtonsoft` (299) against files touching Umbraco's value/editor boundary
+(131) → **13 candidates**, each then read. Five are the converters already fixed on `v17-Talha`; they keep
+`JsonConvert` only for string→POCO, which the rule allows.
+
+| Site | Verdict |
+|---|---|
+| `Extensions/Content/ContentHelper.cs:379–381` (`GetJsonPropertyValue`) | 🟢 **Latent, no action.** Initially rated 🔴 from the shape of the code; tracing what reaches it shows otherwise. Both entry points are safe: `GetContentProperties(IContent, culture)` passes `IProperty.GetValue()`, i.e. the stored **string**; the recursive calls at `:271`/`:367` pass `ConvertToObject()`, which fully unwraps Newtonsoft tokens to `string`/primitive/`Dictionary<string, object>`/`List<object>` (`Extensions/JTokenExtensions.cs:9`). So `is JToken` is **dead** and the `JToken.FromObject` fallback only ever sees plain CLR objects, where it is safe — no `Parent` chain, no self-referencing loop. No site reaches the 5-arg overload (sites override `PlatformsPageContentPublisher.GetContentProperties(IPublishedContent)`, a different method). **Do not add `JToken`/`JsonNode` branches here** — neither has a producer, and a silent `JsonNode` branch would replace a loud `JToken.FromObject` throw with a quietly different JSON shape. Optional cleanup only: delete the dead `is JToken` test. |
+| `UIBuilder/ValueMappers/EnumDropdownValueMapper.cs:14,19` | 🟡 Rule violation, benign today — `JsonConvert` round-trip of a `string[]` at the editor boundary; both stacks emit identical output. Move in phase 0. |
+| `Extensions/Extensions/ImageCropperExtensions.cs:58` | 🟡 Rule violation, safe — `JObject.Parse` of a stored string. Note: file is currently untracked. |
+| `Plugins/EditorJs/**` (`EditorJsBlock.TunesData` is a public `JObject`) | 🟢 Self-contained Newtonsoft island — `EditorJsValueConverter.cs:51` reads the stored **string** via `IJsonProvider` and the model never crosses to STJ. Migrates in phase 2. |
+| `Extensions/Json/Converters/{Content,PublishedElement}JsonConverter.cs` | 🟢 Provider internals — Newtonsoft by design. Migrate in phase 2. |
+| `Data/Models/Content/{BlockListValueReq,ContentPropertyReq}.cs` | 🟢 N3O domain DTOs carrying `[JsonProperty]`. Migrate in phase 3. |
 
 ### Other deprecated / notable packages
 
@@ -198,7 +283,7 @@ Five Lit surfaces exist:
 | # | Backlog item | Verdict | Effort | Blocked by |
 |---|---|---|---|---|
 | 1a | build.targets removal | ✅ Done | — | — |
-| 1b | Newtonsoft → STJ | 🔴 Hard | ~3–5 eng-weeks | NSwag regen; `IJsonProvider` API change |
+| 1b | Newtonsoft → STJ | 🔴 Hard | ~3–5 eng-weeks (re-scope — see §1, re-verified 2026-08-30) | NSwag regen; 3 breaking public contracts (`IJsonProvider`, `DataTypeParser<T>.TokenTypes`, `IAttributionAccessor`); STJ strictness on foreign data. Phases 0–1 are non-breaking and worth doing alone |
 | 1c | Other deprecated packages | 🟢🟡 Easy–Mod | per item | Mostly gated on 1b |
 | 2 | Remaining Lit → React | 🟢 Easy / mostly deliberate | ~1 day + pipeline setup | Marketing.StaticAssets has no Vite/TS build |
 | 3 | Mediator / Wolverine | ⚠️ Not urgent | ~5 files if done | Nothing today (12.5.0 is MIT) |

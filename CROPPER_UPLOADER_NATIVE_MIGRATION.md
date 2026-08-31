@@ -129,8 +129,28 @@ Inside a transaction (rolled back under `--dry-run`):
 - [ ] `uSync export` → commit.
 - [ ] Delete orphaned pre-generated crop files.
 
-## In-repo consequence already accepted
-The `N3O.Umbraco.Data` import/export pipeline no longer has a `Cropper` `PropertyType` (the `CropperValueReq/Res`
-structured import/export is gone). Content using the native media editors is not handled by the structured Data
-import/export beyond the generic converters; adding native-media support to that pipeline is a separate feature if
-needed.
+## In-repo consequence — native Data converter is NEEDED (updated 2026-08-18)
+Removing the plugins also removed `CropperPropertyConverter` / `UploaderPropertyConverter` (the `.Data` projects), so
+the `N3O.Umbraco.Data` structured import/export pipeline **no longer handles image/file media properties at all** —
+there is no native `Umbraco.MediaPicker3` / `MediaWithCrops` converter to take their place (verified: `N3O.Umbraco.Data/
+Converters/Properties/*` has BlockList, MultiNodeTreePicker, etc., but no Media converter). The removed converters were
+`PropertyConverter<Blob, string>` that: **export** → the media URL (`GetCells` → uncropped URL); **import** →
+`parser.Blob.Parse` a blob, then `contentBuilder.Cropper(alias).SetImage(x).AutoCrop(config)` / `.Uploader(alias)
+.SetFile(x)`; and each `.Data` composer registered the editor as an upload data type (`UploadDataTypes.Register(<alias>)`).
+
+**Talha (2026-08-18): this capability is NEEDED, not an accepted drop.**
+
+**EXPORT — done.** `N3O.Umbraco.Data/Converters/Properties/PropertyConverter.MediaPicker.cs`
+(`MediaPickerPropertyConverter : PropertyConverter<string>`, commit `a62c3544b`, build-verified) restores media in the
+structured export: `IsConverter` on the `Umbraco.MediaPicker3` alias, exports each picked item's media URL via
+`IContentHelper.GetMediaPickerValue(s)` + `IMediaUrl.GetMediaUrl` (single/multiple via `MediaPicker3Configuration.Multiple`).
+Auto-discovered by `DataComposer`.
+
+**IMPORT — done** (commit `19a52726d`, build-verified; **not runtime-verified** — needs a real Data import). Per Talha's
+design (2026-08-18) there is **no distinction between imported and normal media**: `Import` creates a normal media-library
+node from the uploaded file via `IMediaService.CreateMedia` (name = filename, parent = media root, type Image/File by
+extension) + `media.SetValue(..., "umbracoFile", filename, stream)`, so the configured storage provider (Azure Blob) stores
+it exactly like a backoffice upload (Umbraco handles the folder-per-item path), then references it as a native MediaPicker3
+value `[{key, mediaKey, crops:[], focalPoint:null}]` via the `Raw` property builder. `UploadDataTypes.Register("Umbraco.MediaPicker3")`
+registers it as a file column. Media-creation is inline in the converter (Umbraco media services are DI-available, so no
+Extensions change — it stays inside the Data PR). Tracked on n3oltd/work#729.
