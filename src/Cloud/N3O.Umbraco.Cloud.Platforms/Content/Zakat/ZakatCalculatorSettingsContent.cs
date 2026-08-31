@@ -8,9 +8,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.Zakat.Settings.Calculator.Alias)]
 public class ZakatCalculatorSettingsContent : UmbracoContent<ZakatCalculatorSettingsContent> {
-    // A site renders page content with either Umbraco block grids or Perplex content blocks, so there is
-    // no one model behind this property. Only its presence is read here and it is rendered through
-    // IBlocksRenderer by alias, which handles both
+    // Either an Umbraco block grid or Perplex blocks depending on the site, so there is no one model behind
+    // it; only the alias is used, and IBlocksRenderer handles both
     public object DefaultContent => GetValue(x => x.DefaultContent);
     public string EmailCompositionId => GetValue(x => x.EmailCompositionId);
     public NisabType DefaultNisabType => GetValue(x => x.DefaultNisabType);

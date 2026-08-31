@@ -90,8 +90,6 @@ public partial class PlatformsContentTypeSeeder {
 
         var filters = designer.Group(Groups.Filters);
 
-        // A subscription defines however many fund dimensions it uses, so the data type behind a higher
-        // dimension does not exist on every site and that dimension is simply not part of its schema
         SeedZakatFundDimension(filters, x => x.FundDimension1, Shared.FundDimension1);
         SeedZakatFundDimension(filters, x => x.FundDimension2, Shared.FundDimension2);
         SeedZakatFundDimension(filters, x => x.FundDimension3, Shared.FundDimension3);

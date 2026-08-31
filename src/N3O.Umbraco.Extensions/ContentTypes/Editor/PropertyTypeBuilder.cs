@@ -23,9 +23,6 @@ public abstract class PropertyTypeBuilder<TSelf> : IPropertyTypeBuilder where TS
         _dataTypeService = dataTypeService;
     }
 
-    // The label a property carries is how a site's editors know the field, so like a content type's own name
-    // it is set when the property is created and left alone afterwards. What the schema actually defines,
-    // the data type behind the property and its validation, is converged either way
     public virtual void Apply(IPropertyType propertyType, PropertyTypeContext context, bool isNew) {
         if (isNew) {
             propertyType.Name = _name ?? context.PropertyAlias.Titleize();

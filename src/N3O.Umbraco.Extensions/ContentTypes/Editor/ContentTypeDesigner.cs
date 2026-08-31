@@ -67,9 +67,6 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         var existing = FindExisting();
         var contentType = existing ?? Create();
 
-        // The kind decides where the type's content can live, so a site that holds it as the other one is
-        // not converged by reassigning the flag; that would convert the type under everything already using
-        // it. Refusing here names the disagreement and leaves the rest of the type untouched
         if (existing == null) {
             contentType.IsElement = _isElement;
         } else if (existing.IsElement != _isElement) {
@@ -178,18 +175,16 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
     private void ApplyContainer(IContentType contentType, PropertyContainerBuilder container, int sortOrder) {
         var containerType = container.IsTab ? PropertyGroupType.Tab : PropertyGroupType.Group;
 
-        // ToSafeAlias preserves the casing of the name, but Umbraco validates groups by name and a site's
-        // existing groups are usually camel cased, so a case sensitive match here adds a second group with
-        // the same name and the save is then rejected for the duplicate. The kind has to match as well: a
-        // site that nests its groups holds both a "general" tab and a "general/general" group, and binding
-        // a group to that empty tab places the property above the group rather than inside it
+        // Matched ignoring case, because a case sensitive match would add a second group with the same name
+        // and Umbraco then rejects the save as a duplicate. The kind has to match too: a site that nests its
+        // groups holds both a "general" tab and a "general/general" group, and binding to that empty tab
+        // places the property above the group rather than inside it
         var group = contentType.PropertyGroups
                                .FirstOrDefault(x => x.Alias.EqualsInvariant(container.Alias) &&
                                                     x.Type == containerType);
 
         // Tab nesting is encoded in the alias, so a site that put this group under a tab holds it as
-        // "tab/group". Adopting that keeps a new property beside its siblings instead of creating a second
-        // group with the same leaf name alongside the one the site already uses
+        // "tab/group". Adopting that keeps a new property beside its siblings
         if (group == null) {
             var nested = contentType.PropertyGroups
                                     .Where(x => x.Type == containerType &&
@@ -207,14 +202,16 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
         var isNeeded = container.Properties.Any(x => !contentType.PropertyTypeExists(x.Alias));
 
         if (group == null && isNeeded) {
-            // A tab already holding this alias means the site nests its groups, so the group this designer
-            // creates goes under that tab instead of colliding with the tab's own alias
-            var nestUnderTab = !container.IsTab &&
-                               contentType.PropertyGroups
-                                          .Any(x => x.Alias.EqualsInvariant(container.Alias) &&
-                                                    x.Type == PropertyGroupType.Tab);
+            // A tab already holding this alias means the site nests its groups, so this group goes under that
+            // tab rather than colliding with the tab's own alias. Umbraco resolves the nesting by exact
+            // string, so the leading segment is the tab's own alias, not the one matched ignoring case
+            var parentTab = container.IsTab
+                                ? null
+                                : contentType.PropertyGroups
+                                             .FirstOrDefault(x => x.Alias.EqualsInvariant(container.Alias) &&
+                                                                  x.Type == PropertyGroupType.Tab);
 
-            var alias = nestUnderTab ? $"{container.Alias}/{container.Alias}" : container.Alias;
+            var alias = parentTab == null ? container.Alias : $"{parentTab.Alias}/{container.Alias}";
 
             contentType.AddPropertyGroup(alias, container.Name);
 
@@ -225,23 +222,27 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
             }
 
             // Only a group this designer created gets its type and position set. Rewriting an existing one
-            // turns a site's tab into a group, and Umbraco then rejects every composition that shares the
-            // alias because the same alias must be the same type across all of them. For the same reason a
-            // new group takes the type a composition already gives that alias, in preference to our own
+            // turns a site's tab into a group, and Umbraco then rejects every composition sharing the alias,
+            // since one alias must be one type across all of them. A group a composition already defines
+            // takes the type and position it has there, so it sits in the same place everywhere it appears
             var composed = contentType.ContentTypeComposition
                                       .SelectMany(x => x.PropertyGroups.OrEmpty())
                                       .FirstOrDefault(x => x.Alias.EqualsInvariant(alias));
 
-            group.Type = composed?.Type ?? containerType;
-            group.SortOrder = sortOrder;
+            if (composed == null) {
+                group.Type = containerType;
+                group.SortOrder = sortOrder;
+            } else {
+                group.Type = composed.Type;
+            }
         }
 
         var propertySortOrder = 0;
 
-        // The adopted group keeps its own alias, so properties must be placed using that and not the
-        // alias this designer derived, or they land in a group that does not exist
+        // An adopted group keeps its own alias, so properties are placed by that and never by the alias
+        // derived here, or they land in a group that does not exist
         foreach (var (propertyAlias, builder) in container.Properties) {
-            ApplyProperty(contentType, container, group, propertyAlias, builder, propertySortOrder++);
+            ApplyProperty(contentType, group, propertyAlias, builder, propertySortOrder++);
         }
     }
 
@@ -258,7 +259,6 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
     }
 
     private void ApplyProperty(IContentType contentType,
-                               PropertyContainerBuilder container,
                                PropertyGroup group,
                                string propertyAlias,
                                IPropertyTypeBuilder builder,
@@ -277,10 +277,8 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
             builder.Apply(existing, context, false);
 
-            // Where a property sits is how a site's editors have arranged the type, so the order given here
-            // is only applied to a property this designer creates. One the site already placed in a group of
-            // its own likewise stays there, and only one that is somewhere else entirely gets moved, so a
-            // site's own layout survives a re-seed
+            // Where a property sits is how a site's editors arranged the type, so only one this designer
+            // creates takes the order given here, and only one in no group at all is moved
             if (currentContainer == null && group != null) {
                 contentType.MovePropertyType(propertyAlias, group.Alias);
             }

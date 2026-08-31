@@ -10,12 +10,12 @@ public static class PlatformsSchemaConstants {
     }
 
     public static class Folders {
-        public const string Platforms = "Platforms";
         public const string Calculator = "Calculator";
         public const string Campaigns = "Campaigns";
         public const string CrossSells = "Cross Sells";
         public const string DonationForms = "Donation Forms";
         public const string Offerings = "Offerings";
+        public const string Platforms = "Platforms";
         public const string Qurbani = "Qurbani";
         public const string Zakat = "Zakat";
     }
@@ -60,10 +60,10 @@ public static class PlatformsSchemaConstants {
         public const string RegularGivingFrequency = "Regular Giving Frequency Data List (0, 1)";
         public const string SponsorshipScheme = "Sponsorship Scheme Data List (0, 1)";
         public const string Textarea = "Textarea";
-        public const string ZakatFieldClassification = "Zakat Calculator Field Classification Data List (0, 1)";
-        public const string ZakatFieldType = "Zakat Calculator Field Type Data List (0, 1)";
         public const string TextBox = "Textstring";
         public const string Toggle = "YesNo Toggle";
+        public const string ZakatFieldClassification = "Zakat Calculator Field Classification Data List (0, 1)";
+        public const string ZakatFieldType = "Zakat Calculator Field Type Data List (0, 1)";
     }
 
     public static class Groups {

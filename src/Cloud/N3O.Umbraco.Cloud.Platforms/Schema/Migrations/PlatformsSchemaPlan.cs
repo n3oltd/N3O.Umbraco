@@ -8,16 +8,14 @@ namespace N3O.Umbraco.Cloud.Platforms;
 
 // Umbraco records the state a site has reached in umbracoKeyValue, so a step runs against a site once and
 // never again. That is what makes a deletion stick: once the step that introduced a property has run, the
-// property is the site's to keep or remove, and nothing puts it back
+// property is the site's to keep or remove
 public class PlatformsSchemaPlan : MigrationPlan {
     public PlatformsSchemaPlan() : base(States.PlanName) {
         From(string.Empty).To<AddDonationPopupEmbedCodes>(States.DonationPopupEmbedCodes);
     }
 
-    // A step that fails leaves the scope it ran in unusable for the rest of the boot, so everything that
-    // touches the database afterwards fails with it, uSync's import included. The plan therefore states what
-    // its steps read, and is not executed at all until a site has all of it. A new step adds whatever it
-    // needs here
+    // A step that fails leaves its scope unusable for the rest of the boot, taking uSync's import with it, so
+    // the plan states what its steps read and does not run until a site has all of it. A new step adds its own
     public static IReadOnlyList<string> RequiredContentTypes => [
         PlatformsConstants.Campaigns.CompositionAlias,
         PlatformsConstants.CrossSells.CompositionAlias,

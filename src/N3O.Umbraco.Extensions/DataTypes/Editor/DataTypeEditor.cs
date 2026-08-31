@@ -15,8 +15,6 @@ public class DataTypeEditor : IDataTypeEditor {
         _serviceProvider = serviceProvider;
     }
 
-    // Mirrors how a designer resolves an existing data type, so a caller deciding whether to create one
-    // reaches the same answer the designer would
     public IDataType Find(string name) {
         return _dataTypeService.GetDataType(UmbracoId.Deterministic(IdScope.DataType, name)) ??
                _dataTypeService.GetDataType(name);

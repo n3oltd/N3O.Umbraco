@@ -59,11 +59,11 @@ public class PlatformsSchemaComponent : IComponent {
             return;
         }
 
-        // Creates only the types the site does not have. A type it already holds is never rewritten here
+        // Creates only the types the site does not have; one it already holds is never rewritten here.
+        // Changing one is a migration step, which runs once
         _dataTypeSeeder.Value.Seed();
         _contentTypeSeeder.Value.Seed();
 
-        // Changes to a type the site already holds arrive only as a migration step, which runs once
         var blockers = FindMigrationBlockers();
 
         if (blockers.None()) {
@@ -71,15 +71,14 @@ public class PlatformsSchemaComponent : IComponent {
 
             upgrader.Execute(_migrationPlanExecutor.Value, _scopeProvider.Value, _keyValueService.Value);
         } else {
-            // Blocked is not a state the site recovers from on its own, so it is reported as a warning. A
-            // step that ran against a missing type would fail, and a failed step leaves the scope unusable
-            // for the rest of the boot, which takes the uSync import down with it
+            // Not a state the site recovers from on its own. A step run against a missing type would fail,
+            // and a failed step leaves the scope unusable for the rest of the boot, uSync's import included
             _logger.LogWarning("Platforms schema migrations blocked, waiting on {Blockers}",
                                string.Join(", ", blockers));
         }
 
-        // A site does not have to hold every platforms type, so a gap is reported rather than treated as a
-        // failure; it is the only way to see which types a site is missing without opening its backoffice
+        // A site does not have to hold every platforms type, so a gap is reported rather than failed on; it
+        // is the only way to see what a site is missing without opening its backoffice
         foreach (var gap in _schemaAudit.Value.FindGaps()) {
             _logger.LogInformation("Platforms schema gap: {Gap}", gap);
         }
@@ -87,8 +86,8 @@ public class PlatformsSchemaComponent : IComponent {
 
     public void Terminate() { }
 
-    // A type is looked up the way its designer would find it, by deterministic key as well as by the alias
-    // or name, so a site that renamed one is not read as not having it and blocked from every step forever
+    // Looked up the way a designer would, by deterministic key as well as by alias or name, so a site that
+    // renamed one is not read as not having it and blocked from every step forever
     private IReadOnlyList<string> FindMigrationBlockers() {
         var blockers = new List<string>();
 
@@ -98,9 +97,8 @@ public class PlatformsSchemaComponent : IComponent {
             if (contentType == null) {
                 blockers.Add(alias);
             } else if (contentType.IsElement) {
-                // Every step builds these as document types, so one the site holds as an element would have
-                // the step refuse it. Reporting it here keeps that out of the plan, where a step that threw
-                // would leave the scope unusable for the rest of the boot
+                // Every step builds these as document types, so a step would refuse one the site holds as an
+                // element. Catching it here keeps that throw out of the plan, where it would poison the scope
                 blockers.Add($"{alias} (held as an element type)");
             }
         }

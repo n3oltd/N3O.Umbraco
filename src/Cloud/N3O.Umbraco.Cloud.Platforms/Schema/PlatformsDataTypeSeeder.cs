@@ -23,25 +23,26 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
         _logger = logger;
     }
 
+    // Alphabetical because nothing here depends on anything else here. A data type that names a content type
+    // stores the alias as configuration and never resolves it, so these are seeded before the content types
+    // that alias refers to even exist
     public void Seed() {
-        Seed(DataTypeNames.Summary, SeedSummary);
         Seed(DataTypeNames.AnalyticsTagsList, SeedAnalyticsTagsList);
-        Seed(DataTypeNames.ElementEmbedCodeLabel, SeedElementEmbedCodeLabel);
         Seed(DataTypeNames.CampaignsMultiple, SeedCampaigns);
-        Seed(DataTypeNames.ECommerceStage, SeedECommerceStage);
         Seed(DataTypeNames.DonateButtonAction, SeedDonateButtonAction);
+        Seed(DataTypeNames.ECommerceStage, SeedECommerceStage);
+        Seed(DataTypeNames.ElementEmbedCodeLabel, SeedElementEmbedCodeLabel);
         Seed(DataTypeNames.QurbaniItem, SeedQurbaniItem);
         Seed(DataTypeNames.QurbaniSeasonCategoryPicker, SeedQurbaniSeasonCategoryPicker);
         Seed(DataTypeNames.SuggestedAmounts, SeedSuggestedAmounts);
+        Seed(DataTypeNames.Summary, SeedSummary);
     }
 
-    // Only a data type the site does not have is created, for the same reason a content type is. A designer
-    // rebuilds a configuration from what it was told and assigns the whole of it, so re-seeding one a site
-    // already holds replaces every value in it with a default the site never asked for. Changing one a site
-    // already holds is a migration step, so a value an editor set is not overwritten on the next boot.
-    // Umbraco does not catch what a component throws while initialising, and the folder create, the editor
-    // lookup and the save all throw, so a data type that cannot be built leaves the site short of that one
-    // rather than failing the boot
+    // Only a data type the site does not have is created. A designer assigns the whole configuration it was
+    // given, so re-seeding one the site already holds would replace every value in it with a default the site
+    // never asked for; changing one is a migration step instead.
+    // Umbraco does not catch what a component throws while initialising, so one that cannot be built leaves
+    // the site short of that data type rather than failing the boot
     private void Seed(string name, Action seed) {
         if (_dataTypeEditor.Find(name) != null) {
             return;
