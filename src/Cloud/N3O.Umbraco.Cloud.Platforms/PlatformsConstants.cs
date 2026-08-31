@@ -23,10 +23,6 @@ public static class PlatformsConstants {
         public const string Sponsorship = "platformsSponsorshipCrossSell";
     }
 
-    public static class CrowdfundingCampaign {
-        public const string CompositionAlias = "platformsCrowdfundingCampaign";
-    }
-
     public static class CrowdfundingCampaigns {
         public const string Alias = "platformsCrowdfundingCampaigns";
 
