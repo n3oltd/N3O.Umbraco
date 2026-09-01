@@ -20,5 +20,5 @@ public class CrowdfunderUnpublished : CloudContentUnpublished {
         return req;
     }
 
-    protected override string HookId => PlatformsConstants.WebhookIds.CrowdfundingCampaigns;
+    protected override string HookId => PlatformsConstants.Webhooks.HookIds.CrowdfundingCampaigns;
 }
