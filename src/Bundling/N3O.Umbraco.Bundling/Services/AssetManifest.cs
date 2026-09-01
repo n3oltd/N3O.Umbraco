@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using N3O.Umbraco.Bundling.Models;
 using N3O.Umbraco.Extensions;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using Umbraco.Cms.Core.Serialization;
@@ -13,15 +15,19 @@ namespace N3O.Umbraco.Bundling;
 public class AssetManifest : IAssetManifest {
     private readonly IFileProvider _fileProvider;
     private readonly IJsonSerializer _jsonSerializer;
+    private readonly ILogger<AssetManifest> _logger;
     private readonly BundlingSettings _settings;
     private readonly object _lock = new();
+    private readonly ConcurrentDictionary<string, bool> _warnedBundles = new();
     private volatile IReadOnlyDictionary<string, AssetBundle> _bundles;
 
     public AssetManifest(IWebHostEnvironment webHostEnvironment,
                          IJsonSerializer jsonSerializer,
+                         ILogger<AssetManifest> logger,
                          BundlingSettings settings) {
         _fileProvider = webHostEnvironment.WebRootFileProvider;
         _jsonSerializer = jsonSerializer;
+        _logger = logger;
         _settings = settings;
 
         ChangeToken.OnChange(() => _fileProvider.Watch(_settings.ManifestPath), Invalidate);
@@ -39,6 +45,8 @@ public class AssetManifest : IAssetManifest {
         var bundles = GetBundles();
 
         if (!bundles.TryGetValue(bundle, out var assetBundle)) {
+            WarnUnknownBundle(bundle, bundles);
+
             return [];
         }
 
@@ -102,9 +110,25 @@ public class AssetManifest : IAssetManifest {
         }
     }
 
+    // A misspelled bundle name renders nothing, which is indistinguishable from a bundle that is
+    // deliberately empty. An empty manifest is the documented "not built yet" case and stays quiet.
+    private void WarnUnknownBundle(string bundle, IReadOnlyDictionary<string, AssetBundle> bundles) {
+        if (bundles.Count == 0 || !_warnedBundles.TryAdd(bundle, true)) {
+            return;
+        }
+
+        _logger.LogWarning("Asset bundle {Bundle} is not in the manifest at {ManifestPath}, so nothing " +
+                           "will be rendered for it. Known bundles: {KnownBundles}",
+                           bundle,
+                           _settings.ManifestPath,
+                           string.Join(", ", bundles.Keys));
+    }
+
     private void Invalidate() {
         lock (_lock) {
             _bundles = null;
+
+            _warnedBundles.Clear();
         }
     }
 }

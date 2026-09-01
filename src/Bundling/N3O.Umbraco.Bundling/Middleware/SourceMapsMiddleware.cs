@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using N3O.Umbraco.Extensions;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -21,8 +22,8 @@ public class SourceMapsMiddleware {
         var path = context.Request.Path;
 
         if (path.HasValue &&
-            path.StartsWithSegments(_assetsPath) &&
-            path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase)) {
+            path.Value.EndsWith(".map", StringComparison.OrdinalIgnoreCase) &&
+            IsUnderAssetsPath(path)) {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
 
             return;
@@ -31,9 +32,24 @@ public class SourceMapsMiddleware {
         await _next(context);
     }
 
+    private bool IsUnderAssetsPath(PathString path) {
+        // A manifest configured at the web root leaves no directory to scope by, so every sourcemap is
+        // in scope. PathString("/") cannot express that: StartsWithSegments requires the next character
+        // to be a separator, so it matches the root and nothing below it.
+        if (!_assetsPath.HasValue) {
+            return true;
+        }
+
+        return path.StartsWithSegments(_assetsPath);
+    }
+
     private static PathString GetAssetsPath(BundlingSettings settings) {
         var directory = Path.GetDirectoryName(settings.ManifestPath) ?? string.Empty;
         var normalised = directory.Replace('\\', '/').Trim('/');
+
+        if (!normalised.HasValue()) {
+            return PathString.Empty;
+        }
 
         return new PathString($"/{normalised}");
     }
