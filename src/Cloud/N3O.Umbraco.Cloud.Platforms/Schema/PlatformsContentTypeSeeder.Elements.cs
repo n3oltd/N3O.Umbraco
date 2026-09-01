@@ -151,6 +151,7 @@ public partial class PlatformsContentTypeSeeder {
         designer.SetName("Suggested Amount");
         designer.InFolder(Folders.Platforms, Folders.DonationForms);
         designer.WithDeterministicId();
+        designer.SetIcon("icon-checkbox-dotted-active");
 
         var general = designer.Group(Groups.General);
 
