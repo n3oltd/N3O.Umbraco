@@ -82,10 +82,6 @@ public class PlatformsSchemaComponent : IComponent {
 
     public void Terminate() { }
 
-    // A uSync import of the platforms type drops the container from its allowed children, so unlike the types
-    // themselves this is not something a site reaches once and keeps. It is checked on every boot, and the
-    // type is saved only when the child is actually missing. It cannot be a seed for that reason: a seed is
-    // skipped entirely on a site that already holds the type, which is every site this has to repair
     private void AllowCrowdfundersUnderPlatforms() {
         var crowdfunders = _contentTypeEditor.Find(PlatformsConstants.CrowdfundingCampaigns.Alias);
         var platforms = _contentTypeEditor.Find(PlatformsConstants.Platforms.Alias);
@@ -96,8 +92,6 @@ public class PlatformsSchemaComponent : IComponent {
             return;
         }
 
-        // Umbraco does not catch what a component throws while initialising, and both the cast and the save
-        // can, so a site this cannot be repaired on is reported rather than left unable to boot
         try {
             var designer = (IDocumentTypeDesigner) _contentTypeEditor.ForExisting(platforms.Alias);
 
