@@ -13,10 +13,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.GeoIP.MaxMind;
 
 public class MaxMindIPGeoLocationProvider : IIPGeoLocationProvider {
-    private const int ResultsCacheSizeLimit = 10_000;
-
+    // SizeLimit caps cache growth — without it, every unique visitor IP accumulates forever
+    private static readonly MemoryCache ResultsCache = new(new MemoryCacheOptions { SizeLimit = 10_000 });
     private static readonly TimeSpan ResultsCacheLifetime = TimeSpan.FromHours(12);
-    private static readonly MemoryCache ResultsCache = CreateResultsCache();
 
     private readonly ILookups _lookups;
     private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
@@ -69,14 +68,5 @@ public class MaxMindIPGeoLocationProvider : IIPGeoLocationProvider {
         }
 
         return GeoLookupResult.ForFailure();
-    }
-
-    private static MemoryCache CreateResultsCache() {
-        var options = new MemoryCacheOptions();
-
-        // Without a size limit every unique visitor address accumulates for the process lifetime.
-        options.SizeLimit = ResultsCacheSizeLimit;
-
-        return new MemoryCache(options);
     }
 }
