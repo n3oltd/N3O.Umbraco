@@ -1,39 +1,33 @@
 using Microsoft.AspNetCore.Http;
-using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+using System.Linq;
 
-namespace N3O.Umbraco.Analytics.Context;
+namespace N3O.Umbraco.Context;
 
-public class TagsCookie : Cookie {
-    public TagsCookie(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
+public abstract class ReadOnlyCookie : IReadOnlyCookie {
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    
+    protected ReadOnlyCookie(IHttpContextAccessor httpContextAccessor) {
+        _httpContextAccessor = httpContextAccessor;
+    }
+    
+    public string GetValue() {
+        if (Value == null) {
+            var cookies = _httpContextAccessor.HttpContext?.Request.Cookies;
+            var key = cookies?.Keys.SingleOrDefault(x => x.EqualsInvariant(Name));
 
-    public JObject GetTags() {
-        var value = GetValue();
-
-        // The cookie is absent on a first visit, and GetValue answers null for it, which Parse rejects with an
-        // ArgumentNullException rather than a JsonException.
-        if (!value.HasValue()) {
-            return null;
+            if (key != null) {
+                Value = cookies[key];
+            } else {
+                Value = GetDefaultValue();
+            }
         }
 
-        try {
-            return JObject.Parse(value);
-        } catch (JsonException) {
-            // Written from the browser, so the value is whatever the client put there.
-            return null;
-        }
+        return Value;
     }
-
-    protected override void SetOptions(CookieOptions cookieOptions) {
-        base.SetOptions(cookieOptions);
-
-        // Written from the browser, so it cannot be HttpOnly.
-        cookieOptions.HttpOnly = false;
-    }
-
-    protected override string Name => AnalyticsConstants.Tags.Cookie.Name;
-    protected override TimeSpan Lifetime => AnalyticsConstants.Tags.Cookie.Lifetime;
+    
+    protected abstract string Name { get; }
+    protected string Value { get; set; }
+    
+    protected virtual string GetDefaultValue() => null;
 }
