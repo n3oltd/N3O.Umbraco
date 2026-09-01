@@ -8,18 +8,12 @@ using Umbraco.Engage.Infrastructure.Analytics.Processing.Extractors;
 
 namespace N3O.Umbraco.Marketing;
 
-// Which provider locates a visitor depends on how a site is fronted, so a site references one and this
-// package knows only the abstraction. Taken as a collection because a site referencing none is an ordinary
-// state: it still analyses pageviews, just without a location on them. Depending on the provider directly
-// makes that state fail the container's startup validation instead, which takes the whole site down
 public class EngageLocationExtractor : IRawPageviewLocationExtractor {
     private static readonly int MaxColumnWidth = 100;
 
     private readonly IIPGeoLocationProvider _ipGeoLocationProvider;
 
     public EngageLocationExtractor(IEnumerable<IIPGeoLocationProvider> ipGeoLocationProviders) {
-        // Ordered rather than taken as registered, so a site referencing more than one gets whichever the
-        // providers themselves declare precedence for instead of whichever happened to register last
         _ipGeoLocationProvider = ipGeoLocationProviders.ApplyAttributeOrdering().FirstOrDefault();
     }
 
