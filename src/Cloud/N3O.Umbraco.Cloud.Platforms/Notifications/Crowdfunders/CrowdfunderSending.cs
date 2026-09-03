@@ -41,6 +41,7 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
         return Task.CompletedTask;
     }
 
+    [Obsolete("Remove once all the older crowdfunding campaigns have been published")]
     private void FixCampaignPicker(ContentVariantDisplay variant) {
         var alias = AliasHelper<CrowdfunderContent>.PropertyAlias(y => y.Campaign);
         var campaignProperty = variant.Tabs.SelectMany(x => x.Properties).Single(x => x.Alias == alias);
