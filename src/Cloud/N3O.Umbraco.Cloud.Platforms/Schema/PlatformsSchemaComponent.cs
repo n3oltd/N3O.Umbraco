@@ -53,23 +53,31 @@ public class PlatformsSchemaComponent : IComponent {
     }
 
     public void Initialize() {
-        if (_runtimeState.Level != RuntimeLevel.Run || !IsEnabled()) {
+        if (_runtimeState.Level != RuntimeLevel.Run) {
             return;
         }
 
-        // Creates only the types the site does not have; one it already holds is never rewritten here.
-        // Changing one is a migration step, which runs once
+        AllowCrowdfundersUnderPlatforms();
+
+        if (!IsEnabled()) {
+            return;
+        }
+
         _dataTypeSeeder.Value.Seed();
         _contentTypeSeeder.Value.Seed();
-
-        AllowCrowdfundersUnderPlatforms();
 
         var blockers = FindMigrationBlockers();
 
         if (blockers.None()) {
             var upgrader = new Upgrader(new PlatformsSchemaPlan());
 
-            upgrader.Execute(_migrationPlanExecutor.Value, _scopeProvider.Value, _keyValueService.Value);
+            var executed = upgrader.Execute(_migrationPlanExecutor.Value,
+                                            _scopeProvider.Value,
+                                            _keyValueService.Value);
+
+            if (!executed.Successful) {
+                _logger.LogError(executed.Exception, "Platforms schema migration plan failed");
+            }
         } else {
             _logger.LogWarning("Platforms schema migrations blocked, waiting on {Blockers}",
                                string.Join(", ", blockers));
@@ -103,14 +111,6 @@ public class PlatformsSchemaComponent : IComponent {
         }
     }
 
-
-    // What a step reads reaches a site through uSync, whose import is manual outside development, so until it
-    // has run these are missing as a matter of course. The plan is left alone until they are there rather than
-    // failing on every boot in the meantime. Anything else a step objects to fails the plan and is reported
-    // with the exception by Umbraco, which is the louder signal and the right one for a site that will not
-    // converge on its own.
-    // Looked up the way a designer would, by deterministic key as well as by alias or name, so a site that
-    // renamed one is not read as not having it and blocked from every step forever
     private IReadOnlyList<string> FindMigrationBlockers() {
         var blockers = new List<string>();
 
@@ -123,6 +123,6 @@ public class PlatformsSchemaComponent : IComponent {
     private bool IsEnabled() {
         var section = _configuration.GetSection(PlatformsSchemaConstants.ConfigurationSection);
 
-        return section.GetValue<bool>(nameof(PlatformsFeatureSettings.Enabled));
+        return bool.TryParse(section[nameof(PlatformsFeatureSettings.Enabled)], out var enabled) && enabled;
     }
 }

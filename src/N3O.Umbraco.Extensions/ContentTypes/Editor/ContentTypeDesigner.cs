@@ -175,16 +175,10 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
     private void ApplyContainer(IContentType contentType, PropertyContainerBuilder container, int sortOrder) {
         var containerType = container.IsTab ? PropertyGroupType.Tab : PropertyGroupType.Group;
 
-        // Matched ignoring case, because a case sensitive match would add a second group with the same name
-        // and Umbraco then rejects the save as a duplicate. The kind has to match too: a site that nests its
-        // groups holds both a "general" tab and a "general/general" group, and binding to that empty tab
-        // places the property above the group rather than inside it
         var group = contentType.PropertyGroups
                                .FirstOrDefault(x => x.Alias.EqualsInvariant(container.Alias) &&
                                                     x.Type == containerType);
 
-        // Tab nesting is encoded in the alias, so a site that put this group under a tab holds it as
-        // "tab/group". Adopting that keeps a new property beside its siblings
         if (group == null) {
             var nested = contentType.PropertyGroups
                                     .Where(x => x.Type == containerType &&
@@ -197,14 +191,9 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
             }
         }
 
-        // A site already holding every property this container declares has arranged them its own way, so
-        // creating the container would add an empty group beside the ones the site actually uses
         var isNeeded = container.Properties.Any(x => !contentType.PropertyTypeExists(x.Alias));
 
         if (group == null && isNeeded) {
-            // A tab already holding this alias means the site nests its groups, so this group goes under that
-            // tab rather than colliding with the tab's own alias. Umbraco resolves the nesting by exact
-            // string, so the leading segment is the tab's own alias, not the one matched ignoring case
             var parentTab = container.IsTab
                                 ? null
                                 : contentType.PropertyGroups
@@ -221,10 +210,6 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
                 group.Key = UmbracoId.Deterministic(IdScope.ContentTypeContainer, Alias, alias);
             }
 
-            // Only a group this designer created gets its type and position set. Rewriting an existing one
-            // turns a site's tab into a group, and Umbraco then rejects every composition sharing the alias,
-            // since one alias must be one type across all of them. A group a composition already defines
-            // takes the type and position it has there, so it sits in the same place everywhere it appears
             var composed = contentType.ContentTypeComposition
                                       .SelectMany(x => x.PropertyGroups.OrEmpty())
                                       .FirstOrDefault(x => x.Alias.EqualsInvariant(alias));
@@ -239,8 +224,6 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
         var propertySortOrder = 0;
 
-        // An adopted group keeps its own alias, so properties are placed by that and never by the alias
-        // derived here, or they land in a group that does not exist
         foreach (var (propertyAlias, builder) in container.Properties) {
             ApplyProperty(contentType, group, propertyAlias, builder, propertySortOrder++);
         }
@@ -272,13 +255,20 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
                                               .FirstOrDefault(x => x.PropertyTypes.OrEmpty()
                                                                     .Any(y => y.Alias == propertyAlias));
 
-            existing.DataTypeId = dataType.Id;
-            existing.DataTypeKey = dataType.Key;
+            if (existing.DataTypeKey != dataType.Key) {
+                if (existing.ValueStorageType != dataType.DatabaseType) {
+                    throw new PropertyDataTypeMismatchException(Alias,
+                                                               propertyAlias,
+                                                               existing.ValueStorageType,
+                                                               dataType.DatabaseType);
+                }
+
+                existing.DataTypeId = dataType.Id;
+                existing.DataTypeKey = dataType.Key;
+            }
 
             builder.Apply(existing, context, false);
 
-            // Where a property sits is how a site's editors arranged the type, so only one this designer
-            // creates takes the order given here, and only one in no group at all is moved
             if (currentContainer == null && group != null) {
                 contentType.MovePropertyType(propertyAlias, group.Alias);
             }

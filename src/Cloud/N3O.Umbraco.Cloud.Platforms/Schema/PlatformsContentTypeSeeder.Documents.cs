@@ -97,8 +97,6 @@ public partial class PlatformsContentTypeSeeder {
         designer.Save();
     }
 
-    // Only the campaign picker. The page properties differ per client and are added in the backoffice, so
-    // seeding any of them here would put a property on a type whose shape is the site's own
     private void SeedCrowdfunder() {
         var designer = _contentTypeEditor.NewDocument<CrowdfunderContent>();
 

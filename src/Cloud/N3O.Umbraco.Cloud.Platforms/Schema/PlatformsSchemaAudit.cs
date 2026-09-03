@@ -9,10 +9,6 @@ using System.Reflection;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-// GetValue returns default when a property is absent, so a content class bound to a type that does not exist
-// reads as empty forever rather than throwing. Reporting that once at boot is the only signal there is.
-// Only the aliases the seeder owns are reported: a type that reaches a site some other way is not a gap this
-// package can close, and logging it on every boot forever only teaches a reader to ignore the log
 public class PlatformsSchemaAudit : IPlatformsSchemaAudit {
     private readonly IContentTypeEditor _contentTypeEditor;
     private readonly IPlatformsContentTypeSeeder _contentTypeSeeder;

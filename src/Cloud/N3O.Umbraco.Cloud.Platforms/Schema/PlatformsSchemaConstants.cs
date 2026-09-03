@@ -3,7 +3,6 @@
 public static class PlatformsSchemaConstants {
     public const string ConfigurationSection = "Platforms";
 
-    // The state a site has reached, recorded by Umbraco in umbracoKeyValue
     public static class Migrations {
         public const string PlanName = "N3O.Platforms.Schema";
         public const string PlatformsContentTypesMigrationV2 = "2026.08.31";
@@ -34,8 +33,6 @@ public static class PlatformsSchemaConstants {
         public const string Summary = "Platforms Summary";
     }
 
-    // Defined elsewhere, by another N3O package or by the site itself, so they are referenced by name
-    // and never created here
     public static class SharedDataTypes {
         public const string ContentPicker = "Content Picker";
         public const string DateTime = "Date Picker with time";

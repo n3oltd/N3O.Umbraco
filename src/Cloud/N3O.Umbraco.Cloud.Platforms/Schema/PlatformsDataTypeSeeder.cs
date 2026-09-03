@@ -10,8 +10,6 @@ using QurbaniItemDataSource = N3O.Umbraco.Giving.Allocations.Lookups.QurbaniItem
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-// Only the data types platforms owns are created here. Anything named without the platforms prefix belongs
-// to the package that defines its data source and is referenced by name, never created
 public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
     private const string EmbedCodeTemplate = "<label>{{model.value}}</label>";
 
@@ -23,9 +21,6 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
         _logger = logger;
     }
 
-    // Alphabetical because nothing here depends on anything else here. A data type that names a content type
-    // stores the alias as configuration and never resolves it, so these are seeded before the content types
-    // that alias refers to even exist
     public void Seed() {
         Seed(DataTypeNames.AnalyticsTagsList, SeedAnalyticsTagsList);
         Seed(DataTypeNames.CampaignsMultiple, SeedCampaigns);
@@ -38,11 +33,6 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
         Seed(DataTypeNames.Summary, SeedSummary);
     }
 
-    // Only a data type the site does not have is created. A designer assigns the whole configuration it was
-    // given, so re-seeding one the site already holds would replace every value in it with a default the site
-    // never asked for; changing one is a migration step instead.
-    // Umbraco does not catch what a component throws while initialising, so one that cannot be built leaves
-    // the site short of that data type rather than failing the boot
     private void Seed(string name, Action seed) {
         if (_dataTypeEditor.Find(name) != null) {
             return;
@@ -118,8 +108,6 @@ public class PlatformsDataTypeSeeder : IPlatformsDataTypeSeeder {
         designer.Save();
     }
 
-    // The start node names a node in this site's own tree, so a picker created here is left unrooted for the
-    // site to point at its own season
     private void SeedQurbaniSeasonCategoryPicker() {
         var designer = _dataTypeEditor.NewMultiNodeTreePicker(DataTypeNames.QurbaniSeasonCategoryPicker);
 

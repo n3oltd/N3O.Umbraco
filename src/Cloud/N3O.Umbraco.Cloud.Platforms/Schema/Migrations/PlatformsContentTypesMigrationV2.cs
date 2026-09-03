@@ -8,10 +8,6 @@ using Shared = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.SharedDataTy
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-// The donation popup embed code is read and written in code but no site ever had the property, so the popup
-// embed has been empty everywhere; cross-sell amount is the same gap on the sites that lack it.
-// Keys are stamped deterministically, as the seeder stamps them: without that the same property would carry
-// a different key in every environment that ran the step, and uSync matches on key
 public class PlatformsContentTypesMigrationV2 : MigrationBase {
     private readonly IContentTypeEditor _contentTypeEditor;
 

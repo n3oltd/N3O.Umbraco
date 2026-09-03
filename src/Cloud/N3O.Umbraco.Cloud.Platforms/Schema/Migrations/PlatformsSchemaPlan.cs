@@ -11,9 +11,6 @@ public class PlatformsSchemaPlan : MigrationPlan {
         From(string.Empty).To<PlatformsContentTypesMigrationV2>(States.PlatformsContentTypesMigrationV2);
     }
 
-    // What the steps read, so the plan can be left alone until a site has all of it. These arrive by uSync,
-    // whose import is manual outside development, and a plan run before it would fail on every boot until it
-    // ran. A new step adds whatever it reads here
     public static IReadOnlyList<string> RequiredContentTypes => [
         PlatformsConstants.Campaigns.CompositionAlias,
         PlatformsConstants.CrossSells.CompositionAlias,

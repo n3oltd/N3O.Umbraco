@@ -28,10 +28,6 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
         }
     }
 
-    // Elements come first because the document types compose them, and a composition resolves by alias when
-    // the type that composes it saves. For the same reason a type is seeded before any type that names it as
-    // an allowed child, which is why a season category precedes its season and the calculator runs leaf
-    // upward: seeded the other way round, each boot completes one link and the tree takes as many restarts
     private IReadOnlyList<(string Alias, Action Run)> GetSeeds() {
         return [
             (PlatformsConstants.DonationFormState.SuggestedAmount, SeedSuggestedAmount),
@@ -68,11 +64,6 @@ public partial class PlatformsContentTypeSeeder : IPlatformsContentTypeSeeder {
         return _dataTypeEditor.Find(name) != null;
     }
 
-    // Only a type the site does not have is created. One it already holds is changed only by a migration
-    // step, so a property a site has deliberately removed is never put back.
-    // These are built on data types owned by other N3O packages, which reach a site through uSync, and that
-    // import is manual outside development. Until it has run there is nothing to build against, so the type
-    // is left for a later boot - an ordinary state, not a failure, which is why it is not logged as one
     private void Seed(string alias, Action seed) {
         if (_contentTypeEditor.Find(alias) != null) {
             return;

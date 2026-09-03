@@ -46,8 +46,7 @@ public class PropertyContainerBuilder : IPropertyContainerBuilder {
         return builder;
     }
 
-    // Camel cased because that is what the backoffice and uSync produce, and a group alias that differs
-    // only by case reads as a second group with the same name, which Umbraco rejects on save
+    // Camel cased because that is what the backoffice and uSync produce
     public string Alias => _parent == null
                            ? Name.ToSafeAlias(_shortStringHelper, true)
                            : $"{_parent.Alias}/{Name.ToSafeAlias(_shortStringHelper, true)}";

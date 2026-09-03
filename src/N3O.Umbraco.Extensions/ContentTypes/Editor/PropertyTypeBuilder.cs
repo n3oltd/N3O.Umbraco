@@ -1,5 +1,6 @@
 using Humanizer;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -96,7 +97,10 @@ public abstract class PropertyTypeBuilder<TSelf> : IPropertyTypeBuilder where TS
             if (Guid.TryParse(_dataTypeNameOrKey, out var key)) {
                 dataType = _dataTypeService.GetDataType(key);
             } else {
-                dataType = _dataTypeService.GetDataType(_dataTypeNameOrKey);
+                var deterministicKey = UmbracoId.Deterministic(IdScope.DataType, _dataTypeNameOrKey);
+
+                dataType = _dataTypeService.GetDataType(deterministicKey) ??
+                           _dataTypeService.GetDataType(_dataTypeNameOrKey);
             }
         } else {
             dataType = GetDefaultDataType(context);

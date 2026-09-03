@@ -28,7 +28,7 @@ public class ContentTypeEditor : IContentTypeEditor {
     }
 
     public IContentTypeDesigner ForExisting(string alias) {
-        var contentType = _contentTypeService.Get(alias);
+        var contentType = Find(alias);
 
         if (contentType == null) {
             throw new ResourceNotFoundException(nameof(alias), alias);
@@ -39,13 +39,13 @@ public class ContentTypeEditor : IContentTypeEditor {
                                            _contentTypeService,
                                            _shortStringHelper,
                                            contentType.Name,
-                                           alias);
+                                           contentType.Alias);
         } else {
             return new DocumentTypeDesigner(_serviceProvider,
                                             _contentTypeService,
                                             _shortStringHelper,
                                             contentType.Name,
-                                            alias);
+                                            contentType.Alias);
         }
     }
 

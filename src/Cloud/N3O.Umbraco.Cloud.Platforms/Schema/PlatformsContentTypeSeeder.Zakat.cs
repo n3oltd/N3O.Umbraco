@@ -2,6 +2,7 @@
 using N3O.Umbraco.ContentTypes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -96,7 +97,7 @@ public partial class PlatformsContentTypeSeeder {
     }
 
     private void SeedZakatFundDimension(IPropertyContainerBuilder<ZakatCalculatorSettingsContent> container,
-                                        Expression<Func<ZakatCalculatorSettingsContent, IFundDimension>> expression,
+                                        Expression<Func<ZakatCalculatorSettingsContent, IFundDimensionValue>> expression,
                                         string dataTypeName) {
         if (HasDataType(dataTypeName)) {
             container.ContentmentDataList(expression).DataType(dataTypeName);
