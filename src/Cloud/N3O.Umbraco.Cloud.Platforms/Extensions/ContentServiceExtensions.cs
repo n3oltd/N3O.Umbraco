@@ -9,8 +9,8 @@ public static class ContentServiceExtensions {
 
     // Read through the content service rather than the published cache, so an unpublished crowdfunding
     // campaign is included and one holding a legacy picker value binds like any other.
-    public static IEnumerable<IContent> GetCrowdfunders(this IContentService contentService,
-                                                        IContentTypeService contentTypeService) {
+    public static IEnumerable<IContent> GetCrowdfundingCampaigns(this IContentService contentService,
+                                                                  IContentTypeService contentTypeService) {
         var contentType = contentTypeService.Get(PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias);
 
         if (contentType == null) {

@@ -32,7 +32,8 @@ public class PlatformsPagesReceiver : WebhookReceiver {
         var eventType = payload.GetEventType();
 
         if (!EventTypes.PlatformsPages.Contains(eventType, true)) {
-            _logger.LogWarning("Platforms pages webhook carried the unhandled event type {EventType}, so nothing was evicted",
+            _logger.LogWarning("Platforms pages webhook carried the unhandled event type {EventType}, so nothing " +
+                               "was evicted",
                                eventType);
 
             return;

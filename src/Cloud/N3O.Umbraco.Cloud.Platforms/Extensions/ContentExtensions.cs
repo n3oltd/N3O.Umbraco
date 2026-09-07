@@ -12,7 +12,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class ContentExtensions {
-    public static Guid? GetCrowdfunderCampaignKey(this IContent content, IContentHelper contentHelper) {
+    public static Guid? GetCampaignKey(this IContent content, IContentHelper contentHelper) {
         var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
         var property = content.Properties.Single(x => x.Alias == alias);
 
@@ -42,7 +42,7 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<CrossSellContent>.ContentTypeAlias());
     }
 
-    public static bool IsCrowdfunder(this IContent content) {
+    public static bool IsCrowdfundingCampaign(this IContent content) {
         return content.ContentType.Alias == PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias;
     }
 

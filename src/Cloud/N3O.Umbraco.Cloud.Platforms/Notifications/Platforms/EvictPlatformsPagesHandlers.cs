@@ -52,7 +52,7 @@ public class EvictPlatformsPagesHandlers :
                 if (campaign != null) {
                     _cdnClient.EvictPlatformsPage(PublishedFileKinds.OfferingPage, GetSlug(campaign), GetSlug(content));
                 }
-            } else if (content.IsCrowdfunder()) {
+            } else if (content.IsCrowdfundingCampaign()) {
                 _cdnClient.EvictPlatformsPage(PublishedFileKinds.CrowdfundingCampaignPage, GetSlug(content));
             }
         }

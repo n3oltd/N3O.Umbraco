@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.ContentTypes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -7,14 +6,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Infrastructure.Migrations;
+using Umbraco.Extensions;
 using Aliases = N3O.Umbraco.Cloud.Platforms.PlatformsConstants.CrowdfundingCampaigns;
+using Descriptions = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Descriptions;
+using Folders = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Folders;
+using Names = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Names;
+using Tabs = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Tabs;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public class CrowdfundingCampaignNamesMigration : MigrationBase {
-    private const string ItemName = "Crowdfunding Campaign";
-    private const string ContainerName = "Crowdfunding Campaigns";
+    private const string LegacyFolder = "Crowdfunders";
 
     // Both types were minted under their pre-rename aliases on every site, so a site's copy carries whichever
     // alias it was seeded under and no other key.
@@ -22,17 +26,24 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
                                                                           "platformsCrowdfunder");
     private static readonly IReadOnlyList<Guid> ContainerKeys = GetSeededKeys(Aliases.Alias, "platformsCrowdfunders");
 
-    private readonly IContentTypeEditor _contentTypeEditor;
+    // The seeder that created the tab did not camel-case aliases, and the sites named the template tab themselves
+    private static readonly string[] LegacyCrowdfundingCampaignTabs = ["Crowdfunder"];
+    private static readonly string[] LegacyCrowdfunderPageTemplateTabs = [
+        "newCrowdfunderTemplate",
+        "fundraisingPageTemplate"
+    ];
+
     private readonly IContentTypeService _contentTypeService;
+    private readonly IShortStringHelper _shortStringHelper;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
     public CrowdfundingCampaignNamesMigration(IMigrationContext context,
-                                              IContentTypeEditor contentTypeEditor,
                                               IContentTypeService contentTypeService,
+                                              IShortStringHelper shortStringHelper,
                                               IWebHostEnvironment webHostEnvironment)
         : base(context) {
-        _contentTypeEditor = contentTypeEditor;
         _contentTypeService = contentTypeService;
+        _shortStringHelper = shortStringHelper;
         _webHostEnvironment = webHostEnvironment;
     }
 
@@ -40,8 +51,22 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
         var item = FindSeeded(Aliases.CrowdfundingCampaign.Alias, ItemKeys);
         var container = FindSeeded(Aliases.Alias, ContainerKeys);
 
-        SetName(item, ItemName);
-        SetName(container, ContainerName);
+        if (item != null) {
+            RenameTab(item, LegacyCrowdfundingCampaignTabs, Tabs.CrowdfundingCampaign);
+            RenameTab(item, LegacyCrowdfunderPageTemplateTabs, Tabs.CrowdfunderPageTemplate);
+            SetCampaignDescription(item);
+            item.Name = Names.CrowdfundingCampaign;
+
+            _contentTypeService.Save(item);
+        }
+
+        if (container != null) {
+            container.Name = Names.CrowdfundingCampaigns;
+
+            _contentTypeService.Save(container);
+        }
+
+        RenameFolder();
     }
 
     // The alias may still be held by the legacy composition, which the seeder never touches and this step
@@ -56,25 +81,75 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
         var composedInto = _contentTypeService.GetComposedOf(contentType.Id).Select(x => x.Alias).ToList();
 
         if (!seededKeys.Contains(contentType.Key) || composedInto.Any()) {
+            var composition = composedInto.Any() ? $" and composed into {string.Join(", ", composedInto)}" : "";
+
             throw new Exception($"Content type {alias.Quote()} on site {Site.Id.Quote()} " +
                                 $"({_webHostEnvironment.EnvironmentName}) is held under key {contentType.Key}" +
-                                $"{(composedInto.Any() ? $" and composed into {string.Join(", ", composedInto)}" : "")}, " +
-                                "so it is not the seeded type and was not renamed");
+                                $"{composition}, so it is not the seeded type and was not renamed");
         }
 
         return contentType;
     }
 
-    private void SetName(IContentType contentType, string name) {
-        if (contentType == null || contentType.Name == name) {
+    // Property values key on the property, not its group, so a group can take a new alias without losing them.
+    private void RenameTab(IContentType contentType, IReadOnlyList<string> legacyAliases, string name) {
+        var alias = name.ToSafeAlias(_shortStringHelper, true);
+
+        if (contentType.PropertyGroups.Any(x => x.Alias.EqualsInvariant(alias))) {
             return;
         }
 
-        var designer = _contentTypeEditor.ForExisting(contentType.Alias);
+        var tab = contentType.PropertyGroups
+                             .FirstOrDefault(x => x.Type == PropertyGroupType.Tab &&
+                                                  legacyAliases.Contains(x.Alias, true));
 
-        designer.SetName(name, overwriteExisting: true);
+        if (tab == null) {
+            return;
+        }
 
-        designer.Save();
+        var legacyAlias = tab.Alias;
+
+        tab.Alias = alias;
+        tab.Name = name;
+
+        foreach (var group in contentType.PropertyGroups) {
+            if (group.Alias.StartsWith($"{legacyAlias}/", StringComparison.InvariantCultureIgnoreCase)) {
+                group.Alias = $"{alias}{group.Alias.Substring(legacyAlias.Length)}";
+            }
+        }
+    }
+
+    private void SetCampaignDescription(IContentType contentType) {
+        var campaign = contentType.PropertyTypes
+                                  .FirstOrDefault(x => x.Alias == Aliases.CrowdfundingCampaign.Properties.Campaign);
+
+        if (campaign != null) {
+            campaign.Description = Descriptions.CrowdfundingCampaignCampaign;
+        }
+    }
+
+    private void RenameFolder() {
+        var platforms = _contentTypeService.GetContainers(Folders.Platforms, 1).SingleOrDefault();
+
+        if (platforms == null) {
+            return;
+        }
+
+        var folders = _contentTypeService.GetContainers(Folders.CrowdfundingCampaigns, platforms.Level + 1)
+                                         .Concat(_contentTypeService.GetContainers(LegacyFolder, platforms.Level + 1))
+                                         .Where(x => x.ParentId == platforms.Id)
+                                         .ToList();
+
+        var folder = folders.SingleOrDefault(x => x.Name == LegacyFolder);
+
+        // A folder the site already holds under the new name keeps it, so the two are not left as twins.
+        if (folder == null || folders.Any(x => x.Name == Folders.CrowdfundingCampaigns)) {
+            return;
+        }
+
+        folder.Name = Folders.CrowdfundingCampaigns;
+
+        _contentTypeService.SaveContainer(folder);
     }
 
     private static IReadOnlyList<Guid> GetSeededKeys(params string[] aliases) {

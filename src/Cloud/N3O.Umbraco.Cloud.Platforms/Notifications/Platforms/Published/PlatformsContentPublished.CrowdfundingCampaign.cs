@@ -16,20 +16,20 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class CrowdfunderPublished : CloudContentPublished {
+public class CrowdfundingCampaignPublished : CloudContentPublished {
     private readonly IContentHelper _contentHelper;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly ILogger<CrowdfunderPublished> _logger;
+    private readonly ILogger<CrowdfundingCampaignPublished> _logger;
     private readonly IReadOnlyList<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
     private readonly IUmbracoMapper _mapper;
 
-    public CrowdfunderPublished(ICloudUrl cloudUrl,
-                                IBackgroundJob backgroundJob,
-                                IContentHelper contentHelper,
-                                Lazy<IContentLocator> contentLocator,
-                                ILogger<CrowdfunderPublished> logger,
-                                IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers,
-                                IUmbracoMapper mapper)
+    public CrowdfundingCampaignPublished(ICloudUrl cloudUrl,
+                                         IBackgroundJob backgroundJob,
+                                         IContentHelper contentHelper,
+                                         Lazy<IContentLocator> contentLocator,
+                                         ILogger<CrowdfundingCampaignPublished> logger,
+                                         IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers,
+                                         IUmbracoMapper mapper)
         : base(cloudUrl, backgroundJob, logger) {
         _contentHelper = contentHelper;
         _contentLocator = contentLocator;
@@ -39,11 +39,11 @@ public class CrowdfunderPublished : CloudContentPublished {
     }
 
     protected override bool CanProcess(IContent content) {
-        if (!content.IsCrowdfunder()) {
+        if (!content.IsCrowdfundingCampaign()) {
             return false;
         }
 
-        if (content.GetCrowdfunderCampaignKey(_contentHelper) == null) {
+        if (content.GetCampaignKey(_contentHelper) == null) {
             _logger.LogWarning("Crowdfunding campaign {Name} ({Key}) has no campaign picked, so it was not sent",
                                content.Name,
                                content.Key);
@@ -55,23 +55,23 @@ public class CrowdfunderPublished : CloudContentPublished {
     }
 
     protected override Task<object> GetBodyAsync(IContent content) {
-        var crowdfunder = _contentLocator.Value.ById<CrowdfunderContent>(content.Key);
-        var campaignKey = content.GetCrowdfunderCampaignKey(_contentHelper).GetValueOrThrow();
+        var crowdfundingCampaign = _contentLocator.Value.ById<CrowdfundingCampaignContent>(content.Key);
+        var campaignKey = content.GetCampaignKey(_contentHelper).GetValueOrThrow();
 
         var crowdfunderPagePublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.CrowdfunderPage);
 
-        var campaignPagePublisher =
+        var crowdfundingCampaignPagePublisher =
             _platformsPageContentPublishers.SingleOrDefault(x => x.IsPublisherFor(PlatformsSchemas.CrowdfundingCampaignPage));
 
-        var req = _mapper.Map<CrowdfunderContent, CrowdfundingCampaignWebhookBodyReq>(crowdfunder, ctx => {
-            ctx.Items[CrowdfunderWebhookBodyReqMapping.CampaignKeyContext] = campaignKey;
+        var req = _mapper.Map<CrowdfundingCampaignContent, CrowdfundingCampaignWebhookBodyReq>(crowdfundingCampaign, ctx => {
+            ctx.Items[CrowdfundingCampaignWebhookBodyReqMapping.CampaignKeyContext] = campaignKey;
 
-            ctx.Items[CrowdfunderWebhookBodyReqMapping.CrowdfunderPageContentContext] =
-                crowdfunderPagePublisher.GetContentProperties(crowdfunder.Content());
+            ctx.Items[CrowdfundingCampaignWebhookBodyReqMapping.CrowdfunderPageContentContext] =
+                crowdfunderPagePublisher.GetContentProperties(crowdfundingCampaign.Content());
 
-            if (campaignPagePublisher != null) {
-                ctx.Items[CrowdfunderWebhookBodyReqMapping.CampaignPageContentContext] =
-                    campaignPagePublisher.GetContentProperties(crowdfunder.Content());
+            if (crowdfundingCampaignPagePublisher != null) {
+                ctx.Items[CrowdfundingCampaignWebhookBodyReqMapping.CrowdfundingCampaignPageContentContext] =
+                    crowdfundingCampaignPagePublisher.GetContentProperties(crowdfundingCampaign.Content());
             }
         });
 

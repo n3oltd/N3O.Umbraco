@@ -57,7 +57,7 @@ public class PlatformsSchemaComponent : IComponent {
             return;
         }
 
-        AllowCrowdfundersUnderPlatforms();
+        AllowCrowdfundingCampaignsUnderPlatforms();
 
         if (!IsEnabled()) {
             return;
@@ -90,24 +90,24 @@ public class PlatformsSchemaComponent : IComponent {
 
     public void Terminate() { }
 
-    private void AllowCrowdfundersUnderPlatforms() {
-        var crowdfunders = _contentTypeEditor.Find(PlatformsConstants.CrowdfundingCampaigns.Alias);
+    private void AllowCrowdfundingCampaignsUnderPlatforms() {
+        var crowdfundingCampaigns = _contentTypeEditor.Find(PlatformsConstants.CrowdfundingCampaigns.Alias);
         var platforms = _contentTypeEditor.Find(PlatformsConstants.Platforms.Alias);
 
-        if (crowdfunders == null ||
+        if (crowdfundingCampaigns == null ||
             platforms == null ||
-            platforms.AllowedContentTypes.OrEmpty().Any(x => x.Alias == crowdfunders.Alias)) {
+            platforms.AllowedContentTypes.OrEmpty().Any(x => x.Alias == crowdfundingCampaigns.Alias)) {
             return;
         }
 
         try {
             var designer = (IDocumentTypeDesigner) _contentTypeEditor.ForExisting(platforms.Alias);
 
-            designer.AllowChildren(crowdfunders.Alias);
+            designer.AllowChildren(crowdfundingCampaigns.Alias);
 
             designer.Save();
         } catch (Exception ex) {
-            _logger.LogError(ex, "Could not allow {Alias} under the platforms type", crowdfunders.Alias);
+            _logger.LogError(ex, "Could not allow {Alias} under the platforms type", crowdfundingCampaigns.Alias);
         }
     }
 

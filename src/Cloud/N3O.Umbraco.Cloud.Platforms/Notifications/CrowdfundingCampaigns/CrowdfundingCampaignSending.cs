@@ -15,17 +15,17 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotification> {
+public class CrowdfundingCampaignSending : INotificationAsyncHandler<SendingContentNotification> {
     private readonly Lazy<IContentCache> _contentCache;
     private readonly Lazy<ISlugHelper> _slugHelper;
 
-    public CrowdfunderSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper) {
+    public CrowdfundingCampaignSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper) {
         _contentCache = contentCache;
         _slugHelper = slugHelper;
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var alias = AliasHelper<CrowdfunderContent>.ContentTypeAlias();
+        var alias = AliasHelper<CrowdfundingCampaignContent>.ContentTypeAlias();
 
         if (notification.Content.ContentTypeAlias.EqualsInvariant(alias)) {
             foreach (var variant in notification.Content.Variants) {
@@ -40,8 +40,10 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
     // A node saved while the campaign picker was a content picker holds a document udi, which the data list
     // cannot display. The campaign id is the node key, so the stored value is repaired on the next save.
     private void FixCampaignPicker(ContentVariantDisplay variant) {
-        var alias = AliasHelper<CrowdfunderContent>.PropertyAlias(y => y.Campaign);
-        var campaignProperty = variant.Tabs.SelectMany(x => x.Properties.OrEmpty()).SingleOrDefault(x => x.Alias == alias);
+        var alias = AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(y => y.Campaign);
+        var campaignProperty = variant.Tabs
+                                      .SelectMany(x => x.Properties.OrEmpty())
+                                      .SingleOrDefault(x => x.Alias == alias);
 
         if (campaignProperty != null && UdiParser.TryParse(campaignProperty.Value?.ToString(), out GuidUdi udi)) {
             campaignProperty.Value = new JArray(udi.Guid.ToString());

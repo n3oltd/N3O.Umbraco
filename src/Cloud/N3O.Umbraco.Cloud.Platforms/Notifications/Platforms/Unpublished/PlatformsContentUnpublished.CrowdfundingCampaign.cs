@@ -6,21 +6,23 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class CrowdfunderUnpublished : CloudContentUnpublished {
+public class CrowdfundingCampaignUnpublished : CloudContentUnpublished {
     private readonly IContentHelper _contentHelper;
 
-    public CrowdfunderUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, IContentHelper contentHelper)
+    public CrowdfundingCampaignUnpublished(ICloudUrl cloudUrl,
+                                           IBackgroundJob backgroundJob,
+                                           IContentHelper contentHelper)
         : base(cloudUrl, backgroundJob) {
         _contentHelper = contentHelper;
     }
 
     protected override bool CanProcess(IContent content) {
-        return content.IsCrowdfunder() && content.GetCrowdfunderCampaignKey(_contentHelper) != null;
+        return content.IsCrowdfundingCampaign() && content.GetCampaignKey(_contentHelper) != null;
     }
 
     protected override object GetBody(IContent content) {
         var req = new CrowdfundingCampaignWebhookBodyReq();
-        req.CampaignId = content.GetCrowdfunderCampaignKey(_contentHelper)?.ToString();
+        req.CampaignId = content.GetCampaignKey(_contentHelper)?.ToString();
         req.Action = WebhookSyncAction.Deactivate;
 
         return req;

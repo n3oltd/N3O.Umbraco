@@ -15,7 +15,7 @@ public static class PlatformsSchemaConstants {
         public const string Calculator = "Calculator";
         public const string Campaigns = "Campaigns";
         public const string CrossSells = "Cross Sells";
-        public const string Crowdfunders = "Crowdfunders";
+        public const string CrowdfundingCampaigns = "Crowdfunding Campaigns";
         public const string DonationForms = "Donation Forms";
         public const string Offerings = "Offerings";
         public const string Platforms = "Platforms";
@@ -82,5 +82,20 @@ public static class PlatformsSchemaConstants {
         public const string Options = "Options";
         public const string Settings = "Settings";
         public const string Suggestions = "Suggestions";
+    }
+
+    // Shared by the seeder and the plan step that renames what earlier seeders left behind
+    public static class Names {
+        public const string CrowdfundingCampaign = "Crowdfunding Campaign";
+        public const string CrowdfundingCampaigns = "Crowdfunding Campaigns";
+    }
+
+    public static class Tabs {
+        public const string CrowdfunderPageTemplate = "Crowdfunder Page Template";
+        public const string CrowdfundingCampaign = "Crowdfunding Campaign";
+    }
+
+    public static class Descriptions {
+        public const string CrowdfundingCampaignCampaign = "The campaign this crowdfunding campaign belongs to";
     }
 }

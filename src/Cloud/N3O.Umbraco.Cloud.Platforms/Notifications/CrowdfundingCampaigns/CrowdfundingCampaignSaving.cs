@@ -15,18 +15,18 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class CrowdfunderSaving : INotificationAsyncHandler<ContentSavingNotification> {
+public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly IContentService _contentService;
     private readonly IContentLocator _contentLocator;
     private readonly IContentHelper _contentHelper;
     private readonly IContentTypeService _contentTypeService;
     private readonly ILookups _lookups;
 
-    public CrowdfunderSaving(IContentService contentService,
-                             IContentLocator contentLocator,
-                             IContentTypeService contentTypeService,
-                             ILookups lookups,
-                             IContentHelper contentHelper) {
+    public CrowdfundingCampaignSaving(IContentService contentService,
+                                      IContentLocator contentLocator,
+                                      IContentTypeService contentTypeService,
+                                      ILookups lookups,
+                                      IContentHelper contentHelper) {
         _contentService = contentService;
         _contentLocator = contentLocator;
         _contentTypeService = contentTypeService;
@@ -36,11 +36,11 @@ public class CrowdfunderSaving : INotificationAsyncHandler<ContentSavingNotifica
 
     public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.SavedEntities) {
-            if (!content.IsCrowdfunder()) {
+            if (!content.IsCrowdfundingCampaign()) {
                 continue;
             }
 
-            var campaignKey = content.GetCrowdfunderCampaignKey(_contentHelper);
+            var campaignKey = content.GetCampaignKey(_contentHelper);
 
             if (campaignKey == null) {
                 continue;
@@ -61,8 +61,8 @@ public class CrowdfunderSaving : INotificationAsyncHandler<ContentSavingNotifica
                 continue;
             }
 
-            if (AnotherCrowdfunderRaisesFor(content, campaignKey.Value)) {
-                notification.CancelWithError("A crowdfunder already exists for this campaign");
+            if (AnotherCrowdfundingCampaignExistsFor(content, campaignKey.Value)) {
+                notification.CancelWithError("This campaign already has a crowdfunding campaign");
 
                 continue;
             }
@@ -77,9 +77,9 @@ public class CrowdfunderSaving : INotificationAsyncHandler<ContentSavingNotifica
         return Task.CompletedTask;
     }
 
-    private bool AnotherCrowdfunderRaisesFor(IContent crowdfunder, Guid campaignKey) {
-        return _contentService.GetCrowdfunders(_contentTypeService)
-                              .Any(x => x.Key != crowdfunder.Key &&
-                                        x.GetCrowdfunderCampaignKey(_contentHelper) == campaignKey);
+    private bool AnotherCrowdfundingCampaignExistsFor(IContent crowdfundingCampaign, Guid campaignKey) {
+        return _contentService.GetCrowdfundingCampaigns(_contentTypeService)
+                              .Any(x => x.Key != crowdfundingCampaign.Key &&
+                                        x.GetCampaignKey(_contentHelper) == campaignKey);
     }
 }

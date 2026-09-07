@@ -29,25 +29,25 @@ public class CampaignSaved : INotificationAsyncHandler<ContentSavedNotification>
     public Task HandleAsync(ContentSavedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.SavedEntities) {
             if (content.IsCampaign(_contentTypeService)) {
-                SyncCrowdfunderNames(content.Key, content.Name);
+                SyncCrowdfundingCampaignNames(content.Key, content.Name);
             }
         }
 
         return Task.CompletedTask;
     }
 
-    private void SyncCrowdfunderNames(Guid campaignKey, string campaignName) {
-        foreach (var crowdfunder in _contentService.GetCrowdfunders(_contentTypeService)) {
-            if (crowdfunder.GetCrowdfunderCampaignKey(_contentHelper) != campaignKey ||
-                crowdfunder.Name.EqualsInvariant(campaignName)) {
+    private void SyncCrowdfundingCampaignNames(Guid campaignKey, string campaignName) {
+        foreach (var crowdfundingCampaign in _contentService.GetCrowdfundingCampaigns(_contentTypeService)) {
+            if (crowdfundingCampaign.GetCampaignKey(_contentHelper) != campaignKey ||
+                crowdfundingCampaign.Name.EqualsInvariant(campaignName)) {
                 continue;
             }
 
-            var contentPublisher = _contentEditor.Value.ForExisting(crowdfunder.Key);
+            var contentPublisher = _contentEditor.Value.ForExisting(crowdfundingCampaign.Key);
 
             contentPublisher.SetName(campaignName);
 
-            if (crowdfunder.Published) {
+            if (crowdfundingCampaign.Published) {
                 contentPublisher.SaveAndPublish();
             } else {
                 contentPublisher.SaveUnpublished();
