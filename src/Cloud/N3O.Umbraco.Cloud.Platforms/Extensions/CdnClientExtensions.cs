@@ -58,8 +58,6 @@ public static class CdnClientExtensions {
         }
     }
 
-    // The backend writes each page at the path it derives from the entity's slugs, which the site derives the
-    // same way, so the entry can be marked stale before the backend has announced the new page.
     public static void EvictPlatformsPage(this ICdnClient cdnClient, PublishedFileKind kind, params string[] slugs) {
         cdnClient.Evict(GetPlatformsPagePath(kind, string.Join('/', slugs)));
     }

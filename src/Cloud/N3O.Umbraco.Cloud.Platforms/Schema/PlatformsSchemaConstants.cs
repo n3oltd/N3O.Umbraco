@@ -38,7 +38,7 @@ public static class PlatformsSchemaConstants {
     }
 
     public static class DataTypeKeys {
-        // Every site's uSync export carries this key, so a type seeded under any other key would clash on import
+        // The key every site's uSync export holds for the type
         public static readonly Guid CampaignsSingle = new("d51913ab-a36d-4d15-9c5c-7876319e967e");
     }
 
@@ -84,7 +84,6 @@ public static class PlatformsSchemaConstants {
         public const string Suggestions = "Suggestions";
     }
 
-    // Shared by the seeder and the plan step that renames what earlier seeders left behind
     public static class Names {
         public const string CrowdfundingCampaign = "Crowdfunding Campaign";
         public const string CrowdfundingCampaigns = "Crowdfunding Campaigns";

@@ -51,8 +51,6 @@ public class PlatformsContentTypesMigrationV2 : MigrationBase {
         designer.Save();
     }
 
-    // The plan only runs once these types exist, and a site's copy predates the seeder, so the type is adopted
-    // under whatever key it holds while the properties added to it still get deterministic keys.
     private IDocumentTypeDesigner<T> ForExisting<T>() where T : IUmbracoContent {
         var alias = AliasHelper<T>.ContentTypeAlias();
         var existing = _contentTypeEditor.Find(alias) ?? throw new ContentTypeNotFoundException(alias);

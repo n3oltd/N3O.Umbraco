@@ -18,20 +18,18 @@ using Tabs = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Tabs;
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public class CrowdfundingCampaignNamesMigration : MigrationBase {
+    private const string LegacyContainerAlias = "platformsCrowdfunders";
     private const string LegacyFolder = "Crowdfunders";
+    private const string LegacyItemAlias = "platformsCrowdfunder";
 
-    // Both types were minted under their pre-rename aliases on every site, so a site's copy carries whichever
-    // alias it was seeded under and no other key.
+    private static readonly IReadOnlyList<Guid> ContainerKeys = GetSeededKeys(Aliases.Alias, LegacyContainerAlias);
     private static readonly IReadOnlyList<Guid> ItemKeys = GetSeededKeys(Aliases.CrowdfundingCampaign.Alias,
-                                                                          "platformsCrowdfunder");
-    private static readonly IReadOnlyList<Guid> ContainerKeys = GetSeededKeys(Aliases.Alias, "platformsCrowdfunders");
-
-    // The seeder that created the tab did not camel-case aliases, and the sites named the template tab themselves
-    private static readonly string[] LegacyCrowdfundingCampaignTabs = ["Crowdfunder"];
+                                                                          LegacyItemAlias);
     private static readonly string[] LegacyCrowdfunderPageTemplateTabs = [
         "newCrowdfunderTemplate",
         "fundraisingPageTemplate"
     ];
+    private static readonly string[] LegacyCrowdfundingCampaignTabs = ["Crowdfunder"];
 
     private readonly IContentTypeService _contentTypeService;
     private readonly IShortStringHelper _shortStringHelper;
@@ -69,8 +67,6 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
         RenameFolder();
     }
 
-    // The alias may still be held by the legacy composition, which the seeder never touches and this step
-    // must not either, so the holder has to be a type this package seeded and composed into nothing.
     private IContentType FindSeeded(string alias, IReadOnlyList<Guid> seededKeys) {
         var contentType = _contentTypeService.Get(alias);
 
@@ -91,7 +87,6 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
         return contentType;
     }
 
-    // Property values key on the property, not its group, so a group can take a new alias without losing them.
     private void RenameTab(IContentType contentType, IReadOnlyList<string> legacyAliases, string name) {
         var alias = name.ToSafeAlias(_shortStringHelper, true);
 
@@ -142,7 +137,6 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
 
         var folder = folders.SingleOrDefault(x => x.Name == LegacyFolder);
 
-        // A folder the site already holds under the new name keeps it, so the two are not left as twins.
         if (folder == null || folders.Any(x => x.Name == Folders.CrowdfundingCampaigns)) {
             return;
         }

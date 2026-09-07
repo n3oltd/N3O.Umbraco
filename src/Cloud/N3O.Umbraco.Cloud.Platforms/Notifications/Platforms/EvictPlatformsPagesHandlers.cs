@@ -11,7 +11,6 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-// Only this process is reached: the backend's page events evict every process once the page is written.
 public class EvictPlatformsPagesHandlers :
     INotificationAsyncHandler<ContentPublishedNotification>,
     INotificationAsyncHandler<ContentUnpublishedNotification> {

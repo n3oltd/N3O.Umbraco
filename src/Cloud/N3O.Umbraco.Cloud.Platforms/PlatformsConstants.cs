@@ -113,12 +113,12 @@ public static class PlatformsConstants {
             public static readonly string[] PlatformsPages = [
                 Campaign.Created,
                 Campaign.Updated,
-                Offering.Created,
-                Offering.Updated,
+                Crowdfunder.Created,
+                Crowdfunder.Updated,
                 CrowdfundingCampaign.Created,
                 CrowdfundingCampaign.Updated,
-                Crowdfunder.Created,
-                Crowdfunder.Updated
+                Offering.Created,
+                Offering.Updated
             ];
         }
 
@@ -127,7 +127,6 @@ public static class PlatformsConstants {
             public const string ContentCollection = "contentCollection";
             public const string ContentLibrary = "contentLibrary";
             public const string CrossSells = "crossSells";
-            // Endpoints registered before the platforms pages hook existed still deliver to this id
             public const string Crowdfunder = nameof(Crowdfunder);
             public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
             public const string ManagedContent = "managedContent";

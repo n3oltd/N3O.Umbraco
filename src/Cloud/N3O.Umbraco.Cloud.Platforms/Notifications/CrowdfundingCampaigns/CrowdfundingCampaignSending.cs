@@ -37,8 +37,6 @@ public class CrowdfundingCampaignSending : INotificationAsyncHandler<SendingCont
         return Task.CompletedTask;
     }
 
-    // A node saved while the campaign picker was a content picker holds a document udi, which the data list
-    // cannot display. The campaign id is the node key, so the stored value is repaired on the next save.
     private void FixCampaignPicker(ContentVariantDisplay variant) {
         var alias = AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(y => y.Campaign);
         var campaignProperty = variant.Tabs

@@ -311,8 +311,6 @@ public abstract class ContentTypeDesigner : IContentTypeDesigner {
 
         contentType ??= _contentTypeService.Get(Alias);
 
-        // An alias held under a foreign key may be a different kind of type altogether, such as a composition
-        // the site never retired, so converging it in place would rewrite that type instead of this one.
         if (contentType != null && _id.HasValue() && contentType.Key != _id.GetValueOrThrow()) {
             throw new ContentTypeKeyMismatchException(Alias, _id.GetValueOrThrow(), contentType.Key);
         }

@@ -50,7 +50,6 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
                                                                                            JsonSerializers.Simple)
                                          .GetAwaiter().GetResult();
 
-        // The backend requires the reference it assigned, so a campaign it has not published cannot be donated to.
         if (publishedCampaign == null) {
             throw new ResourceNotFoundException(nameof(PublishedCampaign), Key.ToString());
         }
