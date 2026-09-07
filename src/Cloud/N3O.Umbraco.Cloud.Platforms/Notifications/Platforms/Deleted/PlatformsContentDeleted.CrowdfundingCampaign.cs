@@ -10,7 +10,7 @@ public class CrowdfundingCampaignDeleted : PlatformsContentDeleted {
         : base(cloudUrl, backgroundJob) { }
 
     protected override bool CanProcess(IContent content) {
-        return content.IsCrowdfundingCampaign() && content.GetCampaignKey() != null;
+        return content.IsCrowdfundingCampaign() && content.Published && content.GetCampaignKey() != null;
     }
 
     protected override object GetBody(IContent content) {
