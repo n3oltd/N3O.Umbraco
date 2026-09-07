@@ -1,4 +1,6 @@
-﻿namespace N3O.Umbraco.Cloud.Platforms;
+﻿using System.Collections.Generic;
+
+namespace N3O.Umbraco.Cloud.Platforms;
 
 public static class PlatformsConstants {
     public const string BackOfficeApiName = "PlatformsBackOffice";
@@ -110,7 +112,7 @@ public static class PlatformsConstants {
                 public const string Updated = "offering.updated";
             }
 
-            public static readonly string[] PlatformsPages = [
+            public static readonly IReadOnlyList<string> PlatformsPages = [
                 Campaign.Created,
                 Campaign.Updated,
                 Crowdfunder.Created,

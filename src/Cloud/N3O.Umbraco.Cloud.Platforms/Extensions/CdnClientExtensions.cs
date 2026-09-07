@@ -62,12 +62,12 @@ public static class CdnClientExtensions {
         cdnClient.Evict(GetPlatformsPagePath(kind, string.Join('/', slugs)));
     }
 
-    private static string GetPlatformsPagePath(PublishedFileKind kind, string path) {
-        return $"{kind.Id}/{path.Trim('/')}/index.json";
-    }
-
     private static Task<PublishedContentResult> FetchMergeModelAsync(ICdnClient cdnClient,
                                                                      PublishedFileInfo publishedModel) {
         return cdnClient.DownloadPublishedContentAsync(publishedModel.Path);
+    }
+
+    private static string GetPlatformsPagePath(PublishedFileKind kind, string path) {
+        return $"{kind.Id}/{path.Trim('/')}/index.json";
     }
 }

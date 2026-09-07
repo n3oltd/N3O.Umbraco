@@ -19,15 +19,15 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CrowdfundingCampaignPublished : CloudContentPublished {
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly ILogger<CrowdfundingCampaignPublished> _logger;
-    private readonly IReadOnlyList<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
     private readonly IUmbracoMapper _mapper;
+    private readonly IReadOnlyList<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
 
     public CrowdfundingCampaignPublished(ICloudUrl cloudUrl,
                                          IBackgroundJob backgroundJob,
                                          Lazy<IContentLocator> contentLocator,
                                          ILogger<CrowdfundingCampaignPublished> logger,
-                                         IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers,
-                                         IUmbracoMapper mapper)
+                                         IUmbracoMapper mapper,
+                                         IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers)
         : base(cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
         _logger = logger;

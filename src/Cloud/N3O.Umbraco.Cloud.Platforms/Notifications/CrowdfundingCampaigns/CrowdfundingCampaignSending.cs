@@ -37,6 +37,7 @@ public class CrowdfundingCampaignSending : INotificationAsyncHandler<SendingCont
         return Task.CompletedTask;
     }
 
+    // TODO Delete once every crowdfunding campaign node has been saved with a data list value
     private void FixCampaignPicker(ContentVariantDisplay variant) {
         var alias = AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(y => y.Campaign);
         var campaignProperty = variant.Tabs

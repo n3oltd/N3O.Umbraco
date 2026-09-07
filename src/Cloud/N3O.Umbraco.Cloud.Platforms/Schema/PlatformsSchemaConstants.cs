@@ -38,7 +38,7 @@ public static class PlatformsSchemaConstants {
     }
 
     public static class DataTypeKeys {
-        // The key every site's uSync export holds for the type
+        // The key the sites' uSync exports hold for the type, save Muslim Hands, whose own key is matched by name
         public static readonly Guid CampaignsSingle = new("d51913ab-a36d-4d15-9c5c-7876319e967e");
     }
 
@@ -84,6 +84,10 @@ public static class PlatformsSchemaConstants {
         public const string Suggestions = "Suggestions";
     }
 
+    public static class Descriptions {
+        public const string CrowdfundingCampaignCampaign = "The campaign this crowdfunding campaign belongs to";
+    }
+
     public static class Names {
         public const string CrowdfundingCampaign = "Crowdfunding Campaign";
         public const string CrowdfundingCampaigns = "Crowdfunding Campaigns";
@@ -92,9 +96,5 @@ public static class PlatformsSchemaConstants {
     public static class Tabs {
         public const string CrowdfunderPageTemplate = "Crowdfunder Page Template";
         public const string CrowdfundingCampaign = "Crowdfunding Campaign";
-    }
-
-    public static class Descriptions {
-        public const string CrowdfundingCampaignCampaign = "The campaign this crowdfunding campaign belongs to";
     }
 }

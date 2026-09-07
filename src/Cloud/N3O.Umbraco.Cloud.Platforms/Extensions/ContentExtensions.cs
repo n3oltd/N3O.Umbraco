@@ -19,6 +19,8 @@ public static class ContentExtensions {
         if (!value.HasValue()) {
             return null;
         } else if (UdiParser.TryParse(value, out GuidUdi udi)) {
+            // TODO Delete once every crowdfunding campaign node has been saved with a data list value: the campaign
+            // picker was a content picker before, so a node saved earlier still holds a document udi.
             return udi.Guid;
         } else if (Guid.TryParse(GetDataListItem(value), out var campaignKey)) {
             return campaignKey;

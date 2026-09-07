@@ -1,6 +1,7 @@
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using Slugify;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,12 +18,12 @@ public class EvictPlatformsPagesHandlers :
     private readonly ICdnClient _cdnClient;
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
-    private readonly ISlugHelper _slugHelper;
+    private readonly Lazy<ISlugHelper> _slugHelper;
 
     public EvictPlatformsPagesHandlers(ICdnClient cdnClient,
                                        IContentService contentService,
                                        IContentTypeService contentTypeService,
-                                       ISlugHelper slugHelper) {
+                                       Lazy<ISlugHelper> slugHelper) {
         _cdnClient = cdnClient;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
@@ -58,6 +59,6 @@ public class EvictPlatformsPagesHandlers :
     }
 
     private string GetSlug(IContent content) {
-        return _slugHelper.GenerateSlug(content.Name);
+        return _slugHelper.Value.GenerateSlug(content.Name);
     }
 }

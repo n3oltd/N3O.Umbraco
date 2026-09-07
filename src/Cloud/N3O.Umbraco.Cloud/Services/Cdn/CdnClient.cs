@@ -33,10 +33,8 @@ public class CdnClient : ICdnClient {
     private readonly ILogger<CdnClient> _logger;
     private readonly HttpClient _httpClient;
     private readonly Duration _maxAge;
-    private readonly Duration _notFoundRetryInterval;
-
-    // No result stays put for longer than this, so anything older refreshes of its own accord.
     private readonly Duration _maxRetention;
+    private readonly Duration _notFoundRetryInterval;
 
     public CdnClient(ICloudUrl cloudUrl,
                      IClock clock,

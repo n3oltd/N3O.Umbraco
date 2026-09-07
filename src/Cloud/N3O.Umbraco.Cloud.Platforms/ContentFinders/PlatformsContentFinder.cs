@@ -42,7 +42,8 @@ public class PlatformsContentFinder : IContentFinder {
 
                 found = true;
             } else if (specialPage.HasValue()) {
-                _logger.LogError("The CDN has the {Kind} page at {Path} but the URL Settings {Picker} picker is empty, so the page cannot be served",
+                _logger.LogError("The CDN has the {Kind} page at {Path} but the URL Settings {Picker} picker " +
+                                 "is empty, so the page cannot be served",
                                  getPageResult.Page.Kind.Id,
                                  getPageResult.Page.Path,
                                  specialPage.UrlSettingsPropertyAlias);

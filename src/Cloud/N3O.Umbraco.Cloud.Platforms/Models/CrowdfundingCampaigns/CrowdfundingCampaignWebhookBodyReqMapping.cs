@@ -13,8 +13,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class CrowdfundingCampaignWebhookBodyReqMapping : IMapDefinition {
     public const string CampaignKeyContext = nameof(CampaignKeyContext);
-    public const string CrowdfundingCampaignPageContentContext = nameof(CrowdfundingCampaignPageContentContext);
     public const string CrowdfunderPageContentContext = nameof(CrowdfunderPageContentContext);
+    public const string CrowdfundingCampaignPageContentContext = nameof(CrowdfundingCampaignPageContentContext);
 
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<CrowdfundingCampaignContent, CrowdfundingCampaignWebhookBodyReq>((_, _) => new CrowdfundingCampaignWebhookBodyReq(), Map);

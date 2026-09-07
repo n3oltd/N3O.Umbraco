@@ -9,7 +9,6 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Extensions;
-using Aliases = N3O.Umbraco.Cloud.Platforms.PlatformsConstants.CrowdfundingCampaigns;
 using Descriptions = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Descriptions;
 using Folders = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Folders;
 using Names = N3O.Umbraco.Cloud.Platforms.PlatformsSchemaConstants.Names;
@@ -22,9 +21,10 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
     private const string LegacyFolder = "Crowdfunders";
     private const string LegacyItemAlias = "platformsCrowdfunder";
 
-    private static readonly IReadOnlyList<Guid> ContainerKeys = GetSeededKeys(Aliases.Alias, LegacyContainerAlias);
-    private static readonly IReadOnlyList<Guid> ItemKeys = GetSeededKeys(Aliases.CrowdfundingCampaign.Alias,
-                                                                          LegacyItemAlias);
+    private static readonly IReadOnlyList<Guid> ContainerKeys =
+        GetSeededKeys(PlatformsConstants.CrowdfundingCampaigns.Alias, LegacyContainerAlias);
+    private static readonly IReadOnlyList<Guid> ItemKeys =
+        GetSeededKeys(PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias, LegacyItemAlias);
     private static readonly string[] LegacyCrowdfunderPageTemplateTabs = [
         "newCrowdfunderTemplate",
         "fundraisingPageTemplate"
@@ -46,8 +46,8 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
     }
 
     protected override void Migrate() {
-        var item = FindSeeded(Aliases.CrowdfundingCampaign.Alias, ItemKeys);
-        var container = FindSeeded(Aliases.Alias, ContainerKeys);
+        var item = FindSeeded(PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias, ItemKeys);
+        var container = FindSeeded(PlatformsConstants.CrowdfundingCampaigns.Alias, ContainerKeys);
 
         if (item != null) {
             RenameTab(item, LegacyCrowdfundingCampaignTabs, Tabs.CrowdfundingCampaign);
@@ -87,6 +87,34 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
         return contentType;
     }
 
+    private void RenameFolder() {
+        var platforms = _contentTypeService.GetContainers(Folders.Platforms, 1).SingleOrDefault();
+
+        if (platforms == null) {
+            return;
+        }
+
+        var folders = _contentTypeService.GetContainers(Folders.CrowdfundingCampaigns, platforms.Level + 1)
+                                         .Concat(_contentTypeService.GetContainers(LegacyFolder, platforms.Level + 1))
+                                         .Where(x => x.ParentId == platforms.Id)
+                                         .ToList();
+
+        var folder = folders.SingleOrDefault(x => x.Name == LegacyFolder);
+
+        if (folder == null || folders.Any(x => x.Name == Folders.CrowdfundingCampaigns)) {
+            return;
+        }
+
+        folder.Name = Folders.CrowdfundingCampaigns;
+
+        var attempt = _contentTypeService.SaveContainer(folder);
+
+        if (!attempt.Success) {
+            throw attempt.Exception ?? new Exception($"Could not rename the {LegacyFolder.Quote()} content type " +
+                                                     $"folder ({attempt.Result?.Result})");
+        }
+    }
+
     private void RenameTab(IContentType contentType, IReadOnlyList<string> legacyAliases, string name) {
         var alias = name.ToSafeAlias(_shortStringHelper, true);
 
@@ -115,39 +143,11 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
     }
 
     private void SetCampaignDescription(IContentType contentType) {
-        var campaign = contentType.PropertyTypes
-                                  .FirstOrDefault(x => x.Alias == Aliases.CrowdfundingCampaign.Properties.Campaign);
+        var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
+        var campaign = contentType.PropertyTypes.FirstOrDefault(x => x.Alias == alias);
 
         if (campaign != null) {
             campaign.Description = Descriptions.CrowdfundingCampaignCampaign;
-        }
-    }
-
-    private void RenameFolder() {
-        var platforms = _contentTypeService.GetContainers(Folders.Platforms, 1).SingleOrDefault();
-
-        if (platforms == null) {
-            return;
-        }
-
-        var folders = _contentTypeService.GetContainers(Folders.CrowdfundingCampaigns, platforms.Level + 1)
-                                         .Concat(_contentTypeService.GetContainers(LegacyFolder, platforms.Level + 1))
-                                         .Where(x => x.ParentId == platforms.Id)
-                                         .ToList();
-
-        var folder = folders.SingleOrDefault(x => x.Name == LegacyFolder);
-
-        if (folder == null || folders.Any(x => x.Name == Folders.CrowdfundingCampaigns)) {
-            return;
-        }
-
-        folder.Name = Folders.CrowdfundingCampaigns;
-
-        var attempt = _contentTypeService.SaveContainer(folder);
-
-        if (!attempt.Success) {
-            throw attempt.Exception ?? new Exception($"Could not rename the {LegacyFolder.Quote()} content type folder " +
-                                                     $"({attempt.Result?.Result})");
         }
     }
 
