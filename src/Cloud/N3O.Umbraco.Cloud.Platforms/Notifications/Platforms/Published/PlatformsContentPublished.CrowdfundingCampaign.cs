@@ -17,7 +17,6 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CrowdfundingCampaignPublished : CloudContentPublished {
-    private readonly IContentHelper _contentHelper;
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly ILogger<CrowdfundingCampaignPublished> _logger;
     private readonly IReadOnlyList<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
@@ -25,13 +24,11 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
 
     public CrowdfundingCampaignPublished(ICloudUrl cloudUrl,
                                          IBackgroundJob backgroundJob,
-                                         IContentHelper contentHelper,
                                          Lazy<IContentLocator> contentLocator,
                                          ILogger<CrowdfundingCampaignPublished> logger,
                                          IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers,
                                          IUmbracoMapper mapper)
         : base(cloudUrl, backgroundJob, logger) {
-        _contentHelper = contentHelper;
         _contentLocator = contentLocator;
         _logger = logger;
         _mapper = mapper;
@@ -43,7 +40,7 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
             return false;
         }
 
-        if (content.GetCampaignKey(_contentHelper) == null) {
+        if (content.GetCampaignKey() == null) {
             _logger.LogWarning("Crowdfunding campaign {Name} ({Key}) has no campaign picked, so it was not sent",
                                content.Name,
                                content.Key);
@@ -56,7 +53,7 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
 
     protected override Task<object> GetBodyAsync(IContent content) {
         var crowdfundingCampaign = _contentLocator.Value.ById<CrowdfundingCampaignContent>(content.Key);
-        var campaignKey = content.GetCampaignKey(_contentHelper).GetValueOrThrow();
+        var campaignKey = content.GetCampaignKey().GetValueOrThrow();
 
         var crowdfunderPagePublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.CrowdfunderPage);
 

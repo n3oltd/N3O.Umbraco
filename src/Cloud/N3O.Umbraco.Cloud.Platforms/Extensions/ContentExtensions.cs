@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core;
@@ -12,26 +12,19 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class ContentExtensions {
-    public static Guid? GetCampaignKey(this IContent content, IContentHelper contentHelper) {
+    public static Guid? GetCampaignKey(this IContent content) {
         var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
-        var property = content.Properties.Single(x => x.Alias == alias);
+        var value = content.GetValue<string>(alias);
 
-        // The campaign picker was a content picker before it became a data list, so a node saved before the
-        // change, and every node on a site whose picker is still a content picker, holds a document udi.
-        if (UdiParser.TryParse(property.GetValue()?.ToString(), out GuidUdi udi)) {
+        if (!value.HasValue()) {
+            return null;
+        } else if (UdiParser.TryParse(value, out GuidUdi udi)) {
             return udi.Guid;
+        } else if (Guid.TryParse(GetDataListItem(value), out var campaignKey)) {
+            return campaignKey;
+        } else {
+            return null;
         }
-
-        if (property.PropertyType.IsDataList()) {
-            var contentProperties = contentHelper.GetContentProperties(content);
-            var campaign = contentHelper.GetDataListValue<Campaign>(contentProperties, alias);
-
-            if (Guid.TryParse(campaign?.Id, out var campaignKey)) {
-                return campaignKey;
-            }
-        }
-
-        return null;
     }
 
     public static bool IsCampaign(this IContent content, IContentTypeService contentTypeService) {
@@ -80,6 +73,14 @@ public static class ContentExtensions {
 
     public static bool IsZakatCalculatorField(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Field.Alias);
+    }
+
+    private static string GetDataListItem(string value) {
+        if (value.DetectIsJson()) {
+            return JArray.Parse(value).FirstOrDefault()?.ToString();
+        } else {
+            return value;
+        }
     }
 
     private static bool HasComposition(IContentTypeService contentTypeService,

@@ -18,20 +18,17 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly IContentService _contentService;
     private readonly IContentLocator _contentLocator;
-    private readonly IContentHelper _contentHelper;
     private readonly IContentTypeService _contentTypeService;
     private readonly ILookups _lookups;
 
     public CrowdfundingCampaignSaving(IContentService contentService,
                                       IContentLocator contentLocator,
                                       IContentTypeService contentTypeService,
-                                      ILookups lookups,
-                                      IContentHelper contentHelper) {
+                                      ILookups lookups) {
         _contentService = contentService;
         _contentLocator = contentLocator;
         _contentTypeService = contentTypeService;
         _lookups = lookups;
-        _contentHelper = contentHelper;
     }
 
     public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
@@ -40,7 +37,7 @@ public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavin
                 continue;
             }
 
-            var campaignKey = content.GetCampaignKey(_contentHelper);
+            var campaignKey = content.GetCampaignKey();
 
             if (campaignKey == null) {
                 continue;
@@ -79,7 +76,6 @@ public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavin
 
     private bool AnotherCrowdfundingCampaignExistsFor(IContent crowdfundingCampaign, Guid campaignKey) {
         return _contentService.GetCrowdfundingCampaigns(_contentTypeService)
-                              .Any(x => x.Key != crowdfundingCampaign.Key &&
-                                        x.GetCampaignKey(_contentHelper) == campaignKey);
+                              .Any(x => x.Key != crowdfundingCampaign.Key && x.GetCampaignKey() == campaignKey);
     }
 }
