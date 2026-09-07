@@ -106,8 +106,8 @@ public partial class PlatformsContentTypeSeeder {
         designer.WithDeterministicId();
 
         designer.Tab("Crowdfunder")
-                .ContentPicker(x => x.Campaign)
-                .DataType(Shared.ContentPicker)
+                .ContentmentDataList(x => x.Campaign)
+                .DataType(DataTypeNames.CampaignsSingle)
                 .Mandatory()
                 .Description("The campaign this crowdfunder raises for");
 

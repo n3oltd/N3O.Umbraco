@@ -14,19 +14,21 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 public static class ContentExtensions {
     public static Guid? GetCrowdfunderCampaignKey(this IContent content, IContentHelper contentHelper) {
         var alias = PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Properties.Campaign;
-        var contentProperties = contentHelper.GetContentProperties(content);
-        var campaign = contentHelper.GetDataListValue<Campaign>(contentProperties, alias);
-
-        if (Guid.TryParse(campaign?.Id, out var campaignKey)) {
-            return campaignKey;
-        }
-
-        // TODO Delete once every crowdfunder has been re-saved: the campaign picker was a content picker
-        // before it became a data list, so a node saved before the change still holds a document udi.
         var property = content.Properties.Single(x => x.Alias == alias);
 
+        // The campaign picker was a content picker before it became a data list, so a node saved before the
+        // change, and every node on a site whose picker is still a content picker, holds a document udi.
         if (UdiParser.TryParse(property.GetValue()?.ToString(), out GuidUdi udi)) {
             return udi.Guid;
+        }
+
+        if (property.PropertyType.IsDataList()) {
+            var contentProperties = contentHelper.GetContentProperties(content);
+            var campaign = contentHelper.GetDataListValue<Campaign>(contentProperties, alias);
+
+            if (Guid.TryParse(campaign?.Id, out var campaignKey)) {
+                return campaignKey;
+            }
         }
 
         return null;

@@ -1,4 +1,3 @@
-using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -13,14 +12,17 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSaved : INotificationAsyncHandler<ContentSavedNotification> {
     private readonly Lazy<IContentEditor> _contentEditor;
-    private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly IContentHelper _contentHelper;
+    private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
 
     public CampaignSaved(Lazy<IContentEditor> contentEditor,
-                         Lazy<IContentLocator> contentLocator,
+                         IContentHelper contentHelper,
+                         IContentService contentService,
                          IContentTypeService contentTypeService) {
         _contentEditor = contentEditor;
-        _contentLocator = contentLocator;
+        _contentHelper = contentHelper;
+        _contentService = contentService;
         _contentTypeService = contentTypeService;
     }
 
@@ -35,19 +37,20 @@ public class CampaignSaved : INotificationAsyncHandler<ContentSavedNotification>
     }
 
     private void SyncCrowdfunderNames(Guid campaignKey, string campaignName) {
-        var crowdfunders = _contentLocator.Value.All<CrowdfunderContent>(x => x.Campaign?.Id == campaignKey.ToString());
+        foreach (var crowdfunder in _contentService.GetCrowdfunders(_contentTypeService)) {
+            if (crowdfunder.GetCrowdfunderCampaignKey(_contentHelper) != campaignKey ||
+                crowdfunder.Name.EqualsInvariant(campaignName)) {
+                continue;
+            }
 
-        foreach (var crowdfunder in crowdfunders) {
-            if (!crowdfunder.Content().Name.EqualsInvariant(campaignName)) {
-                var contentPublisher = _contentEditor.Value.ForExisting(crowdfunder.Key);
+            var contentPublisher = _contentEditor.Value.ForExisting(crowdfunder.Key);
 
-                contentPublisher.SetName(campaignName);
+            contentPublisher.SetName(campaignName);
 
-                if (crowdfunder.Content().IsPublished()) {
-                    contentPublisher.SaveAndPublish();
-                } else {
-                    contentPublisher.SaveUnpublished();
-                }
+            if (crowdfunder.Published) {
+                contentPublisher.SaveAndPublish();
+            } else {
+                contentPublisher.SaveUnpublished();
             }
         }
     }

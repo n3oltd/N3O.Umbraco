@@ -1,9 +1,7 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json.Linq;
 using Slugify;
 using System;
@@ -20,12 +18,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotification> {
     private readonly Lazy<IContentCache> _contentCache;
     private readonly Lazy<ISlugHelper> _slugHelper;
-    private readonly Lazy<ILookups> _lookups;
 
-    public CrowdfunderSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper, Lazy<ILookups> lookups) {
+    public CrowdfunderSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper) {
         _contentCache = contentCache;
         _slugHelper = slugHelper;
-        _lookups = lookups;
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
@@ -33,24 +29,22 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
 
         if (notification.Content.ContentTypeAlias.EqualsInvariant(alias)) {
             foreach (var variant in notification.Content.Variants) {
-                FixCampaignPicker(variant);
                 SetUrl(notification, variant);
+                FixCampaignPicker(variant);
             }
         }
 
         return Task.CompletedTask;
     }
 
-    [Obsolete("Remove once all the older crowdfunding campaigns have been published")]
+    // A node saved while the campaign picker was a content picker holds a document udi, which the data list
+    // cannot display. The campaign id is the node key, so the stored value is repaired on the next save.
     private void FixCampaignPicker(ContentVariantDisplay variant) {
         var alias = AliasHelper<CrowdfunderContent>.PropertyAlias(y => y.Campaign);
-        var campaignProperty = variant.Tabs.SelectMany(x => x.Properties).Single(x => x.Alias == alias);
+        var campaignProperty = variant.Tabs.SelectMany(x => x.Properties.OrEmpty()).SingleOrDefault(x => x.Alias == alias);
 
-        if (UdiParser.TryParse(campaignProperty.Value?.ToString(), out var udi)) {
-            var contentKey = udi.ToId();
-            var campaign = _lookups.Value.FindById<Campaign>(contentKey.ToString());
-
-            campaignProperty.Value = new JArray(campaign.Id);
+        if (campaignProperty != null && UdiParser.TryParse(campaignProperty.Value?.ToString(), out GuidUdi udi)) {
+            campaignProperty.Value = new JArray(udi.Guid.ToString());
         }
     }
 

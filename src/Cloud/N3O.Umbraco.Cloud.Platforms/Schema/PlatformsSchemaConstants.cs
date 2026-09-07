@@ -1,4 +1,6 @@
-﻿namespace N3O.Umbraco.Cloud.Platforms;
+﻿using System;
+
+namespace N3O.Umbraco.Cloud.Platforms;
 
 public static class PlatformsSchemaConstants {
     public const string ConfigurationSection = "Platforms";
@@ -24,6 +26,7 @@ public static class PlatformsSchemaConstants {
     public static class DataTypes {
         public const string AnalyticsTagsList = "Platforms Analytics Tags List";
         public const string CampaignsMultiple = "Platforms Campaigns Data List (0, n)";
+        public const string CampaignsSingle = "Platforms Campaigns Data List (0, 1)";
         public const string DonateButtonAction = "Platforms Donate Button Action Data List (0, 1)";
         public const string ECommerceStage = "Platforms Ecommerce Stage Data List (0, 1)";
         public const string ElementEmbedCodeLabel = "Platforms Element Embed Code Label";
@@ -31,6 +34,11 @@ public static class PlatformsSchemaConstants {
         public const string QurbaniSeasonCategoryPicker = "Platforms Qurbani Season Category Picker (0, n)";
         public const string SuggestedAmounts = "Nested Platforms Suggested Amount (0, 3)";
         public const string Summary = "Platforms Summary";
+    }
+
+    public static class DataTypeKeys {
+        // Every site's uSync export carries this key, so a type seeded under any other key would clash on import
+        public static readonly Guid CampaignsSingle = new("d51913ab-a36d-4d15-9c5c-7876319e967e");
     }
 
     public static class SharedDataTypes {

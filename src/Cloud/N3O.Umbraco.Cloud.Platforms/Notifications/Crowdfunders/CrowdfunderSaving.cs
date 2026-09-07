@@ -16,19 +16,20 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CrowdfunderSaving : INotificationAsyncHandler<ContentSavingNotification> {
-    private const int PageSize = 100;
-
     private readonly IContentService _contentService;
     private readonly IContentLocator _contentLocator;
     private readonly IContentHelper _contentHelper;
+    private readonly IContentTypeService _contentTypeService;
     private readonly ILookups _lookups;
 
     public CrowdfunderSaving(IContentService contentService,
                              IContentLocator contentLocator,
+                             IContentTypeService contentTypeService,
                              ILookups lookups,
                              IContentHelper contentHelper) {
         _contentService = contentService;
         _contentLocator = contentLocator;
+        _contentTypeService = contentTypeService;
         _lookups = lookups;
         _contentHelper = contentHelper;
     }
@@ -76,25 +77,9 @@ public class CrowdfunderSaving : INotificationAsyncHandler<ContentSavingNotifica
         return Task.CompletedTask;
     }
 
-    // Read through the content service rather than the published cache, so an unpublished crowdfunder
-    // still counts against the campaign.
     private bool AnotherCrowdfunderRaisesFor(IContent crowdfunder, Guid campaignKey) {
-        for (var pageIndex = 0; true; pageIndex++) {
-            var page = _contentService.GetPagedOfType(crowdfunder.ContentTypeId,
-                                                      pageIndex,
-                                                      PageSize,
-                                                      out var totalRecords,
-                                                      null);
-
-            foreach (var other in page) {
-                if (other.Key != crowdfunder.Key && other.GetCrowdfunderCampaignKey(_contentHelper) == campaignKey) {
-                    return true;
-                }
-            }
-
-            if ((pageIndex + 1) * (long) PageSize >= totalRecords) {
-                return false;
-            }
-        }
+        return _contentService.GetCrowdfunders(_contentTypeService)
+                              .Any(x => x.Key != crowdfunder.Key &&
+                                        x.GetCrowdfunderCampaignKey(_contentHelper) == campaignKey);
     }
 }
