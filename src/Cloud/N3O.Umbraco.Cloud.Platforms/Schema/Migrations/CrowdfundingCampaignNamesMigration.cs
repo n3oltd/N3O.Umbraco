@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -33,21 +33,18 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
 
     private readonly IContentTypeService _contentTypeService;
     private readonly IShortStringHelper _shortStringHelper;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public CrowdfundingCampaignNamesMigration(IMigrationContext context,
                                               IContentTypeService contentTypeService,
-                                              IShortStringHelper shortStringHelper,
-                                              IWebHostEnvironment webHostEnvironment)
+                                              IShortStringHelper shortStringHelper)
         : base(context) {
         _contentTypeService = contentTypeService;
         _shortStringHelper = shortStringHelper;
-        _webHostEnvironment = webHostEnvironment;
     }
 
     protected override void Migrate() {
-        var item = FindSeeded(PlatformsConstants.CrowdfundingCampaigns.CrowdfundingCampaign.Alias, ItemKeys);
-        var container = FindSeeded(PlatformsConstants.CrowdfundingCampaigns.Alias, ContainerKeys);
+        var item = FindSeeded(ItemKeys);
+        var container = FindSeeded(ContainerKeys);
 
         if (item != null) {
             RenameTab(item, LegacyCrowdfundingCampaignTabs, Tabs.CrowdfundingCampaign);
@@ -67,24 +64,8 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
         RenameFolder();
     }
 
-    private IContentType FindSeeded(string alias, IReadOnlyList<Guid> seededKeys) {
-        var contentType = _contentTypeService.Get(alias);
-
-        if (contentType == null) {
-            return null;
-        }
-
-        var composedInto = _contentTypeService.GetComposedOf(contentType.Id).Select(x => x.Alias).ToList();
-
-        if (!seededKeys.Contains(contentType.Key) || composedInto.Any()) {
-            var composition = composedInto.Any() ? $" and composed into {string.Join(", ", composedInto)}" : "";
-
-            throw new Exception($"Content type {alias.Quote()} on site {Site.Id.Quote()} " +
-                                $"({_webHostEnvironment.EnvironmentName}) is held under key {contentType.Key}" +
-                                $"{composition}, so it is not the seeded type and was not renamed");
-        }
-
-        return contentType;
+    private IContentType FindSeeded(IReadOnlyList<Guid> seededKeys) {
+        return seededKeys.Select(x => _contentTypeService.Get(x)).FirstOrDefault(x => x != null);
     }
 
     private void RenameFolder() {
@@ -99,19 +80,19 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
                                          .Where(x => x.ParentId == platforms.Id)
                                          .ToList();
 
-        var folder = folders.SingleOrDefault(x => x.Name == LegacyFolder);
+        var folder = folders.SingleOrDefault(x => x.Name.EqualsInvariant(LegacyFolder));
 
-        if (folder == null || folders.Any(x => x.Name == Folders.CrowdfundingCampaigns)) {
+        if (folder == null || folders.Any(x => x.Name.EqualsInvariant(Folders.CrowdfundingCampaigns))) {
             return;
         }
 
-        folder.Name = Folders.CrowdfundingCampaigns;
-
-        var attempt = _contentTypeService.SaveContainer(folder);
+        var attempt = _contentTypeService.RenameContainer(folder.Id, Folders.CrowdfundingCampaigns);
 
         if (!attempt.Success) {
-            throw attempt.Exception ?? new Exception($"Could not rename the {LegacyFolder.Quote()} content type " +
-                                                     $"folder ({attempt.Result?.Result})");
+            Logger.LogWarning(attempt.Exception,
+                              "Could not rename the {Folder} content type folder ({Result})",
+                              LegacyFolder,
+                              attempt.Result?.Result);
         }
     }
 
