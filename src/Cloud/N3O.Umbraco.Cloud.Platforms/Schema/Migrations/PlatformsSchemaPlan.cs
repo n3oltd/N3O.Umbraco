@@ -8,9 +8,7 @@ namespace N3O.Umbraco.Cloud.Platforms;
 
 public class PlatformsSchemaPlan : MigrationPlan {
     public PlatformsSchemaPlan() : base(States.PlanName) {
-        From(string.Empty)
-            .To<PlatformsContentTypesMigrationV2>(States.PlatformsContentTypesMigrationV2)
-            .To<CrowdfundingCampaignNamesMigration>(States.CrowdfundingCampaignNamesMigration);
+        From(string.Empty).To<PlatformsContentTypesMigrationV2>(States.PlatformsContentTypesMigrationV2);
     }
 
     public static IReadOnlyList<string> RequiredContentTypes => [
