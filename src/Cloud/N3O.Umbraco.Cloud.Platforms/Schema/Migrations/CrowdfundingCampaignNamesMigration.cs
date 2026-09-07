@@ -143,7 +143,12 @@ public class CrowdfundingCampaignNamesMigration : MigrationBase {
 
         folder.Name = Folders.CrowdfundingCampaigns;
 
-        _contentTypeService.SaveContainer(folder);
+        var attempt = _contentTypeService.SaveContainer(folder);
+
+        if (!attempt.Success) {
+            throw attempt.Exception ?? new Exception($"Could not rename the {LegacyFolder.Quote()} content type folder " +
+                                                     $"({attempt.Result?.Result})");
+        }
     }
 
     private static IReadOnlyList<Guid> GetSeededKeys(params string[] aliases) {
