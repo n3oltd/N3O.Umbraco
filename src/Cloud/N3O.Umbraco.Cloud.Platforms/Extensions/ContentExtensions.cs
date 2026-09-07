@@ -18,10 +18,8 @@ public static class ContentExtensions {
 
         if (!value.HasValue()) {
             return null;
-        } else if (UdiParser.TryParse(value, out GuidUdi udi)) {
-            // TODO Delete once every crowdfunding campaign node has been saved with a data list value: the campaign
-            // picker was a content picker before, so a node saved earlier still holds a document udi.
-            return udi.Guid;
+        } else if (TryGetContentPickerKey(value, out var contentPickerKey)) {
+            return contentPickerKey;
         } else if (Guid.TryParse(GetDataListItem(value), out var campaignKey)) {
             return campaignKey;
         } else {
@@ -91,5 +89,18 @@ public static class ContentExtensions {
         var contentType = contentTypeService.Get(content.ContentTypeId);
 
         return contentType.CompositionAliases().Contains(compositionAlias, true);
+    }
+
+    [Obsolete("Delete me once every crowdfunding campaign node has been re-saved with the data list picker")]
+    private static bool TryGetContentPickerKey(string value, out Guid contentPickerKey) {
+        if (UdiParser.TryParse(value, out GuidUdi udi)) {
+            contentPickerKey = udi.Guid;
+
+            return true;
+        } else {
+            contentPickerKey = Guid.Empty;
+
+            return false;
+        }
     }
 }

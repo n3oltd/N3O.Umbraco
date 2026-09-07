@@ -17,8 +17,13 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly IContentService _contentService;
+
+    [Obsolete("Delete me once the can-enable query is called from the regenerated crowdfunding client")]
     private readonly IContentLocator _contentLocator;
+
     private readonly IContentTypeService _contentTypeService;
+
+    [Obsolete("Delete me once the can-enable query is called from the regenerated crowdfunding client")]
     private readonly ILookups _lookups;
 
     public CrowdfundingCampaignSaving(IContentService contentService,
@@ -43,16 +48,7 @@ public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavin
                 continue;
             }
 
-            var campaignId = campaignKey.Value.ToString();
-            var offeringIds = _lookups.GetAll<Offering>()
-                                      .Where(x => x.CampaignId == campaignId)
-                                      .Select(x => x.Id)
-                                      .ToList();
-
-            if (_contentLocator.All(x => x.IsOffering(AliasHelper<OfferingContent>.ContentTypeAlias()))
-                               .As<OfferingContent>()
-                               .Where(x => offeringIds.Contains(x.Key.ToString()))
-                               .None(x => x.AllowCrowdfunding)) {
+            if (!CampaignAllowsCrowdfunding(campaignKey.Value)) {
                 notification.CancelWithError("No offering allows crowdfunding for the selected campaign");
 
                 continue;
@@ -72,6 +68,20 @@ public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavin
         }
 
         return Task.CompletedTask;
+    }
+
+    [Obsolete("Delete me once the can-enable query is called from the regenerated crowdfunding client")]
+    private bool CampaignAllowsCrowdfunding(Guid campaignKey) {
+        var campaignId = campaignKey.ToString();
+        var offeringIds = _lookups.GetAll<Offering>()
+                                  .Where(x => x.CampaignId == campaignId)
+                                  .Select(x => x.Id)
+                                  .ToList();
+
+        return _contentLocator.All(x => x.IsOffering(AliasHelper<OfferingContent>.ContentTypeAlias()))
+                              .As<OfferingContent>()
+                              .Where(x => offeringIds.Contains(x.Key.ToString()))
+                              .Any(x => x.AllowCrowdfunding);
     }
 
     private bool AnotherCrowdfundingCampaignExistsFor(IContent crowdfundingCampaign, Guid campaignKey) {
