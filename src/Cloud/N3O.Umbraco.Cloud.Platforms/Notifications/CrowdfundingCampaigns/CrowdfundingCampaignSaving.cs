@@ -16,23 +16,23 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavingNotification> {
-    private readonly IContentService _contentService;
+    private readonly IContentHelper _contentHelper;
 
     [Obsolete("Delete me once the can-enable query is called from the regenerated crowdfunding client")]
     private readonly IContentLocator _contentLocator;
 
-    private readonly IContentTypeService _contentTypeService;
+    private readonly IContentService _contentService;
 
     [Obsolete("Delete me once the can-enable query is called from the regenerated crowdfunding client")]
     private readonly ILookups _lookups;
 
-    public CrowdfundingCampaignSaving(IContentService contentService,
+    public CrowdfundingCampaignSaving(IContentHelper contentHelper,
                                       IContentLocator contentLocator,
-                                      IContentTypeService contentTypeService,
+                                      IContentService contentService,
                                       ILookups lookups) {
-        _contentService = contentService;
+        _contentHelper = contentHelper;
         _contentLocator = contentLocator;
-        _contentTypeService = contentTypeService;
+        _contentService = contentService;
         _lookups = lookups;
     }
 
@@ -85,7 +85,7 @@ public class CrowdfundingCampaignSaving : INotificationAsyncHandler<ContentSavin
     }
 
     private bool AnotherCrowdfundingCampaignExistsFor(IContent crowdfundingCampaign, Guid campaignKey) {
-        return _contentService.GetCrowdfundingCampaigns(_contentTypeService)
-                              .Any(x => x.Key != crowdfundingCampaign.Key && x.GetCampaignKey() == campaignKey);
+        return _contentHelper.GetCrowdfundingCampaigns()
+                             .Any(x => x.Key != crowdfundingCampaign.Key && x.GetCampaignKey() == campaignKey);
     }
 }

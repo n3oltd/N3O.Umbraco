@@ -12,14 +12,14 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSaved : INotificationAsyncHandler<ContentSavedNotification> {
     private readonly Lazy<IContentEditor> _contentEditor;
-    private readonly IContentService _contentService;
+    private readonly IContentHelper _contentHelper;
     private readonly IContentTypeService _contentTypeService;
 
     public CampaignSaved(Lazy<IContentEditor> contentEditor,
-                         IContentService contentService,
+                         IContentHelper contentHelper,
                          IContentTypeService contentTypeService) {
         _contentEditor = contentEditor;
-        _contentService = contentService;
+        _contentHelper = contentHelper;
         _contentTypeService = contentTypeService;
     }
 
@@ -34,7 +34,7 @@ public class CampaignSaved : INotificationAsyncHandler<ContentSavedNotification>
     }
 
     private void SyncCrowdfundingCampaignNames(Guid campaignKey, string campaignName) {
-        foreach (var crowdfundingCampaign in _contentService.GetCrowdfundingCampaigns(_contentTypeService)) {
+        foreach (var crowdfundingCampaign in _contentHelper.GetCrowdfundingCampaigns()) {
             if (crowdfundingCampaign.GetCampaignKey() != campaignKey ||
                 crowdfundingCampaign.Name.EqualsInvariant(campaignName)) {
                 continue;
