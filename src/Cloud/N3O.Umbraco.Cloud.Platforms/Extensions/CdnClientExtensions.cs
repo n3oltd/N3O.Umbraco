@@ -19,8 +19,8 @@ public static class CdnClientExtensions {
                                                                        SpecialContent parent,
                                                                        string path,
                                                                        CancellationToken cancellationToken = default) {
-        var pagePath = $"{kind.Id}/{path.Trim('/')}/index.json";
-        
+        var pagePath = GetPlatformsPagePath(kind, path);
+
         var publishedContentResult = await cdnClient.DownloadPublishedContentAsync(pagePath, cancellationToken);
 
         if (publishedContentResult.Error) {
@@ -57,7 +57,17 @@ public static class CdnClientExtensions {
             return GetPageResult.ForPage(platformsPage);
         }
     }
-     
+
+    // The backend writes each page at the path it derives from the entity's slugs, which the site derives the
+    // same way, so the entry can be marked stale before the backend has announced the new page.
+    public static void EvictPlatformsPage(this ICdnClient cdnClient, PublishedFileKind kind, params string[] slugs) {
+        cdnClient.Evict(GetPlatformsPagePath(kind, string.Join('/', slugs)));
+    }
+
+    private static string GetPlatformsPagePath(PublishedFileKind kind, string path) {
+        return $"{kind.Id}/{path.Trim('/')}/index.json";
+    }
+
     private static Task<PublishedContentResult> FetchMergeModelAsync(ICdnClient cdnClient,
                                                                      PublishedFileInfo publishedModel) {
         return cdnClient.DownloadPublishedContentAsync(publishedModel.Path);
