@@ -77,7 +77,7 @@ public static class ContentExtensions {
 
     private static string GetDataListItem(string value) {
         if (value.DetectIsJson()) {
-            return JArray.Parse(value).FirstOrDefault()?.ToString();
+            return (JToken.Parse(value) as JArray)?.FirstOrDefault()?.ToString();
         } else {
             return value;
         }
