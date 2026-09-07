@@ -1,9 +1,7 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json.Linq;
 using Slugify;
 using System;
@@ -17,40 +15,37 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotification> {
+public class CrowdfundingCampaignSending : INotificationAsyncHandler<SendingContentNotification> {
     private readonly Lazy<IContentCache> _contentCache;
     private readonly Lazy<ISlugHelper> _slugHelper;
-    private readonly Lazy<ILookups> _lookups;
 
-    public CrowdfunderSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper, Lazy<ILookups> lookups) {
+    public CrowdfundingCampaignSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper) {
         _contentCache = contentCache;
         _slugHelper = slugHelper;
-        _lookups = lookups;
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var alias = AliasHelper<CrowdfunderContent>.ContentTypeAlias();
+        var alias = AliasHelper<CrowdfundingCampaignContent>.ContentTypeAlias();
 
         if (notification.Content.ContentTypeAlias.EqualsInvariant(alias)) {
             foreach (var variant in notification.Content.Variants) {
-                FixCampaignPicker(variant);
                 SetUrl(notification, variant);
+                FixCampaignPicker(variant);
             }
         }
 
         return Task.CompletedTask;
     }
 
-    [Obsolete("Remove once all the older crowdfunding campaigns have been published")]
+    [Obsolete("Delete me once every crowdfunding campaign node has been re-saved with the data list picker")]
     private void FixCampaignPicker(ContentVariantDisplay variant) {
-        var alias = AliasHelper<CrowdfunderContent>.PropertyAlias(y => y.Campaign);
-        var campaignProperty = variant.Tabs.SelectMany(x => x.Properties).Single(x => x.Alias == alias);
+        var alias = AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(y => y.Campaign);
+        var campaignProperty = variant.Tabs
+                                      .SelectMany(x => x.Properties.OrEmpty())
+                                      .SingleOrDefault(x => x.Alias == alias);
 
-        if (UdiParser.TryParse(campaignProperty.Value?.ToString(), out var udi)) {
-            var contentKey = udi.ToId();
-            var campaign = _lookups.Value.FindById<Campaign>(contentKey.ToString());
-
-            campaignProperty.Value = new JArray(campaign.Id);
+        if (campaignProperty != null && UdiParser.TryParse(campaignProperty.Value?.ToString(), out GuidUdi udi)) {
+            campaignProperty.Value = new JArray(udi.Guid.ToString());
         }
     }
 
