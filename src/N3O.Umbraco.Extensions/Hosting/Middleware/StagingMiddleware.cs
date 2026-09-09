@@ -106,7 +106,8 @@ public class StagingMiddleware : IMiddleware {
                 var username = usernameAndPassword[0];
                 var password = usernameAndPassword[1];
                 
-                if (username.EqualsInvariant(stagingSettings.Username) && password == stagingSettings.Password) {
+                if (username.EqualsInvariant(stagingSettings.Username) &&
+                    password.EqualsSecret(stagingSettings.Password)) {
                     isAuthorized = true;
                 }
             }
