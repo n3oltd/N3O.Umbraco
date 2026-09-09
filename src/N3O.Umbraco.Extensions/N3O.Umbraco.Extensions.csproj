@@ -42,7 +42,6 @@
         <PackageReference Include="Flurl.Http.Newtonsoft" Version="0.9.1" />
         <!--There is a bug in Humanizer.Core v3.0.10, wait for next release to upgrade the package-->
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
         <PackageReference Include="MimeTypesMap" Version="1.0.9" />
         <PackageReference Include="NodaTime" Version="3.3.3" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.3.0" />

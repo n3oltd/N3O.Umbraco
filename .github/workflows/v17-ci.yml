@@ -4,6 +4,9 @@ on:
   push:
     branches: v17
 
+  pull_request:
+    branches: v17
+
   workflow_dispatch:
 
 jobs:
