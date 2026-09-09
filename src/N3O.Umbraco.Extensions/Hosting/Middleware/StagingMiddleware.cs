@@ -81,13 +81,12 @@ public class StagingMiddleware : IMiddleware {
     }
 
     private void LogFailure(string remoteIp) {
-        var failedCount = FailedLogins.GetOrCreate(remoteIp, c => {
-            c.SlidingExpiration = LockOutPeriod;
+        var failedCount = FailedLogins.Get<int>(remoteIp);
 
-            return 0;
-        });
+        var cacheEntryOptions = new MemoryCacheEntryOptions();
+        cacheEntryOptions.SlidingExpiration = LockOutPeriod;
 
-        FailedLogins.Set(remoteIp, failedCount + 1);
+        FailedLogins.Set(remoteIp, failedCount + 1, cacheEntryOptions);
     }
 
     private bool IsAuthorized(HttpContext context, StagingSettingsContent stagingSettings, string remoteIp) {
@@ -99,21 +98,49 @@ public class StagingMiddleware : IMiddleware {
             isAuthorized = true;
         } else {
             string header = context.Request.Headers["Authorization"];
-        
-            if (header.HasValue()) {
-                var auth = header.Split(' ')[1];
-                var usernameAndPassword = Encoding.UTF8.GetString(Convert.FromBase64String(auth)).Split(':');
-                var username = usernameAndPassword[0];
-                var password = usernameAndPassword[1];
-                
-                if (username.EqualsInvariant(stagingSettings.Username) &&
-                    password.EqualsSecret(stagingSettings.Password)) {
-                    isAuthorized = true;
-                }
+
+            if (TryGetBasicCredentials(header, out var username, out var password) &&
+                username.EqualsInvariant(stagingSettings.Username) &&
+                password.EqualsSecret(stagingSettings.Password)) {
+                isAuthorized = true;
             }
         }
 
         return isAuthorized;
+    }
+
+    // Anything reaching a staging site can send an arbitrary Authorization header, so every stage of the parse
+    // has to be able to fail rather than throw out of the middleware.
+    private bool TryGetBasicCredentials(string header, out string username, out string password) {
+        username = null;
+        password = null;
+
+        if (!header.HasValue()) {
+            return false;
+        }
+
+        var headerParts = header.Split(' ');
+
+        if (headerParts.Length != 2 || !headerParts[0].EqualsInvariant("Basic")) {
+            return false;
+        }
+
+        var decoded = new byte[headerParts[1].Length];
+
+        if (!Convert.TryFromBase64String(headerParts[1], decoded, out var decodedLength)) {
+            return false;
+        }
+
+        var usernameAndPassword = Encoding.UTF8.GetString(decoded, 0, decodedLength).Split(':');
+
+        if (usernameAndPassword.Length < 2) {
+            return false;
+        }
+
+        username = usernameAndPassword[0];
+        password = usernameAndPassword[1];
+
+        return true;
     }
 
     private bool IsSignedIntoBackOffice(HttpContext context) {
